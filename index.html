@@ -104,17 +104,8 @@
             font-weight: bold;
             color: #667eea;
             margin: 30px 0;
-            cursor: pointer;
             transition: all 0.2s ease;
             user-select: none;
-        }
-
-        .sound-display:hover {
-            transform: scale(1.05);
-        }
-
-        .sound-display:active {
-            transform: scale(0.95);
         }
 
         .sound-display.hiragana {
@@ -123,6 +114,15 @@
 
         .sound-display.romaji {
             text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .sound-display.romaji:hover {
+            transform: scale(1.05);
+        }
+
+        .sound-display.romaji:active {
+            transform: scale(0.95);
         }
 
         .options-grid {
@@ -338,18 +338,55 @@
         }
 
         .hiragana-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 8px;
             margin-top: 15px;
+        }
+
+        .chart-section {
+            margin-bottom: 25px;
+        }
+
+        .chart-section h4 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .chart-table {
+            display: grid;
+            grid-template-columns: auto repeat(10, 1fr);
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .chart-header {
+            background: #f8f9ff;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #999;
+            border-radius: 6px;
+        }
+
+        .vowel-label {
+            background: #f8f9ff;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #999;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .char-toggle {
             aspect-ratio: 1;
             background: white;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 28px;
+            border-radius: 8px;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
@@ -373,6 +410,16 @@
         .char-toggle.inactive {
             background: #f5f5f5;
             opacity: 0.5;
+        }
+
+        .char-toggle.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .char-toggle.empty:hover {
+            transform: none;
         }
 
         .toggle-controls {
@@ -410,12 +457,17 @@
                 font-size: 24px;
             }
 
-            .hiragana-grid {
-                grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            .char-toggle {
+                font-size: 20px;
             }
 
-            .char-toggle {
-                font-size: 24px;
+            .chart-header, .vowel-label {
+                font-size: 12px;
+                padding: 6px 2px;
+            }
+
+            .modal-content {
+                padding: 20px;
             }
         }
     </style>
@@ -640,23 +692,109 @@
             localStorage.setItem('enabledChars', JSON.stringify([...enabledChars]));
         }
 
-        // Initialize hiragana grid
+        // Initialize hiragana grid with traditional chart layout
         function initHiraganaGrid() {
             hiraganaGrid.innerHTML = '';
-            hiraganaData.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'char-toggle';
-                btn.textContent = item.char;
-                btn.dataset.char = item.char;
 
-                if (enabledChars.has(item.char)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.add('inactive');
+            // Define the traditional chart structure
+            const chart = {
+                basic: {
+                    title: 'Basic Hiragana (清音)',
+                    headers: ['W', 'R', 'Y', 'M', 'H', 'N', 'T', 'S', 'K', '•'],
+                    vowels: ['A', 'I', 'U', 'E', 'O'],
+                    grid: [
+                        ['わ', 'ら', 'や', 'ま', 'は', 'な', 'た', 'さ', 'か', 'あ'],
+                        ['',   'り', '',   'み', 'ひ', 'に', 'ち', 'し', 'き', 'い'],
+                        ['ん', 'る', 'ゆ', 'む', 'ふ', 'ぬ', 'つ', 'す', 'く', 'う'],
+                        ['',   'れ', '',   'め', 'へ', 'ね', 'て', 'せ', 'け', 'え'],
+                        ['を', 'ろ', 'よ', 'も', 'ほ', 'の', 'と', 'そ', 'こ', 'お']
+                    ]
+                },
+                dakuten: {
+                    title: 'Dakuten (濁音)',
+                    headers: ['', '', '', 'B', '', '', 'D', 'Z', 'G', ''],
+                    vowels: ['A', 'I', 'U', 'E', 'O'],
+                    grid: [
+                        ['', '', '', 'ば', '', '', 'だ', 'ざ', 'が', ''],
+                        ['', '', '', 'び', '', '', 'ぢ', 'じ', 'ぎ', ''],
+                        ['', '', '', 'ぶ', '', '', 'づ', 'ず', 'ぐ', ''],
+                        ['', '', '', 'べ', '', '', 'で', 'ぜ', 'げ', ''],
+                        ['', '', '', 'ぼ', '', '', 'ど', 'ぞ', 'ご', '']
+                    ]
+                },
+                handakuten: {
+                    title: 'Handakuten (半濁音)',
+                    headers: ['', '', '', 'P', '', '', '', '', '', ''],
+                    vowels: ['A', 'I', 'U', 'E', 'O'],
+                    grid: [
+                        ['', '', '', 'ぱ', '', '', '', '', '', ''],
+                        ['', '', '', 'ぴ', '', '', '', '', '', ''],
+                        ['', '', '', 'ぷ', '', '', '', '', '', ''],
+                        ['', '', '', 'ぺ', '', '', '', '', '', ''],
+                        ['', '', '', 'ぽ', '', '', '', '', '', '']
+                    ]
                 }
+            };
 
-                btn.onclick = () => toggleCharacter(item.char, btn);
-                hiraganaGrid.appendChild(btn);
+            // Create each chart section
+            Object.values(chart).forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'chart-section';
+
+                const title = document.createElement('h4');
+                title.textContent = section.title;
+                sectionDiv.appendChild(title);
+
+                const table = document.createElement('div');
+                table.className = 'chart-table';
+
+                // Empty top-left corner
+                const corner = document.createElement('div');
+                corner.className = 'chart-header';
+                table.appendChild(corner);
+
+                // Column headers (consonants)
+                section.headers.forEach(header => {
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'chart-header';
+                    headerDiv.textContent = header;
+                    table.appendChild(headerDiv);
+                });
+
+                // Rows with vowel labels and characters
+                section.grid.forEach((row, rowIndex) => {
+                    // Vowel label
+                    const vowelLabel = document.createElement('div');
+                    vowelLabel.className = 'vowel-label';
+                    vowelLabel.textContent = section.vowels[rowIndex];
+                    table.appendChild(vowelLabel);
+
+                    // Characters in the row
+                    row.forEach(char => {
+                        const btn = document.createElement('button');
+                        btn.className = 'char-toggle';
+
+                        if (char === '') {
+                            btn.classList.add('empty');
+                        } else {
+                            btn.textContent = char;
+                            btn.dataset.char = char;
+
+                            if (enabledChars.has(char)) {
+                                btn.classList.add('active');
+                            } else {
+                                btn.classList.add('inactive');
+                            }
+
+                            btn.onclick = () => toggleCharacter(char, btn);
+                        }
+
+                        table.appendChild(btn);
+                    });
+                });
+
+                sectionDiv.appendChild(table);
+                hiraganaGrid.appendChild(sectionDiv);
             });
         }
 
@@ -762,9 +900,9 @@
             synth.speak(utterance);
         }
 
-        // Click to hear sound
+        // Click to hear sound (only in normal mode)
         soundDisplay.onclick = () => {
-            if (currentQuestion) {
+            if (currentQuestion && !reverseMode) {
                 speak(currentQuestion.correct.romaji);
             }
         };
@@ -815,7 +953,7 @@
                 questionText.textContent = 'Select the sound for:';
                 soundDisplay.textContent = correctAnswer.char;
                 soundDisplay.className = 'sound-display hiragana';
-                soundDisplay.title = 'Click to hear pronunciation';
+                soundDisplay.title = 'Character display (no audio in reverse mode)';
             } else {
                 questionText.textContent = 'Select the character for:';
                 soundDisplay.textContent = correctAnswer.romaji;
@@ -823,8 +961,10 @@
                 soundDisplay.title = 'Click to hear pronunciation';
             }
 
-            // Play sound automatically
-            speak(correctAnswer.romaji);
+            // Play sound automatically (only in normal mode)
+            if (!reverseMode) {
+                speak(correctAnswer.romaji);
+            }
 
             // Generate option buttons
             optionsGrid.innerHTML = '';
