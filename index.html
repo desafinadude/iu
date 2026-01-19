@@ -13,97 +13,96 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            padding-top: 70px;
+            padding-bottom: 20px;
         }
 
-        .container {
-            max-width: 600px;
-            width: 100%;
-        }
-
+        /* Fixed Header */
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            position: relative;
+            padding: 12px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 20px;
+            margin: 0;
         }
 
         .settings-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background: #667eea;
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 10px 15px;
-            font-size: 24px;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .settings-btn:hover {
             background: #764ba2;
-            transform: scale(1.1);
-        }
-
-        h1 {
-            color: #667eea;
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 15px;
-            padding-right: 60px;
-        }
-
-        .progress-bar {
-            background: #e0e0e0;
-            height: 12px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
+            transform: scale(1.05);
         }
 
         .stats {
             display: flex;
-            justify-content: space-between;
-            font-size: 14px;
+            gap: 15px;
+            font-size: 13px;
             color: #666;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
         }
 
         .question-card {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             text-align: center;
         }
 
+        .question-header {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
         .question-text {
-            font-size: 18px;
+            font-size: 16px;
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .sound-display {
-            font-size: 72px;
+            font-size: 56px;
             font-weight: bold;
             color: #667eea;
-            margin: 30px 0;
+            margin: 20px 0;
             transition: all 0.2s ease;
             user-select: none;
         }
@@ -128,16 +127,16 @@
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .option-btn {
             background: white;
             border: 3px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 30px 20px;
-            font-size: 48px;
+            border-radius: 12px;
+            padding: 25px 15px;
+            font-size: 40px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -148,16 +147,17 @@
 
         .option-btn.romaji {
             text-transform: uppercase;
+            font-size: 28px;
         }
 
         .option-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
             border-color: #667eea;
             background: #f8f9ff;
         }
 
         .option-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.97);
         }
 
         .option-btn.correct {
@@ -181,26 +181,26 @@
 
         @keyframes correctPulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.08); }
         }
 
         @keyframes wrongShake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         .next-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 15px;
-            padding: 18px 40px;
-            font-size: 20px;
+            border-radius: 12px;
+            padding: 15px 35px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 15px;
             transition: all 0.2s ease;
             display: none;
         }
@@ -219,10 +219,10 @@
         }
 
         .feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 18px;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
             display: none;
         }
@@ -239,6 +239,57 @@
         .feedback.wrong {
             background: #ffebee;
             color: #c62828;
+        }
+
+        /* Quiz Results */
+        .results-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            display: none;
+        }
+
+        .results-card.show {
+            display: block;
+        }
+
+        .results-title {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .results-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #4caf50;
+            margin: 20px 0;
+        }
+
+        .results-stats {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #333;
         }
 
         /* Settings Modal */
@@ -263,9 +314,9 @@
 
         .modal-content {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 800px;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 900px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -276,23 +327,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .modal-header h2 {
             color: #667eea;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .close-btn {
             background: none;
             border: none;
-            font-size: 32px;
+            font-size: 28px;
             cursor: pointer;
             color: #666;
             padding: 0;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -305,19 +356,19 @@
         }
 
         .settings-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .settings-section h3 {
             color: #333;
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 16px;
+            margin-bottom: 12px;
         }
 
         .mode-toggle {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .mode-btn {
@@ -325,8 +376,8 @@
             background: white;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
-            padding: 15px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -337,45 +388,65 @@
             border-color: #667eea;
         }
 
+        .color-picker-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .color-picker {
+            width: 60px;
+            height: 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .color-preset {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-preset:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
         .hiragana-grid {
             margin-top: 15px;
-        }
-
-        .chart-section {
-            margin-bottom: 25px;
-        }
-
-        .chart-section h4 {
-            color: #667eea;
-            font-size: 16px;
-            margin-bottom: 10px;
+            overflow-x: auto;
         }
 
         .chart-table {
             display: grid;
-            grid-template-columns: auto repeat(10, 1fr);
-            gap: 4px;
-            margin-bottom: 20px;
+            grid-template-columns: auto repeat(15, 1fr);
+            gap: 3px;
+            min-width: 650px;
         }
 
         .chart-header {
             background: #f8f9ff;
-            padding: 8px 4px;
+            padding: 6px 3px;
             text-align: center;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             color: #999;
-            border-radius: 6px;
+            border-radius: 5px;
         }
 
         .vowel-label {
             background: #f8f9ff;
-            padding: 8px 4px;
+            padding: 6px 3px;
             text-align: center;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             color: #999;
-            border-radius: 6px;
+            border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -385,15 +456,14 @@
             aspect-ratio: 1;
             background: white;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 24px;
+            border-radius: 6px;
+            font-size: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
 
         .char-toggle:hover {
@@ -424,17 +494,18 @@
 
         .toggle-controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .control-btn {
             background: #667eea;
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 14px;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -444,26 +515,30 @@
         }
 
         @media (max-width: 480px) {
+            h1 {
+                font-size: 16px;
+            }
+
+            .stats {
+                font-size: 11px;
+                gap: 10px;
+            }
+
             .sound-display {
-                font-size: 56px;
+                font-size: 48px;
             }
 
             .option-btn {
-                font-size: 40px;
-                padding: 25px 15px;
+                font-size: 34px;
+                padding: 20px 12px;
             }
 
-            h1 {
+            .option-btn.romaji {
                 font-size: 24px;
             }
 
             .char-toggle {
-                font-size: 20px;
-            }
-
-            .chart-header, .vowel-label {
-                font-size: 12px;
-                padding: 6px 2px;
+                font-size: 18px;
             }
 
             .modal-content {
@@ -473,20 +548,22 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+    <!-- Fixed Header -->
+    <div class="header">
+        <div class="header-left">
             <button class="settings-btn" id="settingsBtn">⚙️</button>
             <h1>🇯🇵 Hiragana Practice</h1>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="stats">
-                <span id="scoreText">Score: 0/0</span>
-                <span id="streakText">Streak: 0</span>
-            </div>
         </div>
+        <div class="stats">
+            <span id="questionCounter">Question: 1/20</span>
+            <span id="scoreText">Score: 0</span>
+        </div>
+    </div>
 
-        <div class="question-card">
+    <div class="container">
+        <!-- Question Card -->
+        <div class="question-card" id="questionCard">
+            <div class="question-header" id="quizModeText">Quiz Mode</div>
             <div class="question-text" id="questionText">Select the character for:</div>
             <div class="sound-display romaji" id="soundDisplay" title="Click to hear pronunciation">ka</div>
 
@@ -496,6 +573,27 @@
 
             <div class="feedback" id="feedback"></div>
             <button class="next-btn" id="nextBtn">Next Question</button>
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card" id="resultsCard">
+            <div class="results-title">🎉 Quiz Complete!</div>
+            <div class="results-score" id="finalScore">0/40</div>
+            <div class="results-stats">
+                <div class="stat-row">
+                    <span class="stat-label">Normal Mode</span>
+                    <span class="stat-value" id="normalScore">0/20</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Reverse Mode</span>
+                    <span class="stat-value" id="reverseScore">0/20</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-value" id="accuracy">0%</span>
+                </div>
+            </div>
+            <button class="next-btn show" id="restartBtn">Start New Quiz</button>
         </div>
     </div>
 
@@ -508,16 +606,17 @@
             </div>
 
             <div class="settings-section">
-                <h3>Mode</h3>
-                <div class="mode-toggle">
-                    <button class="mode-btn active" id="normalModeBtn">
-                        Normal Mode<br>
-                        <small>Sound → Character</small>
-                    </button>
-                    <button class="mode-btn" id="reverseModeBtn">
-                        Reverse Mode<br>
-                        <small>Character → Sound</small>
-                    </button>
+                <h3>Background Color</h3>
+                <div class="color-picker-group">
+                    <input type="color" class="color-picker" id="bgColorPicker" value="#667eea">
+                    <div class="color-preset" style="background: #667eea" data-color="#667eea"></div>
+                    <div class="color-preset" style="background: #764ba2" data-color="#764ba2"></div>
+                    <div class="color-preset" style="background: #f093fb" data-color="#f093fb"></div>
+                    <div class="color-preset" style="background: #4facfe" data-color="#4facfe"></div>
+                    <div class="color-preset" style="background: #43e97b" data-color="#43e97b"></div>
+                    <div class="color-preset" style="background: #fa709a" data-color="#fa709a"></div>
+                    <div class="color-preset" style="background: #30cfd0" data-color="#30cfd0"></div>
+                    <div class="color-preset" style="background: #2c3e50" data-color="#2c3e50"></div>
                 </div>
             </div>
 
@@ -529,126 +628,113 @@
                     <button class="control-btn" id="basicsOnlyBtn">Basics Only</button>
                 </div>
                 <div class="hiragana-grid" id="hiraganaGrid">
-                    <!-- Character toggles will be generated by JavaScript -->
+                    <!-- Character grid will be generated by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Complete Hiragana character set with categories
+        // Complete Hiragana character set
         const hiraganaData = [
-            // Vowels (basics)
+            // Vowels
             { char: 'あ', romaji: 'a', basic: true },
             { char: 'い', romaji: 'i', basic: true },
             { char: 'う', romaji: 'u', basic: true },
             { char: 'え', romaji: 'e', basic: true },
             { char: 'お', romaji: 'o', basic: true },
-
-            // K-row (basics)
+            // K-row
             { char: 'か', romaji: 'ka', basic: true },
             { char: 'き', romaji: 'ki', basic: true },
             { char: 'く', romaji: 'ku', basic: true },
             { char: 'け', romaji: 'ke', basic: true },
             { char: 'こ', romaji: 'ko', basic: true },
-
-            // S-row (basics)
-            { char: 'さ', romaji: 'sa', basic: true },
-            { char: 'し', romaji: 'shi', basic: true },
-            { char: 'す', romaji: 'su', basic: true },
-            { char: 'せ', romaji: 'se', basic: true },
-            { char: 'そ', romaji: 'so', basic: true },
-
-            // T-row (basics)
-            { char: 'た', romaji: 'ta', basic: true },
-            { char: 'ち', romaji: 'chi', basic: true },
-            { char: 'つ', romaji: 'tsu', basic: true },
-            { char: 'て', romaji: 'te', basic: true },
-            { char: 'と', romaji: 'to', basic: true },
-
-            // N-row (basics)
-            { char: 'な', romaji: 'na', basic: true },
-            { char: 'に', romaji: 'ni', basic: true },
-            { char: 'ぬ', romaji: 'nu', basic: true },
-            { char: 'ね', romaji: 'ne', basic: true },
-            { char: 'の', romaji: 'no', basic: true },
-
-            // H-row (basics)
-            { char: 'は', romaji: 'ha', basic: true },
-            { char: 'ひ', romaji: 'hi', basic: true },
-            { char: 'ふ', romaji: 'fu', basic: true },
-            { char: 'へ', romaji: 'he', basic: true },
-            { char: 'ほ', romaji: 'ho', basic: true },
-
-            // M-row (basics)
-            { char: 'ま', romaji: 'ma', basic: true },
-            { char: 'み', romaji: 'mi', basic: true },
-            { char: 'む', romaji: 'mu', basic: true },
-            { char: 'め', romaji: 'me', basic: true },
-            { char: 'も', romaji: 'mo', basic: true },
-
-            // Y-row (basics)
-            { char: 'や', romaji: 'ya', basic: true },
-            { char: 'ゆ', romaji: 'yu', basic: true },
-            { char: 'よ', romaji: 'yo', basic: true },
-
-            // R-row (basics)
-            { char: 'ら', romaji: 'ra', basic: true },
-            { char: 'り', romaji: 'ri', basic: true },
-            { char: 'る', romaji: 'ru', basic: true },
-            { char: 'れ', romaji: 're', basic: true },
-            { char: 'ろ', romaji: 'ro', basic: true },
-
-            // W-row (basics)
-            { char: 'わ', romaji: 'wa', basic: true },
-            { char: 'を', romaji: 'wo', basic: true },
-
-            // N (basics)
-            { char: 'ん', romaji: 'n', basic: true },
-
-            // G-row (dakuten)
+            // G-row
             { char: 'が', romaji: 'ga', basic: false },
             { char: 'ぎ', romaji: 'gi', basic: false },
             { char: 'ぐ', romaji: 'gu', basic: false },
             { char: 'げ', romaji: 'ge', basic: false },
             { char: 'ご', romaji: 'go', basic: false },
-
-            // Z-row (dakuten)
+            // S-row
+            { char: 'さ', romaji: 'sa', basic: true },
+            { char: 'し', romaji: 'shi', basic: true },
+            { char: 'す', romaji: 'su', basic: true },
+            { char: 'せ', romaji: 'se', basic: true },
+            { char: 'そ', romaji: 'so', basic: true },
+            // Z-row
             { char: 'ざ', romaji: 'za', basic: false },
             { char: 'じ', romaji: 'ji', basic: false },
             { char: 'ず', romaji: 'zu', basic: false },
             { char: 'ぜ', romaji: 'ze', basic: false },
             { char: 'ぞ', romaji: 'zo', basic: false },
-
-            // D-row (dakuten)
+            // T-row
+            { char: 'た', romaji: 'ta', basic: true },
+            { char: 'ち', romaji: 'chi', basic: true },
+            { char: 'つ', romaji: 'tsu', basic: true },
+            { char: 'て', romaji: 'te', basic: true },
+            { char: 'と', romaji: 'to', basic: true },
+            // D-row
             { char: 'だ', romaji: 'da', basic: false },
             { char: 'ぢ', romaji: 'di', basic: false },
             { char: 'づ', romaji: 'du', basic: false },
             { char: 'で', romaji: 'de', basic: false },
             { char: 'ど', romaji: 'do', basic: false },
-
-            // B-row (dakuten)
+            // N-row
+            { char: 'な', romaji: 'na', basic: true },
+            { char: 'に', romaji: 'ni', basic: true },
+            { char: 'ぬ', romaji: 'nu', basic: true },
+            { char: 'ね', romaji: 'ne', basic: true },
+            { char: 'の', romaji: 'no', basic: true },
+            // H-row
+            { char: 'は', romaji: 'ha', basic: true },
+            { char: 'ひ', romaji: 'hi', basic: true },
+            { char: 'ふ', romaji: 'fu', basic: true },
+            { char: 'へ', romaji: 'he', basic: true },
+            { char: 'ほ', romaji: 'ho', basic: true },
+            // B-row
             { char: 'ば', romaji: 'ba', basic: false },
             { char: 'び', romaji: 'bi', basic: false },
             { char: 'ぶ', romaji: 'bu', basic: false },
             { char: 'べ', romaji: 'be', basic: false },
             { char: 'ぼ', romaji: 'bo', basic: false },
-
-            // P-row (handakuten)
+            // P-row
             { char: 'ぱ', romaji: 'pa', basic: false },
             { char: 'ぴ', romaji: 'pi', basic: false },
             { char: 'ぷ', romaji: 'pu', basic: false },
             { char: 'ぺ', romaji: 'pe', basic: false },
-            { char: 'ぽ', romaji: 'po', basic: false }
+            { char: 'ぽ', romaji: 'po', basic: false },
+            // M-row
+            { char: 'ま', romaji: 'ma', basic: true },
+            { char: 'み', romaji: 'mi', basic: true },
+            { char: 'む', romaji: 'mu', basic: true },
+            { char: 'め', romaji: 'me', basic: true },
+            { char: 'も', romaji: 'mo', basic: true },
+            // Y-row
+            { char: 'や', romaji: 'ya', basic: true },
+            { char: 'ゆ', romaji: 'yu', basic: true },
+            { char: 'よ', romaji: 'yo', basic: true },
+            // R-row
+            { char: 'ら', romaji: 'ra', basic: true },
+            { char: 'り', romaji: 'ri', basic: true },
+            { char: 'る', romaji: 'ru', basic: true },
+            { char: 'れ', romaji: 're', basic: true },
+            { char: 'ろ', romaji: 'ro', basic: true },
+            // W-row
+            { char: 'わ', romaji: 'wa', basic: true },
+            { char: 'を', romaji: 'wo', basic: true },
+            // N
+            { char: 'ん', romaji: 'n', basic: true }
         ];
 
         // State
         let currentQuestion = null;
-        let score = 0;
-        let totalQuestions = 0;
-        let streak = 0;
-        let reverseMode = false;
+        let questionNumber = 0;
+        let normalScore = 0;
+        let reverseScore = 0;
+        let totalScore = 0;
+        let isReverseMode = false;
         let enabledChars = new Set(hiraganaData.map(h => h.char));
+        let bgColor = '#667eea';
 
         // Text-to-speech
         const synth = window.speechSynthesis;
@@ -658,119 +744,81 @@
         const optionsGrid = document.getElementById('optionsGrid');
         const feedback = document.getElementById('feedback');
         const nextBtn = document.getElementById('nextBtn');
-        const progressFill = document.getElementById('progressFill');
-        const scoreText = document.getElementById('scoreText');
-        const streakText = document.getElementById('streakText');
         const questionText = document.getElementById('questionText');
+        const questionCounter = document.getElementById('questionCounter');
+        const scoreText = document.getElementById('scoreText');
+        const quizModeText = document.getElementById('quizModeText');
+        const questionCard = document.getElementById('questionCard');
+        const resultsCard = document.getElementById('resultsCard');
+        const finalScore = document.getElementById('finalScore');
+        const normalScoreEl = document.getElementById('normalScore');
+        const reverseScoreEl = document.getElementById('reverseScore');
+        const accuracy = document.getElementById('accuracy');
+        const restartBtn = document.getElementById('restartBtn');
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsModal = document.getElementById('settingsModal');
         const closeModal = document.getElementById('closeModal');
-        const normalModeBtn = document.getElementById('normalModeBtn');
-        const reverseModeBtn = document.getElementById('reverseModeBtn');
         const hiraganaGrid = document.getElementById('hiraganaGrid');
         const selectAllBtn = document.getElementById('selectAllBtn');
         const deselectAllBtn = document.getElementById('deselectAllBtn');
         const basicsOnlyBtn = document.getElementById('basicsOnlyBtn');
+        const bgColorPicker = document.getElementById('bgColorPicker');
 
         // Load settings from localStorage
         function loadSettings() {
-            const savedMode = localStorage.getItem('reverseMode');
-            if (savedMode !== null) {
-                reverseMode = savedMode === 'true';
-                updateModeButtons();
-            }
-
             const savedChars = localStorage.getItem('enabledChars');
             if (savedChars) {
                 enabledChars = new Set(JSON.parse(savedChars));
+            }
+
+            const savedColor = localStorage.getItem('bgColor');
+            if (savedColor) {
+                bgColor = savedColor;
+                document.body.style.background = bgColor;
+                bgColorPicker.value = bgColor;
             }
         }
 
         // Save settings to localStorage
         function saveSettings() {
-            localStorage.setItem('reverseMode', reverseMode);
             localStorage.setItem('enabledChars', JSON.stringify([...enabledChars]));
+            localStorage.setItem('bgColor', bgColor);
         }
 
-        // Initialize hiragana grid with traditional chart layout
+        // Initialize hiragana grid with single table
         function initHiraganaGrid() {
-            hiraganaGrid.innerHTML = '';
+            const table = document.createElement('div');
+            table.className = 'chart-table';
 
-            // Define the traditional chart structure
-            const chart = {
-                basic: {
-                    title: 'Basic Hiragana (清音)',
-                    headers: ['W', 'R', 'Y', 'M', 'H', 'N', 'T', 'S', 'K', '•'],
-                    vowels: ['A', 'I', 'U', 'E', 'O'],
-                    grid: [
-                        ['わ', 'ら', 'や', 'ま', 'は', 'な', 'た', 'さ', 'か', 'あ'],
-                        ['',   'り', '',   'み', 'ひ', 'に', 'ち', 'し', 'き', 'い'],
-                        ['ん', 'る', 'ゆ', 'む', 'ふ', 'ぬ', 'つ', 'す', 'く', 'う'],
-                        ['',   'れ', '',   'め', 'へ', 'ね', 'て', 'せ', 'け', 'え'],
-                        ['を', 'ろ', 'よ', 'も', 'ほ', 'の', 'と', 'そ', 'こ', 'お']
-                    ]
-                },
-                dakuten: {
-                    title: 'Dakuten (濁音)',
-                    headers: ['', '', '', 'B', '', '', 'D', 'Z', 'G', ''],
-                    vowels: ['A', 'I', 'U', 'E', 'O'],
-                    grid: [
-                        ['', '', '', 'ば', '', '', 'だ', 'ざ', 'が', ''],
-                        ['', '', '', 'び', '', '', 'ぢ', 'じ', 'ぎ', ''],
-                        ['', '', '', 'ぶ', '', '', 'づ', 'ず', 'ぐ', ''],
-                        ['', '', '', 'べ', '', '', 'で', 'ぜ', 'げ', ''],
-                        ['', '', '', 'ぼ', '', '', 'ど', 'ぞ', 'ご', '']
-                    ]
-                },
-                handakuten: {
-                    title: 'Handakuten (半濁音)',
-                    headers: ['', '', '', 'P', '', '', '', '', '', ''],
-                    vowels: ['A', 'I', 'U', 'E', 'O'],
-                    grid: [
-                        ['', '', '', 'ぱ', '', '', '', '', '', ''],
-                        ['', '', '', 'ぴ', '', '', '', '', '', ''],
-                        ['', '', '', 'ぷ', '', '', '', '', '', ''],
-                        ['', '', '', 'ぺ', '', '', '', '', '', ''],
-                        ['', '', '', 'ぽ', '', '', '', '', '', '']
-                    ]
-                }
-            };
+            // Headers: • (vowels), K, G, S, Z, T, D, N, H, B, P, M, Y, R, W
+            const headers = ['', '•', 'K', 'G', 'S', 'Z', 'T', 'D', 'N', 'H', 'B', 'P', 'M', 'Y', 'R', 'W'];
 
-            // Create each chart section
-            Object.values(chart).forEach(section => {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'chart-section';
+            // Empty top-left corner
+            headers.forEach(header => {
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'chart-header';
+                headerDiv.textContent = header;
+                table.appendChild(headerDiv);
+            });
 
-                const title = document.createElement('h4');
-                title.textContent = section.title;
-                sectionDiv.appendChild(title);
+            const vowels = ['A', 'I', 'U', 'E', 'O'];
+            const grid = [
+                ['A', 'あ', 'か', 'が', 'さ', 'ざ', 'た', 'だ', 'な', 'は', 'ば', 'ぱ', 'ま', 'や', 'ら', 'わ'],
+                ['I', 'い', 'き', 'ぎ', 'し', 'じ', 'ち', 'ぢ', 'に', 'ひ', 'び', 'ぴ', 'み', '',   'り', ''],
+                ['U', 'う', 'く', 'ぐ', 'す', 'ず', 'つ', 'づ', 'ぬ', 'ふ', 'ぶ', 'ぷ', 'む', 'ゆ', 'る', 'ん'],
+                ['E', 'え', 'け', 'げ', 'せ', 'ぜ', 'て', 'で', 'ね', 'へ', 'べ', 'ぺ', 'め', '',   'れ', ''],
+                ['O', 'お', 'こ', 'ご', 'そ', 'ぞ', 'と', 'ど', 'の', 'ほ', 'ぼ', 'ぽ', 'も', 'よ', 'ろ', 'を']
+            ];
 
-                const table = document.createElement('div');
-                table.className = 'chart-table';
-
-                // Empty top-left corner
-                const corner = document.createElement('div');
-                corner.className = 'chart-header';
-                table.appendChild(corner);
-
-                // Column headers (consonants)
-                section.headers.forEach(header => {
-                    const headerDiv = document.createElement('div');
-                    headerDiv.className = 'chart-header';
-                    headerDiv.textContent = header;
-                    table.appendChild(headerDiv);
-                });
-
-                // Rows with vowel labels and characters
-                section.grid.forEach((row, rowIndex) => {
-                    // Vowel label
-                    const vowelLabel = document.createElement('div');
-                    vowelLabel.className = 'vowel-label';
-                    vowelLabel.textContent = section.vowels[rowIndex];
-                    table.appendChild(vowelLabel);
-
-                    // Characters in the row
-                    row.forEach(char => {
+            grid.forEach(row => {
+                row.forEach((char, idx) => {
+                    if (idx === 0) {
+                        // Vowel label
+                        const vowelLabel = document.createElement('div');
+                        vowelLabel.className = 'vowel-label';
+                        vowelLabel.textContent = char;
+                        table.appendChild(vowelLabel);
+                    } else {
                         const btn = document.createElement('button');
                         btn.className = 'char-toggle';
 
@@ -790,12 +838,12 @@
                         }
 
                         table.appendChild(btn);
-                    });
+                    }
                 });
-
-                sectionDiv.appendChild(table);
-                hiraganaGrid.appendChild(sectionDiv);
             });
+
+            hiraganaGrid.innerHTML = '';
+            hiraganaGrid.appendChild(table);
         }
 
         // Toggle character
@@ -811,7 +859,6 @@
             }
             saveSettings();
 
-            // Ensure at least one character is enabled
             if (enabledChars.size === 0) {
                 enabledChars.add(char);
                 btn.classList.add('active');
@@ -847,29 +894,21 @@
             saveSettings();
         };
 
-        // Update mode buttons
-        function updateModeButtons() {
-            if (reverseMode) {
-                normalModeBtn.classList.remove('active');
-                reverseModeBtn.classList.add('active');
-            } else {
-                normalModeBtn.classList.add('active');
-                reverseModeBtn.classList.remove('active');
-            }
-        }
-
-        // Mode toggle
-        normalModeBtn.onclick = () => {
-            reverseMode = false;
-            updateModeButtons();
+        // Background color
+        bgColorPicker.oninput = (e) => {
+            bgColor = e.target.value;
+            document.body.style.background = bgColor;
             saveSettings();
         };
 
-        reverseModeBtn.onclick = () => {
-            reverseMode = true;
-            updateModeButtons();
-            saveSettings();
-        };
+        document.querySelectorAll('.color-preset').forEach(preset => {
+            preset.onclick = () => {
+                bgColor = preset.dataset.color;
+                document.body.style.background = bgColor;
+                bgColorPicker.value = bgColor;
+                saveSettings();
+            };
+        });
 
         // Modal controls
         settingsBtn.onclick = () => {
@@ -889,20 +928,17 @@
 
         // Text-to-speech function
         function speak(text) {
-            // Cancel any ongoing speech
             synth.cancel();
-
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'ja-JP';
             utterance.rate = 0.8;
             utterance.pitch = 1;
-
             synth.speak(utterance);
         }
 
         // Click to hear sound (only in normal mode)
         soundDisplay.onclick = () => {
-            if (currentQuestion && !reverseMode) {
+            if (currentQuestion && !isReverseMode) {
                 speak(currentQuestion.correct.romaji);
             }
         };
@@ -948,8 +984,20 @@
                 options: allOptions
             };
 
+            // Update question counter
+            questionCounter.textContent = `Question: ${questionNumber + 1}/40`;
+
+            // Update mode text
+            if (questionNumber < 20) {
+                quizModeText.textContent = 'Normal Mode (20 questions)';
+                isReverseMode = false;
+            } else {
+                quizModeText.textContent = 'Reverse Mode (20 questions)';
+                isReverseMode = true;
+            }
+
             // Update question text and display based on mode
-            if (reverseMode) {
+            if (isReverseMode) {
                 questionText.textContent = 'Select the sound for:';
                 soundDisplay.textContent = correctAnswer.char;
                 soundDisplay.className = 'sound-display hiragana';
@@ -962,7 +1010,7 @@
             }
 
             // Play sound automatically (only in normal mode)
-            if (!reverseMode) {
+            if (!isReverseMode) {
                 speak(correctAnswer.romaji);
             }
 
@@ -972,7 +1020,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
 
-                if (reverseMode) {
+                if (isReverseMode) {
                     btn.textContent = option.romaji;
                     btn.classList.add('romaji');
                 } else {
@@ -987,8 +1035,6 @@
 
         // Check answer
         function checkAnswer(selected, btn) {
-            totalQuestions++;
-
             // Disable all buttons
             const allBtns = optionsGrid.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.classList.add('disabled'));
@@ -996,61 +1042,81 @@
             const isCorrect = selected.char === currentQuestion.correct.char;
 
             if (isCorrect) {
-                // Correct answer
                 btn.classList.add('correct');
-                feedback.textContent = '🎉 Correct! Great job!';
+                feedback.textContent = '🎉 Correct!';
                 feedback.className = 'feedback correct show';
-                score++;
-                streak++;
 
-                // Play sound again
-                speak(currentQuestion.correct.romaji);
-
-                // Update progress
-                progressFill.style.width = '100%';
+                if (isReverseMode) {
+                    reverseScore++;
+                } else {
+                    normalScore++;
+                }
+                totalScore++;
             } else {
-                // Wrong answer
                 btn.classList.add('wrong');
 
-                if (reverseMode) {
+                if (isReverseMode) {
                     feedback.textContent = `❌ Not quite. ${currentQuestion.correct.char} is "${currentQuestion.correct.romaji}"`;
                 } else {
                     feedback.textContent = `❌ Not quite. The correct answer is ${currentQuestion.correct.char} (${currentQuestion.correct.romaji})`;
                 }
 
                 feedback.className = 'feedback wrong show';
-                streak = 0;
 
                 // Highlight correct answer
                 allBtns.forEach(b => {
-                    const btnText = reverseMode ? currentQuestion.correct.romaji : currentQuestion.correct.char;
+                    const btnText = isReverseMode ? currentQuestion.correct.romaji : currentQuestion.correct.char;
                     if (b.textContent.toLowerCase() === btnText.toLowerCase()) {
                         b.classList.add('correct');
                     }
                 });
-
-                // Play correct sound
-                speak(currentQuestion.correct.romaji);
-
-                // Update progress
-                progressFill.style.width = '50%';
             }
 
+            // Play sound after answering (both modes)
+            speak(currentQuestion.correct.romaji);
+
             // Update stats
-            scoreText.textContent = `Score: ${score}/${totalQuestions}`;
-            streakText.textContent = `Streak: ${streak}`;
+            scoreText.textContent = `Score: ${totalScore}`;
 
             // Show next button
             nextBtn.classList.add('show');
-
-            // Reset progress after animation
-            setTimeout(() => {
-                progressFill.style.width = '0%';
-            }, 1000);
         }
 
         // Next question handler
         nextBtn.onclick = () => {
+            questionNumber++;
+
+            if (questionNumber >= 40) {
+                // Show results
+                showResults();
+            } else {
+                generateQuestion();
+            }
+        };
+
+        // Show results
+        function showResults() {
+            questionCard.style.display = 'none';
+            resultsCard.classList.add('show');
+
+            finalScore.textContent = `${totalScore}/40`;
+            normalScoreEl.textContent = `${normalScore}/20`;
+            reverseScoreEl.textContent = `${reverseScore}/20`;
+            accuracy.textContent = `${Math.round((totalScore / 40) * 100)}%`;
+        }
+
+        // Restart quiz
+        restartBtn.onclick = () => {
+            questionNumber = 0;
+            normalScore = 0;
+            reverseScore = 0;
+            totalScore = 0;
+            isReverseMode = false;
+
+            questionCard.style.display = 'block';
+            resultsCard.classList.remove('show');
+
+            scoreText.textContent = 'Score: 0';
             generateQuestion();
         };
 
