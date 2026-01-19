@@ -19,6 +19,23 @@
             padding-bottom: 20px;
         }
 
+        /* Font Classes */
+        .font-mincho {
+            font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', serif;
+        }
+
+        .font-gothic {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'MS Gothic', sans-serif;
+        }
+
+        .font-maru {
+            font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', 'MS Gothic', sans-serif;
+        }
+
+        .font-system {
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
         /* Fixed Header */
         .header {
             position: fixed;
@@ -78,37 +95,33 @@
         }
 
         .question-card {
-            background: white;
-            border-radius: 15px;
             padding: 20px;
             margin-bottom: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             text-align: center;
         }
 
         .question-header {
             font-size: 14px;
-            color: #999;
+            color: rgba(255, 255, 255, 0.8);
             margin-bottom: 5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .question-text {
             font-size: 16px;
-            color: #666;
+            color: white;
             margin-bottom: 15px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .sound-display {
             font-size: 56px;
             font-weight: bold;
-            color: #667eea;
+            color: white;
             margin: 20px 0;
             transition: all 0.2s ease;
             user-select: none;
-        }
-
-        .sound-display.hiragana {
-            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .sound-display.romaji {
@@ -133,16 +146,14 @@
 
         .option-btn {
             background: white;
-            border: 3px solid #e0e0e0;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             padding: 25px 15px;
             font-size: 40px;
             cursor: pointer;
             transition: all 0.2s ease;
-        }
-
-        .option-btn.hiragana {
-            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .option-btn.romaji {
@@ -152,8 +163,7 @@
 
         .option-btn:hover {
             transform: scale(1.03);
-            border-color: #667eea;
-            background: #f8f9ff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .option-btn:active {
@@ -191,8 +201,8 @@
         }
 
         .next-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            background: white;
+            color: #667eea;
             border: none;
             border-radius: 12px;
             padding: 15px 35px;
@@ -203,11 +213,12 @@
             margin-top: 15px;
             transition: all 0.2s ease;
             display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .next-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .next-btn:active {
@@ -225,6 +236,8 @@
             font-size: 16px;
             font-weight: bold;
             display: none;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .feedback.show {
@@ -232,12 +245,10 @@
         }
 
         .feedback.correct {
-            background: #e8f5e9;
             color: #2e7d32;
         }
 
         .feedback.wrong {
-            background: #ffebee;
             color: #c62828;
         }
 
@@ -371,7 +382,7 @@
             margin-bottom: 15px;
         }
 
-        .mode-btn {
+        .mode-btn, .font-btn {
             flex: 1;
             background: white;
             border: 2px solid #e0e0e0;
@@ -382,10 +393,29 @@
             transition: all 0.2s ease;
         }
 
-        .mode-btn.active {
+        .mode-btn.active, .font-btn.active {
             background: #667eea;
             color: white;
             border-color: #667eea;
+        }
+
+        .font-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .font-btn {
+            padding: 20px 12px;
+            font-size: 32px;
+        }
+
+        .font-btn .font-label {
+            display: block;
+            font-size: 12px;
+            margin-top: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .color-picker-group {
@@ -460,7 +490,6 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -544,6 +573,11 @@
             .modal-content {
                 padding: 20px;
             }
+
+            .font-btn {
+                font-size: 28px;
+                padding: 16px 10px;
+            }
         }
     </style>
 </head>
@@ -555,7 +589,7 @@
             <h1>🇯🇵 Hiragana Practice</h1>
         </div>
         <div class="stats">
-            <span id="questionCounter">Question: 1/20</span>
+            <span id="questionCounter">Question: 1/40</span>
             <span id="scoreText">Score: 0</span>
         </div>
     </div>
@@ -565,7 +599,7 @@
         <div class="question-card" id="questionCard">
             <div class="question-header" id="quizModeText">Quiz Mode</div>
             <div class="question-text" id="questionText">Select the character for:</div>
-            <div class="sound-display romaji" id="soundDisplay" title="Click to hear pronunciation">ka</div>
+            <div class="sound-display romaji font-gothic" id="soundDisplay" title="Click to hear pronunciation">ka</div>
 
             <div class="options-grid" id="optionsGrid">
                 <!-- Options will be generated by JavaScript -->
@@ -617,6 +651,28 @@
                     <div class="color-preset" style="background: #fa709a" data-color="#fa709a"></div>
                     <div class="color-preset" style="background: #30cfd0" data-color="#30cfd0"></div>
                     <div class="color-preset" style="background: #2c3e50" data-color="#2c3e50"></div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Hiragana Font Style</h3>
+                <div class="font-selector">
+                    <button class="font-btn font-gothic active" data-font="gothic">
+                        あいう
+                        <span class="font-label">Gothic</span>
+                    </button>
+                    <button class="font-btn font-mincho" data-font="mincho">
+                        あいう
+                        <span class="font-label">Mincho</span>
+                    </button>
+                    <button class="font-btn font-maru" data-font="maru">
+                        あいう
+                        <span class="font-label">Maru Gothic</span>
+                    </button>
+                    <button class="font-btn font-system" data-font="system">
+                        あいう
+                        <span class="font-label">System</span>
+                    </button>
                 </div>
             </div>
 
@@ -735,6 +791,7 @@
         let isReverseMode = false;
         let enabledChars = new Set(hiraganaData.map(h => h.char));
         let bgColor = '#667eea';
+        let fontStyle = 'gothic';
 
         // Text-to-speech
         const synth = window.speechSynthesis;
@@ -777,23 +834,65 @@
                 document.body.style.background = bgColor;
                 bgColorPicker.value = bgColor;
             }
+
+            const savedFont = localStorage.getItem('fontStyle');
+            if (savedFont) {
+                fontStyle = savedFont;
+                updateFontButtons();
+            }
         }
 
         // Save settings to localStorage
         function saveSettings() {
             localStorage.setItem('enabledChars', JSON.stringify([...enabledChars]));
             localStorage.setItem('bgColor', bgColor);
+            localStorage.setItem('fontStyle', fontStyle);
         }
+
+        // Update font style
+        function updateFontStyle() {
+            soundDisplay.className = soundDisplay.className.replace(/font-\w+/, '');
+            soundDisplay.classList.add(`font-${fontStyle}`);
+
+            document.querySelectorAll('.option-btn.hiragana').forEach(btn => {
+                btn.className = btn.className.replace(/font-\w+/, '');
+                btn.classList.add(`font-${fontStyle}`);
+            });
+
+            document.querySelectorAll('.char-toggle').forEach(btn => {
+                if (!btn.classList.contains('empty')) {
+                    btn.className = btn.className.replace(/font-\w+/, '');
+                    btn.classList.add(`font-${fontStyle}`);
+                }
+            });
+        }
+
+        function updateFontButtons() {
+            document.querySelectorAll('.font-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.font === fontStyle) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Font selector
+        document.querySelectorAll('.font-btn').forEach(btn => {
+            btn.onclick = () => {
+                fontStyle = btn.dataset.font;
+                updateFontButtons();
+                updateFontStyle();
+                saveSettings();
+            };
+        });
 
         // Initialize hiragana grid with single table
         function initHiraganaGrid() {
             const table = document.createElement('div');
             table.className = 'chart-table';
 
-            // Headers: • (vowels), K, G, S, Z, T, D, N, H, B, P, M, Y, R, W
             const headers = ['', '•', 'K', 'G', 'S', 'Z', 'T', 'D', 'N', 'H', 'B', 'P', 'M', 'Y', 'R', 'W'];
 
-            // Empty top-left corner
             headers.forEach(header => {
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'chart-header';
@@ -813,14 +912,13 @@
             grid.forEach(row => {
                 row.forEach((char, idx) => {
                     if (idx === 0) {
-                        // Vowel label
                         const vowelLabel = document.createElement('div');
                         vowelLabel.className = 'vowel-label';
                         vowelLabel.textContent = char;
                         table.appendChild(vowelLabel);
                     } else {
                         const btn = document.createElement('button');
-                        btn.className = 'char-toggle';
+                        btn.className = `char-toggle font-${fontStyle}`;
 
                         if (char === '') {
                             btn.classList.add('empty');
@@ -926,11 +1024,24 @@
             }
         };
 
-        // Text-to-speech function
-        function speak(text) {
+        // Text-to-speech function - spell out English letters
+        function speak(romaji) {
             synth.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ja-JP';
+
+            // Convert romaji to individual letters spelled out in English
+            const letters = romaji.toUpperCase().split('');
+            const letterNames = {
+                'A': 'ay', 'B': 'bee', 'C': 'see', 'D': 'dee', 'E': 'ee',
+                'F': 'eff', 'G': 'gee', 'H': 'aitch', 'I': 'eye', 'J': 'jay',
+                'K': 'kay', 'L': 'ell', 'M': 'em', 'N': 'en', 'O': 'oh',
+                'P': 'pee', 'Q': 'cue', 'R': 'are', 'S': 'ess', 'T': 'tee',
+                'U': 'you', 'V': 'vee', 'W': 'double you', 'X': 'ex', 'Y': 'why', 'Z': 'zee'
+            };
+
+            const textToSpeak = letters.map(l => letterNames[l] || l).join(' ');
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'en-US';
             utterance.rate = 0.8;
             utterance.pitch = 1;
             synth.speak(utterance);
@@ -1000,7 +1111,7 @@
             if (isReverseMode) {
                 questionText.textContent = 'Select the sound for:';
                 soundDisplay.textContent = correctAnswer.char;
-                soundDisplay.className = 'sound-display hiragana';
+                soundDisplay.className = `sound-display hiragana font-${fontStyle}`;
                 soundDisplay.title = 'Character display (no audio in reverse mode)';
             } else {
                 questionText.textContent = 'Select the character for:';
@@ -1025,7 +1136,7 @@
                     btn.classList.add('romaji');
                 } else {
                     btn.textContent = option.char;
-                    btn.classList.add('hiragana');
+                    btn.classList.add('hiragana', `font-${fontStyle}`);
                 }
 
                 btn.onclick = () => checkAnswer(option, btn);
@@ -1122,6 +1233,7 @@
 
         // Initialize
         loadSettings();
+        updateFontStyle();
         generateQuestion();
     </script>
 </body>
