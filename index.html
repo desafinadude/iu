@@ -104,17 +104,8 @@
             font-weight: bold;
             color: #667eea;
             margin: 30px 0;
-            cursor: pointer;
             transition: all 0.2s ease;
             user-select: none;
-        }
-
-        .sound-display:hover {
-            transform: scale(1.05);
-        }
-
-        .sound-display:active {
-            transform: scale(0.95);
         }
 
         .sound-display.hiragana {
@@ -123,6 +114,15 @@
 
         .sound-display.romaji {
             text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .sound-display.romaji:hover {
+            transform: scale(1.05);
+        }
+
+        .sound-display.romaji:active {
+            transform: scale(0.95);
         }
 
         .options-grid {
@@ -900,9 +900,9 @@
             synth.speak(utterance);
         }
 
-        // Click to hear sound
+        // Click to hear sound (only in normal mode)
         soundDisplay.onclick = () => {
-            if (currentQuestion) {
+            if (currentQuestion && !reverseMode) {
                 speak(currentQuestion.correct.romaji);
             }
         };
@@ -953,7 +953,7 @@
                 questionText.textContent = 'Select the sound for:';
                 soundDisplay.textContent = correctAnswer.char;
                 soundDisplay.className = 'sound-display hiragana';
-                soundDisplay.title = 'Click to hear pronunciation';
+                soundDisplay.title = 'Character display (no audio in reverse mode)';
             } else {
                 questionText.textContent = 'Select the character for:';
                 soundDisplay.textContent = correctAnswer.romaji;
@@ -961,8 +961,10 @@
                 soundDisplay.title = 'Click to hear pronunciation';
             }
 
-            // Play sound automatically
-            speak(correctAnswer.romaji);
+            // Play sound automatically (only in normal mode)
+            if (!reverseMode) {
+                speak(correctAnswer.romaji);
+            }
 
             // Generate option buttons
             optionsGrid.innerHTML = '';
