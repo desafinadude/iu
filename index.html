@@ -32,6 +32,26 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .settings-btn:hover {
+            background: #764ba2;
+            transform: scale(1.1);
         }
 
         h1 {
@@ -39,6 +59,7 @@
             font-size: 28px;
             text-align: center;
             margin-bottom: 15px;
+            padding-right: 60px;
         }
 
         .progress-bar {
@@ -83,6 +104,24 @@
             font-weight: bold;
             color: #667eea;
             margin: 30px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .sound-display:hover {
+            transform: scale(1.05);
+        }
+
+        .sound-display:active {
+            transform: scale(0.95);
+        }
+
+        .sound-display.hiragana {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+        }
+
+        .sound-display.romaji {
             text-transform: uppercase;
         }
 
@@ -101,7 +140,14 @@
             font-size: 48px;
             cursor: pointer;
             transition: all 0.2s ease;
+        }
+
+        .option-btn.hiragana {
             font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+        }
+
+        .option-btn.romaji {
+            text-transform: uppercase;
         }
 
         .option-btn:hover {
@@ -195,6 +241,161 @@
             color: #c62828;
         }
 
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .hiragana-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .char-toggle {
+            aspect-ratio: 1;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .char-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .char-toggle.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .char-toggle.inactive {
+            background: #f5f5f5;
+            opacity: 0.5;
+        }
+
+        .toggle-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #764ba2;
+        }
+
         @media (max-width: 480px) {
             .sound-display {
                 font-size: 56px;
@@ -208,12 +409,21 @@
             h1 {
                 font-size: 24px;
             }
+
+            .hiragana-grid {
+                grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            }
+
+            .char-toggle {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <button class="settings-btn" id="settingsBtn">⚙️</button>
             <h1>🇯🇵 Hiragana Practice</h1>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -225,8 +435,8 @@
         </div>
 
         <div class="question-card">
-            <div class="question-text">Select the character for:</div>
-            <div class="sound-display" id="soundDisplay">ka</div>
+            <div class="question-text" id="questionText">Select the character for:</div>
+            <div class="sound-display romaji" id="soundDisplay" title="Click to hear pronunciation">ka</div>
 
             <div class="options-grid" id="optionsGrid">
                 <!-- Options will be generated by JavaScript -->
@@ -237,117 +447,159 @@
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" id="closeModal">×</button>
+            </div>
+
+            <div class="settings-section">
+                <h3>Mode</h3>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="normalModeBtn">
+                        Normal Mode<br>
+                        <small>Sound → Character</small>
+                    </button>
+                    <button class="mode-btn" id="reverseModeBtn">
+                        Reverse Mode<br>
+                        <small>Character → Sound</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Characters to Practice</h3>
+                <div class="toggle-controls">
+                    <button class="control-btn" id="selectAllBtn">Select All</button>
+                    <button class="control-btn" id="deselectAllBtn">Deselect All</button>
+                    <button class="control-btn" id="basicsOnlyBtn">Basics Only</button>
+                </div>
+                <div class="hiragana-grid" id="hiraganaGrid">
+                    <!-- Character toggles will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Complete Hiragana character set
+        // Complete Hiragana character set with categories
         const hiraganaData = [
-            // Vowels
-            { char: 'あ', romaji: 'a' },
-            { char: 'い', romaji: 'i' },
-            { char: 'う', romaji: 'u' },
-            { char: 'え', romaji: 'e' },
-            { char: 'お', romaji: 'o' },
+            // Vowels (basics)
+            { char: 'あ', romaji: 'a', basic: true },
+            { char: 'い', romaji: 'i', basic: true },
+            { char: 'う', romaji: 'u', basic: true },
+            { char: 'え', romaji: 'e', basic: true },
+            { char: 'お', romaji: 'o', basic: true },
 
-            // K-row
-            { char: 'か', romaji: 'ka' },
-            { char: 'き', romaji: 'ki' },
-            { char: 'く', romaji: 'ku' },
-            { char: 'け', romaji: 'ke' },
-            { char: 'こ', romaji: 'ko' },
+            // K-row (basics)
+            { char: 'か', romaji: 'ka', basic: true },
+            { char: 'き', romaji: 'ki', basic: true },
+            { char: 'く', romaji: 'ku', basic: true },
+            { char: 'け', romaji: 'ke', basic: true },
+            { char: 'こ', romaji: 'ko', basic: true },
 
-            // S-row
-            { char: 'さ', romaji: 'sa' },
-            { char: 'し', romaji: 'shi' },
-            { char: 'す', romaji: 'su' },
-            { char: 'せ', romaji: 'se' },
-            { char: 'そ', romaji: 'so' },
+            // S-row (basics)
+            { char: 'さ', romaji: 'sa', basic: true },
+            { char: 'し', romaji: 'shi', basic: true },
+            { char: 'す', romaji: 'su', basic: true },
+            { char: 'せ', romaji: 'se', basic: true },
+            { char: 'そ', romaji: 'so', basic: true },
 
-            // T-row
-            { char: 'た', romaji: 'ta' },
-            { char: 'ち', romaji: 'chi' },
-            { char: 'つ', romaji: 'tsu' },
-            { char: 'て', romaji: 'te' },
-            { char: 'と', romaji: 'to' },
+            // T-row (basics)
+            { char: 'た', romaji: 'ta', basic: true },
+            { char: 'ち', romaji: 'chi', basic: true },
+            { char: 'つ', romaji: 'tsu', basic: true },
+            { char: 'て', romaji: 'te', basic: true },
+            { char: 'と', romaji: 'to', basic: true },
 
-            // N-row
-            { char: 'な', romaji: 'na' },
-            { char: 'に', romaji: 'ni' },
-            { char: 'ぬ', romaji: 'nu' },
-            { char: 'ね', romaji: 'ne' },
-            { char: 'の', romaji: 'no' },
+            // N-row (basics)
+            { char: 'な', romaji: 'na', basic: true },
+            { char: 'に', romaji: 'ni', basic: true },
+            { char: 'ぬ', romaji: 'nu', basic: true },
+            { char: 'ね', romaji: 'ne', basic: true },
+            { char: 'の', romaji: 'no', basic: true },
 
-            // H-row
-            { char: 'は', romaji: 'ha' },
-            { char: 'ひ', romaji: 'hi' },
-            { char: 'ふ', romaji: 'fu' },
-            { char: 'へ', romaji: 'he' },
-            { char: 'ほ', romaji: 'ho' },
+            // H-row (basics)
+            { char: 'は', romaji: 'ha', basic: true },
+            { char: 'ひ', romaji: 'hi', basic: true },
+            { char: 'ふ', romaji: 'fu', basic: true },
+            { char: 'へ', romaji: 'he', basic: true },
+            { char: 'ほ', romaji: 'ho', basic: true },
 
-            // M-row
-            { char: 'ま', romaji: 'ma' },
-            { char: 'み', romaji: 'mi' },
-            { char: 'む', romaji: 'mu' },
-            { char: 'め', romaji: 'me' },
-            { char: 'も', romaji: 'mo' },
+            // M-row (basics)
+            { char: 'ま', romaji: 'ma', basic: true },
+            { char: 'み', romaji: 'mi', basic: true },
+            { char: 'む', romaji: 'mu', basic: true },
+            { char: 'め', romaji: 'me', basic: true },
+            { char: 'も', romaji: 'mo', basic: true },
 
-            // Y-row
-            { char: 'や', romaji: 'ya' },
-            { char: 'ゆ', romaji: 'yu' },
-            { char: 'よ', romaji: 'yo' },
+            // Y-row (basics)
+            { char: 'や', romaji: 'ya', basic: true },
+            { char: 'ゆ', romaji: 'yu', basic: true },
+            { char: 'よ', romaji: 'yo', basic: true },
 
-            // R-row
-            { char: 'ら', romaji: 'ra' },
-            { char: 'り', romaji: 'ri' },
-            { char: 'る', romaji: 'ru' },
-            { char: 'れ', romaji: 're' },
-            { char: 'ろ', romaji: 'ro' },
+            // R-row (basics)
+            { char: 'ら', romaji: 'ra', basic: true },
+            { char: 'り', romaji: 'ri', basic: true },
+            { char: 'る', romaji: 'ru', basic: true },
+            { char: 'れ', romaji: 're', basic: true },
+            { char: 'ろ', romaji: 'ro', basic: true },
 
-            // W-row
-            { char: 'わ', romaji: 'wa' },
-            { char: 'を', romaji: 'wo' },
+            // W-row (basics)
+            { char: 'わ', romaji: 'wa', basic: true },
+            { char: 'を', romaji: 'wo', basic: true },
 
-            // N
-            { char: 'ん', romaji: 'n' },
+            // N (basics)
+            { char: 'ん', romaji: 'n', basic: true },
 
-            // G-row
-            { char: 'が', romaji: 'ga' },
-            { char: 'ぎ', romaji: 'gi' },
-            { char: 'ぐ', romaji: 'gu' },
-            { char: 'げ', romaji: 'ge' },
-            { char: 'ご', romaji: 'go' },
+            // G-row (dakuten)
+            { char: 'が', romaji: 'ga', basic: false },
+            { char: 'ぎ', romaji: 'gi', basic: false },
+            { char: 'ぐ', romaji: 'gu', basic: false },
+            { char: 'げ', romaji: 'ge', basic: false },
+            { char: 'ご', romaji: 'go', basic: false },
 
-            // Z-row
-            { char: 'ざ', romaji: 'za' },
-            { char: 'じ', romaji: 'ji' },
-            { char: 'ず', romaji: 'zu' },
-            { char: 'ぜ', romaji: 'ze' },
-            { char: 'ぞ', romaji: 'zo' },
+            // Z-row (dakuten)
+            { char: 'ざ', romaji: 'za', basic: false },
+            { char: 'じ', romaji: 'ji', basic: false },
+            { char: 'ず', romaji: 'zu', basic: false },
+            { char: 'ぜ', romaji: 'ze', basic: false },
+            { char: 'ぞ', romaji: 'zo', basic: false },
 
-            // D-row
-            { char: 'だ', romaji: 'da' },
-            { char: 'ぢ', romaji: 'di' },
-            { char: 'づ', romaji: 'du' },
-            { char: 'で', romaji: 'de' },
-            { char: 'ど', romaji: 'do' },
+            // D-row (dakuten)
+            { char: 'だ', romaji: 'da', basic: false },
+            { char: 'ぢ', romaji: 'di', basic: false },
+            { char: 'づ', romaji: 'du', basic: false },
+            { char: 'で', romaji: 'de', basic: false },
+            { char: 'ど', romaji: 'do', basic: false },
 
-            // B-row
-            { char: 'ば', romaji: 'ba' },
-            { char: 'び', romaji: 'bi' },
-            { char: 'ぶ', romaji: 'bu' },
-            { char: 'べ', romaji: 'be' },
-            { char: 'ぼ', romaji: 'bo' },
+            // B-row (dakuten)
+            { char: 'ば', romaji: 'ba', basic: false },
+            { char: 'び', romaji: 'bi', basic: false },
+            { char: 'ぶ', romaji: 'bu', basic: false },
+            { char: 'べ', romaji: 'be', basic: false },
+            { char: 'ぼ', romaji: 'bo', basic: false },
 
-            // P-row
-            { char: 'ぱ', romaji: 'pa' },
-            { char: 'ぴ', romaji: 'pi' },
-            { char: 'ぷ', romaji: 'pu' },
-            { char: 'ぺ', romaji: 'pe' },
-            { char: 'ぽ', romaji: 'po' }
+            // P-row (handakuten)
+            { char: 'ぱ', romaji: 'pa', basic: false },
+            { char: 'ぴ', romaji: 'pi', basic: false },
+            { char: 'ぷ', romaji: 'pu', basic: false },
+            { char: 'ぺ', romaji: 'pe', basic: false },
+            { char: 'ぽ', romaji: 'po', basic: false }
         ];
 
+        // State
         let currentQuestion = null;
         let score = 0;
         let totalQuestions = 0;
         let streak = 0;
+        let reverseMode = false;
+        let enabledChars = new Set(hiraganaData.map(h => h.char));
+
+        // Text-to-speech
+        const synth = window.speechSynthesis;
 
         // DOM elements
         const soundDisplay = document.getElementById('soundDisplay');
@@ -357,6 +609,165 @@
         const progressFill = document.getElementById('progressFill');
         const scoreText = document.getElementById('scoreText');
         const streakText = document.getElementById('streakText');
+        const questionText = document.getElementById('questionText');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeModal = document.getElementById('closeModal');
+        const normalModeBtn = document.getElementById('normalModeBtn');
+        const reverseModeBtn = document.getElementById('reverseModeBtn');
+        const hiraganaGrid = document.getElementById('hiraganaGrid');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const deselectAllBtn = document.getElementById('deselectAllBtn');
+        const basicsOnlyBtn = document.getElementById('basicsOnlyBtn');
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedMode = localStorage.getItem('reverseMode');
+            if (savedMode !== null) {
+                reverseMode = savedMode === 'true';
+                updateModeButtons();
+            }
+
+            const savedChars = localStorage.getItem('enabledChars');
+            if (savedChars) {
+                enabledChars = new Set(JSON.parse(savedChars));
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('reverseMode', reverseMode);
+            localStorage.setItem('enabledChars', JSON.stringify([...enabledChars]));
+        }
+
+        // Initialize hiragana grid
+        function initHiraganaGrid() {
+            hiraganaGrid.innerHTML = '';
+            hiraganaData.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'char-toggle';
+                btn.textContent = item.char;
+                btn.dataset.char = item.char;
+
+                if (enabledChars.has(item.char)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.add('inactive');
+                }
+
+                btn.onclick = () => toggleCharacter(item.char, btn);
+                hiraganaGrid.appendChild(btn);
+            });
+        }
+
+        // Toggle character
+        function toggleCharacter(char, btn) {
+            if (enabledChars.has(char)) {
+                enabledChars.delete(char);
+                btn.classList.remove('active');
+                btn.classList.add('inactive');
+            } else {
+                enabledChars.add(char);
+                btn.classList.remove('inactive');
+                btn.classList.add('active');
+            }
+            saveSettings();
+
+            // Ensure at least one character is enabled
+            if (enabledChars.size === 0) {
+                enabledChars.add(char);
+                btn.classList.add('active');
+                btn.classList.remove('inactive');
+                alert('At least one character must be enabled!');
+            }
+        }
+
+        // Control buttons
+        selectAllBtn.onclick = () => {
+            hiraganaData.forEach(item => enabledChars.add(item.char));
+            initHiraganaGrid();
+            saveSettings();
+        };
+
+        deselectAllBtn.onclick = () => {
+            if (confirm('This will deselect all characters. Are you sure?')) {
+                enabledChars.clear();
+                hiraganaData.forEach(item => {
+                    if (item.basic) enabledChars.add(item.char);
+                });
+                initHiraganaGrid();
+                saveSettings();
+            }
+        };
+
+        basicsOnlyBtn.onclick = () => {
+            enabledChars.clear();
+            hiraganaData.forEach(item => {
+                if (item.basic) enabledChars.add(item.char);
+            });
+            initHiraganaGrid();
+            saveSettings();
+        };
+
+        // Update mode buttons
+        function updateModeButtons() {
+            if (reverseMode) {
+                normalModeBtn.classList.remove('active');
+                reverseModeBtn.classList.add('active');
+            } else {
+                normalModeBtn.classList.add('active');
+                reverseModeBtn.classList.remove('active');
+            }
+        }
+
+        // Mode toggle
+        normalModeBtn.onclick = () => {
+            reverseMode = false;
+            updateModeButtons();
+            saveSettings();
+        };
+
+        reverseModeBtn.onclick = () => {
+            reverseMode = true;
+            updateModeButtons();
+            saveSettings();
+        };
+
+        // Modal controls
+        settingsBtn.onclick = () => {
+            settingsModal.classList.add('show');
+            initHiraganaGrid();
+        };
+
+        closeModal.onclick = () => {
+            settingsModal.classList.remove('show');
+        };
+
+        settingsModal.onclick = (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('show');
+            }
+        };
+
+        // Text-to-speech function
+        function speak(text) {
+            // Cancel any ongoing speech
+            synth.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ja-JP';
+            utterance.rate = 0.8;
+            utterance.pitch = 1;
+
+            synth.speak(utterance);
+        }
+
+        // Click to hear sound
+        soundDisplay.onclick = () => {
+            if (currentQuestion) {
+                speak(currentQuestion.correct.romaji);
+            }
+        };
 
         // Shuffle array helper
         function shuffle(array) {
@@ -368,17 +779,28 @@
             return newArray;
         }
 
+        // Get enabled characters
+        function getEnabledChars() {
+            return hiraganaData.filter(h => enabledChars.has(h.char));
+        }
+
         // Generate new question
         function generateQuestion() {
             // Reset UI
             feedback.className = 'feedback';
             nextBtn.className = 'next-btn';
 
-            // Pick random correct answer
-            const correctAnswer = hiraganaData[Math.floor(Math.random() * hiraganaData.length)];
+            const availableChars = getEnabledChars();
+            if (availableChars.length === 0) {
+                alert('Please enable at least one character in settings!');
+                return;
+            }
 
-            // Pick 9 random wrong answers
-            const wrongAnswers = shuffle(hiraganaData.filter(h => h.char !== correctAnswer.char)).slice(0, 9);
+            // Pick random correct answer from enabled characters
+            const correctAnswer = availableChars[Math.floor(Math.random() * availableChars.length)];
+
+            // Pick 9 random wrong answers from enabled characters
+            const wrongAnswers = shuffle(availableChars.filter(h => h.char !== correctAnswer.char)).slice(0, 9);
 
             // Combine and shuffle all options
             const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
@@ -388,15 +810,36 @@
                 options: allOptions
             };
 
-            // Display question
-            soundDisplay.textContent = correctAnswer.romaji;
+            // Update question text and display based on mode
+            if (reverseMode) {
+                questionText.textContent = 'Select the sound for:';
+                soundDisplay.textContent = correctAnswer.char;
+                soundDisplay.className = 'sound-display hiragana';
+                soundDisplay.title = 'Click to hear pronunciation';
+            } else {
+                questionText.textContent = 'Select the character for:';
+                soundDisplay.textContent = correctAnswer.romaji;
+                soundDisplay.className = 'sound-display romaji';
+                soundDisplay.title = 'Click to hear pronunciation';
+            }
+
+            // Play sound automatically
+            speak(correctAnswer.romaji);
 
             // Generate option buttons
             optionsGrid.innerHTML = '';
             allOptions.forEach(option => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.textContent = option.char;
+
+                if (reverseMode) {
+                    btn.textContent = option.romaji;
+                    btn.classList.add('romaji');
+                } else {
+                    btn.textContent = option.char;
+                    btn.classList.add('hiragana');
+                }
+
                 btn.onclick = () => checkAnswer(option, btn);
                 optionsGrid.appendChild(btn);
             });
@@ -410,7 +853,9 @@
             const allBtns = optionsGrid.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.classList.add('disabled'));
 
-            if (selected.char === currentQuestion.correct.char) {
+            const isCorrect = selected.char === currentQuestion.correct.char;
+
+            if (isCorrect) {
                 // Correct answer
                 btn.classList.add('correct');
                 feedback.textContent = '🎉 Correct! Great job!';
@@ -418,21 +863,34 @@
                 score++;
                 streak++;
 
+                // Play sound again
+                speak(currentQuestion.correct.romaji);
+
                 // Update progress
                 progressFill.style.width = '100%';
             } else {
                 // Wrong answer
                 btn.classList.add('wrong');
-                feedback.textContent = `❌ Not quite. The correct answer is ${currentQuestion.correct.char} (${currentQuestion.correct.romaji})`;
+
+                if (reverseMode) {
+                    feedback.textContent = `❌ Not quite. ${currentQuestion.correct.char} is "${currentQuestion.correct.romaji}"`;
+                } else {
+                    feedback.textContent = `❌ Not quite. The correct answer is ${currentQuestion.correct.char} (${currentQuestion.correct.romaji})`;
+                }
+
                 feedback.className = 'feedback wrong show';
                 streak = 0;
 
                 // Highlight correct answer
                 allBtns.forEach(b => {
-                    if (b.textContent === currentQuestion.correct.char) {
+                    const btnText = reverseMode ? currentQuestion.correct.romaji : currentQuestion.correct.char;
+                    if (b.textContent.toLowerCase() === btnText.toLowerCase()) {
                         b.classList.add('correct');
                     }
                 });
+
+                // Play correct sound
+                speak(currentQuestion.correct.romaji);
 
                 // Update progress
                 progressFill.style.width = '50%';
@@ -456,7 +914,8 @@
             generateQuestion();
         };
 
-        // Initialize first question
+        // Initialize
+        loadSettings();
         generateQuestion();
     </script>
 </body>
