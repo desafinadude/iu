@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiragana Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .sound-display {
+            font-size: 72px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 30px 0;
+            text-transform: uppercase;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 30px 20px;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        .option-btn.correct {
+            background: #4caf50;
+            border-color: #4caf50;
+            color: white;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option-btn.wrong {
+            background: #f44336;
+            border-color: #f44336;
+            color: white;
+            animation: wrongShake 0.5s ease;
+        }
+
+        .option-btn.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .next-btn:active {
+            transform: translateY(0);
+        }
+
+        .next-btn.show {
+            display: block;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .feedback.wrong {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        @media (max-width: 480px) {
+            .sound-display {
+                font-size: 56px;
+            }
+
+            .option-btn {
+                font-size: 40px;
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇯🇵 Hiragana Practice</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="stats">
+                <span id="scoreText">Score: 0/0</span>
+                <span id="streakText">Streak: 0</span>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text">Select the character for:</div>
+            <div class="sound-display" id="soundDisplay">ka</div>
+
+            <div class="options-grid" id="optionsGrid">
+                <!-- Options will be generated by JavaScript -->
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="nextBtn">Next Question</button>
+        </div>
+    </div>
+
+    <script>
+        // Complete Hiragana character set
+        const hiraganaData = [
+            // Vowels
+            { char: 'あ', romaji: 'a' },
+            { char: 'い', romaji: 'i' },
+            { char: 'う', romaji: 'u' },
+            { char: 'え', romaji: 'e' },
+            { char: 'お', romaji: 'o' },
+
+            // K-row
+            { char: 'か', romaji: 'ka' },
+            { char: 'き', romaji: 'ki' },
+            { char: 'く', romaji: 'ku' },
+            { char: 'け', romaji: 'ke' },
+            { char: 'こ', romaji: 'ko' },
+
+            // S-row
+            { char: 'さ', romaji: 'sa' },
+            { char: 'し', romaji: 'shi' },
+            { char: 'す', romaji: 'su' },
+            { char: 'せ', romaji: 'se' },
+            { char: 'そ', romaji: 'so' },
+
+            // T-row
+            { char: 'た', romaji: 'ta' },
+            { char: 'ち', romaji: 'chi' },
+            { char: 'つ', romaji: 'tsu' },
+            { char: 'て', romaji: 'te' },
+            { char: 'と', romaji: 'to' },
+
+            // N-row
+            { char: 'な', romaji: 'na' },
+            { char: 'に', romaji: 'ni' },
+            { char: 'ぬ', romaji: 'nu' },
+            { char: 'ね', romaji: 'ne' },
+            { char: 'の', romaji: 'no' },
+
+            // H-row
+            { char: 'は', romaji: 'ha' },
+            { char: 'ひ', romaji: 'hi' },
+            { char: 'ふ', romaji: 'fu' },
+            { char: 'へ', romaji: 'he' },
+            { char: 'ほ', romaji: 'ho' },
+
+            // M-row
+            { char: 'ま', romaji: 'ma' },
+            { char: 'み', romaji: 'mi' },
+            { char: 'む', romaji: 'mu' },
+            { char: 'め', romaji: 'me' },
+            { char: 'も', romaji: 'mo' },
+
+            // Y-row
+            { char: 'や', romaji: 'ya' },
+            { char: 'ゆ', romaji: 'yu' },
+            { char: 'よ', romaji: 'yo' },
+
+            // R-row
+            { char: 'ら', romaji: 'ra' },
+            { char: 'り', romaji: 'ri' },
+            { char: 'る', romaji: 'ru' },
+            { char: 'れ', romaji: 're' },
+            { char: 'ろ', romaji: 'ro' },
+
+            // W-row
+            { char: 'わ', romaji: 'wa' },
+            { char: 'を', romaji: 'wo' },
+
+            // N
+            { char: 'ん', romaji: 'n' },
+
+            // G-row
+            { char: 'が', romaji: 'ga' },
+            { char: 'ぎ', romaji: 'gi' },
+            { char: 'ぐ', romaji: 'gu' },
+            { char: 'げ', romaji: 'ge' },
+            { char: 'ご', romaji: 'go' },
+
+            // Z-row
+            { char: 'ざ', romaji: 'za' },
+            { char: 'じ', romaji: 'ji' },
+            { char: 'ず', romaji: 'zu' },
+            { char: 'ぜ', romaji: 'ze' },
+            { char: 'ぞ', romaji: 'zo' },
+
+            // D-row
+            { char: 'だ', romaji: 'da' },
+            { char: 'ぢ', romaji: 'di' },
+            { char: 'づ', romaji: 'du' },
+            { char: 'で', romaji: 'de' },
+            { char: 'ど', romaji: 'do' },
+
+            // B-row
+            { char: 'ば', romaji: 'ba' },
+            { char: 'び', romaji: 'bi' },
+            { char: 'ぶ', romaji: 'bu' },
+            { char: 'べ', romaji: 'be' },
+            { char: 'ぼ', romaji: 'bo' },
+
+            // P-row
+            { char: 'ぱ', romaji: 'pa' },
+            { char: 'ぴ', romaji: 'pi' },
+            { char: 'ぷ', romaji: 'pu' },
+            { char: 'ぺ', romaji: 'pe' },
+            { char: 'ぽ', romaji: 'po' }
+        ];
+
+        let currentQuestion = null;
+        let score = 0;
+        let totalQuestions = 0;
+        let streak = 0;
+
+        // DOM elements
+        const soundDisplay = document.getElementById('soundDisplay');
+        const optionsGrid = document.getElementById('optionsGrid');
+        const feedback = document.getElementById('feedback');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressFill = document.getElementById('progressFill');
+        const scoreText = document.getElementById('scoreText');
+        const streakText = document.getElementById('streakText');
+
+        // Shuffle array helper
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Generate new question
+        function generateQuestion() {
+            // Reset UI
+            feedback.className = 'feedback';
+            nextBtn.className = 'next-btn';
+
+            // Pick random correct answer
+            const correctAnswer = hiraganaData[Math.floor(Math.random() * hiraganaData.length)];
+
+            // Pick 9 random wrong answers
+            const wrongAnswers = shuffle(hiraganaData.filter(h => h.char !== correctAnswer.char)).slice(0, 9);
+
+            // Combine and shuffle all options
+            const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
+
+            currentQuestion = {
+                correct: correctAnswer,
+                options: allOptions
+            };
+
+            // Display question
+            soundDisplay.textContent = correctAnswer.romaji;
+
+            // Generate option buttons
+            optionsGrid.innerHTML = '';
+            allOptions.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option.char;
+                btn.onclick = () => checkAnswer(option, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        // Check answer
+        function checkAnswer(selected, btn) {
+            totalQuestions++;
+
+            // Disable all buttons
+            const allBtns = optionsGrid.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.add('disabled'));
+
+            if (selected.char === currentQuestion.correct.char) {
+                // Correct answer
+                btn.classList.add('correct');
+                feedback.textContent = '🎉 Correct! Great job!';
+                feedback.className = 'feedback correct show';
+                score++;
+                streak++;
+
+                // Update progress
+                progressFill.style.width = '100%';
+            } else {
+                // Wrong answer
+                btn.classList.add('wrong');
+                feedback.textContent = `❌ Not quite. The correct answer is ${currentQuestion.correct.char} (${currentQuestion.correct.romaji})`;
+                feedback.className = 'feedback wrong show';
+                streak = 0;
+
+                // Highlight correct answer
+                allBtns.forEach(b => {
+                    if (b.textContent === currentQuestion.correct.char) {
+                        b.classList.add('correct');
+                    }
+                });
+
+                // Update progress
+                progressFill.style.width = '50%';
+            }
+
+            // Update stats
+            scoreText.textContent = `Score: ${score}/${totalQuestions}`;
+            streakText.textContent = `Streak: ${streak}`;
+
+            // Show next button
+            nextBtn.classList.add('show');
+
+            // Reset progress after animation
+            setTimeout(() => {
+                progressFill.style.width = '0%';
+            }, 1000);
+        }
+
+        // Next question handler
+        nextBtn.onclick = () => {
+            generateQuestion();
+        };
+
+        // Initialize first question
+        generateQuestion();
+    </script>
+</body>
+</html>
