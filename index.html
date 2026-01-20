@@ -961,8 +961,10 @@
                     <span id="scoreText">Score: 0</span>
                 </div>
                 <div class="question-header" id="quizModeText">Quiz Mode</div>
-                <div class="question-text" id="questionText">Select the character for:</div>
-                <div class="sound-display romaji font-noto" id="soundDisplay" title="Click to hear pronunciation">ka</div>
+                <div class="question-text" id="questionText">Select the character:</div>
+                <button class="speaker-btn" id="quizSpeaker" title="Click to hear pronunciation">
+                    🔊
+                </button>
                 <div class="vocab-translation" id="vocabTranslation"></div>
             </div>
 
@@ -1587,7 +1589,7 @@
         }
 
         // DOM elements
-        const soundDisplay = document.getElementById('soundDisplay');
+        const quizSpeaker = document.getElementById('quizSpeaker');
         const vocabTranslation = document.getElementById('vocabTranslation');
         const optionsGrid = document.getElementById('optionsGrid');
         const nextBtn = document.getElementById('nextBtn');
@@ -1692,10 +1694,9 @@
 
         // Update font style
         function updateFontStyle() {
-            // Update sound display font based on content
-            soundDisplay.className = soundDisplay.className.replace(/font-\w+/g, '');
-            if (soundDisplay.classList.contains('romaji') || soundDisplay.classList.contains('clickable')) {
-                soundDisplay.classList.add(`font-${fontStyle}`);
+            // Update quiz speaker font if needed (for vocab/reverse modes that show characters)
+            if (quizSpeaker.classList.contains('font-' + fontStyle)) {
+                // Already has correct font
             }
 
             // Update option buttons with appropriate fonts
@@ -2082,19 +2083,6 @@
             synth.speak(utterance);
         }
 
-        // Click to hear sound
-        soundDisplay.onclick = () => {
-            if (currentQuestion) {
-                if (quizMode === 'vocab') {
-                    speak(currentQuestion.word);
-                    vocabTranslation.textContent = currentQuestion.translation;
-                } else if (!isReverseMode) {
-                    // Speak the CHARACTER, not the romaji!
-                    speak(currentQuestion.correct.char);
-                }
-            }
-        };
-
         // Shuffle array helper
         function shuffle(array) {
             const newArray = [...array];
@@ -2170,9 +2158,9 @@
                 scoreText.textContent = '';
                 quizModeText.textContent = 'Vocabulary Practice';
                 questionText.textContent = 'No vocabulary words available with your current character selection.';
-                soundDisplay.textContent = '🚫';
-                soundDisplay.className = 'sound-display';
-                soundDisplay.title = '';
+                quizSpeaker.textContent = '🚫';
+                quizSpeaker.className = 'speaker-btn';
+                quizSpeaker.disabled = true;
                 vocabTranslation.textContent = 'Please enable more characters in settings.';
                 return;
             }
@@ -2183,11 +2171,13 @@
             questionCounter.textContent = '';
             scoreText.textContent = '';
             quizModeText.textContent = 'Vocabulary Practice';
-            questionText.textContent = 'Click the word to hear pronunciation and see translation:';
+            questionText.textContent = 'Click the word to hear pronunciation:';
 
-            soundDisplay.textContent = vocab.word;
-            soundDisplay.className = `sound-display clickable font-${fontStyle}`;
-            soundDisplay.title = 'Click to hear pronunciation';
+            quizSpeaker.textContent = vocab.word;
+            quizSpeaker.className = `speaker-btn font-${fontStyle}`;
+            quizSpeaker.style.fontSize = '48px';
+            quizSpeaker.disabled = false;
+            quizSpeaker.style.cursor = 'pointer';
             vocabTranslation.textContent = '';
         }
 
@@ -2228,18 +2218,20 @@
 
             if (isReverseMode) {
                 questionText.textContent = 'Select the sound for:';
-                soundDisplay.textContent = correctAnswer.char;
-                soundDisplay.className = `sound-display font-${fontStyle}`;
-                soundDisplay.title = 'Character display (no audio in reverse mode)';
+                // Show the character visually instead of using speaker
+                quizSpeaker.textContent = correctAnswer.char;
+                quizSpeaker.className = `speaker-btn font-${fontStyle}`;
+                quizSpeaker.style.fontSize = '48px';
+                quizSpeaker.disabled = true;
+                quizSpeaker.style.cursor = 'default';
             } else {
-                questionText.textContent = 'Select the character for:';
-                soundDisplay.textContent = correctAnswer.romaji;
-                soundDisplay.className = 'sound-display romaji';
-                soundDisplay.title = 'Click to hear pronunciation';
-            }
-
-            if (!isReverseMode) {
-                // Speak the CHARACTER, not the romaji!
+                questionText.textContent = 'Select the character:';
+                quizSpeaker.textContent = '🔊';
+                quizSpeaker.className = 'speaker-btn';
+                quizSpeaker.style.fontSize = '40px';
+                quizSpeaker.disabled = false;
+                quizSpeaker.style.cursor = 'pointer';
+                // Speak the CHARACTER automatically
                 speak(correctAnswer.char);
             }
 
@@ -2453,6 +2445,19 @@
         handwritingSpeaker.onclick = () => {
             if (handwritingCurrentChar) {
                 speak(handwritingCurrentChar.char);
+            }
+        };
+
+        // Quiz speaker button
+        quizSpeaker.onclick = () => {
+            if (currentQuestion) {
+                if (quizMode === 'vocab') {
+                    speak(currentQuestion.word);
+                    vocabTranslation.textContent = currentQuestion.translation;
+                } else if (!isReverseMode) {
+                    // Speak the CHARACTER in normal kana quiz mode
+                    speak(currentQuestion.correct.char);
+                }
             }
         };
 
