@@ -461,12 +461,25 @@
 
         .candidates {
             margin-top: 15px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 8px;
-            color: var(--text-color);
-            min-height: 40px;
-            font-size: 24px;
+            color: #333;
+            min-height: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            line-height: 1.6;
+        }
+
+        .candidates.correct {
+            background: #4caf50;
+            color: white;
+        }
+
+        .candidates.incorrect {
+            background: #f44336;
+            color: white;
         }
 
         /* Quiz Results */
@@ -884,7 +897,7 @@
     <div class="menu-dropdown" id="menuDropdown">
         <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
         <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
-        <div class="menu-item" id="handwritingMenuItem">✍️ Handwriting</div>
+        <div class="menu-item" id="handwritingMenuItem">Handwriting</div>
         <div class="menu-item" id="settingsMenuItem">Settings</div>
         <div class="menu-item" id="aboutMenuItem">About</div>
     </div>
@@ -947,7 +960,7 @@
             </div>
 
             <div class="handwriting-canvas-area">
-                <canvas id="drawingCanvas" width="280" height="280"></canvas>
+                <canvas id="drawingCanvas" width="320" height="320"></canvas>
                 <div class="candidates" id="candidateList"></div>
             </div>
 
@@ -1100,7 +1113,7 @@
             <div class="settings-section">
                 <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">🇯🇵 Kana Practice</h3>
                 <p style="text-align: center; color: #666; margin-bottom: 10px;">
-                    <strong>Version 0.17</strong>
+                    <strong>Version 0.19</strong>
                 </p>
                 <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;">
                     A modern web app for practicing Japanese hiragana and katakana characters with customizable themes, vocabulary exercises, and audio pronunciation.
@@ -2305,11 +2318,33 @@
             if (typeof KanjiCanvas !== 'undefined') {
                 KanjiCanvas.erase('drawingCanvas');
             }
-            candidateList.textContent = '';
+            candidateList.className = 'candidates';
+            candidateList.textContent = 'Draw the character, and I\'ll show you what I recognize!';
+        }
+
+        function showCandidates() {
+            if (typeof KanjiCanvas === 'undefined') {
+                return;
+            }
+
+            // Recognize the drawn character
+            const results = KanjiCanvas.recognize('drawingCanvas');
+
+            if (!results || results.length === 0) {
+                candidateList.className = 'candidates';
+                candidateList.textContent = 'Draw a character to see recognition...';
+                return;
+            }
+
+            // Show top candidates
+            const topCandidates = results.slice(0, 8).map(r => r.char).join('  ');
+            candidateList.className = 'candidates';
+            candidateList.innerHTML = `<div style="margin-bottom: 8px;">Recognized:</div>${topCandidates}`;
         }
 
         function checkHandwriting() {
             if (typeof KanjiCanvas === 'undefined') {
+                candidateList.className = 'candidates incorrect';
                 candidateList.textContent = '❌ Recognition library not loaded';
                 return;
             }
@@ -2318,22 +2353,20 @@
             const results = KanjiCanvas.recognize('drawingCanvas');
 
             if (!results || results.length === 0) {
-                candidateList.textContent = '❓ No character recognized. Try again!';
+                candidateList.className = 'candidates';
+                candidateList.textContent = '❓ No character recognized. Please draw something!';
                 return;
             }
 
-            // Show top candidates
-            const topCandidates = results.slice(0, 5).map(r => r.char).join(' ');
-            candidateList.textContent = `Candidates: ${topCandidates}`;
-
-            // Check if correct answer is in top 3
+            // Check if correct answer is in top 5 (less strict)
             const correctChar = handwritingCurrentChar.char;
-            const topThree = results.slice(0, 3).map(r => r.char);
+            const topFive = results.slice(0, 5).map(r => r.char);
 
-            if (topThree.includes(correctChar)) {
+            if (topFive.includes(correctChar)) {
                 // Correct!
                 handwritingPoints++;
                 handwritingScore.textContent = `Score: ${handwritingPoints}`;
+                candidateList.className = 'candidates correct';
                 candidateList.textContent = `✅ Correct! ${correctChar} (${handwritingCurrentChar.romaji})`;
                 speak(correctChar);
 
@@ -2342,7 +2375,9 @@
                     generateHandwritingQuestion();
                 }, 1500);
             } else {
-                candidateList.textContent = `❌ Not quite. Looking for: ${correctChar} (${handwritingCurrentChar.romaji})`;
+                candidateList.className = 'candidates incorrect';
+                const topCandidates = results.slice(0, 8).map(r => r.char).join('  ');
+                candidateList.innerHTML = `<div style="margin-bottom: 8px;">❌ Not quite. Looking for: <strong>${correctChar}</strong> (${handwritingCurrentChar.romaji})</div><div style="font-size: 14px;">You drew: ${topCandidates}</div>`;
                 speak(correctChar);
             }
         }
@@ -2350,11 +2385,23 @@
         // Handwriting event handlers
         checkDrawingBtn.onclick = checkHandwriting;
 
+        // Auto-show candidates after drawing (with debounce)
+        let drawingTimeout;
+        drawingCanvas.addEventListener('mouseup', () => {
+            clearTimeout(drawingTimeout);
+            drawingTimeout = setTimeout(showCandidates, 500);
+        });
+        drawingCanvas.addEventListener('touchend', () => {
+            clearTimeout(drawingTimeout);
+            drawingTimeout = setTimeout(showCandidates, 500);
+        });
+
         clearCanvasBtn.onclick = () => {
             if (typeof KanjiCanvas !== 'undefined') {
                 KanjiCanvas.erase('drawingCanvas');
             }
-            candidateList.textContent = '';
+            candidateList.className = 'candidates';
+            candidateList.textContent = 'Draw a character to see recognition...';
         };
 
         skipCharBtn.onclick = () => {
