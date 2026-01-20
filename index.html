@@ -938,11 +938,8 @@
         const reverseScoreEl = document.getElementById('reverseScore');
         const accuracy = document.getElementById('accuracy');
         const restartBtn = document.getElementById('restartBtn');
-        const settingsBtn = document.getElementById('settingsBtn');
         const settingsModal = document.getElementById('settingsModal');
         const closeModal = document.getElementById('closeModal');
-        const kanaQuizBtn = document.getElementById('kanaQuizBtn');
-        const vocabQuizBtn = document.getElementById('vocabQuizBtn');
         const hiraganaGrid = document.getElementById('hiraganaGrid');
         const katakanaGrid = document.getElementById('katakanaGrid');
         const bgColorPicker = document.getElementById('bgColorPicker');
@@ -971,7 +968,6 @@
             const savedMode = localStorage.getItem('quizMode');
             if (savedMode) {
                 quizMode = savedMode;
-                updateQuizModeButtons();
             }
         }
 
@@ -1012,24 +1008,6 @@
                 }
             });
         }
-
-        function updateQuizModeButtons() {
-            kanaQuizBtn.classList.toggle('active', quizMode === 'kana');
-            vocabQuizBtn.classList.toggle('active', quizMode === 'vocab');
-        }
-
-        // Quiz mode selection
-        kanaQuizBtn.onclick = () => {
-            quizMode = 'kana';
-            updateQuizModeButtons();
-            saveSettings();
-        };
-
-        vocabQuizBtn.onclick = () => {
-            quizMode = 'vocab';
-            updateQuizModeButtons();
-            saveSettings();
-        };
 
         // Font selector
         document.querySelectorAll('.font-btn').forEach(btn => {
