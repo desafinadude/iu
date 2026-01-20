@@ -11,6 +11,9 @@
     <meta name="theme-color" content="#667eea">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <!-- KanjiCanvas for handwriting recognition -->
+    <script src="https://cdn.jsdelivr.net/gh/asdfjkl/kanjicanvas@master/docs/resources/javascript/kanji-canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/asdfjkl/kanjicanvas@master/docs/resources/javascript/ref-patterns.js"></script>
     <style>
         * {
             margin: 0;
@@ -378,6 +381,92 @@
 
         .next-btn.show {
             display: block;
+        }
+
+        /* Handwriting Canvas */
+        .handwriting-card {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .handwriting-card.show {
+            display: flex;
+        }
+
+        .handwriting-prompt {
+            flex: 0 0 15%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .handwriting-canvas-area {
+            flex: 0 0 65%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #drawingCanvas {
+            border: 3px solid var(--button-color);
+            border-radius: 12px;
+            background: white;
+            cursor: crosshair;
+            touch-action: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .handwriting-controls {
+            flex: 0 0 20%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0 20px;
+            justify-content: center;
+        }
+
+        .handwriting-btn {
+            background: var(--button-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .handwriting-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .handwriting-btn.danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .handwriting-btn.success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .candidates {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-color);
+            min-height: 40px;
+            font-size: 24px;
         }
 
         /* Quiz Results */
@@ -795,6 +884,7 @@
     <div class="menu-dropdown" id="menuDropdown">
         <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
         <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
+        <div class="menu-item" id="handwritingMenuItem">✍️ Handwriting</div>
         <div class="menu-item" id="settingsMenuItem">Settings</div>
         <div class="menu-item" id="aboutMenuItem">About</div>
     </div>
@@ -843,6 +933,30 @@
                 </div>
             </div>
             <button class="next-btn show" id="restartBtn">Start New Quiz</button>
+        </div>
+
+        <!-- Handwriting Practice Card -->
+        <div class="handwriting-card" id="handwritingCard">
+            <div class="handwriting-prompt">
+                <div class="stats">
+                    <span id="handwritingScore">Score: 0</span>
+                </div>
+                <div class="question-header">Handwriting Practice</div>
+                <div class="question-text">Draw the character for:</div>
+                <div class="sound-display romaji" id="handwritingPrompt">ka</div>
+            </div>
+
+            <div class="handwriting-canvas-area">
+                <canvas id="drawingCanvas" width="280" height="280"></canvas>
+                <div class="candidates" id="candidateList"></div>
+            </div>
+
+            <div class="handwriting-controls">
+                <button class="handwriting-btn success" id="checkDrawingBtn">Check Answer</button>
+                <button class="handwriting-btn" id="clearCanvasBtn">Clear</button>
+                <button class="handwriting-btn" id="skipCharBtn">Skip</button>
+                <button class="handwriting-btn danger" id="exitHandwritingBtn">Exit Practice</button>
+            </div>
         </div>
     </div>
 
@@ -1262,8 +1376,8 @@
         let totalScore = 0;
         let isReverseMode = false;
         let quizMode = 'kana'; // 'kana' or 'vocab'
-        let enabledHiragana = new Set(hiraganaData.map(h => h.char));
-        let enabledKatakana = new Set(katakanaData.map(k => k.char));
+        let enabledHiragana = new Set(['あ', 'い', 'う', 'え', 'お']); // Start with just vowels
+        let enabledKatakana = new Set(['ア', 'イ', 'ウ', 'エ', 'オ']); // Start with just vowels
         let bgColor = '#667eea';
         let textColor = '#ffffff';
         let buttonColor = '#ffffff';
@@ -1430,6 +1544,19 @@
         const buttonColorPicker = document.getElementById('buttonColorPicker');
         const buttonTextColorPicker = document.getElementById('buttonTextColorPicker');
         const accentColorPicker = document.getElementById('accentColorPicker');
+        const handwritingCard = document.getElementById('handwritingCard');
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const candidateList = document.getElementById('candidateList');
+        const handwritingPrompt = document.getElementById('handwritingPrompt');
+        const handwritingScore = document.getElementById('handwritingScore');
+        const checkDrawingBtn = document.getElementById('checkDrawingBtn');
+        const clearCanvasBtn = document.getElementById('clearCanvasBtn');
+        const skipCharBtn = document.getElementById('skipCharBtn');
+        const exitHandwritingBtn = document.getElementById('exitHandwritingBtn');
+
+        // Handwriting practice state
+        let handwritingCurrentChar = null;
+        let handwritingPoints = 0;
 
         // Apply colors to CSS variables
         function applyColors() {
@@ -1800,6 +1927,7 @@
             // Switch to kana mode immediately
             questionCard.style.display = 'block';
             resultsCard.classList.remove('show');
+            handwritingCard.classList.remove('show');
             if (questionNumber >= 40) {
                 // Restart quiz if completed
                 questionNumber = 0;
@@ -1820,7 +1948,17 @@
             // Switch to vocab mode immediately
             questionCard.style.display = 'block';
             resultsCard.classList.remove('show');
+            handwritingCard.classList.remove('show');
             generateVocabQuestion();
+        };
+
+        const handwritingMenuItem = document.getElementById('handwritingMenuItem');
+        handwritingMenuItem.onclick = () => {
+            menuDropdown.classList.remove('show');
+            questionCard.style.display = 'none';
+            resultsCard.classList.remove('show');
+            handwritingCard.classList.add('show');
+            startHandwritingPractice();
         };
 
         settingsMenuItem.onclick = () => {
@@ -2132,6 +2270,103 @@
             resultsCard.classList.remove('show');
 
             scoreText.textContent = 'Score: 0';
+            generateQuestion();
+        };
+
+        // Handwriting Practice Functions
+        function startHandwritingPractice() {
+            handwritingPoints = 0;
+            handwritingScore.textContent = 'Score: 0';
+
+            // Initialize KanjiCanvas
+            try {
+                if (typeof KanjiCanvas !== 'undefined') {
+                    KanjiCanvas.init('drawingCanvas');
+                }
+            } catch (error) {
+                console.error('KanjiCanvas initialization error:', error);
+            }
+
+            generateHandwritingQuestion();
+        }
+
+        function generateHandwritingQuestion() {
+            // Get a random enabled character
+            const availableChars = getEnabledChars();
+            if (availableChars.length === 0) {
+                alert('Please enable at least one character in settings!');
+                return;
+            }
+
+            handwritingCurrentChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+            handwritingPrompt.textContent = handwritingCurrentChar.romaji.toUpperCase();
+
+            // Clear canvas
+            if (typeof KanjiCanvas !== 'undefined') {
+                KanjiCanvas.erase('drawingCanvas');
+            }
+            candidateList.textContent = '';
+        }
+
+        function checkHandwriting() {
+            if (typeof KanjiCanvas === 'undefined') {
+                candidateList.textContent = '❌ Recognition library not loaded';
+                return;
+            }
+
+            // Recognize the drawn character
+            const results = KanjiCanvas.recognize('drawingCanvas');
+
+            if (!results || results.length === 0) {
+                candidateList.textContent = '❓ No character recognized. Try again!';
+                return;
+            }
+
+            // Show top candidates
+            const topCandidates = results.slice(0, 5).map(r => r.char).join(' ');
+            candidateList.textContent = `Candidates: ${topCandidates}`;
+
+            // Check if correct answer is in top 3
+            const correctChar = handwritingCurrentChar.char;
+            const topThree = results.slice(0, 3).map(r => r.char);
+
+            if (topThree.includes(correctChar)) {
+                // Correct!
+                handwritingPoints++;
+                handwritingScore.textContent = `Score: ${handwritingPoints}`;
+                candidateList.textContent = `✅ Correct! ${correctChar} (${handwritingCurrentChar.romaji})`;
+                speak(correctChar);
+
+                // Auto advance after 1.5 seconds
+                setTimeout(() => {
+                    generateHandwritingQuestion();
+                }, 1500);
+            } else {
+                candidateList.textContent = `❌ Not quite. Looking for: ${correctChar} (${handwritingCurrentChar.romaji})`;
+                speak(correctChar);
+            }
+        }
+
+        // Handwriting event handlers
+        checkDrawingBtn.onclick = checkHandwriting;
+
+        clearCanvasBtn.onclick = () => {
+            if (typeof KanjiCanvas !== 'undefined') {
+                KanjiCanvas.erase('drawingCanvas');
+            }
+            candidateList.textContent = '';
+        };
+
+        skipCharBtn.onclick = () => {
+            candidateList.textContent = `Skipped: ${handwritingCurrentChar.char} (${handwritingCurrentChar.romaji})`;
+            setTimeout(() => {
+                generateHandwritingQuestion();
+            }, 800);
+        };
+
+        exitHandwritingBtn.onclick = () => {
+            handwritingCard.classList.remove('show');
+            questionCard.style.display = 'block';
             generateQuestion();
         };
 
