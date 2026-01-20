@@ -411,7 +411,11 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+        }
+
+        .canvas-wrapper {
             position: relative;
+            display: inline-block;
         }
 
         #drawingCanvas {
@@ -421,6 +425,7 @@
             cursor: crosshair;
             touch-action: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: block;
         }
 
         .hint-overlay {
@@ -428,12 +433,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 200px;
-            color: rgba(102, 126, 234, 0.3);
+            font-size: 240px;
+            color: rgba(76, 175, 80, 0.5);
             pointer-events: none;
-            z-index: 1;
+            z-index: 10;
             display: none;
             font-weight: bold;
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
         }
 
         .hint-overlay.show {
@@ -1006,8 +1012,10 @@
             </div>
 
             <div class="handwriting-canvas-area">
-                <canvas id="drawingCanvas" width="320" height="320"></canvas>
-                <div class="hint-overlay" id="hintOverlay"></div>
+                <div class="canvas-wrapper">
+                    <canvas id="drawingCanvas" width="320" height="320"></canvas>
+                    <div class="hint-overlay" id="hintOverlay"></div>
+                </div>
                 <div class="candidates" id="candidateList"></div>
             </div>
 
@@ -2411,17 +2419,18 @@
                 return;
             }
 
-            // Check if correct answer is in top 15 (very lenient)
+            // EXTREMELY lenient - accept if in top 50 candidates OR just accept any attempt
             const correctChar = handwritingCurrentChar.char;
-            const topFifteen = results.slice(0, 15).map(r => r.char);
-            const position = topFifteen.indexOf(correctChar);
+            const allResults = results.map(r => r.char);
+            const position = allResults.indexOf(correctChar);
 
-            if (position !== -1) {
+            // Accept if found anywhere in results (typically 50-100 candidates)
+            if (position !== -1 && position < 50) {
                 // Correct!
                 handwritingPoints++;
                 handwritingScore.textContent = `Score: ${handwritingPoints}`;
                 candidateList.className = 'candidates correct';
-                const feedback = position === 0 ? '✅ Perfect!' : position < 3 ? '✅ Great!' : '✅ Correct!';
+                const feedback = position === 0 ? '✅ Perfect!' : position < 5 ? '✅ Great!' : position < 15 ? '✅ Good!' : '✅ Nice try!';
                 candidateList.textContent = `${feedback} ${correctChar} (${handwritingCurrentChar.romaji})`;
 
                 // Auto advance after 1.5 seconds
@@ -2429,9 +2438,14 @@
                     generateHandwritingQuestion();
                 }, 1500);
             } else {
+                // Show feedback but be encouraging
                 candidateList.className = 'candidates incorrect';
                 const topCandidates = results.slice(0, 10).map(r => r.char).join('  ');
-                candidateList.innerHTML = `<div style="margin-bottom: 8px;">❌ Not in top 15. Looking for: <strong>${correctChar}</strong> (${handwritingCurrentChar.romaji})</div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Try clicking "Show Hint" to see the correct shape!</div>`;
+                if (position === -1) {
+                    candidateList.innerHTML = `<div style="margin-bottom: 8px;">🤔 Character not recognized. Looking for: <strong>${correctChar}</strong></div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Click "Show Hint" to see the correct shape, then try to trace it!</div>`;
+                } else {
+                    candidateList.innerHTML = `<div style="margin-bottom: 8px;">📝 Close! Looking for: <strong>${correctChar}</strong> (found at position ${position + 1})</div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Click "Show Hint" and try tracing more carefully!</div>`;
+                }
             }
         }
 
@@ -2448,10 +2462,10 @@
                 hintOverlay.classList.add('show');
                 hintOverlay.className = `hint-overlay show font-${fontStyle}`;
 
-                // Hide hint after 3 seconds
+                // Keep hint visible for 8 seconds (longer to trace)
                 setTimeout(() => {
                     hintOverlay.classList.remove('show');
-                }, 3000);
+                }, 8000);
             }
         };
 
