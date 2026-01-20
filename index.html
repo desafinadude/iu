@@ -202,21 +202,22 @@
         }
 
         .question-area {
-            flex: 0 0 30%;
+            flex: 0 0 28%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 0;
         }
 
         .buttons-area {
-            flex: 0 0 60%;
+            flex: 0 0 62%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             padding: 0 20px;
-            overflow-y: auto;
-            overflow-x: hidden;
+            min-height: 0;
         }
 
         .next-area {
@@ -244,10 +245,10 @@
         }
 
         .sound-display {
-            font-size: 48px;
+            font-size: 44px;
             font-weight: bold;
             color: var(--text-color);
-            margin: 10px 0;
+            margin: 8px 0;
             transition: all 0.2s ease;
             user-select: none;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -285,25 +286,31 @@
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
             width: 100%;
+            max-height: 100%;
+            grid-auto-rows: 1fr;
         }
 
         .option-btn {
             background: var(--button-color);
             border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 20px 12px;
-            font-size: 36px;
+            border-radius: 10px;
+            padding: 12px 8px;
+            font-size: 32px;
             cursor: pointer;
             transition: all 0.2s ease;
             color: var(--button-text-color);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .option-btn.romaji {
             text-transform: uppercase;
-            font-size: 28px;
+            font-size: 24px;
         }
 
         .option-btn:hover {
@@ -737,17 +744,17 @@
             }
 
             .sound-display {
-                font-size: 40px;
-                margin: 8px 0;
+                font-size: 36px;
+                margin: 6px 0;
             }
 
             .option-btn {
-                font-size: 30px;
-                padding: 16px 10px;
+                font-size: 26px;
+                padding: 10px 6px;
             }
 
             .option-btn.romaji {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             .char-toggle {
