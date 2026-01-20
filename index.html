@@ -58,7 +58,7 @@
             font-weight: 600;
         }
 
-        .settings-btn {
+        .menu-btn {
             background: transparent;
             color: #fff;
             border: none;
@@ -67,11 +67,51 @@
             cursor: pointer;
             transition: all 0.2s ease;
             opacity: 0.8;
+            position: relative;
         }
 
-        .settings-btn:hover {
+        .menu-btn:hover {
             opacity: 1;
             transform: scale(1.1);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            min-width: 180px;
+            margin-top: 10px;
+            display: none;
+            overflow: hidden;
+        }
+
+        .menu-dropdown.show {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            color: #333;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .menu-item.active {
+            background: #667eea;
+            color: white;
         }
 
         .stats {
@@ -94,6 +134,10 @@
             padding: 20px;
             margin-bottom: 15px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(100vh - 150px);
         }
 
         .question-header {
@@ -613,7 +657,14 @@
     <!-- Fixed Header -->
     <div class="header">
         <h1>🇯🇵 Kana Practice</h1>
-        <button class="settings-btn" id="settingsBtn">⚙️</button>
+        <button class="menu-btn" id="menuBtn">
+            ☰
+            <div class="menu-dropdown" id="menuDropdown">
+                <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
+                <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
+                <div class="menu-item" id="settingsMenuItem">Settings</div>
+            </div>
+        </button>
     </div>
 
     <div class="container">
@@ -666,18 +717,6 @@
             </div>
 
             <div class="settings-section">
-                <h3>Quiz Mode</h3>
-                <div class="mode-toggle">
-                    <button class="mode-btn active" id="kanaQuizBtn">
-                        Kana Quiz
-                    </button>
-                    <button class="mode-btn" id="vocabQuizBtn">
-                        Vocabulary
-                    </button>
-                </div>
-            </div>
-
-            <div class="settings-section">
                 <h3>Background Color</h3>
                 <div class="color-picker-group">
                     <input type="color" class="color-picker" id="bgColorPicker" value="#667eea">
@@ -717,12 +756,15 @@
             <div class="settings-section">
                 <div class="chart-section-header">
                     <h3>Hiragana Characters</h3>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666;">
+                        <input type="checkbox" id="includeDakutenHiragana" checked>
+                        Include Dakuten in Quiz
+                    </label>
                 </div>
                 <div class="toggle-controls">
                     <button class="control-btn" id="selectAllHiraganaBtn">Select All</button>
                     <button class="control-btn" id="deselectAllHiraganaBtn">Deselect All</button>
                     <button class="control-btn" id="basicsOnlyHiraganaBtn">Basics Only</button>
-                    <button class="control-btn secondary" id="toggleDakutenHiraganaBtn">Toggle Dakuten</button>
                 </div>
                 <div class="kana-grid" id="hiraganaGrid"></div>
             </div>
@@ -730,12 +772,15 @@
             <div class="settings-section">
                 <div class="chart-section-header">
                     <h3>Katakana Characters</h3>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666;">
+                        <input type="checkbox" id="includeDakutenKatakana" checked>
+                        Include Dakuten in Quiz
+                    </label>
                 </div>
                 <div class="toggle-controls">
                     <button class="control-btn" id="selectAllKatakanaBtn">Select All</button>
                     <button class="control-btn" id="deselectAllKatakanaBtn">Deselect All</button>
                     <button class="control-btn" id="basicsOnlyKatakanaBtn">Basics Only</button>
-                    <button class="control-btn secondary" id="toggleDakutenKatakanaBtn">Toggle Dakuten</button>
                 </div>
                 <div class="kana-grid" id="katakanaGrid"></div>
             </div>
@@ -871,8 +916,6 @@
         let quizMode = 'kana'; // 'kana' or 'vocab'
         let enabledHiragana = new Set(hiraganaData.map(h => h.char));
         let enabledKatakana = new Set(katakanaData.map(k => k.char));
-        let showDakutenHiragana = true;
-        let showDakutenKatakana = true;
         let bgColor = '#667eea';
         let fontStyle = 'gothic';
 
@@ -999,21 +1042,16 @@
         });
 
         // Initialize kana grid
-        function initKanaGrid(gridElement, kanaData, enabledSet, isDakutenVisible, prefix) {
+        function initKanaGrid(gridElement, kanaData, enabledSet, prefix) {
             const table = document.createElement('div');
             table.className = 'chart-table';
 
-            const headers = ['', '•', 'K', 'G', 'S', 'Z', 'T', 'D', 'N', 'H', 'B', 'P', 'M', 'Y', 'R', 'W'];
-            const dakutenCols = [3, 5, 7, 10, 11]; // G, Z, D, B, P column indices
+            // Only show basic columns, no dakuten
+            const headers = ['', '•', 'K', 'S', 'T', 'N', 'H', 'M', 'Y', 'R', 'W'];
 
             headers.forEach((header, idx) => {
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'chart-header';
-
-                if (dakutenCols.includes(idx) && !isDakutenVisible) {
-                    headerDiv.classList.add('empty');
-                }
-
                 headerDiv.textContent = header;
 
                 if (header !== '' && header !== '•') {
@@ -1024,18 +1062,19 @@
                 table.appendChild(headerDiv);
             });
 
+            // Grid with only basic characters
             const grid = prefix === 'hiragana' ? [
-                ['A', 'あ', 'か', 'が', 'さ', 'ざ', 'た', 'だ', 'な', 'は', 'ば', 'ぱ', 'ま', 'や', 'ら', 'わ'],
-                ['I', 'い', 'き', 'ぎ', 'し', 'じ', 'ち', 'ぢ', 'に', 'ひ', 'び', 'ぴ', 'み', '',   'り', ''],
-                ['U', 'う', 'く', 'ぐ', 'す', 'ず', 'つ', 'づ', 'ぬ', 'ふ', 'ぶ', 'ぷ', 'む', 'ゆ', 'る', 'ん'],
-                ['E', 'え', 'け', 'げ', 'せ', 'ぜ', 'て', 'で', 'ね', 'へ', 'べ', 'ぺ', 'め', '',   'れ', ''],
-                ['O', 'お', 'こ', 'ご', 'そ', 'ぞ', 'と', 'ど', 'の', 'ほ', 'ぼ', 'ぽ', 'も', 'よ', 'ろ', 'を']
+                ['A', 'あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'],
+                ['I', 'い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '',   'り', ''],
+                ['U', 'う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん'],
+                ['E', 'え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '',   'れ', ''],
+                ['O', 'お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', 'を']
             ] : [
-                ['A', 'ア', 'カ', 'ガ', 'サ', 'ザ', 'タ', 'ダ', 'ナ', 'ハ', 'バ', 'パ', 'マ', 'ヤ', 'ラ', 'ワ'],
-                ['I', 'イ', 'キ', 'ギ', 'シ', 'ジ', 'チ', 'ヂ', 'ニ', 'ヒ', 'ビ', 'ピ', 'ミ', '',   'リ', ''],
-                ['U', 'ウ', 'ク', 'グ', 'ス', 'ズ', 'ツ', 'ヅ', 'ヌ', 'フ', 'ブ', 'プ', 'ム', 'ユ', 'ル', 'ン'],
-                ['E', 'エ', 'ケ', 'ゲ', 'セ', 'ゼ', 'テ', 'デ', 'ネ', 'ヘ', 'ベ', 'ペ', 'メ', '',   'レ', ''],
-                ['O', 'オ', 'コ', 'ゴ', 'ソ', 'ゾ', 'ト', 'ド', 'ノ', 'ホ', 'ボ', 'ポ', 'モ', 'ヨ', 'ロ', 'ヲ']
+                ['A', 'ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ'],
+                ['I', 'イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '',   'リ', ''],
+                ['U', 'ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン'],
+                ['E', 'エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '',   'レ', ''],
+                ['O', 'オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', 'ヲ']
             ];
 
             grid.forEach(row => {
@@ -1048,11 +1087,6 @@
                     } else {
                         const btn = document.createElement('button');
                         btn.className = `char-toggle font-${fontStyle}`;
-
-                        // Hide dakuten columns if toggled off
-                        if (dakutenCols.includes(idx) && !isDakutenVisible) {
-                            btn.style.display = 'none';
-                        }
 
                         if (char === '') {
                             btn.classList.add('empty');
@@ -1114,9 +1148,9 @@
 
             saveSettings();
             if (prefix === 'hiragana') {
-                initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, showDakutenHiragana, 'hiragana');
+                initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
             } else {
-                initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, showDakutenKatakana, 'katakana');
+                initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
             }
         }
 
@@ -1137,14 +1171,14 @@
         // Hiragana control buttons
         document.getElementById('selectAllHiraganaBtn').onclick = () => {
             hiraganaData.forEach(item => enabledHiragana.add(item.char));
-            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, showDakutenHiragana, 'hiragana');
+            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
             saveSettings();
         };
 
         document.getElementById('deselectAllHiraganaBtn').onclick = () => {
             enabledHiragana.clear();
             saveSettings();
-            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, showDakutenHiragana, 'hiragana');
+            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
         };
 
         document.getElementById('basicsOnlyHiraganaBtn').onclick = () => {
@@ -1152,26 +1186,21 @@
             hiraganaData.forEach(item => {
                 if (item.basic) enabledHiragana.add(item.char);
             });
-            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, showDakutenHiragana, 'hiragana');
+            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
             saveSettings();
-        };
-
-        document.getElementById('toggleDakutenHiraganaBtn').onclick = () => {
-            showDakutenHiragana = !showDakutenHiragana;
-            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, showDakutenHiragana, 'hiragana');
         };
 
         // Katakana control buttons
         document.getElementById('selectAllKatakanaBtn').onclick = () => {
             katakanaData.forEach(item => enabledKatakana.add(item.char));
-            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, showDakutenKatakana, 'katakana');
+            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
             saveSettings();
         };
 
         document.getElementById('deselectAllKatakanaBtn').onclick = () => {
             enabledKatakana.clear();
             saveSettings();
-            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, showDakutenKatakana, 'katakana');
+            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
         };
 
         document.getElementById('basicsOnlyKatakanaBtn').onclick = () => {
@@ -1179,13 +1208,8 @@
             katakanaData.forEach(item => {
                 if (item.basic) enabledKatakana.add(item.char);
             });
-            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, showDakutenKatakana, 'katakana');
+            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
             saveSettings();
-        };
-
-        document.getElementById('toggleDakutenKatakanaBtn').onclick = () => {
-            showDakutenKatakana = !showDakutenKatakana;
-            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, showDakutenKatakana, 'katakana');
         };
 
         // Background color
@@ -1204,11 +1228,48 @@
             };
         });
 
-        // Modal controls
-        settingsBtn.onclick = () => {
+        // Hamburger menu controls
+        const menuBtn = document.getElementById('menuBtn');
+        const menuDropdown = document.getElementById('menuDropdown');
+        const kanaMenuItem = document.getElementById('kanaMenuItem');
+        const vocabMenuItem = document.getElementById('vocabMenuItem');
+        const settingsMenuItem = document.getElementById('settingsMenuItem');
+
+        // Toggle menu dropdown
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('show');
+        };
+
+        // Close menu when clicking outside
+        document.addEventListener('click', () => {
+            menuDropdown.classList.remove('show');
+        });
+
+        // Menu item handlers
+        kanaMenuItem.onclick = () => {
+            quizMode = 'kana';
+            menuDropdown.classList.remove('show');
+            saveSettings();
+            if (questionCard.style.display === 'none') {
+                restartBtn.click(); // Restart if showing results
+            }
+        };
+
+        vocabMenuItem.onclick = () => {
+            quizMode = 'vocab';
+            menuDropdown.classList.remove('show');
+            saveSettings();
+            generateVocabQuestion();
+            questionCard.style.display = 'block';
+            resultsCard.classList.remove('show');
+        };
+
+        settingsMenuItem.onclick = () => {
+            menuDropdown.classList.remove('show');
             settingsModal.classList.add('show');
-            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, showDakutenHiragana, 'hiragana');
-            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, showDakutenKatakana, 'katakana');
+            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
+            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
         };
 
         closeModal.onclick = () => {
@@ -1255,10 +1316,22 @@
 
         // Get enabled characters
         function getEnabledChars() {
-            return [
-                ...hiraganaData.filter(h => enabledHiragana.has(h.char)),
-                ...katakanaData.filter(k => enabledKatakana.has(k.char))
-            ];
+            const includeDakutenHiragana = document.getElementById('includeDakutenHiragana').checked;
+            const includeDakutenKatakana = document.getElementById('includeDakutenKatakana').checked;
+
+            const hiragana = hiraganaData.filter(h => {
+                if (!enabledHiragana.has(h.char)) return false;
+                if (!h.basic && !includeDakutenHiragana) return false;
+                return true;
+            });
+
+            const katakana = katakanaData.filter(k => {
+                if (!enabledKatakana.has(k.char)) return false;
+                if (!k.basic && !includeDakutenKatakana) return false;
+                return true;
+            });
+
+            return [...hiragana, ...katakana];
         }
 
         // Generate vocabulary question
@@ -1269,9 +1342,9 @@
             const vocab = vocabularyData[Math.floor(Math.random() * vocabularyData.length)];
             currentQuestion = vocab;
 
-            questionCounter.textContent = `Vocabulary Practice`;
+            questionCounter.textContent = '';
             scoreText.textContent = '';
-            quizModeText.textContent = 'Vocabulary Mode';
+            quizModeText.textContent = 'Vocabulary Practice';
             questionText.textContent = 'Click the word to hear pronunciation and see translation:';
 
             soundDisplay.textContent = vocab.word;
