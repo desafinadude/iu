@@ -493,8 +493,9 @@
         }
 
         .chart-header {
-            background: #667eea;
-            color: white;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
             padding: 6px 3px;
             text-align: center;
             font-size: 11px;
@@ -502,6 +503,11 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.2s ease;
+        }
+
+        .chart-header.selected {
+            background: #667eea;
+            color: white;
         }
 
         .chart-header.empty {
@@ -877,26 +883,149 @@
 
         // Vocabulary list
         const vocabularyData = [
+            // Greetings
             { word: 'こんにちは', romaji: 'konnichiwa', translation: 'Hello' },
-            { word: 'ありがとう', romaji: 'arigatou', translation: 'Thank you' },
-            { word: 'さようなら', romaji: 'sayounara', translation: 'Goodbye' },
             { word: 'おはよう', romaji: 'ohayou', translation: 'Good morning' },
+            { word: 'さようなら', romaji: 'sayounara', translation: 'Goodbye' },
+            { word: 'おやすみ', romaji: 'oyasumi', translation: 'Good night' },
+            { word: 'ありがとう', romaji: 'arigatou', translation: 'Thank you' },
             { word: 'すみません', romaji: 'sumimasen', translation: 'Excuse me / Sorry' },
+            { word: 'ごめんなさい', romaji: 'gomennasai', translation: 'I\'m sorry' },
+
+            // Basic words
             { word: 'はい', romaji: 'hai', translation: 'Yes' },
             { word: 'いいえ', romaji: 'iie', translation: 'No' },
-            { word: 'おやすみ', romaji: 'oyasumi', translation: 'Good night' },
+            { word: 'あい', romaji: 'ai', translation: 'Love' },
+            { word: 'あお', romaji: 'ao', translation: 'Blue' },
+            { word: 'あか', romaji: 'aka', translation: 'Red' },
+            { word: 'あき', romaji: 'aki', translation: 'Autumn' },
+            { word: 'あさ', romaji: 'asa', translation: 'Morning' },
+            { word: 'あし', romaji: 'ashi', translation: 'Foot/leg' },
+            { word: 'あたま', romaji: 'atama', translation: 'Head' },
+            { word: 'あめ', romaji: 'ame', translation: 'Rain' },
+            { word: 'いえ', romaji: 'ie', translation: 'House' },
+            { word: 'いけ', romaji: 'ike', translation: 'Pond' },
+            { word: 'いし', romaji: 'ishi', translation: 'Stone' },
+            { word: 'いす', romaji: 'isu', translation: 'Chair' },
+            { word: 'いぬ', romaji: 'inu', translation: 'Dog' },
+            { word: 'いま', romaji: 'ima', translation: 'Now' },
+            { word: 'うえ', romaji: 'ue', translation: 'Above/on' },
+            { word: 'うし', romaji: 'ushi', translation: 'Cow' },
+            { word: 'うた', romaji: 'uta', translation: 'Song' },
+            { word: 'うち', romaji: 'uchi', translation: 'Home/inside' },
+            { word: 'うま', romaji: 'uma', translation: 'Horse' },
+            { word: 'うみ', romaji: 'umi', translation: 'Sea' },
+            { word: 'え', romaji: 'e', translation: 'Picture' },
+            { word: 'おかね', romaji: 'okane', translation: 'Money' },
+            { word: 'おと', romaji: 'oto', translation: 'Sound' },
+            { word: 'おんな', romaji: 'onna', translation: 'Woman' },
+
+            // Food
+            { word: 'たまご', romaji: 'tamago', translation: 'Egg' },
+            { word: 'みず', romaji: 'mizu', translation: 'Water' },
+            { word: 'さかな', romaji: 'sakana', translation: 'Fish' },
+            { word: 'にく', romaji: 'niku', translation: 'Meat' },
+            { word: 'パン', romaji: 'pan', translation: 'Bread' },
             { word: 'いただきます', romaji: 'itadakimasu', translation: 'Let\'s eat (before meal)' },
             { word: 'ごちそうさま', romaji: 'gochisousama', translation: 'Thank you for the meal' },
-            { word: 'なまえ', romaji: 'namae', translation: 'Name' },
-            { word: 'みず', romaji: 'mizu', translation: 'Water' },
+            { word: 'おいしい', romaji: 'oishii', translation: 'Delicious' },
+            { word: 'あまい', romaji: 'amai', translation: 'Sweet' },
+            { word: 'からい', romaji: 'karai', translation: 'Spicy' },
+            { word: 'すい', romaji: 'sui', translation: 'Sour' },
+
+            // Animals
             { word: 'ねこ', romaji: 'neko', translation: 'Cat' },
-            { word: 'いぬ', romaji: 'inu', translation: 'Dog' },
+            { word: 'とり', romaji: 'tori', translation: 'Bird' },
+            { word: 'さる', romaji: 'saru', translation: 'Monkey' },
+
+            // Nature
+            { word: 'かぜ', romaji: 'kaze', translation: 'Wind' },
+            { word: 'くも', romaji: 'kumo', translation: 'Cloud' },
+            { word: 'そら', romaji: 'sora', translation: 'Sky' },
+            { word: 'たいよう', romaji: 'taiyou', translation: 'Sun' },
+            { word: 'つき', romaji: 'tsuki', translation: 'Moon' },
+            { word: 'はな', romaji: 'hana', translation: 'Flower' },
+            { word: 'はる', romaji: 'haru', translation: 'Spring' },
+            { word: 'なつ', romaji: 'natsu', translation: 'Summer' },
+            { word: 'ふゆ', romaji: 'fuyu', translation: 'Winter' },
+            { word: 'やま', romaji: 'yama', translation: 'Mountain' },
+            { word: 'かわ', romaji: 'kawa', translation: 'River' },
+            { word: 'き', romaji: 'ki', translation: 'Tree' },
+            { word: 'は', romaji: 'ha', translation: 'Leaf' },
+            { word: 'ひ', romaji: 'hi', translation: 'Fire' },
+            { word: 'みち', romaji: 'michi', translation: 'Road' },
+
+            // Body parts
+            { word: 'め', romaji: 'me', translation: 'Eye' },
+            { word: 'て', romaji: 'te', translation: 'Hand' },
+            { word: 'くち', romaji: 'kuchi', translation: 'Mouth' },
+            { word: 'はな', romaji: 'hana', translation: 'Nose' },
+            { word: 'みみ', romaji: 'mimi', translation: 'Ear' },
+            { word: 'かみ', romaji: 'kami', translation: 'Hair' },
+
+            // Family
+            { word: 'おとうさん', romaji: 'otousan', translation: 'Father' },
+            { word: 'おかあさん', romaji: 'okaasan', translation: 'Mother' },
+            { word: 'こども', romaji: 'kodomo', translation: 'Child' },
+            { word: 'ひと', romaji: 'hito', translation: 'Person' },
+            { word: 'おとこ', romaji: 'otoko', translation: 'Man' },
+
+            // Common nouns
+            { word: 'なまえ', romaji: 'namae', translation: 'Name' },
+            { word: 'ほん', romaji: 'hon', translation: 'Book' },
+            { word: 'かみ', romaji: 'kami', translation: 'Paper' },
+            { word: 'ペン', romaji: 'pen', translation: 'Pen' },
+            { word: 'まち', romaji: 'machi', translation: 'Town' },
+            { word: 'むら', romaji: 'mura', translation: 'Village' },
+            { word: 'くに', romaji: 'kuni', translation: 'Country' },
+            { word: 'くるま', romaji: 'kuruma', translation: 'Car' },
+            { word: 'でんしゃ', romaji: 'densha', translation: 'Train' },
+            { word: 'みせ', romaji: 'mise', translation: 'Store' },
+            { word: 'いろ', romaji: 'iro', translation: 'Color' },
+            { word: 'かた', romaji: 'kata', translation: 'Way/method' },
+            { word: 'こと', romaji: 'koto', translation: 'Thing (abstract)' },
+            { word: 'もの', romaji: 'mono', translation: 'Thing (physical)' },
+            { word: 'とき', romaji: 'toki', translation: 'Time' },
+            { word: 'ひ', romaji: 'hi', translation: 'Day' },
+            { word: 'よる', romaji: 'yoru', translation: 'Night' },
+
+            // Verbs
             { word: 'たべる', romaji: 'taberu', translation: 'To eat' },
             { word: 'のむ', romaji: 'nomu', translation: 'To drink' },
             { word: 'いく', romaji: 'iku', translation: 'To go' },
             { word: 'くる', romaji: 'kuru', translation: 'To come' },
             { word: 'みる', romaji: 'miru', translation: 'To see/watch' },
-            { word: 'きく', romaji: 'kiku', translation: 'To listen/hear' }
+            { word: 'きく', romaji: 'kiku', translation: 'To listen/hear' },
+            { word: 'よむ', romaji: 'yomu', translation: 'To read' },
+            { word: 'かく', romaji: 'kaku', translation: 'To write' },
+            { word: 'はなす', romaji: 'hanasu', translation: 'To speak' },
+            { word: 'ねる', romaji: 'neru', translation: 'To sleep' },
+            { word: 'おきる', romaji: 'okiru', translation: 'To wake up' },
+            { word: 'ある', romaji: 'aru', translation: 'To exist (inanimate)' },
+            { word: 'いる', romaji: 'iru', translation: 'To exist (animate)' },
+            { word: 'する', romaji: 'suru', translation: 'To do' },
+            { word: 'かう', romaji: 'kau', translation: 'To buy' },
+            { word: 'うる', romaji: 'uru', translation: 'To sell' },
+            { word: 'あう', romaji: 'au', translation: 'To meet' },
+            { word: 'とぶ', romaji: 'tobu', translation: 'To fly' },
+
+            // Adjectives
+            { word: 'おおきい', romaji: 'ookii', translation: 'Big' },
+            { word: 'ちいさい', romaji: 'chiisai', translation: 'Small' },
+            { word: 'たかい', romaji: 'takai', translation: 'High/expensive' },
+            { word: 'やすい', romaji: 'yasui', translation: 'Cheap' },
+            { word: 'あたらしい', romaji: 'atarashii', translation: 'New' },
+            { word: 'ふるい', romaji: 'furui', translation: 'Old' },
+            { word: 'いい', romaji: 'ii', translation: 'Good' },
+            { word: 'わるい', romaji: 'warui', translation: 'Bad' },
+            { word: 'ながい', romaji: 'nagai', translation: 'Long' },
+            { word: 'みじかい', romaji: 'mijikai', translation: 'Short' },
+            { word: 'あつい', romaji: 'atsui', translation: 'Hot' },
+            { word: 'さむい', romaji: 'samui', translation: 'Cold' },
+            { word: 'むずかしい', romaji: 'muzukashii', translation: 'Difficult' },
+            { word: 'やさしい', romaji: 'yasashii', translation: 'Easy/kind' },
+            { word: 'はやい', romaji: 'hayai', translation: 'Fast/early' },
+            { word: 'おそい', romaji: 'osoi', translation: 'Slow/late' }
         ];
 
         // State
@@ -914,6 +1043,24 @@
 
         // Text-to-speech
         const synth = window.speechSynthesis;
+        let japaneseVoice = null;
+
+        // Load Japanese voice
+        function loadVoices() {
+            const voices = synth.getVoices();
+            // Try to find a Japanese voice
+            japaneseVoice = voices.find(voice => voice.lang.startsWith('ja')) || null;
+            console.log('Available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
+            if (japaneseVoice) {
+                console.log('Selected Japanese voice:', japaneseVoice.name);
+            }
+        }
+
+        // Load voices on page load and when they change
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
 
         // DOM elements
         const soundDisplay = document.getElementById('soundDisplay');
@@ -1020,14 +1167,43 @@
             // Only show basic columns, no dakuten
             const headers = ['', '•', 'K', 'S', 'T', 'N', 'H', 'M', 'Y', 'R', 'W'];
 
+            // Grid with only basic characters (for checking selection status)
+            const displayGrid = prefix === 'hiragana' ? [
+                ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'],
+                ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '',   'り', ''],
+                ['う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん'],
+                ['え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '',   'れ', ''],
+                ['お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', 'を']
+            ] : [
+                ['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ'],
+                ['イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '',   'リ', ''],
+                ['ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン'],
+                ['エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '',   'レ', ''],
+                ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', 'ヲ']
+            ];
+
             headers.forEach((header, idx) => {
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'chart-header';
                 headerDiv.textContent = header;
 
-                if (header !== '' && header !== '•') {
+                if (header !== '') {
                     headerDiv.dataset.col = idx;
                     headerDiv.onclick = () => toggleColumn(idx, kanaData, enabledSet, prefix);
+
+                    // Check if all characters in this column are enabled
+                    if (idx > 0) {
+                        const charsInCol = [];
+                        const dataColIdx = idx - 1;
+                        displayGrid.forEach(row => {
+                            const char = row[dataColIdx];
+                            if (char && char !== '') charsInCol.push(char);
+                        });
+
+                        if (charsInCol.length > 0 && charsInCol.every(c => enabledSet.has(c))) {
+                            headerDiv.classList.add('selected');
+                        }
+                    }
                 }
 
                 table.appendChild(headerDiv);
@@ -1085,23 +1261,27 @@
 
         // Toggle entire column
         function toggleColumn(colIdx, kanaData, enabledSet, prefix) {
+            // Grid with only basic characters (matching display)
             const grid = prefix === 'hiragana' ? [
-                ['あ', 'か', 'が', 'さ', 'ざ', 'た', 'だ', 'な', 'は', 'ば', 'ぱ', 'ま', 'や', 'ら', 'わ'],
-                ['い', 'き', 'ぎ', 'し', 'じ', 'ち', 'ぢ', 'に', 'ひ', 'び', 'ぴ', 'み', '',   'り', ''],
-                ['う', 'く', 'ぐ', 'す', 'ず', 'つ', 'づ', 'ぬ', 'ふ', 'ぶ', 'ぷ', 'む', 'ゆ', 'る', 'ん'],
-                ['え', 'け', 'げ', 'せ', 'ぜ', 'て', 'で', 'ね', 'へ', 'べ', 'ぺ', 'め', '',   'れ', ''],
-                ['お', 'こ', 'ご', 'そ', 'ぞ', 'と', 'ど', 'の', 'ほ', 'ぼ', 'ぽ', 'も', 'よ', 'ろ', 'を']
+                ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'],
+                ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '',   'り', ''],
+                ['う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん'],
+                ['え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '',   'れ', ''],
+                ['お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', 'を']
             ] : [
-                ['ア', 'カ', 'ガ', 'サ', 'ザ', 'タ', 'ダ', 'ナ', 'ハ', 'バ', 'パ', 'マ', 'ヤ', 'ラ', 'ワ'],
-                ['イ', 'キ', 'ギ', 'シ', 'ジ', 'チ', 'ヂ', 'ニ', 'ヒ', 'ビ', 'ピ', 'ミ', '',   'リ', ''],
-                ['ウ', 'ク', 'グ', 'ス', 'ズ', 'ツ', 'ヅ', 'ヌ', 'フ', 'ブ', 'プ', 'ム', 'ユ', 'ル', 'ン'],
-                ['エ', 'ケ', 'ゲ', 'セ', 'ゼ', 'テ', 'デ', 'ネ', 'ヘ', 'ベ', 'ペ', 'メ', '',   'レ', ''],
-                ['オ', 'コ', 'ゴ', 'ソ', 'ゾ', 'ト', 'ド', 'ノ', 'ホ', 'ボ', 'ポ', 'モ', 'ヨ', 'ロ', 'ヲ']
+                ['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ'],
+                ['イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '',   'リ', ''],
+                ['ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン'],
+                ['エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '',   'レ', ''],
+                ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', 'ヲ']
             ];
 
             const charsInColumn = [];
+            // colIdx-1 because index 1 is the • column header
+            const dataColIdx = colIdx - 1;
+
             grid.forEach(row => {
-                const char = row[colIdx - 1];
+                const char = row[dataColIdx];
                 if (char && char !== '') charsInColumn.push(char);
             });
 
@@ -1253,8 +1433,15 @@
             synth.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'ja-JP';
-            utterance.rate = 0.8;
+
+            // Use Japanese voice if available
+            if (japaneseVoice) {
+                utterance.voice = japaneseVoice;
+            }
+
+            utterance.rate = 0.75;
             utterance.pitch = 1;
+            utterance.volume = 1;
             synth.speak(utterance);
         }
 
@@ -1265,7 +1452,8 @@
                     speak(currentQuestion.word);
                     vocabTranslation.textContent = currentQuestion.translation;
                 } else if (!isReverseMode) {
-                    speak(currentQuestion.correct.romaji);
+                    // Speak the CHARACTER, not the romaji!
+                    speak(currentQuestion.correct.char);
                 }
             }
         };
@@ -1406,7 +1594,8 @@
             }
 
             if (!isReverseMode) {
-                speak(correctAnswer.romaji);
+                // Speak the CHARACTER, not the romaji!
+                speak(correctAnswer.char);
             }
 
             optionsGrid.innerHTML = '';
@@ -1463,7 +1652,8 @@
                 });
             }
 
-            speak(currentQuestion.correct.romaji);
+            // Speak the CHARACTER to show correct pronunciation
+            speak(currentQuestion.correct.char);
             scoreText.textContent = `Score: ${totalScore}`;
             nextBtn.classList.add('show');
         }
