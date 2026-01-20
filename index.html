@@ -1022,35 +1022,9 @@
         function speak(romaji) {
             synth.cancel();
 
-            // Map romaji to phonetic Japanese sounds
-            const japanesePhonetics = {
-                'a': 'ah',
-                'i': 'ee',
-                'u': 'oo',
-                'e': 'eh',
-                'o': 'oh',
-                'ka': 'kah', 'ki': 'kee', 'ku': 'koo', 'ke': 'keh', 'ko': 'koh',
-                'ga': 'gah', 'gi': 'gee', 'gu': 'goo', 'ge': 'geh', 'go': 'goh',
-                'sa': 'sah', 'shi': 'shee', 'su': 'soo', 'se': 'seh', 'so': 'soh',
-                'za': 'zah', 'ji': 'jee', 'zu': 'zoo', 'ze': 'zeh', 'zo': 'zoh',
-                'ta': 'tah', 'chi': 'chee', 'tsu': 'tsoo', 'te': 'teh', 'to': 'toh',
-                'da': 'dah', 'di': 'dee', 'du': 'doo', 'de': 'deh', 'do': 'doh',
-                'na': 'nah', 'ni': 'nee', 'nu': 'noo', 'ne': 'neh', 'no': 'noh',
-                'ha': 'hah', 'hi': 'hee', 'fu': 'foo', 'he': 'heh', 'ho': 'hoh',
-                'ba': 'bah', 'bi': 'bee', 'bu': 'boo', 'be': 'beh', 'bo': 'boh',
-                'pa': 'pah', 'pi': 'pee', 'pu': 'poo', 'pe': 'peh', 'po': 'poh',
-                'ma': 'mah', 'mi': 'mee', 'mu': 'moo', 'me': 'meh', 'mo': 'moh',
-                'ya': 'yah', 'yu': 'yoo', 'yo': 'yoh',
-                'ra': 'rah', 'ri': 'ree', 'ru': 'roo', 're': 'reh', 'ro': 'roh',
-                'wa': 'wah', 'wo': 'woh',
-                'n': 'n'
-            };
-
-            const textToSpeak = japanesePhonetics[romaji.toLowerCase()] || romaji;
-
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.7;
+            const utterance = new SpeechSynthesisUtterance(romaji);
+            utterance.lang = 'ja-JP';  // Use Japanese language for proper pronunciation
+            utterance.rate = 0.8;
             utterance.pitch = 1;
             synth.speak(utterance);
         }
