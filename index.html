@@ -32,8 +32,8 @@
             background-image: var(--bg-texture, none);
             background-repeat: repeat;
             min-height: 100vh;
-            padding-top: 70px;
-            padding-bottom: 20px;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* Font Classes */
@@ -97,56 +97,45 @@
             font-family: 'Kaisei Opti', serif;
         }
 
-        /* Fixed Header */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #000;
-            padding: 15px 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 {
-            color: #fff;
-            font-size: 20px;
-            margin: 0;
-            font-weight: 600;
-        }
-
+        /* Floating Menu Button */
         .menu-btn {
-            background: transparent;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
             color: #fff;
             border: none;
-            padding: 8px;
+            padding: 12px;
             font-size: 24px;
             cursor: pointer;
             transition: all 0.2s ease;
-            opacity: 0.8;
-            position: relative;
+            z-index: 100;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .menu-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.05);
         }
 
         .menu-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
+            position: fixed;
+            top: 75px;
+            right: 15px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             min-width: 180px;
-            margin-top: 10px;
             display: none;
             overflow: hidden;
+            z-index: 99;
         }
 
         .menu-dropdown.show {
@@ -188,8 +177,10 @@
         .container {
             max-width: 600px;
             width: 100%;
+            height: 100vh;
             margin: 0 auto;
             padding: 0 15px;
+            overflow: hidden;
         }
 
         .question-card {
@@ -197,7 +188,7 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 70px);
+            height: 100vh;
             overflow: hidden;
         }
 
@@ -210,6 +201,10 @@
             min-height: 0;
         }
 
+        .question-area.vocab-mode {
+            flex: 1;
+        }
+
         .buttons-area {
             flex: 0 0 62%;
             display: flex;
@@ -218,6 +213,11 @@
             align-items: center;
             padding: 0 20px;
             min-height: 0;
+        }
+
+        .buttons-area.vocab-mode {
+            flex: 0;
+            padding: 0;
         }
 
         .next-area {
@@ -515,6 +515,11 @@
             transition: all 0.2s ease;
         }
 
+        .font-dropdown option {
+            padding: 8px;
+            font-size: 16px;
+        }
+
         .settings-dropdown:hover {
             border-color: #667eea;
         }
@@ -785,18 +790,13 @@
     </style>
 </head>
 <body>
-    <!-- Fixed Header -->
-    <div class="header">
-        <h1>🇯🇵 Kana Practice</h1>
-        <button class="menu-btn" id="menuBtn">
-            ☰
-            <div class="menu-dropdown" id="menuDropdown">
-                <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
-                <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
-                <div class="menu-item" id="settingsMenuItem">Settings</div>
-                <div class="menu-item" id="aboutMenuItem">About</div>
-            </div>
-        </button>
+    <!-- Floating Menu Button -->
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
+        <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
+        <div class="menu-item" id="settingsMenuItem">Settings</div>
+        <div class="menu-item" id="aboutMenuItem">About</div>
     </div>
 
     <div class="container">
@@ -874,26 +874,26 @@
 
             <div class="settings-section">
                 <h3>Colors</h3>
-                <div style="display: grid; gap: 15px;">
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Background Color</label>
-                        <input type="color" class="color-picker" id="bgColorPicker" value="#667eea">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between;">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #666; text-align: center;">Background</label>
+                        <input type="color" class="color-picker" id="bgColorPicker" value="#667eea" style="width: 100%;">
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Text Color</label>
-                        <input type="color" class="color-picker" id="textColorPicker" value="#ffffff">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #666; text-align: center;">Text</label>
+                        <input type="color" class="color-picker" id="textColorPicker" value="#ffffff" style="width: 100%;">
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Button Color</label>
-                        <input type="color" class="color-picker" id="buttonColorPicker" value="#ffffff">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #666; text-align: center;">Button</label>
+                        <input type="color" class="color-picker" id="buttonColorPicker" value="#ffffff" style="width: 100%;">
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Button Text Color</label>
-                        <input type="color" class="color-picker" id="buttonTextColorPicker" value="#333333">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #666; text-align: center;">Button Text</label>
+                        <input type="color" class="color-picker" id="buttonTextColorPicker" value="#333333" style="width: 100%;">
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Accent Color</label>
-                        <input type="color" class="color-picker" id="accentColorPicker" value="#667eea">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="display: block; margin-bottom: 5px; font-size: 11px; color: #666; text-align: center;">Accent</label>
+                        <input type="color" class="color-picker" id="accentColorPicker" value="#667eea" style="width: 100%;">
                     </div>
                 </div>
             </div>
@@ -911,48 +911,35 @@
                     <option value="wood">Wood</option>
                     <option value="concrete">Concrete</option>
                     <option value="noise">Noise</option>
+                    <option value="diamond">Diamond</option>
+                    <option value="crosses">Crosses</option>
+                    <option value="waves">Waves</option>
+                    <option value="dots-light">Light Dots</option>
+                    <option value="hexagons">Hexagons</option>
+                    <option value="carbon">Carbon Fiber</option>
+                    <option value="tiles">Tiles</option>
+                    <option value="circuit">Circuit Board</option>
                 </select>
             </div>
 
             <div class="settings-section">
-                <h3>Hiragana Font Style</h3>
-                <select class="settings-dropdown" id="hiraganaFontDropdown">
-                    <option value="noto">Noto Sans JP</option>
-                    <option value="maru">Zen Maru Gothic</option>
-                    <option value="mincho">Shippori Mincho</option>
-                    <option value="kosugi">Kosugi Maru</option>
-                    <option value="rounded">M PLUS Rounded 1c</option>
-                    <option value="sawarabi-gothic">Sawarabi Gothic</option>
-                    <option value="sawarabi-mincho">Sawarabi Mincho</option>
-                    <option value="yusei">Yusei Magic</option>
-                    <option value="klee">Klee One</option>
-                    <option value="hachi">Hachi Maru Pop</option>
-                    <option value="rocknroll">RocknRoll One</option>
-                    <option value="dela">Dela Gothic One</option>
-                    <option value="rampart">Rampart One</option>
-                    <option value="kaisei-decol">Kaisei Decol</option>
-                    <option value="kaisei-opti">Kaisei Opti</option>
-                </select>
-            </div>
-
-            <div class="settings-section">
-                <h3>Katakana Font Style</h3>
-                <select class="settings-dropdown" id="katakanaFontDropdown">
-                    <option value="noto">Noto Sans JP</option>
-                    <option value="maru">Zen Maru Gothic</option>
-                    <option value="mincho">Shippori Mincho</option>
-                    <option value="kosugi">Kosugi Maru</option>
-                    <option value="rounded">M PLUS Rounded 1c</option>
-                    <option value="sawarabi-gothic">Sawarabi Gothic</option>
-                    <option value="sawarabi-mincho">Sawarabi Mincho</option>
-                    <option value="yusei">Yusei Magic</option>
-                    <option value="klee">Klee One</option>
-                    <option value="hachi">Hachi Maru Pop</option>
-                    <option value="rocknroll">RocknRoll One</option>
-                    <option value="dela">Dela Gothic One</option>
-                    <option value="rampart">Rampart One</option>
-                    <option value="kaisei-decol">Kaisei Decol</option>
-                    <option value="kaisei-opti">Kaisei Opti</option>
+                <h3>Font Style</h3>
+                <select class="settings-dropdown font-dropdown" id="fontDropdown">
+                    <option value="noto" class="font-noto">あア Noto Sans JP</option>
+                    <option value="maru" class="font-maru">あア Zen Maru Gothic</option>
+                    <option value="mincho" class="font-mincho">あア Shippori Mincho</option>
+                    <option value="kosugi" class="font-kosugi">あア Kosugi Maru</option>
+                    <option value="rounded" class="font-rounded">あア M PLUS Rounded 1c</option>
+                    <option value="sawarabi-gothic" class="font-sawarabi-gothic">あア Sawarabi Gothic</option>
+                    <option value="sawarabi-mincho" class="font-sawarabi-mincho">あア Sawarabi Mincho</option>
+                    <option value="yusei" class="font-yusei">あア Yusei Magic</option>
+                    <option value="klee" class="font-klee">あア Klee One</option>
+                    <option value="hachi" class="font-hachi">あア Hachi Maru Pop</option>
+                    <option value="rocknroll" class="font-rocknroll">あア RocknRoll One</option>
+                    <option value="dela" class="font-dela">あア Dela Gothic One</option>
+                    <option value="rampart" class="font-rampart">あア Rampart One</option>
+                    <option value="kaisei-decol" class="font-kaisei-decol">あア Kaisei Decol</option>
+                    <option value="kaisei-opti" class="font-kaisei-opti">あア Kaisei Opti</option>
                 </select>
             </div>
 
@@ -999,7 +986,7 @@
             <div class="settings-section">
                 <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">🇯🇵 Kana Practice</h3>
                 <p style="text-align: center; color: #666; margin-bottom: 10px;">
-                    <strong>Version 1.0.0</strong>
+                    <strong>Version 0.17</strong>
                 </p>
                 <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;">
                     A modern web app for practicing Japanese hiragana and katakana characters with customizable themes, vocabulary exercises, and audio pronunciation.
@@ -1283,8 +1270,7 @@
         let buttonTextColor = '#333333';
         let accentColor = '#667eea';
         let bgTexture = 'none';
-        let hiraganaFont = 'noto';
-        let katakanaFont = 'noto';
+        let fontStyle = 'noto';
 
         // Theme presets
         const themes = {
@@ -1385,7 +1371,15 @@
             paper: 'url(https://www.transparenttextures.com/patterns/paper.png)',
             wood: 'url(https://www.transparenttextures.com/patterns/wood-pattern.png)',
             concrete: 'url(https://www.transparenttextures.com/patterns/concrete-wall.png)',
-            noise: 'url(https://www.transparenttextures.com/patterns/stardust.png)'
+            noise: 'url(https://www.transparenttextures.com/patterns/stardust.png)',
+            diamond: 'url(https://www.transparenttextures.com/patterns/diamond-upholstery.png)',
+            crosses: 'url(https://www.transparenttextures.com/patterns/crosses.png)',
+            waves: 'url(https://www.transparenttextures.com/patterns/wave-grid.png)',
+            'dots-light': 'url(https://www.transparenttextures.com/patterns/reticular-tissue.png)',
+            hexagons: 'url(https://www.transparenttextures.com/patterns/hexagons.png)',
+            carbon: 'url(https://www.transparenttextures.com/patterns/carbon-fibre-big.png)',
+            tiles: 'url(https://www.transparenttextures.com/patterns/square-tiles.png)',
+            circuit: 'url(https://www.transparenttextures.com/patterns/circuit-board.png)'
         };
 
         // Text-to-speech
@@ -1461,8 +1455,7 @@
             buttonTextColor = localStorage.getItem('buttonTextColor') || '#333333';
             accentColor = localStorage.getItem('accentColor') || '#667eea';
             bgTexture = localStorage.getItem('bgTexture') || 'none';
-            hiraganaFont = localStorage.getItem('hiraganaFont') || 'noto';
-            katakanaFont = localStorage.getItem('katakanaFont') || 'noto';
+            fontStyle = localStorage.getItem('fontStyle') || 'noto';
 
             bgColorPicker.value = bgColor;
             textColorPicker.value = textColor;
@@ -1472,12 +1465,10 @@
 
             const themeDropdown = document.getElementById('themeDropdown');
             const textureDropdown = document.getElementById('textureDropdown');
-            const hiraganaFontDropdown = document.getElementById('hiraganaFontDropdown');
-            const katakanaFontDropdown = document.getElementById('katakanaFontDropdown');
+            const fontDropdown = document.getElementById('fontDropdown');
 
             if (textureDropdown) textureDropdown.value = bgTexture;
-            if (hiraganaFontDropdown) hiraganaFontDropdown.value = hiraganaFont;
-            if (katakanaFontDropdown) katakanaFontDropdown.value = katakanaFont;
+            if (fontDropdown) fontDropdown.value = fontStyle;
 
             applyColors();
 
@@ -1497,8 +1488,7 @@
             localStorage.setItem('buttonTextColor', buttonTextColor);
             localStorage.setItem('accentColor', accentColor);
             localStorage.setItem('bgTexture', bgTexture);
-            localStorage.setItem('hiraganaFont', hiraganaFont);
-            localStorage.setItem('katakanaFont', katakanaFont);
+            localStorage.setItem('fontStyle', fontStyle);
             localStorage.setItem('quizMode', quizMode);
         }
 
@@ -1506,21 +1496,15 @@
         function updateFontStyle() {
             // Update sound display font based on content
             soundDisplay.className = soundDisplay.className.replace(/font-\w+/g, '');
-            if (soundDisplay.classList.contains('romaji')) {
-                // For romaji display, use hiragana font
-                soundDisplay.classList.add(`font-${hiraganaFont}`);
-            } else if (soundDisplay.classList.contains('clickable')) {
-                // For vocabulary mode, use hiragana font
-                soundDisplay.classList.add(`font-${hiraganaFont}`);
+            if (soundDisplay.classList.contains('romaji') || soundDisplay.classList.contains('clickable')) {
+                soundDisplay.classList.add(`font-${fontStyle}`);
             }
 
             // Update option buttons with appropriate fonts
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.className = btn.className.replace(/font-\w+/g, '');
-                if (btn.classList.contains('hiragana')) {
-                    btn.classList.add(`font-${hiraganaFont}`);
-                } else if (btn.classList.contains('katakana')) {
-                    btn.classList.add(`font-${katakanaFont}`);
+                if (btn.classList.contains('hiragana') || btn.classList.contains('katakana')) {
+                    btn.classList.add(`font-${fontStyle}`);
                 }
             });
 
@@ -1528,9 +1512,7 @@
             document.querySelectorAll('.char-toggle').forEach(btn => {
                 if (!btn.classList.contains('empty') && btn.dataset.char) {
                     btn.className = btn.className.replace(/font-\w+/g, '');
-                    // Check if it's hiragana or katakana
-                    const isKatakana = katakanaData.some(k => k.char === btn.dataset.char);
-                    btn.classList.add(`font-${isKatakana ? katakanaFont : hiraganaFont}`);
+                    btn.classList.add(`font-${fontStyle}`);
                 }
             });
         }
@@ -1609,8 +1591,7 @@
                         table.appendChild(vowelLabel);
                     } else {
                         const btn = document.createElement('button');
-                        const font = prefix === 'hiragana' ? hiraganaFont : katakanaFont;
-                        btn.className = `char-toggle font-${font}`;
+                        btn.className = `char-toggle font-${fontStyle}`;
 
                         if (char === '') {
                             btn.classList.add('empty');
@@ -1784,18 +1765,10 @@
             saveSettings();
         };
 
-        // Font dropdowns
-        const hiraganaFontDropdown = document.getElementById('hiraganaFontDropdown');
-        const katakanaFontDropdown = document.getElementById('katakanaFontDropdown');
-
-        hiraganaFontDropdown.onchange = (e) => {
-            hiraganaFont = e.target.value;
-            updateFontStyle();
-            saveSettings();
-        };
-
-        katakanaFontDropdown.onchange = (e) => {
-            katakanaFont = e.target.value;
+        // Font dropdown
+        const fontDropdown = document.getElementById('fontDropdown');
+        fontDropdown.onchange = (e) => {
+            fontStyle = e.target.value;
             updateFontStyle();
             saveSettings();
         };
@@ -1976,6 +1949,10 @@
             optionsGrid.style.display = 'none';
             nextBtn.classList.add('show');
 
+            // Add vocab-mode class for centered layout
+            document.querySelector('.question-area').classList.add('vocab-mode');
+            document.querySelector('.buttons-area').classList.add('vocab-mode');
+
             const availableVocab = getAvailableVocabWords();
 
             if (availableVocab.length === 0) {
@@ -2000,7 +1977,7 @@
             questionText.textContent = 'Click the word to hear pronunciation and see translation:';
 
             soundDisplay.textContent = vocab.word;
-            soundDisplay.className = `sound-display clickable font-${hiraganaFont}`;
+            soundDisplay.className = `sound-display clickable font-${fontStyle}`;
             soundDisplay.title = 'Click to hear pronunciation';
             vocabTranslation.textContent = '';
         }
@@ -2010,6 +1987,10 @@
             optionsGrid.style.display = 'grid';
             vocabTranslation.textContent = '';
             nextBtn.className = 'next-btn';
+
+            // Remove vocab-mode class
+            document.querySelector('.question-area').classList.remove('vocab-mode');
+            document.querySelector('.buttons-area').classList.remove('vocab-mode');
 
             const availableChars = getEnabledChars();
             if (availableChars.length === 0) {
@@ -2039,9 +2020,7 @@
             if (isReverseMode) {
                 questionText.textContent = 'Select the sound for:';
                 soundDisplay.textContent = correctAnswer.char;
-                const isKatakana = katakanaData.some(k => k.char === correctAnswer.char);
-                const font = isKatakana ? katakanaFont : hiraganaFont;
-                soundDisplay.className = `sound-display font-${font}`;
+                soundDisplay.className = `sound-display font-${fontStyle}`;
                 soundDisplay.title = 'Character display (no audio in reverse mode)';
             } else {
                 questionText.textContent = 'Select the character for:';
@@ -2066,8 +2045,7 @@
                 } else {
                     btn.textContent = option.char;
                     const isKatakana = katakanaData.some(k => k.char === option.char);
-                    const font = isKatakana ? katakanaFont : hiraganaFont;
-                    btn.classList.add(isKatakana ? 'katakana' : 'hiragana', `font-${font}`);
+                    btn.classList.add(isKatakana ? 'katakana' : 'hiragana', `font-${fontStyle}`);
                 }
 
                 btn.onclick = () => checkAnswer(option, btn);
