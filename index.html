@@ -411,6 +411,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
         }
 
         #drawingCanvas {
@@ -420,6 +421,49 @@
             cursor: crosshair;
             touch-action: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .hint-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 200px;
+            color: rgba(102, 126, 234, 0.3);
+            pointer-events: none;
+            z-index: 1;
+            display: none;
+            font-weight: bold;
+        }
+
+        .hint-overlay.show {
+            display: block;
+        }
+
+        .speaker-btn {
+            background: var(--button-color);
+            color: var(--accent-color);
+            border: 3px solid var(--accent-color);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .speaker-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .speaker-btn:active {
+            transform: scale(0.95);
         }
 
         .handwriting-controls {
@@ -955,17 +999,21 @@
                     <span id="handwritingScore">Score: 0</span>
                 </div>
                 <div class="question-header">Handwriting Practice</div>
-                <div class="question-text">Draw the character for:</div>
-                <div class="sound-display romaji" id="handwritingPrompt">ka</div>
+                <div class="question-text">Draw the character:</div>
+                <button class="sound-display speaker-btn" id="handwritingSpeaker" title="Click to hear pronunciation">
+                    🔊
+                </button>
             </div>
 
             <div class="handwriting-canvas-area">
                 <canvas id="drawingCanvas" width="320" height="320"></canvas>
+                <div class="hint-overlay" id="hintOverlay"></div>
                 <div class="candidates" id="candidateList"></div>
             </div>
 
             <div class="handwriting-controls">
                 <button class="handwriting-btn success" id="checkDrawingBtn">Check Answer</button>
+                <button class="handwriting-btn" id="showHintBtn">Show Hint</button>
                 <button class="handwriting-btn" id="clearCanvasBtn">Clear</button>
                 <button class="handwriting-btn" id="skipCharBtn">Skip</button>
                 <button class="handwriting-btn danger" id="exitHandwritingBtn">Exit Practice</button>
@@ -1560,9 +1608,11 @@
         const handwritingCard = document.getElementById('handwritingCard');
         const drawingCanvas = document.getElementById('drawingCanvas');
         const candidateList = document.getElementById('candidateList');
-        const handwritingPrompt = document.getElementById('handwritingPrompt');
+        const handwritingSpeaker = document.getElementById('handwritingSpeaker');
+        const hintOverlay = document.getElementById('hintOverlay');
         const handwritingScore = document.getElementById('handwritingScore');
         const checkDrawingBtn = document.getElementById('checkDrawingBtn');
+        const showHintBtn = document.getElementById('showHintBtn');
         const clearCanvasBtn = document.getElementById('clearCanvasBtn');
         const skipCharBtn = document.getElementById('skipCharBtn');
         const exitHandwritingBtn = document.getElementById('exitHandwritingBtn');
@@ -2312,12 +2362,15 @@
             }
 
             handwritingCurrentChar = availableChars[Math.floor(Math.random() * availableChars.length)];
-            handwritingPrompt.textContent = handwritingCurrentChar.romaji.toUpperCase();
+
+            // Speak the character immediately
+            speak(handwritingCurrentChar.char);
 
             // Clear canvas
             if (typeof KanjiCanvas !== 'undefined') {
                 KanjiCanvas.erase('drawingCanvas');
             }
+            hintOverlay.classList.remove('show');
             candidateList.className = 'candidates';
             candidateList.textContent = 'Draw the character, and I\'ll show you what I recognize!';
         }
@@ -2358,17 +2411,18 @@
                 return;
             }
 
-            // Check if correct answer is in top 5 (less strict)
+            // Check if correct answer is in top 15 (very lenient)
             const correctChar = handwritingCurrentChar.char;
-            const topFive = results.slice(0, 5).map(r => r.char);
+            const topFifteen = results.slice(0, 15).map(r => r.char);
+            const position = topFifteen.indexOf(correctChar);
 
-            if (topFive.includes(correctChar)) {
+            if (position !== -1) {
                 // Correct!
                 handwritingPoints++;
                 handwritingScore.textContent = `Score: ${handwritingPoints}`;
                 candidateList.className = 'candidates correct';
-                candidateList.textContent = `✅ Correct! ${correctChar} (${handwritingCurrentChar.romaji})`;
-                speak(correctChar);
+                const feedback = position === 0 ? '✅ Perfect!' : position < 3 ? '✅ Great!' : '✅ Correct!';
+                candidateList.textContent = `${feedback} ${correctChar} (${handwritingCurrentChar.romaji})`;
 
                 // Auto advance after 1.5 seconds
                 setTimeout(() => {
@@ -2376,13 +2430,31 @@
                 }, 1500);
             } else {
                 candidateList.className = 'candidates incorrect';
-                const topCandidates = results.slice(0, 8).map(r => r.char).join('  ');
-                candidateList.innerHTML = `<div style="margin-bottom: 8px;">❌ Not quite. Looking for: <strong>${correctChar}</strong> (${handwritingCurrentChar.romaji})</div><div style="font-size: 14px;">You drew: ${topCandidates}</div>`;
-                speak(correctChar);
+                const topCandidates = results.slice(0, 10).map(r => r.char).join('  ');
+                candidateList.innerHTML = `<div style="margin-bottom: 8px;">❌ Not in top 15. Looking for: <strong>${correctChar}</strong> (${handwritingCurrentChar.romaji})</div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Try clicking "Show Hint" to see the correct shape!</div>`;
             }
         }
 
         // Handwriting event handlers
+        handwritingSpeaker.onclick = () => {
+            if (handwritingCurrentChar) {
+                speak(handwritingCurrentChar.char);
+            }
+        };
+
+        showHintBtn.onclick = () => {
+            if (handwritingCurrentChar) {
+                hintOverlay.textContent = handwritingCurrentChar.char;
+                hintOverlay.classList.add('show');
+                hintOverlay.className = `hint-overlay show font-${fontStyle}`;
+
+                // Hide hint after 3 seconds
+                setTimeout(() => {
+                    hintOverlay.classList.remove('show');
+                }, 3000);
+            }
+        };
+
         checkDrawingBtn.onclick = checkHandwriting;
 
         // Auto-show candidates after drawing (with debounce)
@@ -2400,6 +2472,7 @@
             if (typeof KanjiCanvas !== 'undefined') {
                 KanjiCanvas.erase('drawingCanvas');
             }
+            hintOverlay.classList.remove('show');
             candidateList.className = 'candidates';
             candidateList.textContent = 'Draw a character to see recognition...';
         };
