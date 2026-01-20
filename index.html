@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kana Practice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&family=Shippori+Mincho:wght@400;700&family=Kosugi+Maru&family=M+PLUS+Rounded+1c:wght@400;700&family=Sawarabi+Gothic&family=Sawarabi+Mincho&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,29 +14,51 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-color: #667eea;
+            --button-color: #ffffff;
+            --button-text-color: #333333;
+            --text-color: #ffffff;
+            --accent-color: #667eea;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #667eea;
+            background: var(--bg-color);
+            background-image: var(--bg-texture, none);
+            background-repeat: repeat;
             min-height: 100vh;
             padding-top: 70px;
             padding-bottom: 20px;
         }
 
         /* Font Classes */
-        .font-mincho {
-            font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', serif;
-        }
-
-        .font-gothic {
-            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'MS Gothic', sans-serif;
+        .font-noto {
+            font-family: 'Noto Sans JP', sans-serif;
         }
 
         .font-maru {
-            font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', 'MS Gothic', sans-serif;
+            font-family: 'Zen Maru Gothic', sans-serif;
         }
 
-        .font-system {
-            font-family: system-ui, -apple-system, sans-serif;
+        .font-mincho {
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        .font-kosugi {
+            font-family: 'Kosugi Maru', sans-serif;
+        }
+
+        .font-rounded {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+        }
+
+        .font-sawarabi-gothic {
+            font-family: 'Sawarabi Gothic', sans-serif;
+        }
+
+        .font-sawarabi-mincho {
+            font-family: 'Sawarabi Mincho', serif;
         }
 
         /* Fixed Header */
@@ -118,7 +143,8 @@
             display: flex;
             gap: 15px;
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-color);
+            opacity: 0.7;
             margin-bottom: 10px;
             justify-content: center;
         }
@@ -142,14 +168,15 @@
 
         .question-header {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-color);
+            opacity: 0.8;
             margin-bottom: 5px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .question-text {
             font-size: 16px;
-            color: white;
+            color: var(--text-color);
             margin-bottom: 15px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
@@ -157,7 +184,7 @@
         .sound-display {
             font-size: 56px;
             font-weight: bold;
-            color: white;
+            color: var(--text-color);
             margin: 20px 0;
             transition: all 0.2s ease;
             user-select: none;
@@ -187,7 +214,8 @@
 
         .vocab-translation {
             font-size: 18px;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-color);
+            opacity: 0.9;
             margin-top: 15px;
             min-height: 25px;
         }
@@ -200,14 +228,14 @@
         }
 
         .option-btn {
-            background: white;
+            background: var(--button-color);
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             padding: 25px 15px;
             font-size: 40px;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: #333;
+            color: var(--button-text-color);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -256,8 +284,8 @@
         }
 
         .next-btn {
-            background: white;
-            color: #667eea;
+            background: var(--button-color);
+            color: var(--accent-color);
             border: none;
             border-radius: 12px;
             padding: 15px 35px;
@@ -494,8 +522,8 @@
 
         .chart-header {
             background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
             padding: 6px 3px;
             text-align: center;
             font-size: 11px;
@@ -506,7 +534,7 @@
         }
 
         .chart-header.selected {
-            background: #667eea;
+            background: var(--accent-color);
             color: white;
         }
 
@@ -664,6 +692,7 @@
                 <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
                 <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
                 <div class="menu-item" id="settingsMenuItem">Settings</div>
+                <div class="menu-item" id="aboutMenuItem">About</div>
             </div>
         </button>
     </div>
@@ -718,38 +747,79 @@
             </div>
 
             <div class="settings-section">
-                <h3>Background Color</h3>
-                <div class="color-picker-group">
-                    <input type="color" class="color-picker" id="bgColorPicker" value="#667eea">
-                    <div class="color-preset" style="background: #667eea" data-color="#667eea"></div>
-                    <div class="color-preset" style="background: #764ba2" data-color="#764ba2"></div>
-                    <div class="color-preset" style="background: #f093fb" data-color="#f093fb"></div>
-                    <div class="color-preset" style="background: #4facfe" data-color="#4facfe"></div>
-                    <div class="color-preset" style="background: #43e97b" data-color="#43e97b"></div>
-                    <div class="color-preset" style="background: #fa709a" data-color="#fa709a"></div>
-                    <div class="color-preset" style="background: #30cfd0" data-color="#30cfd0"></div>
-                    <div class="color-preset" style="background: #2c3e50" data-color="#2c3e50"></div>
+                <h3>Theme Presets</h3>
+                <div class="mode-toggle">
+                    <button class="mode-btn" data-theme="default">Default</button>
+                    <button class="mode-btn" data-theme="monokai">Monokai</button>
+                    <button class="mode-btn" data-theme="dracula">Dracula</button>
+                    <button class="mode-btn" data-theme="nord">Nord</button>
+                    <button class="mode-btn" data-theme="solarized">Solarized</button>
+                    <button class="mode-btn" data-theme="ocean">Ocean</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Colors</h3>
+                <div style="display: grid; gap: 15px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Background Color</label>
+                        <input type="color" class="color-picker" id="bgColorPicker" value="#667eea">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Text Color</label>
+                        <input type="color" class="color-picker" id="textColorPicker" value="#ffffff">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Button Color</label>
+                        <input type="color" class="color-picker" id="buttonColorPicker" value="#ffffff">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Button Text Color</label>
+                        <input type="color" class="color-picker" id="buttonTextColorPicker" value="#333333">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">Accent Color</label>
+                        <input type="color" class="color-picker" id="accentColorPicker" value="#667eea">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Background Texture</h3>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" data-texture="none">None</button>
+                    <button class="mode-btn" data-texture="subtle">Subtle</button>
+                    <button class="mode-btn" data-texture="dots">Dots</button>
+                    <button class="mode-btn" data-texture="grid">Grid</button>
                 </div>
             </div>
 
             <div class="settings-section">
                 <h3>Font Style</h3>
                 <div class="font-selector">
-                    <button class="font-btn font-gothic active" data-font="gothic">
+                    <button class="font-btn font-noto active" data-font="noto">
                         あいう
-                        <span class="font-label">Gothic</span>
+                        <span class="font-label">Noto Sans</span>
+                    </button>
+                    <button class="font-btn font-maru" data-font="maru">
+                        あいう
+                        <span class="font-label">Zen Maru</span>
                     </button>
                     <button class="font-btn font-mincho" data-font="mincho">
                         あいう
                         <span class="font-label">Mincho</span>
                     </button>
-                    <button class="font-btn font-maru" data-font="maru">
+                    <button class="font-btn font-kosugi" data-font="kosugi">
                         あいう
-                        <span class="font-label">Maru Gothic</span>
+                        <span class="font-label">Kosugi</span>
                     </button>
-                    <button class="font-btn font-system" data-font="system">
+                    <button class="font-btn font-rounded" data-font="rounded">
                         あいう
-                        <span class="font-label">System</span>
+                        <span class="font-label">Rounded</span>
+                    </button>
+                    <button class="font-btn font-sawarabi-gothic" data-font="sawarabi-gothic">
+                        あいう
+                        <span class="font-label">Sawarabi G</span>
                     </button>
                 </div>
             </div>
@@ -782,6 +852,43 @@
                     <button class="control-btn" id="deselectAllKatakanaBtn">Deselect All</button>
                 </div>
                 <div class="kana-grid" id="katakanaGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>ℹ️ About</h2>
+                <button class="close-btn" id="closeAboutModal">×</button>
+            </div>
+
+            <div class="settings-section">
+                <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">🇯🇵 Kana Practice</h3>
+                <p style="text-align: center; color: #666; margin-bottom: 10px;">
+                    <strong>Version 1.0.0</strong>
+                </p>
+                <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;">
+                    A modern web app for practicing Japanese hiragana and katakana characters with customizable themes, vocabulary exercises, and audio pronunciation.
+                </p>
+
+                <div style="background: #f8f9ff; border-radius: 10px; padding: 15px; margin: 20px 0;">
+                    <h4 style="color: #667eea; margin-bottom: 10px; font-size: 14px;">Features</h4>
+                    <ul style="list-style: none; padding: 0; color: #666; font-size: 13px; line-height: 1.8;">
+                        <li>✓ Hiragana & Katakana practice</li>
+                        <li>✓ Vocabulary exercises (130+ words)</li>
+                        <li>✓ Audio pronunciation (Japanese TTS)</li>
+                        <li>✓ Customizable themes & colors</li>
+                        <li>✓ Multiple Japanese font options</li>
+                        <li>✓ Normal & reverse quiz modes</li>
+                        <li>✓ Progress tracking</li>
+                    </ul>
+                </div>
+
+                <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
+                    Created with ❤️ for Japanese language learners
+                </p>
             </div>
         </div>
     </div>
@@ -1039,7 +1146,66 @@
         let enabledHiragana = new Set(hiraganaData.map(h => h.char));
         let enabledKatakana = new Set(katakanaData.map(k => k.char));
         let bgColor = '#667eea';
-        let fontStyle = 'gothic';
+        let textColor = '#ffffff';
+        let buttonColor = '#ffffff';
+        let buttonTextColor = '#333333';
+        let accentColor = '#667eea';
+        let bgTexture = 'none';
+        let fontStyle = 'noto';
+
+        // Theme presets
+        const themes = {
+            default: {
+                bg: '#667eea',
+                text: '#ffffff',
+                button: '#ffffff',
+                buttonText: '#333333',
+                accent: '#667eea'
+            },
+            monokai: {
+                bg: '#272822',
+                text: '#f8f8f2',
+                button: '#3e3d32',
+                buttonText: '#f8f8f2',
+                accent: '#a6e22e'
+            },
+            dracula: {
+                bg: '#282a36',
+                text: '#f8f8f2',
+                button: '#44475a',
+                buttonText: '#f8f8f2',
+                accent: '#bd93f9'
+            },
+            nord: {
+                bg: '#2e3440',
+                text: '#eceff4',
+                button: '#3b4252',
+                buttonText: '#eceff4',
+                accent: '#88c0d0'
+            },
+            solarized: {
+                bg: '#002b36',
+                text: '#fdf6e3',
+                button: '#073642',
+                buttonText: '#fdf6e3',
+                accent: '#268bd2'
+            },
+            ocean: {
+                bg: '#1a365d',
+                text: '#e6fffa',
+                button: '#2c5282',
+                buttonText: '#e6fffa',
+                accent: '#4fd1c5'
+            }
+        };
+
+        // Texture URLs from transparenttextures.com
+        const textures = {
+            none: 'none',
+            subtle: 'url(https://www.transparenttextures.com/patterns/asfalt-light.png)',
+            dots: 'url(https://www.transparenttextures.com/patterns/60-lines.png)',
+            grid: 'url(https://www.transparenttextures.com/patterns/grid.png)'
+        };
 
         // Text-to-speech
         const synth = window.speechSynthesis;
@@ -1080,9 +1246,25 @@
         const restartBtn = document.getElementById('restartBtn');
         const settingsModal = document.getElementById('settingsModal');
         const closeModal = document.getElementById('closeModal');
+        const aboutModal = document.getElementById('aboutModal');
+        const closeAboutModal = document.getElementById('closeAboutModal');
         const hiraganaGrid = document.getElementById('hiraganaGrid');
         const katakanaGrid = document.getElementById('katakanaGrid');
         const bgColorPicker = document.getElementById('bgColorPicker');
+        const textColorPicker = document.getElementById('textColorPicker');
+        const buttonColorPicker = document.getElementById('buttonColorPicker');
+        const buttonTextColorPicker = document.getElementById('buttonTextColorPicker');
+        const accentColorPicker = document.getElementById('accentColorPicker');
+
+        // Apply colors to CSS variables
+        function applyColors() {
+            document.documentElement.style.setProperty('--bg-color', bgColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--button-color', buttonColor);
+            document.documentElement.style.setProperty('--button-text-color', buttonTextColor);
+            document.documentElement.style.setProperty('--accent-color', accentColor);
+            document.documentElement.style.setProperty('--bg-texture', textures[bgTexture]);
+        }
 
         // Load settings from localStorage
         function loadSettings() {
@@ -1092,12 +1274,20 @@
             const savedKatakana = localStorage.getItem('enabledKatakana');
             if (savedKatakana) enabledKatakana = new Set(JSON.parse(savedKatakana));
 
-            const savedColor = localStorage.getItem('bgColor');
-            if (savedColor) {
-                bgColor = savedColor;
-                document.body.style.background = bgColor;
-                bgColorPicker.value = bgColor;
-            }
+            bgColor = localStorage.getItem('bgColor') || '#667eea';
+            textColor = localStorage.getItem('textColor') || '#ffffff';
+            buttonColor = localStorage.getItem('buttonColor') || '#ffffff';
+            buttonTextColor = localStorage.getItem('buttonTextColor') || '#333333';
+            accentColor = localStorage.getItem('accentColor') || '#667eea';
+            bgTexture = localStorage.getItem('bgTexture') || 'none';
+
+            bgColorPicker.value = bgColor;
+            textColorPicker.value = textColor;
+            buttonColorPicker.value = buttonColor;
+            buttonTextColorPicker.value = buttonTextColor;
+            accentColorPicker.value = accentColor;
+
+            applyColors();
 
             const savedFont = localStorage.getItem('fontStyle');
             if (savedFont) {
@@ -1116,6 +1306,11 @@
             localStorage.setItem('enabledHiragana', JSON.stringify([...enabledHiragana]));
             localStorage.setItem('enabledKatakana', JSON.stringify([...enabledKatakana]));
             localStorage.setItem('bgColor', bgColor);
+            localStorage.setItem('textColor', textColor);
+            localStorage.setItem('buttonColor', buttonColor);
+            localStorage.setItem('buttonTextColor', buttonTextColor);
+            localStorage.setItem('accentColor', accentColor);
+            localStorage.setItem('bgTexture', bgTexture);
             localStorage.setItem('fontStyle', fontStyle);
             localStorage.setItem('quizMode', quizMode);
         }
@@ -1345,19 +1540,72 @@
             initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
         };
 
-        // Background color
+        // Theme presets
+        document.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.onclick = () => {
+                const theme = themes[btn.dataset.theme];
+                bgColor = theme.bg;
+                textColor = theme.text;
+                buttonColor = theme.button;
+                buttonTextColor = theme.buttonText;
+                accentColor = theme.accent;
+
+                bgColorPicker.value = bgColor;
+                textColorPicker.value = textColor;
+                buttonColorPicker.value = buttonColor;
+                buttonTextColorPicker.value = buttonTextColor;
+                accentColorPicker.value = accentColor;
+
+                applyColors();
+                saveSettings();
+
+                // Update active button
+                document.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            };
+        });
+
+        // Color pickers
         bgColorPicker.oninput = (e) => {
             bgColor = e.target.value;
-            document.body.style.background = bgColor;
+            applyColors();
             saveSettings();
         };
 
-        document.querySelectorAll('.color-preset').forEach(preset => {
-            preset.onclick = () => {
-                bgColor = preset.dataset.color;
-                document.body.style.background = bgColor;
-                bgColorPicker.value = bgColor;
+        textColorPicker.oninput = (e) => {
+            textColor = e.target.value;
+            applyColors();
+            saveSettings();
+        };
+
+        buttonColorPicker.oninput = (e) => {
+            buttonColor = e.target.value;
+            applyColors();
+            saveSettings();
+        };
+
+        buttonTextColorPicker.oninput = (e) => {
+            buttonTextColor = e.target.value;
+            applyColors();
+            saveSettings();
+        };
+
+        accentColorPicker.oninput = (e) => {
+            accentColor = e.target.value;
+            applyColors();
+            saveSettings();
+        };
+
+        // Texture options
+        document.querySelectorAll('[data-texture]').forEach(btn => {
+            btn.onclick = () => {
+                bgTexture = btn.dataset.texture;
+                applyColors();
                 saveSettings();
+
+                // Update active button
+                document.querySelectorAll('[data-texture]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
             };
         });
 
@@ -1418,13 +1666,29 @@
             initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
         };
 
+        const aboutMenuItem = document.getElementById('aboutMenuItem');
+        aboutMenuItem.onclick = () => {
+            menuDropdown.classList.remove('show');
+            aboutModal.classList.add('show');
+        };
+
         closeModal.onclick = () => {
             settingsModal.classList.remove('show');
+        };
+
+        closeAboutModal.onclick = () => {
+            aboutModal.classList.remove('show');
         };
 
         settingsModal.onclick = (e) => {
             if (e.target === settingsModal) {
                 settingsModal.classList.remove('show');
+            }
+        };
+
+        aboutModal.onclick = (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.classList.remove('show');
             }
         };
 
