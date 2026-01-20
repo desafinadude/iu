@@ -486,7 +486,7 @@
 
         .chart-table {
             display: grid;
-            grid-template-columns: auto repeat(15, 1fr);
+            grid-template-columns: auto repeat(10, 1fr);
             gap: 3px;
             min-width: 650px;
             margin-bottom: 20px;
@@ -502,11 +502,6 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.2s ease;
-        }
-
-        .chart-header:hover {
-            background: #764ba2;
-            transform: scale(1.05);
         }
 
         .chart-header.empty {
@@ -764,7 +759,6 @@
                 <div class="toggle-controls">
                     <button class="control-btn" id="selectAllHiraganaBtn">Select All</button>
                     <button class="control-btn" id="deselectAllHiraganaBtn">Deselect All</button>
-                    <button class="control-btn" id="basicsOnlyHiraganaBtn">Basics Only</button>
                 </div>
                 <div class="kana-grid" id="hiraganaGrid"></div>
             </div>
@@ -780,7 +774,6 @@
                 <div class="toggle-controls">
                     <button class="control-btn" id="selectAllKatakanaBtn">Select All</button>
                     <button class="control-btn" id="deselectAllKatakanaBtn">Deselect All</button>
-                    <button class="control-btn" id="basicsOnlyKatakanaBtn">Basics Only</button>
                 </div>
                 <div class="kana-grid" id="katakanaGrid"></div>
             </div>
@@ -1159,15 +1152,6 @@
             initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
         };
 
-        document.getElementById('basicsOnlyHiraganaBtn').onclick = () => {
-            enabledHiragana.clear();
-            hiraganaData.forEach(item => {
-                if (item.basic) enabledHiragana.add(item.char);
-            });
-            initKanaGrid(hiraganaGrid, hiraganaData, enabledHiragana, 'hiragana');
-            saveSettings();
-        };
-
         // Katakana control buttons
         document.getElementById('selectAllKatakanaBtn').onclick = () => {
             katakanaData.forEach(item => enabledKatakana.add(item.char));
@@ -1179,15 +1163,6 @@
             enabledKatakana.clear();
             saveSettings();
             initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
-        };
-
-        document.getElementById('basicsOnlyKatakanaBtn').onclick = () => {
-            enabledKatakana.clear();
-            katakanaData.forEach(item => {
-                if (item.basic) enabledKatakana.add(item.char);
-            });
-            initKanaGrid(katakanaGrid, katakanaData, enabledKatakana, 'katakana');
-            saveSettings();
         };
 
         // Background color
@@ -1229,18 +1204,31 @@
             quizMode = 'kana';
             menuDropdown.classList.remove('show');
             saveSettings();
-            if (questionCard.style.display === 'none') {
-                restartBtn.click(); // Restart if showing results
+
+            // Switch to kana mode immediately
+            questionCard.style.display = 'block';
+            resultsCard.classList.remove('show');
+            if (questionNumber >= 40) {
+                // Restart quiz if completed
+                questionNumber = 0;
+                normalScore = 0;
+                reverseScore = 0;
+                totalScore = 0;
+                isReverseMode = false;
+                scoreText.textContent = 'Score: 0';
             }
+            generateKanaQuestion();
         };
 
         vocabMenuItem.onclick = () => {
             quizMode = 'vocab';
             menuDropdown.classList.remove('show');
             saveSettings();
-            generateVocabQuestion();
+
+            // Switch to vocab mode immediately
             questionCard.style.display = 'block';
             resultsCard.classList.remove('show');
+            generateVocabQuestion();
         };
 
         settingsMenuItem.onclick = () => {
@@ -1312,12 +1300,55 @@
             return [...hiragana, ...katakana];
         }
 
+        // Get enabled hiragana characters as a set
+        function getEnabledHiraganaSet() {
+            const includeDakutenHiragana = document.getElementById('includeDakutenHiragana').checked;
+
+            const enabledChars = hiraganaData.filter(h => {
+                if (!enabledHiragana.has(h.char)) return false;
+                if (!h.basic && !includeDakutenHiragana) return false;
+                return true;
+            }).map(h => h.char);
+
+            return new Set(enabledChars);
+        }
+
+        // Get available vocabulary words (only words with enabled characters)
+        function getAvailableVocabWords() {
+            const enabledHiraganaChars = getEnabledHiraganaSet();
+
+            return vocabularyData.filter(vocab => {
+                // Check if all characters in the word are enabled
+                for (let char of vocab.word) {
+                    if (!enabledHiraganaChars.has(char)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+
         // Generate vocabulary question
         function generateVocabQuestion() {
             optionsGrid.style.display = 'none';
             nextBtn.classList.add('show');
 
-            const vocab = vocabularyData[Math.floor(Math.random() * vocabularyData.length)];
+            const availableVocab = getAvailableVocabWords();
+
+            if (availableVocab.length === 0) {
+                // No vocabulary words available with current character selection
+                questionCounter.textContent = '';
+                scoreText.textContent = '';
+                quizModeText.textContent = 'Vocabulary Practice';
+                questionText.textContent = 'No vocabulary words available with your current character selection.';
+                soundDisplay.textContent = '🚫';
+                soundDisplay.className = 'sound-display';
+                soundDisplay.title = '';
+                vocabTranslation.textContent = 'Please enable more characters in settings.';
+                return;
+            }
+
+            const vocab = availableVocab[Math.floor(Math.random() * availableVocab.length)];
             currentQuestion = vocab;
 
             questionCounter.textContent = '';
