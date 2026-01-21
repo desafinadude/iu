@@ -11,7 +11,10 @@
     <meta name="theme-color" content="#667eea">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
-    <!-- KanjiCanvas for handwriting recognition -->
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Handwriting recognition libraries -->
+    <script src="https://cdn.jsdelivr.net/gh/ChenYuHo/handwriting.js@master/src/handwriting.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/asdfjkl/kanjicanvas@master/docs/resources/javascript/kanji-canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/asdfjkl/kanjicanvas@master/docs/resources/javascript/ref-patterns.js"></script>
     <style>
@@ -963,7 +966,7 @@
                 <div class="question-header" id="quizModeText">Quiz Mode</div>
                 <div class="question-text" id="questionText">Select the character:</div>
                 <button class="speaker-btn" id="quizSpeaker" title="Click to hear pronunciation">
-                    🔊
+                    <i class="fa-solid fa-volume-high"></i>
                 </button>
                 <div class="vocab-translation" id="vocabTranslation"></div>
             </div>
@@ -1009,7 +1012,7 @@
                 <div class="question-header">Handwriting Practice</div>
                 <div class="question-text">Draw the character:</div>
                 <button class="sound-display speaker-btn" id="handwritingSpeaker" title="Click to hear pronunciation">
-                    🔊
+                    <i class="fa-solid fa-volume-high"></i>
                 </button>
             </div>
 
@@ -1171,7 +1174,7 @@
             <div class="settings-section">
                 <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">🇯🇵 Kana Practice</h3>
                 <p style="text-align: center; color: #666; margin-bottom: 10px;">
-                    <strong>Version 0.19</strong>
+                    <strong>Version 0.20</strong>
                 </p>
                 <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;">
                     A modern web app for practicing Japanese hiragana and katakana characters with customizable themes, vocabulary exercises, and audio pronunciation.
@@ -1630,6 +1633,9 @@
         // Handwriting practice state
         let handwritingCurrentChar = null;
         let handwritingPoints = 0;
+        let handwritingStrokes = [];
+        let currentStroke = [];
+        let isDrawing = false;
 
         // Apply colors to CSS variables
         function applyColors() {
@@ -2226,7 +2232,7 @@
                 quizSpeaker.style.cursor = 'default';
             } else {
                 questionText.textContent = 'Select the character:';
-                quizSpeaker.textContent = '🔊';
+                quizSpeaker.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
                 quizSpeaker.className = 'speaker-btn';
                 quizSpeaker.style.fontSize = '40px';
                 quizSpeaker.disabled = false;
@@ -2340,8 +2346,9 @@
         function startHandwritingPractice() {
             handwritingPoints = 0;
             handwritingScore.textContent = 'Score: 0';
+            handwritingStrokes = [];
 
-            // Initialize KanjiCanvas
+            // Initialize KanjiCanvas (fallback)
             try {
                 if (typeof KanjiCanvas !== 'undefined') {
                     KanjiCanvas.init('drawingCanvas');
@@ -2350,7 +2357,103 @@
                 console.error('KanjiCanvas initialization error:', error);
             }
 
+            // Set up canvas for stroke capture
+            setupCanvasDrawing();
+
             generateHandwritingQuestion();
+        }
+
+        // Setup canvas for drawing and stroke capture
+        function setupCanvasDrawing() {
+            const canvas = drawingCanvas;
+            const ctx = canvas.getContext('2d');
+
+            // Canvas drawing setup
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#000';
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            currentStroke = [];
+            const pos = getCanvasPosition(e);
+            currentStroke.push([pos.x, pos.y]);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+
+            const canvas = drawingCanvas;
+            const ctx = canvas.getContext('2d');
+            const pos = getCanvasPosition(e);
+
+            currentStroke.push([pos.x, pos.y]);
+
+            if (currentStroke.length < 2) return;
+
+            ctx.beginPath();
+            const prev = currentStroke[currentStroke.length - 2];
+            ctx.moveTo(prev[0], prev[1]);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (currentStroke.length > 0) {
+                handwritingStrokes.push(currentStroke);
+                currentStroke = [];
+
+                // Auto-recognize after a delay
+                setTimeout(recognizeWithHandwritingJS, 500);
+            }
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            drawingCanvas.dispatchEvent(mouseEvent);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            drawingCanvas.dispatchEvent(mouseEvent);
+        }
+
+        function getCanvasPosition(e) {
+            const rect = drawingCanvas.getBoundingClientRect();
+            const scaleX = drawingCanvas.width / rect.width;
+            const scaleY = drawingCanvas.height / rect.height;
+
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
         }
 
         function generateHandwritingQuestion() {
@@ -2375,6 +2478,45 @@
             candidateList.textContent = 'Draw the character, and I\'ll show you what I recognize!';
         }
 
+        function recognizeWithHandwritingJS() {
+            if (!handwritingStrokes || handwritingStrokes.length === 0) {
+                return;
+            }
+
+            // Use handwriting.js library if available
+            if (typeof handwriting !== 'undefined' && typeof handwriting.recognize === 'function') {
+                const options = {
+                    width: 320,
+                    height: 320,
+                    language: 'ja',
+                    numOfWords: 50,
+                    numOfReturn: 50
+                };
+
+                handwriting.recognize(handwritingStrokes, options, (result, err) => {
+                    if (err) {
+                        console.error('Handwriting.js error:', err);
+                        // Fall back to KanjiCanvas
+                        showCandidates();
+                        return;
+                    }
+
+                    if (result && result.length > 0) {
+                        // Display the recognized characters
+                        const topCandidates = result.slice(0, 8).join('  ');
+                        candidateList.className = 'candidates';
+                        candidateList.innerHTML = `<div style="margin-bottom: 8px;">Recognized:</div>${topCandidates}`;
+                    } else {
+                        // No results from handwriting.js, fallback to KanjiCanvas
+                        showCandidates();
+                    }
+                });
+            } else {
+                // Handwriting.js not loaded, fallback to KanjiCanvas
+                showCandidates();
+            }
+        }
+
         function showCandidates() {
             if (typeof KanjiCanvas === 'undefined') {
                 return;
@@ -2396,6 +2538,59 @@
         }
 
         function checkHandwriting() {
+            const correctChar = handwritingCurrentChar.char;
+
+            // Try handwriting.js first
+            if (typeof handwriting !== 'undefined' && typeof handwriting.recognize === 'function' && handwritingStrokes.length > 0) {
+                const options = {
+                    width: 320,
+                    height: 320,
+                    language: 'ja',
+                    numOfWords: 50,
+                    numOfReturn: 50
+                };
+
+                handwriting.recognize(handwritingStrokes, options, (result, err) => {
+                    if (err || !result || result.length === 0) {
+                        // Fallback to KanjiCanvas
+                        checkWithKanjiCanvas();
+                        return;
+                    }
+
+                    // Check if correct character is in results
+                    const position = result.indexOf(correctChar);
+
+                    // EXTREMELY lenient - accept if in top 50 candidates
+                    if (position !== -1 && position < 50) {
+                        // Correct!
+                        handwritingPoints++;
+                        handwritingScore.textContent = `Score: ${handwritingPoints}`;
+                        candidateList.className = 'candidates correct';
+                        const feedback = position === 0 ? '✅ Perfect!' : position < 5 ? '✅ Great!' : position < 15 ? '✅ Good!' : '✅ Nice try!';
+                        candidateList.textContent = `${feedback} ${correctChar} (${handwritingCurrentChar.romaji})`;
+
+                        // Auto advance after 1.5 seconds
+                        setTimeout(() => {
+                            generateHandwritingQuestion();
+                        }, 1500);
+                    } else {
+                        // Show feedback but be encouraging
+                        candidateList.className = 'candidates incorrect';
+                        const topCandidates = result.slice(0, 10).join('  ');
+                        if (position === -1) {
+                            candidateList.innerHTML = `<div style="margin-bottom: 8px;">🤔 Character not recognized. Looking for: <strong>${correctChar}</strong></div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Click "Show Hint" to see the correct shape, then try to trace it!</div>`;
+                        } else {
+                            candidateList.innerHTML = `<div style="margin-bottom: 8px;">📝 Close! Looking for: <strong>${correctChar}</strong> (found at position ${position + 1})</div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Click "Show Hint" and try tracing more carefully!</div>`;
+                        }
+                    }
+                });
+            } else {
+                // Fallback to KanjiCanvas if handwriting.js not available
+                checkWithKanjiCanvas();
+            }
+        }
+
+        function checkWithKanjiCanvas() {
             if (typeof KanjiCanvas === 'undefined') {
                 candidateList.className = 'candidates incorrect';
                 candidateList.textContent = '❌ Recognition library not loaded';
