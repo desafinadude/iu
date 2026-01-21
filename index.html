@@ -947,6 +947,7 @@
     <button class="menu-btn" id="menuBtn">☰</button>
     <div class="menu-dropdown" id="menuDropdown">
         <div class="menu-item" id="kanaMenuItem">Kana Quiz</div>
+        <div class="menu-item" id="reverseKanaMenuItem">Reverse Kana Quiz</div>
         <div class="menu-item" id="vocabMenuItem">Vocabulary</div>
         <div class="menu-item" id="handwritingMenuItem">Handwriting</div>
         <div class="menu-item" id="settingsMenuItem">Settings</div>
@@ -1997,22 +1998,36 @@
         // Menu item handlers
         kanaMenuItem.onclick = () => {
             quizMode = 'kana';
+            isReverseMode = false;
             menuDropdown.classList.remove('show');
             saveSettings();
 
-            // Switch to kana mode immediately
+            // Switch to kana mode immediately - reset score
             questionCard.style.display = 'block';
             resultsCard.classList.remove('show');
             handwritingCard.classList.remove('show');
-            if (questionNumber >= 40) {
-                // Restart quiz if completed
-                questionNumber = 0;
-                normalScore = 0;
-                reverseScore = 0;
-                totalScore = 0;
-                isReverseMode = false;
-                scoreText.textContent = 'Score: 0';
-            }
+            questionNumber = 0;
+            normalScore = 0;
+            totalScore = 0;
+            scoreText.textContent = 'Score: 0';
+            generateKanaQuestion();
+        };
+
+        const reverseKanaMenuItem = document.getElementById('reverseKanaMenuItem');
+        reverseKanaMenuItem.onclick = () => {
+            quizMode = 'reverseKana';
+            isReverseMode = true;
+            menuDropdown.classList.remove('show');
+            saveSettings();
+
+            // Switch to reverse kana mode - reset score
+            questionCard.style.display = 'block';
+            resultsCard.classList.remove('show');
+            handwritingCard.classList.remove('show');
+            questionNumber = 0;
+            reverseScore = 0;
+            totalScore = 0;
+            scoreText.textContent = 'Score: 0';
             generateKanaQuestion();
         };
 
@@ -2210,14 +2225,12 @@
                 options: allOptions
             };
 
-            questionCounter.textContent = `Question: ${questionNumber + 1}/40`;
+            questionCounter.textContent = `Question: ${questionNumber + 1}/20`;
 
-            if (questionNumber < 20) {
-                quizModeText.textContent = 'Normal Mode (20 questions)';
-                isReverseMode = false;
+            if (isReverseMode) {
+                quizModeText.textContent = 'Reverse Kana Quiz';
             } else {
-                quizModeText.textContent = 'Reverse Mode (20 questions)';
-                isReverseMode = true;
+                quizModeText.textContent = 'Kana Quiz';
             }
 
             if (isReverseMode) {
@@ -2307,7 +2320,7 @@
             } else {
                 questionNumber++;
 
-                if (questionNumber >= 40) {
+                if (questionNumber >= 20) {
                     showResults();
                 } else {
                     generateKanaQuestion();
@@ -2320,19 +2333,26 @@
             questionCard.style.display = 'none';
             resultsCard.classList.add('show');
 
-            finalScore.textContent = `${totalScore}/40`;
-            normalScoreEl.textContent = `${normalScore}/20`;
-            reverseScoreEl.textContent = `${reverseScore}/20`;
-            accuracy.textContent = `${Math.round((totalScore / 40) * 100)}%`;
+            finalScore.textContent = `${totalScore}/20`;
+            if (isReverseMode) {
+                normalScoreEl.textContent = `N/A`;
+                reverseScoreEl.textContent = `${reverseScore}/20`;
+            } else {
+                normalScoreEl.textContent = `${normalScore}/20`;
+                reverseScoreEl.textContent = `N/A`;
+            }
+            accuracy.textContent = `${Math.round((totalScore / 20) * 100)}%`;
         }
 
         // Restart quiz
         restartBtn.onclick = () => {
             questionNumber = 0;
-            normalScore = 0;
-            reverseScore = 0;
+            if (isReverseMode) {
+                reverseScore = 0;
+            } else {
+                normalScore = 0;
+            }
             totalScore = 0;
-            isReverseMode = false;
 
             questionCard.style.display = 'block';
             resultsCard.classList.remove('show');
