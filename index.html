@@ -2348,19 +2348,19 @@
             handwritingScore.textContent = 'Score: 0';
             handwritingStrokes = [];
 
-            // Initialize KanjiCanvas (fallback)
-            try {
-                if (typeof KanjiCanvas !== 'undefined') {
-                    KanjiCanvas.init('drawingCanvas');
-                }
-            } catch (error) {
-                console.error('KanjiCanvas initialization error:', error);
-            }
-
             // Set up canvas for stroke capture
             setupCanvasDrawing();
 
             generateHandwritingQuestion();
+        }
+
+        // Clear the canvas
+        function clearCanvas() {
+            const canvas = drawingCanvas;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handwritingStrokes = [];
+            currentStroke = [];
         }
 
         // Setup canvas for drawing and stroke capture
@@ -2470,9 +2470,7 @@
             speak(handwritingCurrentChar.char);
 
             // Clear canvas
-            if (typeof KanjiCanvas !== 'undefined') {
-                KanjiCanvas.erase('drawingCanvas');
-            }
+            clearCanvas();
             hintOverlay.classList.remove('show');
             candidateList.className = 'candidates';
             candidateList.textContent = 'Draw the character, and I\'ll show you what I recognize!';
@@ -2496,8 +2494,8 @@
                 handwriting.recognize(handwritingStrokes, options, (result, err) => {
                     if (err) {
                         console.error('Handwriting.js error:', err);
-                        // Fall back to KanjiCanvas
-                        showCandidates();
+                        candidateList.className = 'candidates';
+                        candidateList.textContent = 'Recognition error. Please try again.';
                         return;
                     }
 
@@ -2507,41 +2505,28 @@
                         candidateList.className = 'candidates';
                         candidateList.innerHTML = `<div style="margin-bottom: 8px;">Recognized:</div>${topCandidates}`;
                     } else {
-                        // No results from handwriting.js, fallback to KanjiCanvas
-                        showCandidates();
+                        candidateList.className = 'candidates';
+                        candidateList.textContent = 'No character recognized. Try drawing more clearly!';
                     }
                 });
             } else {
-                // Handwriting.js not loaded, fallback to KanjiCanvas
-                showCandidates();
-            }
-        }
-
-        function showCandidates() {
-            if (typeof KanjiCanvas === 'undefined') {
-                return;
-            }
-
-            // Recognize the drawn character
-            const results = KanjiCanvas.recognize('drawingCanvas');
-
-            if (!results || results.length === 0) {
                 candidateList.className = 'candidates';
-                candidateList.textContent = 'Draw a character to see recognition...';
-                return;
+                candidateList.textContent = 'Recognition library not loaded. Please refresh the page.';
             }
-
-            // Show top candidates
-            const topCandidates = results.slice(0, 8).map(r => r.char).join('  ');
-            candidateList.className = 'candidates';
-            candidateList.innerHTML = `<div style="margin-bottom: 8px;">Recognized:</div>${topCandidates}`;
         }
 
         function checkHandwriting() {
             const correctChar = handwritingCurrentChar.char;
 
-            // Try handwriting.js first
-            if (typeof handwriting !== 'undefined' && typeof handwriting.recognize === 'function' && handwritingStrokes.length > 0) {
+            // Check if we have strokes drawn
+            if (!handwritingStrokes || handwritingStrokes.length === 0) {
+                candidateList.className = 'candidates';
+                candidateList.textContent = '❓ Please draw something first!';
+                return;
+            }
+
+            // Use handwriting.js for recognition
+            if (typeof handwriting !== 'undefined' && typeof handwriting.recognize === 'function') {
                 const options = {
                     width: 320,
                     height: 320,
@@ -2551,9 +2536,16 @@
                 };
 
                 handwriting.recognize(handwritingStrokes, options, (result, err) => {
-                    if (err || !result || result.length === 0) {
-                        // Fallback to KanjiCanvas
-                        checkWithKanjiCanvas();
+                    if (err) {
+                        console.error('Handwriting.js error:', err);
+                        candidateList.className = 'candidates incorrect';
+                        candidateList.textContent = '❌ Recognition error. Please try again!';
+                        return;
+                    }
+
+                    if (!result || result.length === 0) {
+                        candidateList.className = 'candidates';
+                        candidateList.textContent = '❓ No character recognized. Please draw more clearly!';
                         return;
                     }
 
@@ -2585,54 +2577,8 @@
                     }
                 });
             } else {
-                // Fallback to KanjiCanvas if handwriting.js not available
-                checkWithKanjiCanvas();
-            }
-        }
-
-        function checkWithKanjiCanvas() {
-            if (typeof KanjiCanvas === 'undefined') {
                 candidateList.className = 'candidates incorrect';
-                candidateList.textContent = '❌ Recognition library not loaded';
-                return;
-            }
-
-            // Recognize the drawn character
-            const results = KanjiCanvas.recognize('drawingCanvas');
-
-            if (!results || results.length === 0) {
-                candidateList.className = 'candidates';
-                candidateList.textContent = '❓ No character recognized. Please draw something!';
-                return;
-            }
-
-            // EXTREMELY lenient - accept if in top 50 candidates OR just accept any attempt
-            const correctChar = handwritingCurrentChar.char;
-            const allResults = results.map(r => r.char);
-            const position = allResults.indexOf(correctChar);
-
-            // Accept if found anywhere in results (typically 50-100 candidates)
-            if (position !== -1 && position < 50) {
-                // Correct!
-                handwritingPoints++;
-                handwritingScore.textContent = `Score: ${handwritingPoints}`;
-                candidateList.className = 'candidates correct';
-                const feedback = position === 0 ? '✅ Perfect!' : position < 5 ? '✅ Great!' : position < 15 ? '✅ Good!' : '✅ Nice try!';
-                candidateList.textContent = `${feedback} ${correctChar} (${handwritingCurrentChar.romaji})`;
-
-                // Auto advance after 1.5 seconds
-                setTimeout(() => {
-                    generateHandwritingQuestion();
-                }, 1500);
-            } else {
-                // Show feedback but be encouraging
-                candidateList.className = 'candidates incorrect';
-                const topCandidates = results.slice(0, 10).map(r => r.char).join('  ');
-                if (position === -1) {
-                    candidateList.innerHTML = `<div style="margin-bottom: 8px;">🤔 Character not recognized. Looking for: <strong>${correctChar}</strong></div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Click "Show Hint" to see the correct shape, then try to trace it!</div>`;
-                } else {
-                    candidateList.innerHTML = `<div style="margin-bottom: 8px;">📝 Close! Looking for: <strong>${correctChar}</strong> (found at position ${position + 1})</div><div style="font-size: 14px;">Top matches: ${topCandidates}</div><div style="font-size: 12px; margin-top: 8px;">Click "Show Hint" and try tracing more carefully!</div>`;
-                }
+                candidateList.textContent = '❌ Recognition library not loaded. Please refresh the page!';
             }
         }
 
@@ -2671,24 +2617,11 @@
 
         checkDrawingBtn.onclick = checkHandwriting;
 
-        // Auto-show candidates after drawing (with debounce)
-        let drawingTimeout;
-        drawingCanvas.addEventListener('mouseup', () => {
-            clearTimeout(drawingTimeout);
-            drawingTimeout = setTimeout(showCandidates, 500);
-        });
-        drawingCanvas.addEventListener('touchend', () => {
-            clearTimeout(drawingTimeout);
-            drawingTimeout = setTimeout(showCandidates, 500);
-        });
-
         clearCanvasBtn.onclick = () => {
-            if (typeof KanjiCanvas !== 'undefined') {
-                KanjiCanvas.erase('drawingCanvas');
-            }
+            clearCanvas();
             hintOverlay.classList.remove('show');
             candidateList.className = 'candidates';
-            candidateList.textContent = 'Draw a character to see recognition...';
+            candidateList.textContent = 'Draw the character, and I\'ll show you what I recognize!';
         };
 
         skipCharBtn.onclick = () => {
