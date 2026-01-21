@@ -449,10 +449,12 @@
             background: var(--button-color);
             color: var(--accent-color);
             border: 3px solid var(--accent-color);
-            border-radius: 50%;
-            width: 80px;
+            border-radius: 15px;
+            min-width: 100px;
             height: 80px;
-            font-size: 40px;
+            padding: 10px 20px;
+            font-size: 32px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -962,7 +964,7 @@
                 <div class="question-header" id="quizModeText">Quiz Mode</div>
                 <div class="question-text" id="questionText">Select the character:</div>
                 <button class="speaker-btn" id="quizSpeaker" title="Click to hear pronunciation">
-                    <i class="fa-solid fa-volume-high"></i>
+                    <!-- Romanization will be set by JavaScript -->
                 </button>
                 <div class="vocab-translation" id="vocabTranslation"></div>
             </div>
@@ -1008,7 +1010,7 @@
                 <div class="question-header">Handwriting Practice</div>
                 <div class="question-text">Draw the character:</div>
                 <button class="sound-display speaker-btn" id="handwritingSpeaker" title="Click to hear pronunciation">
-                    <i class="fa-solid fa-volume-high"></i>
+                    <!-- Romanization will be set by JavaScript -->
                 </button>
             </div>
 
@@ -2228,9 +2230,10 @@
                 quizSpeaker.style.cursor = 'default';
             } else {
                 questionText.textContent = 'Select the character:';
-                quizSpeaker.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                // Show romanization instead of speaker icon
+                quizSpeaker.textContent = correctAnswer.romaji;
                 quizSpeaker.className = 'speaker-btn';
-                quizSpeaker.style.fontSize = '40px';
+                quizSpeaker.style.fontSize = '32px';
                 quizSpeaker.disabled = false;
                 quizSpeaker.style.cursor = 'pointer';
                 // Speak the CHARACTER automatically
@@ -2461,6 +2464,10 @@
             }
 
             handwritingCurrentChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+
+            // Update speaker button to show romanization
+            handwritingSpeaker.textContent = handwritingCurrentChar.romaji;
+            handwritingSpeaker.style.fontSize = '32px';
 
             // Speak the character immediately
             speak(handwritingCurrentChar.char);
