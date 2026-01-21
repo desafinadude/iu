@@ -192,6 +192,7 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            justify-content: space-between;
         }
 
         .question-area {
@@ -218,8 +219,9 @@
         }
 
         .buttons-area.vocab-mode {
-            flex: 0;
+            flex: 0 0 auto;
             padding: 0;
+            min-height: 0;
         }
 
         .next-area {
@@ -1131,6 +1133,18 @@
             </div>
 
             <div class="settings-section">
+                <h3>Handwriting Recognition Accuracy</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <label style="flex: 0 0 auto; font-size: 12px; color: #666;">Strictness:</label>
+                    <input type="range" id="accuracySlider" min="1" max="50" value="50" style="flex: 1;">
+                    <span id="accuracyValue" style="flex: 0 0 60px; text-align: right; font-weight: bold; color: var(--accent-color);">Lenient</span>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: #666; text-align: center;">
+                    Controls how strict the handwriting recognition is. Lower = stricter (must be in top results).
+                </div>
+            </div>
+
+            <div class="settings-section">
                 <div class="chart-section-header">
                     <h3>Hiragana Characters</h3>
                     <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666;">
@@ -1458,6 +1472,7 @@
         let accentColor = '#667eea';
         let bgTexture = 'none';
         let fontStyle = 'noto';
+        let recognitionStrictness = 50; // 1-50, lower is stricter
 
         // Theme presets
         const themes = {
@@ -1661,6 +1676,7 @@
             accentColor = localStorage.getItem('accentColor') || '#667eea';
             bgTexture = localStorage.getItem('bgTexture') || 'none';
             fontStyle = localStorage.getItem('fontStyle') || 'noto';
+            recognitionStrictness = parseInt(localStorage.getItem('recognitionStrictness')) || 50;
 
             bgColorPicker.value = bgColor;
             textColorPicker.value = textColor;
@@ -1671,9 +1687,19 @@
             const themeDropdown = document.getElementById('themeDropdown');
             const textureDropdown = document.getElementById('textureDropdown');
             const fontDropdown = document.getElementById('fontDropdown');
+            const accuracySlider = document.getElementById('accuracySlider');
+            const accuracyValue = document.getElementById('accuracyValue');
 
             if (textureDropdown) textureDropdown.value = bgTexture;
             if (fontDropdown) fontDropdown.value = fontStyle;
+            if (accuracySlider) {
+                accuracySlider.value = recognitionStrictness;
+                if (accuracyValue) {
+                    accuracyValue.textContent = recognitionStrictness <= 5 ? 'Very Strict' :
+                                                recognitionStrictness <= 15 ? 'Strict' :
+                                                recognitionStrictness <= 30 ? 'Moderate' : 'Lenient';
+                }
+            }
 
             applyColors();
 
@@ -1694,6 +1720,7 @@
             localStorage.setItem('accentColor', accentColor);
             localStorage.setItem('bgTexture', bgTexture);
             localStorage.setItem('fontStyle', fontStyle);
+            localStorage.setItem('recognitionStrictness', recognitionStrictness);
             localStorage.setItem('quizMode', quizMode);
         }
 
@@ -1974,6 +2001,18 @@
         fontDropdown.onchange = (e) => {
             fontStyle = e.target.value;
             updateFontStyle();
+            saveSettings();
+        };
+
+        // Accuracy slider
+        const accuracySlider = document.getElementById('accuracySlider');
+        const accuracyValue = document.getElementById('accuracyValue');
+
+        accuracySlider.oninput = (e) => {
+            recognitionStrictness = parseInt(e.target.value);
+            accuracyValue.textContent = recognitionStrictness <= 5 ? 'Very Strict' :
+                                        recognitionStrictness <= 15 ? 'Strict' :
+                                        recognitionStrictness <= 30 ? 'Moderate' : 'Lenient';
             saveSettings();
         };
 
@@ -2388,7 +2427,7 @@
             const ctx = canvas.getContext('2d');
 
             // Canvas drawing setup
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 6;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.strokeStyle = '#000';
@@ -2617,13 +2656,19 @@
                 // Check if correct character is in results
                 const position = result.indexOf(correctChar);
 
-                // EXTREMELY lenient - accept if in top 50 candidates
-                if (position !== -1 && position < 50) {
+                // Use configurable strictness threshold
+                if (position !== -1 && position < recognitionStrictness) {
                     // Correct!
                     handwritingPoints++;
                     handwritingScore.textContent = `Score: ${handwritingPoints}`;
                     candidateList.className = 'candidates correct';
-                    const feedback = position === 0 ? '✅ Perfect!' : position < 5 ? '✅ Great!' : position < 15 ? '✅ Good!' : '✅ Nice try!';
+
+                    // Calculate accuracy percentage (inverse of position, 0 = 100%)
+                    const accuracyPercent = Math.round((1 - position / recognitionStrictness) * 100);
+                    const feedback = position === 0 ? `✅ Perfect! (100%)` :
+                                   position < 5 ? `✅ Great! (~${accuracyPercent}%)` :
+                                   position < 15 ? `✅ Good (~${accuracyPercent}%)` :
+                                   `✅ Nice! (~${accuracyPercent}%)`;
                     candidateList.textContent = `${feedback} ${correctChar} (${handwritingCurrentChar.romaji})`;
 
                     // Auto advance after 1.5 seconds
