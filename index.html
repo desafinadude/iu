@@ -2488,9 +2488,13 @@
 
             try {
                 // Format strokes for Google InputTools API
+                // Each stroke is an array of [x, y] coordinates
                 const ink = handwritingStrokes.map(stroke =>
                     stroke.map(point => [Math.round(point[0]), Math.round(point[1])])
                 );
+
+                console.log('Sending strokes to Google API:', ink);
+                console.log('Number of strokes:', ink.length);
 
                 const requestData = {
                     "options": "enable_pre_space",
@@ -2513,9 +2517,11 @@
                 });
 
                 const data = await response.json();
+                console.log('Google API response:', data);
 
                 if (data && data[1] && data[1][0] && data[1][0][1]) {
                     const results = data[1][0][1];
+                    console.log('Recognition results:', results);
                     const topCandidates = results.slice(0, 8).join('  ');
                     candidateList.className = 'candidates';
                     candidateList.innerHTML = `<div style="margin-bottom: 8px;">Recognized:</div>${topCandidates}`;
