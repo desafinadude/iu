@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kana-practice-v0.19';
+const CACHE_NAME = 'kana-practice-v0.20';
 const urlsToCache = [
   '/',
   '/index.html',
