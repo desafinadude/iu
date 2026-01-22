@@ -1,11 +1,11 @@
 {
-  "name": "Kana Practice - Japanese Learning App",
-  "short_name": "Kana Practice",
-  "description": "A modern web app for practicing Japanese hiragana and katakana characters with customizable themes, vocabulary exercises, and audio pronunciation.",
+  "name": "KoiKata - Japanese Kana Learning",
+  "short_name": "KoiKata",
+  "description": "KoiKata - Learn Japanese Hiragana and Katakana with interactive quizzes, vocabulary practice, and handwriting recognition.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#f5f0e8",
+  "theme_color": "#c94146",
   "orientation": "portrait",
   "icons": [
     {

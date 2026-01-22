@@ -1,0 +1,52 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f0e8;
+  position: relative;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.title-japanese {
+  font-size: 24px;
+  font-weight: bold;
+  color: #c94146;
+}
+
+.title-english {
+  font-size: 12px;
+  color: #666;
+  letter-spacing: 2px;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #333;
+  padding: 8px;
+  transition: transform 0.2s;
+}
+
+.menu-button:hover {
+  transform: scale(1.1);
+}
+
+.app-content {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+}

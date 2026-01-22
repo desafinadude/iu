@@ -1,0 +1,84 @@
+.vocabulary-practice {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.vocab-header {
+  margin-bottom: 40px;
+}
+
+.vocab-header h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.vocab-header p {
+  font-size: 16px;
+  color: #666;
+}
+
+.vocab-word {
+  background-color: #fff;
+  border: 3px solid #c94146;
+  border-radius: 16px;
+  padding: 40px;
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.vocab-word:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.vocab-romaji {
+  font-size: 24px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.vocab-translation {
+  font-size: 32px;
+  color: #c94146;
+  font-weight: 600;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.next-word-button {
+  padding: 16px 48px;
+  background-color: #c94146;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(201, 65, 70, 0.3);
+}
+
+.next-word-button:hover {
+  background-color: #a83438;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(201, 65, 70, 0.4);
+}
+
+.vocab-loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
