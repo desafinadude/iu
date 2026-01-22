@@ -6,57 +6,111 @@ import '../styles/Settings.css';
 function Settings({ settings, onSave }) {
   const [localSettings, setLocalSettings] = useState(settings);
 
-  const toggleHiragana = (char) => {
-    const newSet = new Set(localSettings.enabledHiragana);
-    if (newSet.has(char)) {
-      newSet.delete(char);
+  const hiraganaGrid = [
+    ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'],
+    ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '', 'り', ''],
+    ['う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん'],
+    ['え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '', 'れ', ''],
+    ['お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', 'を']
+  ];
+
+  const katakanaGrid = [
+    ['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ'],
+    ['イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '', 'リ', ''],
+    ['ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン'],
+    ['エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '', 'レ', ''],
+    ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', 'ヲ']
+  ];
+
+  const columnHeaders = ['', '•', 'K', 'S', 'T', 'N', 'H', 'M', 'Y', 'R', 'W'];
+  const rowHeaders = ['A', 'I', 'U', 'E', 'O'];
+
+  const toggleCharacter = (char, isHiragana) => {
+    if (isHiragana) {
+      const newSet = new Set(localSettings.enabledHiragana);
+      if (newSet.has(char)) {
+        newSet.delete(char);
+      } else {
+        newSet.add(char);
+      }
+      setLocalSettings({ ...localSettings, enabledHiragana: newSet });
     } else {
-      newSet.add(char);
+      const newSet = new Set(localSettings.enabledKatakana);
+      if (newSet.has(char)) {
+        newSet.delete(char);
+      } else {
+        newSet.add(char);
+      }
+      setLocalSettings({ ...localSettings, enabledKatakana: newSet });
+    }
+  };
+
+  const selectAllHiragana = () => {
+    let newSet = new Set();
+    if (localSettings.includeDakutenHiragana) {
+      newSet = new Set(hiraganaData.map(h => h.char));
+    } else {
+      newSet = new Set(hiraganaData.filter(h => h.basic).map(h => h.char));
     }
     setLocalSettings({ ...localSettings, enabledHiragana: newSet });
   };
 
-  const toggleKatakana = (char) => {
-    const newSet = new Set(localSettings.enabledKatakana);
-    if (newSet.has(char)) {
-      newSet.delete(char);
+  const deselectAllHiragana = () => {
+    setLocalSettings({ ...localSettings, enabledHiragana: new Set() });
+  };
+
+  const selectAllKatakana = () => {
+    let newSet = new Set();
+    if (localSettings.includeDakutenKatakana) {
+      newSet = new Set(katakanaData.map(k => k.char));
     } else {
-      newSet.add(char);
+      newSet = new Set(katakanaData.filter(k => k.basic).map(k => k.char));
     }
     setLocalSettings({ ...localSettings, enabledKatakana: newSet });
   };
 
-  const selectAllHiragana = () => {
-    setLocalSettings({
-      ...localSettings,
-      enabledHiragana: new Set(hiraganaData.map(h => h.char))
-    });
-  };
-
-  const deselectAllHiragana = () => {
-    setLocalSettings({
-      ...localSettings,
-      enabledHiragana: new Set()
-    });
-  };
-
-  const selectAllKatakana = () => {
-    setLocalSettings({
-      ...localSettings,
-      enabledKatakana: new Set(katakanaData.map(k => k.char))
-    });
-  };
-
   const deselectAllKatakana = () => {
-    setLocalSettings({
-      ...localSettings,
-      enabledKatakana: new Set()
-    });
+    setLocalSettings({ ...localSettings, enabledKatakana: new Set() });
   };
 
   const handleSave = () => {
     onSave(localSettings);
     alert('Settings saved!');
+  };
+
+  const renderKanaTable = (grid, isHiragana) => {
+    const enabledSet = isHiragana ? localSettings.enabledHiragana : localSettings.enabledKatakana;
+
+    return (
+      <div className="kana-table">
+        {/* Header row */}
+        <div className="kana-table-row header-row">
+          {columnHeaders.map((header, idx) => (
+            <div key={idx} className="kana-header">
+              {header}
+            </div>
+          ))}
+        </div>
+        {/* Character rows */}
+        {grid.map((row, rowIdx) => (
+          <div key={rowIdx} className="kana-table-row">
+            <div className="kana-header row-header">{rowHeaders[rowIdx]}</div>
+            {row.map((char, colIdx) => (
+              <div key={colIdx} className="kana-cell">
+                {char && char !== '' ? (
+                  <button
+                    className={`kana-char-btn ${enabledSet.has(char) ? 'active' : 'inactive'}`}
+                    onClick={() => toggleCharacter(char, isHiragana)}
+                  >
+                    {char}
+                  </button>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -95,73 +149,49 @@ function Settings({ settings, onSave }) {
       <div className="settings-section">
         <div className="section-header">
           <h3>Hiragana Characters</h3>
-          <label>
+          <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={localSettings.includeDakutenHiragana}
+              checked={!localSettings.includeDakutenHiragana}
               onChange={(e) =>
                 setLocalSettings({
                   ...localSettings,
-                  includeDakutenHiragana: e.target.checked
+                  includeDakutenHiragana: !e.target.checked
                 })
               }
             />
-            Include Dakuten
+            <span>Basic Only</span>
           </label>
         </div>
         <div className="char-controls">
           <button onClick={selectAllHiragana}>Select All</button>
           <button onClick={deselectAllHiragana}>Deselect All</button>
         </div>
-        <div className="char-grid">
-          {hiraganaData.map((char) => (
-            <button
-              key={char.char}
-              className={`char-button ${
-                localSettings.enabledHiragana.has(char.char) ? 'active' : ''
-              }`}
-              onClick={() => toggleHiragana(char.char)}
-            >
-              {char.char}
-            </button>
-          ))}
-        </div>
+        {renderKanaTable(hiraganaGrid, true)}
       </div>
 
       <div className="settings-section">
         <div className="section-header">
           <h3>Katakana Characters</h3>
-          <label>
+          <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={localSettings.includeDakutenKatakana}
+              checked={!localSettings.includeDakutenKatakana}
               onChange={(e) =>
                 setLocalSettings({
                   ...localSettings,
-                  includeDakutenKatakana: e.target.checked
+                  includeDakutenKatakana: !e.target.checked
                 })
               }
             />
-            Include Dakuten
+            <span>Basic Only</span>
           </label>
         </div>
         <div className="char-controls">
           <button onClick={selectAllKatakana}>Select All</button>
           <button onClick={deselectAllKatakana}>Deselect All</button>
         </div>
-        <div className="char-grid">
-          {katakanaData.map((char) => (
-            <button
-              key={char.char}
-              className={`char-button ${
-                localSettings.enabledKatakana.has(char.char) ? 'active' : ''
-              }`}
-              onClick={() => toggleKatakana(char.char)}
-            >
-              {char.char}
-            </button>
-          ))}
-        </div>
+        {renderKanaTable(katakanaGrid, false)}
       </div>
 
       <button className="save-button" onClick={handleSave}>
