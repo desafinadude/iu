@@ -18,7 +18,6 @@
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .settings-section h3 {
@@ -80,14 +79,45 @@
   background-color: #e0e0e0;
 }
 
-.char-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-  gap: 8px;
+.kana-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.char-button {
-  aspect-ratio: 1;
+.kana-table-row {
+  display: table-row;
+}
+
+.kana-header {
+  display: table-cell;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+}
+
+.kana-header.row-header {
+  color: #c94146;
+  font-size: 16px;
+}
+
+.header-row .kana-header {
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.kana-cell {
+  display: table-cell;
+  padding: 4px;
+  text-align: center;
+}
+
+.kana-char-btn {
+  width: 48px;
+  height: 48px;
   background-color: #f5f5f5;
   border: 2px solid #ddd;
   border-radius: 8px;
@@ -95,17 +125,39 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.char-button:hover {
+.kana-char-btn:hover {
   border-color: #c94146;
   transform: scale(1.05);
 }
 
-.char-button.active {
+.kana-char-btn.active {
   background-color: #c94146;
   border-color: #c94146;
   color: #fff;
+}
+
+.kana-char-btn.inactive {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  color: #999;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  cursor: pointer;
 }
 
 .save-button {
@@ -119,11 +171,9 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(201, 65, 70, 0.3);
 }
 
 .save-button:hover {
   background-color: #a83438;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(201, 65, 70, 0.4);
 }
