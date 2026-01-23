@@ -6,10 +6,17 @@
 }
 
 .app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 5px 15px; /* Reduced padding to make header smaller */
+  background-color: #f5f0e8;
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
 }
 
 .app-title {
@@ -18,15 +25,22 @@
 }
 
 .title-japanese {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: bold;
   color: #c94146;
 }
 
+.title-japanese span {
+  color: black;
+}
+
 .title-english {
-  font-size: 12px;
+  font-size: 16px;
   color: #666;
+  text-transform: uppercase;
+  margin-top: 0.5em;
   letter-spacing: 2px;
+  display: none;
 }
 
 .menu-button {
@@ -45,6 +59,7 @@
 
 .app-content {
   width: 100%;
-  min-height: calc(100vh - 80px);
-  padding: 20px;
+  height: calc(100vh - 60px); /* Adjust for smaller header */
+  padding: 50px 5px 5px 5px; /* Minimal padding to maximize space */
+  box-sizing: border-box;
 }

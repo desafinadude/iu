@@ -6,24 +6,35 @@ import '../styles/Settings.css';
 function Settings({ settings, onSave }) {
   const [localSettings, setLocalSettings] = useState(settings);
 
+  // Transposed grids - now columns are vowels (A,I,U,E,O) and rows are consonants
   const hiraganaGrid = [
-    ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'],
-    ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '', 'り', ''],
-    ['う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん'],
-    ['え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '', 'れ', ''],
-    ['お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', 'を']
+    ['あ', 'い', 'う', 'え', 'お'], // • row
+    ['か', 'き', 'く', 'け', 'こ'], // K row  
+    ['さ', 'し', 'す', 'せ', 'そ'], // S row
+    ['た', 'ち', 'つ', 'て', 'と'], // T row
+    ['な', 'に', 'ぬ', 'ね', 'の'], // N row
+    ['は', 'ひ', 'ふ', 'へ', 'ほ'], // H row
+    ['ま', 'み', 'む', 'め', 'も'], // M row
+    ['や', '', 'ゆ', '', 'よ'],     // Y row
+    ['ら', 'り', 'る', 'れ', 'ろ'], // R row
+    ['わ', '', 'ん', '', 'を']      // W row
   ];
 
   const katakanaGrid = [
-    ['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ'],
-    ['イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '', 'リ', ''],
-    ['ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン'],
-    ['エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '', 'レ', ''],
-    ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', 'ヲ']
+    ['ア', 'イ', 'ウ', 'エ', 'オ'], // • row
+    ['カ', 'キ', 'ク', 'ケ', 'コ'], // K row
+    ['サ', 'シ', 'ス', 'セ', 'ソ'], // S row
+    ['タ', 'チ', 'ツ', 'テ', 'ト'], // T row
+    ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'], // N row
+    ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ'], // H row
+    ['マ', 'ミ', 'ム', 'メ', 'モ'], // M row
+    ['ヤ', '', 'ユ', '', 'ヨ'],     // Y row
+    ['ラ', 'リ', 'ル', 'レ', 'ロ'], // R row
+    ['ワ', '', 'ン', '', 'ヲ']      // W row
   ];
 
-  const columnHeaders = ['', '•', 'K', 'S', 'T', 'N', 'H', 'M', 'Y', 'R', 'W'];
-  const rowHeaders = ['A', 'I', 'U', 'E', 'O'];
+  const columnHeaders = ['', 'A', 'I', 'U', 'E', 'O']; // Vowels as columns
+  const rowHeaders = ['•', 'K', 'S', 'T', 'N', 'H', 'M', 'Y', 'R', 'W']; // Consonants as rows
 
   const toggleCharacter = (char, isHiragana) => {
     if (isHiragana) {
@@ -115,11 +126,9 @@ function Settings({ settings, onSave }) {
 
   return (
     <div className="settings">
-      <div className="settings-header">
-        <h2>Settings</h2>
-      </div>
+     
 
-      <div className="settings-section">
+      {/* <div className="settings-section">
         <h3>Handwriting Recognition Strictness</h3>
         <div className="strictness-slider">
           <input
@@ -144,11 +153,11 @@ function Settings({ settings, onSave }) {
               : 'Lenient'}
           </span>
         </div>
-      </div>
+      </div> */}
 
       <div className="settings-section">
         <div className="section-header">
-          <h3>Hiragana Characters</h3>
+          <h3>Hiragana</h3>
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -172,7 +181,7 @@ function Settings({ settings, onSave }) {
 
       <div className="settings-section">
         <div className="section-header">
-          <h3>Katakana Characters</h3>
+          <h3>Katakana</h3>
           <label className="checkbox-label">
             <input
               type="checkbox"
