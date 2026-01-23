@@ -1,0 +1,179 @@
+.settings {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.settings-header {
+  margin-bottom: 30px;
+}
+
+.settings-header h2 {
+  font-size: 28px;
+  color: #333;
+}
+
+.settings-section {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.settings-section h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.strictness-slider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.strictness-slider input[type='range'] {
+  flex: 1;
+  height: 8px;
+}
+
+.strictness-value {
+  min-width: 100px;
+  font-weight: 600;
+  color: #c94146;
+  text-align: right;
+}
+
+.char-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.char-controls button {
+  padding: 5px 12px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.char-controls button:hover {
+  background-color: #e0e0e0;
+}
+
+.kana-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.kana-table-row {
+  display: table-row;
+}
+
+.kana-header {
+  display: table-cell;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+}
+
+.kana-header.row-header {
+  color: #c94146;
+  font-size: 16px;
+}
+
+.header-row .kana-header {
+  /* border-bottom: 2px solid #ddd; */
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.kana-cell {
+  display: table-cell;
+  padding: 4px;
+  text-align: center;
+}
+
+.kana-char-btn {
+  width: 48px;
+  height: 48px;
+  background-color: #f5f5f5;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kana-char-btn:hover {
+  border-color: #c94146;
+  transform: scale(1.05);
+}
+
+.kana-char-btn.active {
+  background-color: #c94146;
+  border-color: #c94146;
+  color: #fff;
+}
+
+.kana-char-btn.inactive {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  color: #999;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.save-button {
+  width: 100%;
+  padding: 16px;
+  background-color: #c94146;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-button:hover {
+  background-color: #a83438;
+  transform: translateY(-2px);
+}

@@ -1,0 +1,268 @@
+.handwriting-practice {
+  display: grid;
+  grid-template-rows: 30% 50% 20%;
+  height: 100%; /* Fill the full height of app-content */
+  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 5px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.handwriting-question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.speaker-button {
+  border: none;
+  background-color: transparent;
+  font-size: min(48px, 8vw);
+  font-weight: bold;
+  color: #333;
+  padding: 20px;
+  min-width: min(140px, 35vw);
+  min-height: min(140px, 35vw);
+  max-width: 180px;
+  max-height: 180px;
+  background-image: url('./speech-bubble.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speaker-button:hover {
+  transform: scale(1.05);
+}
+
+.canvas-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  overflow-y: auto;
+}
+
+.canvas-wrapper {
+  position: relative;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+
+canvas {
+  border-radius: 12px;
+  cursor: crosshair;
+  touch-action: none;
+  max-width: 100%;
+  height: auto;
+}
+
+.hint-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(120px, 20vw);
+  font-weight: bold;
+  color: #c94146;
+  border-radius: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hint-overlay.show {
+  opacity: 1;
+}
+
+.canvas-corner-btn {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.canvas-corner-btn:hover {
+  background-color: #fff;
+  transform: scale(1.1);
+}
+
+.canvas-corner-btn:active {
+  transform: scale(0.95);
+}
+
+.canvas-corner-btn.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.canvas-corner-btn.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.candidates {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  max-width: 280px;
+  margin: 0 auto;
+  color: #333;
+  font-size: min(12px, 3vw);
+  line-height: 1.3;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.candidates.correct {
+  background-color: #C8E9E7;
+  color: #2d5f3f;
+}
+
+.candidates.incorrect {
+  background-color: #EAA3A4;
+  color: #5f2d2d;
+}
+
+.handwriting-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 10px;
+  align-items: center;
+}
+
+.handwriting-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: min(16px, 4vw);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #f0f0f0;
+  color: #333;
+  min-width: 120px;
+}
+
+.handwriting-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.handwriting-btn.success {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.handwriting-btn.success:hover {
+  background-color: #45a049;
+}
+
+.handwriting-btn.danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.handwriting-btn.danger:hover {
+  background-color: #da190b;
+}
+
+.handwriting-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Font classes for hint overlay */
+.hint-overlay.noto {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.hint-overlay.maru {
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.hint-overlay.mincho {
+  font-family: 'Shippori Mincho', serif;
+}
+
+.hint-overlay.kosugi {
+  font-family: 'Kosugi Maru', sans-serif;
+}
+
+.hint-overlay.rounded {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.hint-overlay.yusei {
+  font-family: 'Yusei Magic', sans-serif;
+}
+
+.hint-overlay.klee {
+  font-family: 'Klee One', cursive;
+}
+
+.hint-overlay.hachi {
+  font-family: 'Hachi Maru Pop', cursive;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .handwriting-practice {
+    padding: 3px;
+  }
+  
+  .canvas-area {
+    padding: 3px;
+  }
+  
+  .canvas-wrapper {
+    margin-bottom: 8px;
+  }
+  
+  .handwriting-controls {
+    gap: 10px;
+    padding: 8px;
+  }
+  
+  .handwriting-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 100px;
+  }
+  
+  .hint-overlay {
+    font-size: min(80px, 15vw);
+  }
+  
+  .canvas-corner-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+}
