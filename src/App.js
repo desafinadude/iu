@@ -27,7 +27,6 @@ function App() {
     if (savedSettings) {
       const parsed = JSON.parse(savedSettings);
       setSettings({
-        ...settings,
         enabledHiragana: new Set(parsed.enabledHiragana || ['あ', 'い', 'う', 'え', 'お']),
         enabledKatakana: new Set(parsed.enabledKatakana || ['ア', 'イ', 'ウ', 'エ', 'オ']),
         includeDakutenHiragana: parsed.includeDakutenHiragana ?? true,
@@ -41,7 +40,7 @@ function App() {
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);
-  }, []);
+  }, []); // Empty dependency array is correct here - we only want this to run once on mount
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {

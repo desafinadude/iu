@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
-import { shuffle } from '../utils/helpers';
 import '../styles/HandwritingPractice.css';
 
 function HandwritingPractice({ settings }) {
@@ -16,12 +15,7 @@ function HandwritingPractice({ settings }) {
   const [candidateClass, setCandidateClass] = useState('candidates');
   const [showHint, setShowHint] = useState(false);
 
-  useEffect(() => {
-    generateQuestion();
-    setupCanvas();
-  }, [settings]);
-
-  const getEnabledChars = () => {
+  const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
     return allChars.filter(char => {
       if (hiraganaData.includes(char)) {
@@ -32,9 +26,9 @@ function HandwritingPractice({ settings }) {
         return settings.enabledKatakana.has(char.char);
       }
     });
-  };
+  }, [settings]);
 
-  const generateQuestion = () => {
+  const generateQuestion = useCallback(() => {
     const availableChars = getEnabledChars();
     if (availableChars.length === 0) {
       alert('Please enable at least one character in settings!');
@@ -50,7 +44,12 @@ function HandwritingPractice({ settings }) {
     
     // Speak the character immediately
     speak(char.char);
-  };
+  }, [getEnabledChars]);
+
+  useEffect(() => {
+    generateQuestion();
+    setupCanvas();
+  }, [generateQuestion]);
 
   const setupCanvas = () => {
     const canvas = canvasRef.current;
@@ -293,13 +292,6 @@ function HandwritingPractice({ settings }) {
     setShowHint(false);
     setCandidates('Draw the character, and I\'ll show you what I recognize!');
     setCandidateClass('candidates');
-  };
-
-  const handleSkip = () => {
-    setCandidates(`Skipped: ${currentChar.char} (${currentChar.romaji})`);
-    setTimeout(() => {
-      generateQuestion();
-    }, 800);
   };
 
   if (!currentChar) {

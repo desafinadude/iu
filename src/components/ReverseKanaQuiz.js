@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
@@ -15,11 +15,7 @@ function ReverseKanaQuiz({ settings }) {
 
   const totalQuestions = 20;
 
-  useEffect(() => {
-    generateQuestion();
-  }, [settings]);
-
-  const getEnabledChars = () => {
+  const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
     return allChars.filter(char => {
       if (hiraganaData.includes(char)) {
@@ -30,9 +26,9 @@ function ReverseKanaQuiz({ settings }) {
         return settings.enabledKatakana.has(char.char);
       }
     });
-  };
+  }, [settings]);
 
-  const generateQuestion = () => {
+  const generateQuestion = useCallback(() => {
     const availableChars = getEnabledChars();
     if (availableChars.length === 0) {
       alert('Please enable at least one character in settings!');
@@ -49,7 +45,11 @@ function ReverseKanaQuiz({ settings }) {
     setOptions(allOptions);
     setShowResult(false);
     setSelectedAnswer(null);
-  };
+  }, [getEnabledChars]);
+
+  useEffect(() => {
+    generateQuestion();
+  }, [generateQuestion]);
 
   const handleAnswer = (option) => {
     if (showResult) return;
