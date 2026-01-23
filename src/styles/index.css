@@ -26,3 +26,31 @@ button {
 .noto {
   font-family: 'Noto Sans JP', sans-serif;
 }
+
+.maru {
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.mincho {
+  font-family: 'Shippori Mincho', serif;
+}
+
+.kosugi {
+  font-family: 'Kosugi Maru', sans-serif;
+}
+
+.rounded {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.yusei {
+  font-family: 'Yusei Magic', sans-serif;
+}
+
+.klee {
+  font-family: 'Klee One', cursive;
+}
+
+.hachi {
+  font-family: 'Hachi Maru Pop', cursive;
+}

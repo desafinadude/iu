@@ -94,17 +94,10 @@ function KanaQuiz({ settings }) {
 
   return (
     <div className="kana-quiz">
-      <div className="quiz-header">
-        <div className="quiz-info">
-          <div className="question-counter">Question: {questionNumber + 1}/{totalQuestions}</div>
-          <div className="score">Score: {score}</div>
-        </div>
-      </div>
-
       <div className="quiz-question">
-        <div className="question-text">Select the character:</div>
+        
         <button
-          className="speaker-button"
+          className={`speaker-button ${settings.fontStyle}`}
           onClick={handleSpeakerClick}
           title="Click to hear pronunciation"
         >
@@ -133,11 +126,13 @@ function KanaQuiz({ settings }) {
         ))}
       </div>
 
-      {showResult && (
-        <button className="next-button" onClick={handleNext}>
-          {questionNumber + 1 >= totalQuestions ? 'Finish' : 'Next Question'}
-        </button>
-      )}
+      <div className="button-area">
+        {showResult && (
+          <button className="next-button" onClick={handleNext}>
+            {questionNumber + 1 >= totalQuestions ? 'Finish' : 'Next Question'}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

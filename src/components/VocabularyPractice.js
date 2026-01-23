@@ -6,7 +6,6 @@ import '../styles/VocabularyPractice.css';
 
 function VocabularyPractice({ settings }) {
   const [currentWord, setCurrentWord] = useState(null);
-  const [showTranslation, setShowTranslation] = useState(false);
 
   useEffect(() => {
     generateWord();
@@ -15,14 +14,11 @@ function VocabularyPractice({ settings }) {
   const generateWord = () => {
     const word = getRandomElement(vocabularyData);
     setCurrentWord(word);
-    setShowTranslation(false);
-    speak(word.word);
   };
 
   const handleWordClick = () => {
     if (currentWord) {
       speak(currentWord.word);
-      setShowTranslation(true);
     }
   };
 
@@ -32,11 +28,6 @@ function VocabularyPractice({ settings }) {
 
   return (
     <div className="vocabulary-practice">
-      <div className="vocab-header">
-        <h2>Vocabulary Practice</h2>
-        <p>Click the word to hear pronunciation</p>
-      </div>
-
       <button
         className={`vocab-word ${settings.fontStyle}`}
         onClick={handleWordClick}
@@ -44,13 +35,9 @@ function VocabularyPractice({ settings }) {
         {currentWord.word}
       </button>
 
-      <div className="vocab-romaji">{currentWord.romaji}</div>
-
-      {showTranslation && (
-        <div className="vocab-translation">
-          {currentWord.translation}
-        </div>
-      )}
+      <div className="vocab-translation">
+        {currentWord.translation}
+      </div>
 
       <button className="next-word-button" onClick={generateWord}>
         Next Word

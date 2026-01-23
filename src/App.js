@@ -43,6 +43,21 @@ function App() {
     }, 2000);
   }, []);
 
+  // Add/remove quiz-active class based on current view
+  useEffect(() => {
+    const quizViews = ['kana', 'reverseKana', 'vocab', 'handwriting'];
+    if (quizViews.includes(currentView)) {
+      document.body.classList.add('quiz-active');
+    } else {
+      document.body.classList.remove('quiz-active');
+    }
+
+    // Cleanup function to remove class when component unmounts
+    return () => {
+      document.body.classList.remove('quiz-active');
+    };
+  }, [currentView]);
+
   const saveSettings = (newSettings) => {
     setSettings(newSettings);
     localStorage.setItem('koikataSettings', JSON.stringify({
@@ -72,8 +87,8 @@ function App() {
 
       <div className="app-header">
         <div className="app-title">
-          <div className="title-japanese">こいかた</div>
-          <div className="title-english">KANA</div>
+          <div className="title-japanese">こい<span>かた</span></div>
+          <div className="title-english">{currentView}</div>
         </div>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
           ☰
