@@ -1,0 +1,174 @@
+/* Full container layout for quiz pages only */
+.kana-quiz {
+  display: grid;
+  grid-template-rows: 25% 65% 10%;
+  height: 100vh;
+  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* For non-quiz pages, use normal layout */
+body:not(.quiz-active) .kana-quiz {
+  height: auto;
+  overflow: visible;
+  display: block;
+}
+
+.quiz-question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.question-text {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.speaker-button {
+  border: none;
+  background-color: transparent;
+  font-size: min(48px, 8vw);
+  font-weight: bold;
+  color: #333;
+  padding: 20px;
+  min-width: min(140px, 35vw);
+  min-height: min(140px, 35vw);
+  max-width: 180px;
+  max-height: 180px;
+  background-image: url('./speech-bubble.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speaker-button:hover {
+  transform: scale(1.05);
+}
+
+.character-display {
+  font-size: min(48px, 8vw);
+  font-weight: bold;
+  color: #333;
+  padding: 20px;
+  min-width: min(140px, 35vw);
+  min-height: min(140px, 35vw);
+  max-width: 180px;
+  max-height: 180px;
+  background-image: url('./speech-bubble.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 8px;
+  padding: 8px;
+  height: 100%;
+}
+
+.option-button {
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 12px;
+  padding: 0;
+  font-size: min(28px, 6vw);
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.option-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.option-button:disabled {
+  cursor: not-allowed;
+}
+
+.option-button.romaji {
+  font-size: min(22px, 5vw);
+}
+
+.option-button.correct {
+  background-color: #C8E9E7;
+}
+
+.option-button.wrong {
+  background-color: #EAA3A4;
+  color: #000;
+}
+
+.next-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #EAA3A4;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.next-button:hover {
+  background-color: #d89295;
+  transform: translateY(-2px);
+}
+
+.button-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.quiz-loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .kana-quiz {
+    padding: 5px;
+  }
+  
+  .options-grid {
+    gap: 8px;
+    padding: 5px;
+  }
+  
+  .next-button {
+    margin: 5px;
+    font-size: 14px;
+    padding: 10px;
+  }
+}
