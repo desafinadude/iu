@@ -7,6 +7,7 @@ function Menu({ isOpen, onClose, onMenuClick, currentView }) {
     { id: 'reverseKana', label: 'Reverse Kana Quiz' },
     { id: 'vocab', label: 'Vocabulary' },
     { id: 'handwriting', label: 'Handwriting' },
+    { id: 'resources', label: 'Resources' },
     { id: 'settings', label: 'Settings' },
     { id: 'about', label: 'About' }
   ];

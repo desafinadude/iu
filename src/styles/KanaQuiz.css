@@ -2,7 +2,7 @@
 .kana-quiz {
   display: grid;
   grid-template-rows: 25% 65% 10%;
-  height: 100vh;
+  height: calc(100vh - 60px); /* Subtract header height */
   overflow: hidden;
   max-width: 600px;
   margin: 0 auto;
@@ -22,6 +22,34 @@ body:not(.quiz-active) .kana-quiz {
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
+}
+
+.score-display {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #c94146;
+  color: white;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 2;
+  line-height: 1;
+}
+
+.question-number {
+  font-size: 16px;
+}
+
+.score-fraction {
+  font-size: 11px;
+  margin-top: 2px;
 }
 
 .question-text {
@@ -126,7 +154,7 @@ body:not(.quiz-active) .kana-quiz {
   padding: 12px;
   background-color: #EAA3A4;
   color: #fff;
-  border: none;
+  border: 2px solid #000;
   border-radius: 12px;
   font-size: 16px;
   font-weight: bold;
@@ -139,6 +167,24 @@ body:not(.quiz-active) .kana-quiz {
 .next-button:hover {
   background-color: #d89295;
   transform: translateY(-2px);
+}
+
+.next-button.correct {
+  background-color: #C8E9E7;
+  color: #2d5f3f;
+}
+
+.next-button.correct:hover {
+  background-color: #b8e0dd;
+}
+
+.next-button.wrong {
+  background-color: #EAA3A4;
+  color: #5f2d2d;
+}
+
+.next-button.wrong:hover {
+  background-color: #d89295;
 }
 
 .button-area {
@@ -170,5 +216,20 @@ body:not(.quiz-active) .kana-quiz {
     margin: 5px;
     font-size: 14px;
     padding: 10px;
+  }
+  
+  .score-display {
+    width: 50px;
+    height: 50px;
+    bottom: 5px;
+    right: 5px;
+  }
+  
+  .question-number {
+    font-size: 14px;
+  }
+  
+  .score-fraction {
+    font-size: 9px;
   }
 }

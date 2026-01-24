@@ -8,12 +8,18 @@ function HandwritingPractice({ settings }) {
   const canvasRef = useRef(null);
   const [currentChar, setCurrentChar] = useState(null);
   const [score, setScore] = useState(0);
+  const [questionNumber, setQuestionNumber] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const [isDrawing, setIsDrawing] = useState(false);
   const [strokes, setStrokes] = useState([]);
   const [currentStroke, setCurrentStroke] = useState([]);
-  const [candidates, setCandidates] = useState('Draw the character, and I\'ll show you what I recognize!');
-  const [candidateClass, setCandidateClass] = useState('candidates');
   const [showHint, setShowHint] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [candidates, setCandidates] = useState('Draw the character, and I\'ll show you what I recognize!');
+  // eslint-disable-next-line no-unused-vars
+  const [candidateClass, setCandidateClass] = useState('candidates');
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -39,8 +45,11 @@ function HandwritingPractice({ settings }) {
     setCurrentChar(char);
     clearCanvas();
     setShowHint(false);
-    setCandidates('Draw the character, and I\'ll show you what I recognize!');
-    setCandidateClass('candidates');
+    setShowResult(false);
+    setIsCorrect(false);
+    
+    // Update question count
+    setTotalQuestions(prev => prev + 1);
     
     // Speak the character immediately
     speak(char.char);
@@ -234,40 +243,17 @@ function HandwritingPractice({ settings }) {
         // Correct!
         const newScore = score + 1;
         setScore(newScore);
+        setIsCorrect(true);
+        setShowResult(true);
         setCandidateClass('candidates correct');
-
-        const accuracyPercent = Math.round((1 - position / strictness) * 100);
-        const feedback = position === 0 ? `✅ Perfect! (100%)` :
-                       position < 5 ? `✅ Great! (~${accuracyPercent}%)` :
-                       position < 15 ? `✅ Good (~${accuracyPercent}%)` :
-                       `✅ Nice! (~${accuracyPercent}%)`;
-        setCandidates(`${feedback} ${correctChar} (${currentChar.romaji})`);
-
-        // Auto advance after 1.5 seconds
-        setTimeout(() => {
-          generateQuestion();
-        }, 1500);
+        setCandidates(`✅ Correct! ${correctChar} (${currentChar.romaji})`);
       } else {
-        // Show feedback but be encouraging
+        // Wrong - just show hint
+        setIsCorrect(false);
+        setShowResult(true);
+        setShowHint(true);
         setCandidateClass('candidates incorrect');
-        const topCandidates = result.slice(0, 10).join('  ');
-        if (position === -1) {
-          setCandidates(
-            <div>
-              <div style={{marginBottom: '8px'}}>🤔 Character not recognized. Looking for: <strong>{correctChar}</strong></div>
-              <div style={{fontSize: '14px'}}>Top matches: {topCandidates}</div>
-              <div style={{fontSize: '12px', marginTop: '8px'}}>Click "Show Hint" to see the correct shape, then try to trace it!</div>
-            </div>
-          );
-        } else {
-          setCandidates(
-            <div>
-              <div style={{marginBottom: '8px'}}>📝 Close! Looking for: <strong>{correctChar}</strong> (found at position {position + 1})</div>
-              <div style={{fontSize: '14px'}}>Top matches: {topCandidates}</div>
-              <div style={{fontSize: '12px', marginTop: '8px'}}>Click "Show Hint" and try tracing more carefully!</div>
-            </div>
-          );
-        }
+        setCandidates(`❌ Try again! Looking for: ${correctChar} (${currentChar.romaji})`);
       }
     } catch (error) {
       console.error('Recognition error:', error);
@@ -294,6 +280,24 @@ function HandwritingPractice({ settings }) {
     setCandidateClass('candidates');
   };
 
+  const handleNext = () => {
+    setQuestionNumber(questionNumber + 1);
+    generateQuestion();
+  };
+
+  const getCorrectPercentage = () => {
+    return totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+  };
+
+  const getAccuracyColor = () => {
+    const percentage = getCorrectPercentage();
+    if (percentage >= 80) return '#C8E9E7'; // Quiz green
+    if (percentage >= 60) return '#E9F4C8'; // Light green
+    if (percentage >= 40) return '#F4E9C8'; // Yellow
+    if (percentage >= 20) return '#F4D5C8'; // Orange
+    return '#EAA3A4'; // Quiz red
+  };
+
   if (!currentChar) {
     return <div className="handwriting-loading">Loading...</div>;
   }
@@ -301,6 +305,13 @@ function HandwritingPractice({ settings }) {
   return (
     <div className="handwriting-practice">
       <div className="handwriting-question">
+        <div className="accuracy-display" style={{backgroundColor: getAccuracyColor()}}>
+          {getCorrectPercentage()}%
+        </div>
+        <div className="score-display">
+          <div className="question-number">{questionNumber + 1}</div>
+          <div className="score-fraction">{score}/{totalQuestions}</div>
+        </div>
         <button
           className={`speaker-button ${settings.fontStyle}`}
           onClick={handleSpeakerClick}
@@ -334,16 +345,19 @@ function HandwritingPractice({ settings }) {
             🗑️
           </button>
         </div>
-        <div className={candidateClass}>
-          {candidates}
-        </div>
       </div>
 
       <div className="handwriting-controls">
-        <button className="handwriting-btn success" onClick={checkAnswer}>
+        <button 
+          className={`handwriting-btn check-btn ${showResult ? (isCorrect ? 'correct' : 'wrong') : ''}`} 
+          onClick={checkAnswer}
+        >
           Check Answer
         </button>
-        <button className="handwriting-btn" onClick={generateQuestion}>
+        <button 
+          className={`handwriting-btn next-btn ${showResult ? (isCorrect ? 'correct' : 'wrong') : ''}`} 
+          onClick={handleNext}
+        >
           Next Character
         </button>
       </div>

@@ -1,7 +1,7 @@
 .handwriting-practice {
   display: grid;
-  grid-template-rows: 30% 50% 20%;
-  height: 100%; /* Fill the full height of app-content */
+  grid-template-rows: 20% 60% 20%;
+  height: calc(100vh - 60px); /* Subtract header height like quiz pages */
   overflow: hidden;
   max-width: 600px;
   margin: 0 auto;
@@ -15,6 +15,50 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
+}
+
+.score-display {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #c94146;
+  color: white;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 2;
+  line-height: 1;
+}
+
+.question-number {
+  font-size: 16px;
+}
+
+.score-fraction {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.accuracy-display {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #333;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 2;
 }
 
 .speaker-button {
@@ -49,7 +93,8 @@
   align-items: center;
   justify-content: center;
   padding: 5px;
-  overflow-y: auto;
+  height: 100%;
+  width: 100%;
 }
 
 .canvas-wrapper {
@@ -57,15 +102,23 @@
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  margin-bottom: 15px;
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 canvas {
   border-radius: 12px;
+  border: 2px solid #000;
   cursor: crosshair;
   touch-action: none;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
-  height: auto;
+  max-height: 100%;
 }
 
 .hint-overlay {
@@ -78,9 +131,9 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: min(120px, 20vw);
+  font-size: min(250px, 50vw);
   font-weight: bold;
-  color: #c94146;
+  color: #888888;
   border-radius: 12px;
   opacity: 0;
   pointer-events: none;
@@ -123,28 +176,6 @@ canvas {
   right: 10px;
 }
 
-.candidates {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 10px;
-  max-width: 280px;
-  margin: 0 auto;
-  color: #333;
-  font-size: min(12px, 3vw);
-  line-height: 1.3;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.candidates.correct {
-  background-color: #C8E9E7;
-  color: #2d5f3f;
-}
-
-.candidates.incorrect {
-  background-color: #EAA3A4;
-  color: #5f2d2d;
-}
-
 .handwriting-controls {
   display: flex;
   justify-content: center;
@@ -178,6 +209,62 @@ canvas {
 
 .handwriting-btn.success:hover {
   background-color: #45a049;
+}
+
+.handwriting-btn.check-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 2px solid #000;
+}
+
+.handwriting-btn.check-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.handwriting-btn.check-btn.correct {
+  background-color: #C8E9E7;
+  color: #2d5f3f;
+}
+
+.handwriting-btn.check-btn.correct:hover {
+  background-color: #b8e0dd;
+}
+
+.handwriting-btn.check-btn.wrong {
+  background-color: #EAA3A4;
+  color: #5f2d2d;
+}
+
+.handwriting-btn.check-btn.wrong:hover {
+  background-color: #d89295;
+}
+
+.handwriting-btn.next-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 2px solid #000;
+}
+
+.handwriting-btn.next-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.handwriting-btn.next-btn.correct {
+  background-color: #C8E9E7;
+  color: #2d5f3f;
+}
+
+.handwriting-btn.next-btn.correct:hover {
+  background-color: #b8e0dd;
+}
+
+.handwriting-btn.next-btn.wrong {
+  background-color: #EAA3A4;
+  color: #5f2d2d;
+}
+
+.handwriting-btn.next-btn.wrong:hover {
+  background-color: #d89295;
 }
 
 .handwriting-btn.danger {
@@ -241,10 +328,6 @@ canvas {
     padding: 3px;
   }
   
-  .canvas-wrapper {
-    margin-bottom: 8px;
-  }
-  
   .handwriting-controls {
     gap: 10px;
     padding: 8px;
@@ -264,5 +347,28 @@ canvas {
     width: 30px;
     height: 30px;
     font-size: 14px;
+  }
+  
+  .score-display {
+    width: 50px;
+    height: 50px;
+    bottom: 5px;
+    right: 5px;
+  }
+  
+  .question-number {
+    font-size: 14px;
+  }
+  
+  .score-fraction {
+    font-size: 9px;
+  }
+  
+  .accuracy-display {
+    width: 40px;
+    height: 40px;
+    font-size: 12px;
+    top: 5px;
+    left: 5px;
   }
 }

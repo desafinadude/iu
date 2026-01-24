@@ -6,6 +6,7 @@ import '../styles/VocabularyPractice.css';
 
 function VocabularyPractice({ settings }) {
   const [currentWord, setCurrentWord] = useState(null);
+  const [showTranslation, setShowTranslation] = useState(false);
 
   useEffect(() => {
     generateWord();
@@ -14,11 +15,13 @@ function VocabularyPractice({ settings }) {
   const generateWord = () => {
     const word = getRandomElement(vocabularyData);
     setCurrentWord(word);
+    setShowTranslation(false); // Hide translation for new word
   };
 
   const handleWordClick = () => {
     if (currentWord) {
       speak(currentWord.word);
+      setShowTranslation(true); // Show translation after speaking
     }
   };
 
@@ -28,20 +31,26 @@ function VocabularyPractice({ settings }) {
 
   return (
     <div className="vocabulary-practice">
-      <button
-        className={`vocab-word ${settings.fontStyle}`}
-        onClick={handleWordClick}
-      >
-        {currentWord.word}
-      </button>
-
-      <div className="vocab-translation">
-        {currentWord.translation}
+      <div className="vocab-main-area">
+        <button
+          className="vocab-word-bubble"
+          onClick={handleWordClick}
+        >
+          <div className={`vocab-word-text ${settings.fontStyle}`}>{currentWord.word}</div>
+        </button>
       </div>
 
-      <button className="next-word-button" onClick={generateWord}>
-        Next Word
-      </button>
+      <div className="vocab-translation-area">
+        {showTranslation && (
+          <div className="vocab-translation-text">{currentWord.translation}</div>
+        )}
+      </div>
+
+      <div className="vocab-controls">
+        <button className="next-word-button" onClick={generateWord}>
+          Next Word
+        </button>
+      </div>
     </div>
   );
 }
