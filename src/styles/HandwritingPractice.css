@@ -131,7 +131,7 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: min(250px, 50vw);
+  font-size: min(320px, 70vw);
   font-weight: bold;
   color: #888888;
   border-radius: 12px;

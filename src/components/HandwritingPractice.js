@@ -16,6 +16,8 @@ function HandwritingPractice({ settings }) {
   const [showHint, setShowHint] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [characterAttempts, setCharacterAttempts] = useState(0);
+  const [characterCorrect, setCharacterCorrect] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [candidates, setCandidates] = useState('Draw the character, and I\'ll show you what I recognize!');
   // eslint-disable-next-line no-unused-vars
@@ -48,6 +50,10 @@ function HandwritingPractice({ settings }) {
     setShowResult(false);
     setIsCorrect(false);
     
+    // Reset per-character tracking
+    setCharacterAttempts(0);
+    setCharacterCorrect(false);
+    
     // Update question count
     setTotalQuestions(prev => prev + 1);
     
@@ -65,13 +71,15 @@ function HandwritingPractice({ settings }) {
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    ctx.lineWidth = 12; // Thicker strokes
+    ctx.lineWidth = 14; // More moderate thickness for ink-like feel
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#2c3e50'; // Dark ink-like color
+    ctx.strokeStyle = '#1a1a1a'; // Deeper black ink color
     ctx.globalCompositeOperation = 'source-over';
-    ctx.shadowColor = 'rgba(44, 62, 80, 0.3)'; // Subtle shadow for ink effect
-    ctx.shadowBlur = 2;
+    
+    // Enhanced ink effect with multiple shadows
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 3;
     ctx.shadowOffsetX = 1;
     ctx.shadowOffsetY = 1;
   };
@@ -120,11 +128,29 @@ function HandwritingPractice({ settings }) {
       const newStroke = [...prev, [pos.x, pos.y]];
       
       if (newStroke.length >= 2) {
-        ctx.beginPath();
         const prevPoint = newStroke[newStroke.length - 2];
+        
+        // Calculate speed for pressure variation
+        const distance = Math.sqrt(
+          Math.pow(pos.x - prevPoint[0], 2) + Math.pow(pos.y - prevPoint[1], 2)
+        );
+        
+        // Vary line width based on drawing speed for ink-like effect
+        const speed = Math.min(distance, 20);
+        const pressureVariation = Math.max(0.7, 1 - (speed / 40));
+        const currentLineWidth = 14 * pressureVariation;
+        
+        ctx.save();
+        ctx.lineWidth = currentLineWidth;
+        
+        // Add slight opacity variation for ink bleeding effect
+        ctx.globalAlpha = 0.85 + (pressureVariation * 0.15);
+        
+        ctx.beginPath();
         ctx.moveTo(prevPoint[0], prevPoint[1]);
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
+        ctx.restore();
       }
       
       return newStroke;
@@ -239,12 +265,16 @@ function HandwritingPractice({ settings }) {
       const position = result.indexOf(correctChar);
       const strictness = settings.recognitionStrictness || 10;
 
+      // Update attempts for this character
+      setCharacterAttempts(prev => prev + 1);
+
       if (position !== -1 && position < strictness) {
         // Correct!
         const newScore = score + 1;
         setScore(newScore);
         setIsCorrect(true);
         setShowResult(true);
+        setCharacterCorrect(true);
         setCandidateClass('candidates correct');
         setCandidates(`✅ Correct! ${correctChar} (${currentChar.romaji})`);
       } else {
@@ -286,16 +316,16 @@ function HandwritingPractice({ settings }) {
   };
 
   const getCorrectPercentage = () => {
-    return totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+    // Show character-specific accuracy: 0% if no attempts, otherwise based on if they got it right
+    if (characterAttempts === 0) return 0;
+    return characterCorrect ? 100 : 0;
   };
 
   const getAccuracyColor = () => {
     const percentage = getCorrectPercentage();
-    if (percentage >= 80) return '#C8E9E7'; // Quiz green
-    if (percentage >= 60) return '#E9F4C8'; // Light green
-    if (percentage >= 40) return '#F4E9C8'; // Yellow
-    if (percentage >= 20) return '#F4D5C8'; // Orange
-    return '#EAA3A4'; // Quiz red
+    if (percentage === 0 && characterAttempts === 0) return '#f8f9fa'; // Light grey for no attempts
+    if (percentage === 100) return '#C8E9E7'; // Quiz green for correct
+    return '#EAA3A4'; // Quiz red for incorrect
   };
 
   if (!currentChar) {
@@ -349,13 +379,13 @@ function HandwritingPractice({ settings }) {
 
       <div className="handwriting-controls">
         <button 
-          className={`handwriting-btn check-btn ${showResult ? (isCorrect ? 'correct' : 'wrong') : ''}`} 
+          className={`handwriting-btn check-btn ${showResult ? (getCorrectPercentage() > 50 ? 'correct' : 'wrong') : ''}`} 
           onClick={checkAnswer}
         >
           Check Answer
         </button>
         <button 
-          className={`handwriting-btn next-btn ${showResult ? (isCorrect ? 'correct' : 'wrong') : ''}`} 
+          className={`handwriting-btn next-btn ${showResult ? (getCorrectPercentage() > 50 ? 'correct' : 'wrong') : ''}`} 
           onClick={handleNext}
         >
           Next Character
