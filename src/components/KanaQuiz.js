@@ -55,7 +55,7 @@ function KanaQuiz({ settings }) {
   }, [generateQuestion]);
 
   const handleAnswer = (option) => {
-    if (showResult) return;
+    if (showResult || !currentQuestion) return;
 
     setSelectedAnswer(option);
     setShowResult(true);
@@ -72,7 +72,7 @@ function KanaQuiz({ settings }) {
   const handleNext = () => {
     if (questionNumber + 1 >= totalQuestions) {
       // Show final results
-      alert(`Quiz Complete! Score: ${score + (selectedAnswer?.char === currentQuestion.char ? 1 : 0)}/${totalQuestions}`);
+      alert(`Quiz Complete! Score: ${score + (selectedAnswer?.char === currentQuestion?.char ? 1 : 0)}/${totalQuestions}`);
       setQuestionNumber(0);
       setScore(0);
       generateQuestion();
@@ -81,6 +81,8 @@ function KanaQuiz({ settings }) {
       generateQuestion();
     }
   };
+
+  const isCorrect = selectedAnswer?.char === currentQuestion?.char;
 
   const handleSpeakerClick = () => {
     if (currentQuestion) {
@@ -95,7 +97,10 @@ function KanaQuiz({ settings }) {
   return (
     <div className="kana-quiz">
       <div className="quiz-question">
-        
+        <div className="score-display">
+          <div className="question-number">{questionNumber + 1}</div>
+          <div className="score-fraction">{score}/{totalQuestions}</div>
+        </div>
         <button
           className={`speaker-button ${settings.fontStyle}`}
           onClick={handleSpeakerClick}
@@ -110,7 +115,7 @@ function KanaQuiz({ settings }) {
           <button
             key={index}
             className={`option-button ${
-              showResult
+              showResult && currentQuestion
                 ? option.char === currentQuestion.char
                   ? 'correct'
                   : option === selectedAnswer
@@ -128,7 +133,7 @@ function KanaQuiz({ settings }) {
 
       <div className="button-area">
         {showResult && (
-          <button className="next-button" onClick={handleNext}>
+          <button className={`next-button ${isCorrect ? 'correct' : 'wrong'}`} onClick={handleNext}>
             {questionNumber + 1 >= totalQuestions ? 'Finish' : 'Next Question'}
           </button>
         )}

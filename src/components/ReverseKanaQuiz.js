@@ -52,7 +52,7 @@ function ReverseKanaQuiz({ settings }) {
   }, [generateQuestion]);
 
   const handleAnswer = (option) => {
-    if (showResult) return;
+    if (showResult || !currentQuestion) return;
 
     setSelectedAnswer(option);
     setShowResult(true);
@@ -67,7 +67,7 @@ function ReverseKanaQuiz({ settings }) {
 
   const handleNext = () => {
     if (questionNumber + 1 >= totalQuestions) {
-      alert(`Quiz Complete! Score: ${score + (selectedAnswer?.char === currentQuestion.char ? 1 : 0)}/${totalQuestions}`);
+      alert(`Quiz Complete! Score: ${score + (selectedAnswer?.char === currentQuestion?.char ? 1 : 0)}/${totalQuestions}`);
       setQuestionNumber(0);
       setScore(0);
       generateQuestion();
@@ -77,6 +77,8 @@ function ReverseKanaQuiz({ settings }) {
     }
   };
 
+  const isCorrect = selectedAnswer?.char === currentQuestion?.char;
+
   if (!currentQuestion) {
     return <div className="quiz-loading">Loading...</div>;
   }
@@ -84,9 +86,12 @@ function ReverseKanaQuiz({ settings }) {
   return (
     <div className="kana-quiz">
       <div className="quiz-question">
-        
+        <div className="score-display">
+          <div className="question-number">{questionNumber + 1}</div>
+          <div className="score-fraction">{score}/{totalQuestions}</div>
+        </div>
         <div className={`character-display ${settings.fontStyle}`}>
-          {currentQuestion.char}
+          {currentQuestion?.char}
         </div>
       </div>
 
@@ -95,7 +100,7 @@ function ReverseKanaQuiz({ settings }) {
           <button
             key={index}
             className={`option-button romaji ${
-              showResult
+              showResult && currentQuestion
                 ? option.char === currentQuestion.char
                   ? 'correct'
                   : option === selectedAnswer
@@ -113,7 +118,7 @@ function ReverseKanaQuiz({ settings }) {
 
       <div className="button-area">
         {showResult && (
-          <button className="next-button" onClick={handleNext}>
+          <button className={`next-button ${isCorrect ? 'correct' : 'wrong'}`} onClick={handleNext}>
             {questionNumber + 1 >= totalQuestions ? 'Finish' : 'Next Question'}
           </button>
         )}
