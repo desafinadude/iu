@@ -15,7 +15,6 @@ function HandwritingPractice({ settings }) {
   const [currentStroke, setCurrentStroke] = useState([]);
   const [showHint, setShowHint] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
   const [characterAttempts, setCharacterAttempts] = useState(0);
   const [characterCorrect, setCharacterCorrect] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -48,7 +47,6 @@ function HandwritingPractice({ settings }) {
     clearCanvas();
     setShowHint(false);
     setShowResult(false);
-    setIsCorrect(false);
     
     // Reset per-character tracking
     setCharacterAttempts(0);
@@ -272,14 +270,12 @@ function HandwritingPractice({ settings }) {
         // Correct!
         const newScore = score + 1;
         setScore(newScore);
-        setIsCorrect(true);
         setShowResult(true);
         setCharacterCorrect(true);
         setCandidateClass('candidates correct');
         setCandidates(`✅ Correct! ${correctChar} (${currentChar.romaji})`);
       } else {
         // Wrong - just show hint
-        setIsCorrect(false);
         setShowResult(true);
         setShowHint(true);
         setCandidateClass('candidates incorrect');
