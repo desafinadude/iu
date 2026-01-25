@@ -52,20 +52,29 @@ function FallingKana({ settings }) {
     // Pick the target character first
     const targetCharData = availableChars[Math.floor(Math.random() * availableChars.length)];
 
-    // Create batch with guaranteed target
+    // Set target and announce FIRST
+    setTargetChar(targetCharData);
+    targetResolvedRef.current = false;
+    speak(targetCharData.char);
+
+    // Create batch with guaranteed target (after announcing)
     const batch = [];
     const usedPositions = [];
 
-    // Decide where in the batch the target will appear (not first, give player time to see it)
-    const targetIndex = Math.floor(Math.random() * (BATCH_SIZE - 2)) + 2; // Position 2 to BATCH_SIZE-1
+    // Decide where in the batch the target will appear
+    const targetIndex = Math.floor(Math.random() * BATCH_SIZE);
 
     for (let i = 0; i < BATCH_SIZE; i++) {
       let charData;
       if (i === targetIndex) {
         charData = targetCharData;
       } else {
-        // Pick a random character (could be same as target by chance, that's ok)
-        charData = availableChars[Math.floor(Math.random() * availableChars.length)];
+        // Pick a random character that is NOT the target
+        let otherChar;
+        do {
+          otherChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+        } while (otherChar.char === targetCharData.char && availableChars.length > 1);
+        charData = otherChar;
       }
 
       // Find a non-overlapping x position
@@ -85,29 +94,20 @@ function FallingKana({ settings }) {
         char: charData.char,
         romaji: charData.romaji,
         x,
-        y: -charSize - (i * 60), // Stagger vertically
+        y: -charSize,
         isTarget: charData.char === targetCharData.char,
         spawnDelay: i * SPAWN_DELAY
       });
     }
 
-    // Set target and announce after a short delay (so target is visible)
-    setTargetChar(targetCharData);
-    targetResolvedRef.current = false;
-
-    // Spawn characters with staggered timing
-    batch.forEach((char, index) => {
-      setTimeout(() => {
-        setFallingChars(prev => [...prev, { ...char, y: -charSize }]);
-
-        // Announce target after the target character has spawned
-        if (index === targetIndex) {
-          setTimeout(() => {
-            speak(targetCharData.char);
-          }, 300);
-        }
-      }, char.spawnDelay);
-    });
+    // Spawn characters with staggered timing AFTER announcing
+    setTimeout(() => {
+      batch.forEach((char) => {
+        setTimeout(() => {
+          setFallingChars(prev => [...prev, char]);
+        }, char.spawnDelay);
+      });
+    }, 800); // Delay after voice announcement
 
   }, [getEnabledChars]);
 
@@ -154,7 +154,7 @@ function FallingKana({ settings }) {
       for (const char of prev) {
         const newY = char.y + FALL_SPEED;
 
-        if (newY > areaHeight - 80) { // Account for skyline height
+        if (newY > areaHeight - 100) { // Account for skyline height
           // Character hit the ground
           if (char.isTarget && !targetResolvedRef.current) {
             targetMissed = true;
