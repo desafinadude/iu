@@ -84,8 +84,11 @@ function FallingKana({ settings }) {
       let isValidPosition = false;
       
       while (attempts < 20 && !isValidPosition) {
-        x = padding + Math.random() * (areaWidth - charSize - padding * 2);
-        isValidPosition = !usedPositions.some(pos => Math.abs(pos - x) < charSize + 20);
+        const candidateX = padding + Math.random() * (areaWidth - charSize - padding * 2);
+        isValidPosition = !usedPositions.some(pos => Math.abs(pos - candidateX) < charSize + 20);
+        if (isValidPosition) {
+          x = candidateX;
+        }
         attempts++;
       }
       
