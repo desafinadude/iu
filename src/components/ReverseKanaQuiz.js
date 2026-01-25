@@ -12,6 +12,7 @@ function ReverseKanaQuiz({ settings }) {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [characterWeights, setCharacterWeights] = useState(new Map());
 
   const totalQuestions = 20;
 
@@ -35,7 +36,48 @@ function ReverseKanaQuiz({ settings }) {
       return;
     }
 
-    const correctAnswer = availableChars[Math.floor(Math.random() * availableChars.length)];
+    let correctAnswer;
+    
+    if (availableChars.length >= 10) {
+      // Use weighted selection for larger pools
+      const weightedChars = availableChars.map(char => ({
+        ...char,
+        weight: characterWeights.get(char.char) || 1.0
+      }));
+      
+      const totalWeight = weightedChars.reduce((sum, char) => sum + char.weight, 0);
+      let random = Math.random() * totalWeight;
+      
+      correctAnswer = weightedChars.find(char => {
+        random -= char.weight;
+        return random <= 0;
+      });
+      
+      // Fallback in case of rounding errors
+      if (!correctAnswer) {
+        correctAnswer = weightedChars[weightedChars.length - 1];
+      }
+    } else {
+      // Use simple random selection for small pools
+      correctAnswer = availableChars[Math.floor(Math.random() * availableChars.length)];
+    }
+
+    // Update weights - reduce weight of selected character, increase others slightly
+    if (availableChars.length >= 10) {
+      setCharacterWeights(prev => {
+        const updated = new Map(prev);
+        updated.set(correctAnswer.char, 0.3); // Much less likely to repeat
+        // Slowly increase weights of other characters
+        availableChars.forEach(char => {
+          if (char.char !== correctAnswer.char) {
+            const current = updated.get(char.char) || 1.0;
+            updated.set(char.char, Math.min(current + 0.1, 1.5));
+          }
+        });
+        return updated;
+      });
+    }
+
     const wrongAnswers = shuffle(
       availableChars.filter(h => h.char !== correctAnswer.char)
     ).slice(0, 9);
@@ -45,7 +87,7 @@ function ReverseKanaQuiz({ settings }) {
     setOptions(allOptions);
     setShowResult(false);
     setSelectedAnswer(null);
-  }, [getEnabledChars]);
+  }, [getEnabledChars, characterWeights]);
 
   useEffect(() => {
     generateQuestion();
