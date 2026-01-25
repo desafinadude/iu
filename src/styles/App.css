@@ -63,3 +63,14 @@
   padding: 50px 5px 5px 5px; /* Minimal padding to maximize space */
   box-sizing: border-box;
 }
+
+/* Remove padding for FallingKana game to maximize play area */
+.app-content:has(.falling-kana) {
+  padding: 0;
+  overflow: hidden; /* Prevent any scrolling */
+}
+
+/* Prevent body scrolling when FallingKana is active */
+body:has(.falling-kana) {
+  overflow: hidden;
+}

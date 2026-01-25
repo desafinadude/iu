@@ -3,6 +3,7 @@ import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
 import '../styles/FallingKana.css';
+import starBubble from '../styles/star-bubble.png';
 
 function FallingKana({ settings }) {
   const [health, setHealth] = useState(100);
@@ -18,12 +19,13 @@ function FallingKana({ settings }) {
   const idCounterRef = useRef(0);
   const targetResolvedRef = useRef(false);
 
-  const FALL_SPEED = 1.2; // pixels per frame
+  const FALL_SPEED = 0.8; // pixels per frame (slower)
   const BATCH_SIZE = 10; // characters per round
   const DAMAGE_PER_MISS = 5;
   const DAMAGE_PER_WRONG = 5;
   const POINTS_PER_CORRECT = 10;
-  const SPAWN_DELAY = 150; // ms between each character spawn in batch
+  const POINTS_LOST_PER_MISS = 5; // points lost when missing target
+  const SPAWN_DELAY = 500; // ms between each character spawn in batch (much more spaced out)
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -85,7 +87,7 @@ function FallingKana({ settings }) {
         attempts++;
       } while (
         attempts < 20 &&
-        usedPositions.some(pos => Math.abs(pos - x) < charSize + 5)
+        usedPositions.some(pos => Math.abs(pos - x) < charSize + 20) // Increased spacing
       );
       usedPositions.push(x);
 
@@ -133,7 +135,12 @@ function FallingKana({ settings }) {
         if (newHealth === 0) setGameOver(true);
         return newHealth;
       });
-      setFeedback({ type: 'wrong', message: 'Wrong!' });
+      setScore(prev => {
+        const newScore = Math.max(0, prev - POINTS_LOST_PER_MISS);
+        console.log('Wrong click! Score reduced from', prev, 'to', newScore);
+        return newScore;
+      });
+      setFeedback({ type: 'wrong', message: `Wrong! -${POINTS_LOST_PER_MISS} points` });
       setTimeout(() => setFeedback(null), 400);
     }
   }, [gameOver, targetChar]);
@@ -176,7 +183,13 @@ function FallingKana({ settings }) {
           }
           return newHealth;
         });
-        setFeedback({ type: 'wrong', message: 'Missed!' });
+        // Explicitly lose points when missing target
+        setScore(prev => {
+          const newScore = Math.max(0, prev - POINTS_LOST_PER_MISS);
+          console.log('Target missed! Score reduced from', prev, 'to', newScore);
+          return newScore;
+        });
+        setFeedback({ type: 'wrong', message: `Missed! -${POINTS_LOST_PER_MISS} points` });
         setTimeout(() => {
           setFeedback(null);
           setWaitingForNextRound(true);
@@ -282,25 +295,10 @@ function FallingKana({ settings }) {
 
   return (
     <div className="falling-kana">
-      <div className="game-header">
-        <div className="health-bar-container">
-          <div
-            className="health-bar"
-            style={{
-              width: `${health}%`,
-              backgroundColor: getHealthColor()
-            }}
-          />
-          <span className="health-text">{health}</span>
-        </div>
-        <div className="score-badge">{score}</div>
-      </div>
-
       <div className="target-display">
-        <button className="target-button" onClick={replaySound}>
-          <span className="speaker-icon">🔊</span>
-          {targetChar && <span className="target-romaji">{targetChar.romaji}</span>}
-        </button>
+        <div className="star-bubble" onClick={replaySound} style={{ cursor: 'pointer' }}>
+          {targetChar && <div className="target-letter">{targetChar.romaji}</div>}
+        </div>
       </div>
 
       {feedback && (
@@ -324,6 +322,12 @@ function FallingKana({ settings }) {
           </button>
         ))}
       </div>
+
+      <div className="health-circle">
+        <div className="health-text">{health}</div>
+      </div>
+
+      <div className="score-circle">{score}</div>
 
       <div className="skyline"></div>
     </div>
