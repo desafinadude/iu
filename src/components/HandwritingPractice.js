@@ -99,7 +99,8 @@ function HandwritingPractice({ settings }) {
     
     // Speak the character immediately
     speak(char.char);
-  }, [getEnabledChars, characterWeights]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getEnabledChars]);
 
   useEffect(() => {
     generateQuestion();

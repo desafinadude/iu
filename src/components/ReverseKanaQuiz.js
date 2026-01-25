@@ -87,7 +87,8 @@ function ReverseKanaQuiz({ settings }) {
     setOptions(allOptions);
     setShowResult(false);
     setSelectedAnswer(null);
-  }, [getEnabledChars, characterWeights]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getEnabledChars]);
 
   useEffect(() => {
     generateQuestion();
