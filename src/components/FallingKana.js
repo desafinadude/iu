@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
+import { playExplosionSound, playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import '../styles/FallingKana.css';
 
 function FallingKana({ settings }) {
@@ -13,6 +14,7 @@ function FallingKana({ settings }) {
   const [targetChar, setTargetChar] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [waitingForNextRound, setWaitingForNextRound] = useState(false);
+  const [screenFlash, setScreenFlash] = useState(null);
   const gameAreaRef = useRef(null);
   const animationRef = useRef(null);
   const idCounterRef = useRef(0);
@@ -21,12 +23,12 @@ function FallingKana({ settings }) {
   const FALL_SPEED = 0.8; // pixels per frame (slower)
   const FALL_SPEED_INCREMENT = 0.05; // speed increase per correct answer
   const MAX_FALL_SPEED = 2.0; // maximum fall speed
-  const BATCH_SIZE = 10; // characters per round
+  const BATCH_SIZE = 6; // characters per round (reduced to prevent crowding)
   const DAMAGE_PER_MISS = 5;
   const DAMAGE_PER_WRONG = 5;
   const POINTS_PER_CORRECT = 10;
   const POINTS_LOST_PER_MISS = 5; // points lost when missing target
-  const SPAWN_DELAY = 500; // ms between each character spawn in batch (much more spaced out)
+  const SPAWN_DELAY = 800; // ms between each character spawn in batch (more spaced out)
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -57,8 +59,12 @@ function FallingKana({ settings }) {
     const areaWidth = gameArea.offsetWidth;
     // Responsive character size - larger on mobile for better touch targets
     const charSize = areaWidth < 768 ? 65 : 60;
-    const padding = Math.max(20, areaWidth * 0.05); // Dynamic padding based on screen width
-    const minSpacing = charSize + Math.max(30, areaWidth * 0.08); // Better spacing for mobile
+    const padding = Math.max(30, areaWidth * 0.08); // Dynamic padding based on screen width
+
+    // Calculate available positions using grid approach - much better spacing
+    const availableWidth = areaWidth - padding * 2 - charSize;
+    const numColumns = Math.min(BATCH_SIZE, Math.floor(availableWidth / (charSize + 40)) + 1);
+    const columnWidth = availableWidth / numColumns;
 
     // Pick the target character first
     const targetCharData = availableChars[Math.floor(Math.random() * availableChars.length)];
@@ -70,7 +76,6 @@ function FallingKana({ settings }) {
 
     // Create batch with guaranteed target (after announcing)
     const batch = [];
-    const usedPositions = [];
 
     // Decide where in the batch the target will appear
     const targetIndex = Math.floor(Math.random() * BATCH_SIZE);
@@ -88,33 +93,22 @@ function FallingKana({ settings }) {
         charData = otherChar;
       }
 
-      // Find a non-overlapping x position
-      let x;
-      let attempts = 0;
-      let isValidPosition = false;
-      
-      while (attempts < 20 && !isValidPosition) {
-        const candidateX = padding + Math.random() * (areaWidth - charSize - padding * 2);
-        isValidPosition = !usedPositions.some(pos => Math.abs(pos - candidateX) < minSpacing);
-        if (isValidPosition) {
-          x = candidateX;
-        }
-        attempts++;
-      }
-      
-      // Fallback positioning if we couldn't find a good spot (for very narrow screens)
-      if (!isValidPosition) {
-        x = padding + (i / BATCH_SIZE) * (areaWidth - charSize - padding * 2);
-      }
-      
-      usedPositions.push(x);
+      // Use grid-based positioning with randomness within each column
+      // Shuffle column assignments for variety
+      const columnIndex = i % numColumns;
+      const columnStart = padding + columnIndex * columnWidth;
+      const randomOffset = Math.random() * Math.max(0, columnWidth - charSize - 20);
+      const x = columnStart + randomOffset;
+
+      // Stagger Y positions randomly to prevent vertical bunching
+      const randomYOffset = Math.random() * 100;
 
       batch.push({
         id: idCounterRef.current++,
         char: charData.char,
         romaji: charData.romaji,
         x,
-        y: -charSize,
+        y: -charSize - randomYOffset,
         isTarget: charData.char === targetCharData.char,
         spawnDelay: i * SPAWN_DELAY
       });
@@ -137,6 +131,7 @@ function FallingKana({ settings }) {
     if (clickedChar.char === targetChar.char) {
       // Correct!
       targetResolvedRef.current = true;
+      playCorrectSound();
       setScore(prev => prev + POINTS_PER_CORRECT);
       setFeedback({ type: 'correct', message: 'Correct!' });
       setFallingChars(prev => prev.filter(c => c.id !== clickedChar.id));
@@ -148,6 +143,7 @@ function FallingKana({ settings }) {
       }, 600);
     } else {
       // Wrong!
+      playWrongSound();
       setHealth(prev => {
         const newHealth = Math.max(0, prev - DAMAGE_PER_WRONG);
         if (newHealth === 0) setGameOver(true);
@@ -195,6 +191,11 @@ function FallingKana({ settings }) {
       }
 
       if (targetMissed) {
+        // Play explosion sound and flash screen red
+        playExplosionSound();
+        setScreenFlash('red');
+        setTimeout(() => setScreenFlash(null), 200);
+
         setHealth(prev => {
           const newHealth = Math.max(0, prev - DAMAGE_PER_MISS);
           if (newHealth === 0) {
@@ -258,6 +259,7 @@ function FallingKana({ settings }) {
     setFallingChars([]);
     setFeedback(null);
     setWaitingForNextRound(false);
+    setScreenFlash(null);
     idCounterRef.current = 0;
     targetResolvedRef.current = false;
 
@@ -308,6 +310,8 @@ function FallingKana({ settings }) {
 
   return (
     <div className="falling-kana">
+      {screenFlash && <div className={`screen-flash ${screenFlash}`} />}
+
       <div className="target-display">
         <div className="star-bubble" onClick={replaySound} style={{ cursor: 'pointer' }}>
           {targetChar && <div className="target-letter">{targetChar.romaji}</div>}
