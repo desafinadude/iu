@@ -171,7 +171,6 @@ function WordSearch() {
     // Only allow straight lines (horizontal, vertical, diagonal)
     if (selectedCells.length > 0) {
       const first = selectedCells[0];
-      const last = selectedCells[selectedCells.length - 1];
 
       // Check if this cell continues the line
       const dx = col - first.col;
