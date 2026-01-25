@@ -6,7 +6,13 @@
   max-width: 600px;
   margin: 0 auto;
   position: relative;
-  background: linear-gradient(180deg, #e8f4f8 0%, #f5f0e8 100%);
+  background: linear-gradient(180deg,
+    #87CEEB 0%,      /* Light sky blue at top */
+    #B0E0E6 30%,     /* Powder blue */
+    #E0F4FF 60%,     /* Very light blue */
+    #FFF5E6 85%,     /* Warm horizon */
+    #FFE4C4 100%     /* Bisque at bottom */
+  );
 }
 
 /* Game Menu / Start Screen */
@@ -15,9 +21,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
   padding: 20px;
   text-align: center;
+  z-index: 10;
 }
 
 .game-intro h2,
@@ -25,27 +32,31 @@
   font-size: 32px;
   color: #333;
   margin-bottom: 15px;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
 }
 
 .game-intro p {
   font-size: 16px;
-  color: #666;
+  color: #555;
   margin-bottom: 20px;
   max-width: 280px;
 }
 
 .game-rules {
   list-style: none;
-  padding: 0;
+  padding: 15px 20px;
   margin: 0 0 30px 0;
   text-align: left;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
 }
 
 .game-rules li {
   font-size: 14px;
-  color: #555;
-  padding: 5px 0;
-  border-bottom: 1px solid #ddd;
+  color: #444;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .game-rules li:last-child {
@@ -54,6 +65,10 @@
 
 .game-over-screen {
   margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 30px 40px;
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
 }
 
 .final-score {
@@ -73,6 +88,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .start-button:hover {
@@ -86,8 +102,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 15px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-bottom: 2px solid #ddd;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  backdrop-filter: blur(5px);
+  z-index: 20;
 }
 
 .health-bar-container {
@@ -129,6 +147,7 @@
   font-weight: bold;
   font-size: 18px;
   border: 2px solid #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 /* Target Display */
@@ -136,8 +155,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px;
-  background-color: rgba(255, 255, 255, 0.8);
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 15;
 }
 
 .target-button {
@@ -150,6 +171,7 @@
   padding: 10px 25px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .target-button:hover {
@@ -180,6 +202,7 @@
   z-index: 100;
   animation: popIn 0.3s ease;
   pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .feedback-popup.correct {
@@ -217,7 +240,7 @@
   position: absolute;
   width: 50px;
   height: 50px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.95);
   border: 2px solid #333;
   border-radius: 10px;
   font-size: 28px;
@@ -227,21 +250,32 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 0.1s ease, background-color 0.1s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .falling-char:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
   z-index: 10;
+  background-color: #fff;
 }
 
 .falling-char:active {
   transform: scale(0.95);
 }
 
-.falling-char.is-target {
-  /* Subtle hint - slightly different border color */
-  border-color: #555;
+/* Tokyo Skyline */
+.skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background-image: url('./tokyo-skyline.svg');
+  background-size: cover;
+  background-position: bottom center;
+  background-repeat: repeat-x;
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Mobile adjustments */
@@ -299,6 +333,10 @@
   .final-score {
     font-size: 24px;
   }
+
+  .skyline {
+    height: 60px;
+  }
 }
 
 /* Small screen adjustments */
@@ -313,5 +351,9 @@
     width: 35px;
     height: 35px;
     font-size: 12px;
+  }
+
+  .skyline {
+    height: 50px;
   }
 }
