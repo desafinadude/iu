@@ -1,13 +1,38 @@
 import React, { useState } from 'react';
-import { videosData, learningTips } from '../data/resourcesData';
 import '../styles/Resources.css';
 
 function Resources() {
   const [currentChapter, setCurrentChapter] = useState(null);
-  
-  // Use the first video from the data (you can extend this to support multiple videos)
-  const primaryVideo = videosData[0];
-  const chapters = primaryVideo.chapters;
+
+  // Hardcoded data for now to fix the loading issue
+  const videoId = '6p9Il_j0zjc';
+  const chapters = [
+    { title: 'Introduction', time: 0, description: 'Welcome and overview' },
+    { title: 'Hiragana Basics', time: 120, description: 'Basic hiragana characters' },
+    { title: 'Katakana Basics', time: 300, description: 'Basic katakana characters' },
+    { title: 'Dakuten & Handakuten', time: 480, description: 'Modified characters with marks' },
+    { title: 'Common Words', time: 660, description: 'Practical vocabulary examples' },
+    { title: 'Practice Tips', time: 840, description: 'How to practice effectively' }
+  ];
+
+  const learningTips = [
+    {
+      title: 'Practice Daily',
+      description: 'Consistent daily practice, even just 10-15 minutes, is more effective than long irregular sessions.'
+    },
+    {
+      title: 'Write by Hand',
+      description: 'Use the handwriting practice feature to reinforce muscle memory and character recognition.'
+    },
+    {
+      title: 'Learn in Groups',
+      description: 'Master one row at a time (あかさた...) before moving to the next for better retention.'
+    },
+    {
+      title: 'Use Context',
+      description: 'Practice with vocabulary words to see how characters work together in real usage.'
+    }
+  ];
 
   const jumpToChapter = (timeInSeconds) => {
     setCurrentChapter(timeInSeconds);
@@ -15,7 +40,7 @@ function Resources() {
   };
 
   const getYouTubeEmbedUrl = () => {
-    const baseUrl = `https://www.youtube.com/embed/${primaryVideo.id}`;
+    const baseUrl = `https://www.youtube.com/embed/${videoId}`;
     const params = new URLSearchParams({
       autoplay: 1,
       start: currentChapter || 0
@@ -31,14 +56,14 @@ function Resources() {
       </div>
 
       <div className="video-section">
-        <h3>{primaryVideo.title}</h3>
+        <h3>Learn Hiragana and Katakana</h3>
         <div className="video-container">
           <iframe
             key={currentChapter} // Force re-render when chapter changes
             width="100%"
             height="315"
             src={getYouTubeEmbedUrl()}
-            title={primaryVideo.title}
+            title="Learn Hiragana and Katakana"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen

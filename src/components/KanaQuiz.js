@@ -90,7 +90,8 @@ function KanaQuiz({ settings }) {
 
     // Speak the character automatically
     speak(correctAnswer.char);
-  }, [getEnabledChars, characterWeights]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getEnabledChars]);
 
   useEffect(() => {
     generateQuestion();
