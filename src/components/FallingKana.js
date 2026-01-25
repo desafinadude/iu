@@ -19,6 +19,8 @@ function FallingKana({ settings }) {
   const targetResolvedRef = useRef(false);
 
   const FALL_SPEED = 0.8; // pixels per frame (slower)
+  const FALL_SPEED_INCREMENT = 0.05; // speed increase per correct answer
+  const MAX_FALL_SPEED = 2.0; // maximum fall speed
   const BATCH_SIZE = 10; // characters per round
   const DAMAGE_PER_MISS = 5;
   const DAMAGE_PER_WRONG = 5;
@@ -39,6 +41,12 @@ function FallingKana({ settings }) {
     });
   }, [settings]);
 
+  const getCurrentFallSpeed = useCallback(() => {
+    const correctAnswers = Math.floor(score / POINTS_PER_CORRECT);
+    const currentSpeed = FALL_SPEED + (correctAnswers * FALL_SPEED_INCREMENT);
+    return Math.min(currentSpeed, MAX_FALL_SPEED);
+  }, [score]);
+
   const spawnBatch = useCallback(() => {
     const availableChars = getEnabledChars();
     if (availableChars.length === 0) return;
@@ -47,8 +55,10 @@ function FallingKana({ settings }) {
     if (!gameArea) return;
 
     const areaWidth = gameArea.offsetWidth;
-    const charSize = 50;
-    const padding = 10;
+    // Responsive character size - larger on mobile for better touch targets
+    const charSize = areaWidth < 768 ? 65 : 60;
+    const padding = Math.max(20, areaWidth * 0.05); // Dynamic padding based on screen width
+    const minSpacing = charSize + Math.max(30, areaWidth * 0.08); // Better spacing for mobile
 
     // Pick the target character first
     const targetCharData = availableChars[Math.floor(Math.random() * availableChars.length)];
@@ -85,11 +95,16 @@ function FallingKana({ settings }) {
       
       while (attempts < 20 && !isValidPosition) {
         const candidateX = padding + Math.random() * (areaWidth - charSize - padding * 2);
-        isValidPosition = !usedPositions.some(pos => Math.abs(pos - candidateX) < charSize + 20);
+        isValidPosition = !usedPositions.some(pos => Math.abs(pos - candidateX) < minSpacing);
         if (isValidPosition) {
           x = candidateX;
         }
         attempts++;
+      }
+      
+      // Fallback positioning if we couldn't find a good spot (for very narrow screens)
+      if (!isValidPosition) {
+        x = padding + (i / BATCH_SIZE) * (areaWidth - charSize - padding * 2);
       }
       
       usedPositions.push(x);
@@ -155,6 +170,7 @@ function FallingKana({ settings }) {
     if (!gameArea) return;
 
     const areaHeight = gameArea.offsetHeight;
+    const currentSpeed = getCurrentFallSpeed();
 
     // Update falling characters
     setFallingChars(prev => {
@@ -162,7 +178,7 @@ function FallingKana({ settings }) {
       let targetMissed = false;
 
       for (const char of prev) {
-        const newY = char.y + FALL_SPEED;
+        const newY = char.y + currentSpeed;
 
         if (newY > areaHeight - 100) { // Account for skyline height
           // Character hit the ground
@@ -203,7 +219,7 @@ function FallingKana({ settings }) {
     });
 
     animationRef.current = requestAnimationFrame(gameLoop);
-  }, [gameOver, gameStarted]);
+  }, [gameOver, gameStarted, getCurrentFallSpeed]);
 
   // Handle starting next round when all chars have fallen or target resolved
   useEffect(() => {
