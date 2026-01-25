@@ -357,6 +357,31 @@
   color: #333;
 }
 
+/* Screen flash effect */
+.screen-flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1000;
+  animation: flashFade 0.2s ease-out forwards;
+}
+
+.screen-flash.red {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+@keyframes flashFade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .game-header {
