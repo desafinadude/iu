@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { playCorrectSound } from '../utils/soundEffects';
+import { speak } from '../utils/speech';
 import '../styles/WordSearch.css';
 
 // Word list for word search - short words work best
@@ -257,6 +258,10 @@ function WordSearch() {
     handleMouseUp();
   };
 
+  const handleWordClick = (wordObj) => {
+    speak(wordObj.word);
+  };
+
   return (
     <div className="word-search">
       <div className="word-search-header">
@@ -266,13 +271,13 @@ function WordSearch() {
 
       <div className="word-list">
         {words.map((wordObj, index) => (
-          <div
+          <button
             key={index}
             className={`word-item ${foundWords.has(wordObj.word) ? 'found' : ''}`}
+            onClick={() => handleWordClick(wordObj)}
           >
-            <span className="word-japanese">{wordObj.word}</span>
-            <span className="word-translation">{wordObj.translation}</span>
-          </div>
+            {wordObj.translation}
+          </button>
         ))}
       </div>
 
