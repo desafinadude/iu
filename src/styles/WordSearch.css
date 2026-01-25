@@ -1,0 +1,250 @@
+.word-search {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100%;
+  background: linear-gradient(180deg,
+    #87CEEB 0%,
+    #B0E0E6 30%,
+    #E0F4FF 60%,
+    #FFF5E6 85%,
+    #FFE4C4 100%
+  );
+}
+
+.word-search-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.word-search-header h2 {
+  font-size: 28px;
+  color: #333;
+  margin: 0 0 8px 0;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+}
+
+.word-search-header p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+/* Word list */
+.word-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 400px;
+}
+
+.word-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  border: 2px solid #333;
+  transition: all 0.3s ease;
+}
+
+.word-item.found {
+  background: #C8E9E7;
+  border-color: #2d5f3f;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.word-japanese {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.word-translation {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Puzzle grid */
+.puzzle-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  border: 3px solid #333;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  user-select: none;
+  touch-action: none;
+}
+
+.grid-row {
+  display: flex;
+  gap: 4px;
+}
+
+.grid-cell {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #333;
+}
+
+.grid-cell:hover {
+  background: #f0f0f0;
+  border-color: #999;
+}
+
+.grid-cell.selected {
+  background: #FFE4B5;
+  border-color: #c94146;
+  transform: scale(1.05);
+}
+
+.grid-cell.found {
+  background: #C8E9E7;
+  border-color: #2d5f3f;
+  color: #2d5f3f;
+}
+
+/* Completion message */
+.puzzle-complete {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px 40px;
+  border-radius: 16px;
+  border: 3px solid #2d5f3f;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  text-align: center;
+  z-index: 100;
+  animation: popIn 0.3s ease;
+}
+
+.puzzle-complete h3 {
+  font-size: 24px;
+  color: #2d5f3f;
+  margin: 0 0 10px 0;
+}
+
+.puzzle-complete p {
+  font-size: 16px;
+  color: #555;
+  margin: 0 0 20px 0;
+}
+
+@keyframes popIn {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* New puzzle button */
+.new-puzzle-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background-color: #c94146;
+  color: white;
+  border: 2px solid #000;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.new-puzzle-btn:hover {
+  transform: scale(1.05);
+  background-color: #b33a3f;
+}
+
+.new-puzzle-btn:active {
+  transform: scale(0.98);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .word-search {
+    padding: 15px 10px;
+  }
+
+  .word-search-header h2 {
+    font-size: 24px;
+  }
+
+  .word-list {
+    gap: 6px;
+  }
+
+  .word-item {
+    padding: 6px 10px;
+  }
+
+  .word-japanese {
+    font-size: 16px;
+  }
+
+  .word-translation {
+    font-size: 10px;
+  }
+
+  .puzzle-grid {
+    padding: 10px;
+    gap: 3px;
+  }
+
+  .grid-row {
+    gap: 3px;
+  }
+
+  .grid-cell {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .new-puzzle-btn {
+    padding: 10px 25px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid-cell {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .puzzle-grid {
+    padding: 8px;
+    gap: 2px;
+  }
+
+  .grid-row {
+    gap: 2px;
+  }
+}
