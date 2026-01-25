@@ -269,13 +269,15 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  width: 100%;
+  height: 100px;
   background-image: url('./tokyo-skyline.svg');
-  background-size: cover;
+  background-size: 100% auto;
   background-position: bottom center;
-  background-repeat: repeat-x;
+  background-repeat: no-repeat;
   pointer-events: none;
   z-index: 5;
+  mix-blend-mode: multiply;
 }
 
 /* Mobile adjustments */
@@ -335,7 +337,7 @@
   }
 
   .skyline {
-    height: 60px;
+    height: 70px;
   }
 }
 
@@ -354,6 +356,6 @@
   }
 
   .skyline {
-    height: 50px;
+    height: 60px;
   }
 }
