@@ -3,7 +3,6 @@ import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
 import '../styles/FallingKana.css';
-import starBubble from '../styles/star-bubble.png';
 
 function FallingKana({ settings }) {
   const [health, setHealth] = useState(100);
@@ -82,13 +81,14 @@ function FallingKana({ settings }) {
       // Find a non-overlapping x position
       let x;
       let attempts = 0;
-      do {
+      let isValidPosition = false;
+      
+      while (attempts < 20 && !isValidPosition) {
         x = padding + Math.random() * (areaWidth - charSize - padding * 2);
+        isValidPosition = !usedPositions.some(pos => Math.abs(pos - x) < charSize + 20);
         attempts++;
-      } while (
-        attempts < 20 &&
-        usedPositions.some(pos => Math.abs(pos - x) < charSize + 20) // Increased spacing
-      );
+      }
+      
       usedPositions.push(x);
 
       batch.push({
@@ -254,12 +254,6 @@ function FallingKana({ settings }) {
     if (targetChar) {
       speak(targetChar.char);
     }
-  };
-
-  const getHealthColor = () => {
-    if (health > 60) return '#4CAF50';
-    if (health > 30) return '#FFC107';
-    return '#f44336';
   };
 
   if (!gameStarted || gameOver) {
