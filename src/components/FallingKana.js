@@ -12,18 +12,18 @@ function FallingKana({ settings }) {
   const [fallingChars, setFallingChars] = useState([]);
   const [targetChar, setTargetChar] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [waitingForNextRound, setWaitingForNextRound] = useState(false);
   const gameAreaRef = useRef(null);
   const animationRef = useRef(null);
-  const lastSpawnRef = useRef(0);
-  const lastTargetRef = useRef(0);
   const idCounterRef = useRef(0);
+  const targetResolvedRef = useRef(false);
 
-  const FALL_SPEED = 1.5; // pixels per frame
-  const SPAWN_INTERVAL = 1500; // ms between spawns
-  const TARGET_INTERVAL = 3000; // ms between new target announcements
-  const DAMAGE_PER_HIT = 5;
+  const FALL_SPEED = 1.2; // pixels per frame
+  const BATCH_SIZE = 10; // characters per round
+  const DAMAGE_PER_MISS = 5;
   const DAMAGE_PER_WRONG = 5;
   const POINTS_PER_CORRECT = 10;
+  const SPAWN_DELAY = 150; // ms between each character spawn in batch
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -38,17 +38,7 @@ function FallingKana({ settings }) {
     });
   }, [settings]);
 
-  const pickNewTarget = useCallback(() => {
-    const availableChars = getEnabledChars();
-    if (availableChars.length === 0) return null;
-
-    const randomChar = availableChars[Math.floor(Math.random() * availableChars.length)];
-    setTargetChar(randomChar);
-    speak(randomChar.char);
-    return randomChar;
-  }, [getEnabledChars]);
-
-  const spawnCharacter = useCallback(() => {
+  const spawnBatch = useCallback(() => {
     const availableChars = getEnabledChars();
     if (availableChars.length === 0) return;
 
@@ -57,32 +47,85 @@ function FallingKana({ settings }) {
 
     const areaWidth = gameArea.offsetWidth;
     const charSize = 50;
-    const x = Math.random() * (areaWidth - charSize);
-    const randomChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+    const padding = 10;
 
-    const newChar = {
-      id: idCounterRef.current++,
-      char: randomChar.char,
-      romaji: randomChar.romaji,
-      x,
-      y: -charSize,
-      isTarget: targetChar && randomChar.char === targetChar.char
-    };
+    // Pick the target character first
+    const targetCharData = availableChars[Math.floor(Math.random() * availableChars.length)];
 
-    setFallingChars(prev => [...prev, newChar]);
-  }, [getEnabledChars, targetChar]);
+    // Create batch with guaranteed target
+    const batch = [];
+    const usedPositions = [];
+
+    // Decide where in the batch the target will appear (not first, give player time to see it)
+    const targetIndex = Math.floor(Math.random() * (BATCH_SIZE - 2)) + 2; // Position 2 to BATCH_SIZE-1
+
+    for (let i = 0; i < BATCH_SIZE; i++) {
+      let charData;
+      if (i === targetIndex) {
+        charData = targetCharData;
+      } else {
+        // Pick a random character (could be same as target by chance, that's ok)
+        charData = availableChars[Math.floor(Math.random() * availableChars.length)];
+      }
+
+      // Find a non-overlapping x position
+      let x;
+      let attempts = 0;
+      do {
+        x = padding + Math.random() * (areaWidth - charSize - padding * 2);
+        attempts++;
+      } while (
+        attempts < 20 &&
+        usedPositions.some(pos => Math.abs(pos - x) < charSize + 5)
+      );
+      usedPositions.push(x);
+
+      batch.push({
+        id: idCounterRef.current++,
+        char: charData.char,
+        romaji: charData.romaji,
+        x,
+        y: -charSize - (i * 60), // Stagger vertically
+        isTarget: charData.char === targetCharData.char,
+        spawnDelay: i * SPAWN_DELAY
+      });
+    }
+
+    // Set target and announce after a short delay (so target is visible)
+    setTargetChar(targetCharData);
+    targetResolvedRef.current = false;
+
+    // Spawn characters with staggered timing
+    batch.forEach((char, index) => {
+      setTimeout(() => {
+        setFallingChars(prev => [...prev, { ...char, y: -charSize }]);
+
+        // Announce target after the target character has spawned
+        if (index === targetIndex) {
+          setTimeout(() => {
+            speak(targetCharData.char);
+          }, 300);
+        }
+      }, char.spawnDelay);
+    });
+
+  }, [getEnabledChars]);
 
   const handleCharClick = useCallback((clickedChar) => {
-    if (gameOver || !targetChar) return;
+    if (gameOver || !targetChar || targetResolvedRef.current) return;
 
     if (clickedChar.char === targetChar.char) {
       // Correct!
+      targetResolvedRef.current = true;
       setScore(prev => prev + POINTS_PER_CORRECT);
       setFeedback({ type: 'correct', message: 'Correct!' });
       setFallingChars(prev => prev.filter(c => c.id !== clickedChar.id));
-      // Pick new target immediately after correct answer
-      pickNewTarget();
-      lastTargetRef.current = Date.now();
+
+      // Wait a moment then start next round
+      setTimeout(() => {
+        setFeedback(null);
+        setWaitingForNextRound(true);
+      }, 600);
     } else {
       // Wrong!
       setHealth(prev => {
@@ -91,67 +134,73 @@ function FallingKana({ settings }) {
         return newHealth;
       });
       setFeedback({ type: 'wrong', message: 'Wrong!' });
+      setTimeout(() => setFeedback(null), 400);
     }
-
-    setTimeout(() => setFeedback(null), 500);
-  }, [gameOver, targetChar, pickNewTarget]);
+  }, [gameOver, targetChar]);
 
   const gameLoop = useCallback(() => {
     if (gameOver || !gameStarted) return;
 
-    const now = Date.now();
     const gameArea = gameAreaRef.current;
     if (!gameArea) return;
 
     const areaHeight = gameArea.offsetHeight;
 
-    // Spawn new character
-    if (now - lastSpawnRef.current > SPAWN_INTERVAL) {
-      spawnCharacter();
-      lastSpawnRef.current = now;
-    }
-
-    // Pick new target periodically
-    if (now - lastTargetRef.current > TARGET_INTERVAL) {
-      pickNewTarget();
-      lastTargetRef.current = now;
-    }
-
     // Update falling characters
     setFallingChars(prev => {
       const updated = [];
-      let healthLoss = 0;
+      let targetMissed = false;
 
       for (const char of prev) {
         const newY = char.y + FALL_SPEED;
 
-        if (newY > areaHeight) {
+        if (newY > areaHeight - 80) { // Account for skyline height
           // Character hit the ground
-          if (targetChar && char.char === targetChar.char) {
-            healthLoss += DAMAGE_PER_HIT;
+          if (char.isTarget && !targetResolvedRef.current) {
+            targetMissed = true;
+            targetResolvedRef.current = true;
           }
         } else {
           updated.push({
             ...char,
-            y: newY,
-            isTarget: targetChar && char.char === targetChar.char
+            y: newY
           });
         }
       }
 
-      if (healthLoss > 0) {
+      if (targetMissed) {
         setHealth(prev => {
-          const newHealth = Math.max(0, prev - healthLoss);
-          if (newHealth === 0) setGameOver(true);
+          const newHealth = Math.max(0, prev - DAMAGE_PER_MISS);
+          if (newHealth === 0) {
+            setGameOver(true);
+          }
           return newHealth;
         });
+        setFeedback({ type: 'wrong', message: 'Missed!' });
+        setTimeout(() => {
+          setFeedback(null);
+          setWaitingForNextRound(true);
+        }, 600);
       }
 
       return updated;
     });
 
     animationRef.current = requestAnimationFrame(gameLoop);
-  }, [gameOver, gameStarted, spawnCharacter, pickNewTarget, targetChar]);
+  }, [gameOver, gameStarted]);
+
+  // Handle starting next round when all chars have fallen or target resolved
+  useEffect(() => {
+    if (waitingForNextRound && !gameOver) {
+      // Clear remaining characters and start new batch
+      setFallingChars([]);
+      setWaitingForNextRound(false);
+
+      setTimeout(() => {
+        spawnBatch();
+      }, 500);
+    }
+  }, [waitingForNextRound, gameOver, spawnBatch]);
 
   useEffect(() => {
     if (gameStarted && !gameOver) {
@@ -176,14 +225,16 @@ function FallingKana({ settings }) {
     setGameOver(false);
     setFallingChars([]);
     setFeedback(null);
-    lastSpawnRef.current = Date.now();
-    lastTargetRef.current = Date.now();
+    setWaitingForNextRound(false);
     idCounterRef.current = 0;
+    targetResolvedRef.current = false;
 
-    const newTarget = pickNewTarget();
-    if (newTarget) {
-      setGameStarted(true);
-    }
+    setGameStarted(true);
+
+    // Spawn first batch after a short delay
+    setTimeout(() => {
+      spawnBatch();
+    }, 500);
   };
 
   const replaySound = () => {
@@ -224,6 +275,7 @@ function FallingKana({ settings }) {
             {gameOver ? 'Play Again' : 'Start Game'}
           </button>
         </div>
+        <div className="skyline"></div>
       </div>
     );
   }
@@ -247,7 +299,7 @@ function FallingKana({ settings }) {
       <div className="target-display">
         <button className="target-button" onClick={replaySound}>
           <span className="speaker-icon">🔊</span>
-          <span className="target-romaji">{targetChar?.romaji}</span>
+          {targetChar && <span className="target-romaji">{targetChar.romaji}</span>}
         </button>
       </div>
 
@@ -261,7 +313,7 @@ function FallingKana({ settings }) {
         {fallingChars.map(char => (
           <button
             key={char.id}
-            className={`falling-char ${settings.fontStyle} ${char.isTarget ? 'is-target' : ''}`}
+            className={`falling-char ${settings.fontStyle}`}
             style={{
               left: char.x,
               top: char.y
@@ -272,6 +324,8 @@ function FallingKana({ settings }) {
           </button>
         ))}
       </div>
+
+      <div className="skyline"></div>
     </div>
   );
 }
