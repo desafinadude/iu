@@ -57,6 +57,37 @@
   height: 100%;
 }
 
+/* Landscape mode optimizations for mobile */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  .video-section {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .video-section h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .video-container {
+    padding-bottom: 75%; /* Adjust aspect ratio for landscape */
+    margin-bottom: 15px;
+  }
+  
+  .chapters-section {
+    margin-top: 10px;
+  }
+  
+  .chapters-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  
+  .chapter-button {
+    padding: 10px;
+  }
+}
+
 .chapters-section h4 {
   font-size: min(20px, 5vw);
   color: #333;
@@ -182,5 +213,41 @@
   
   .tip-card {
     padding: 15px;
+  }
+}
+
+/* Enhanced mobile video support */
+@media screen and (max-width: 768px) {
+  .video-container {
+    border-radius: 8px;
+  }
+  
+  /* Allow iframe to go fullscreen properly */
+  .video-container iframe {
+    border-radius: 8px;
+  }
+}
+
+/* Very small landscape phones */
+@media screen and (orientation: landscape) and (max-height: 450px) {
+  .resources {
+    padding: 10px;
+  }
+  
+  .resources-header {
+    margin-bottom: 15px;
+  }
+  
+  .resources-header h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+  
+  .resources-header p {
+    font-size: 14px;
+  }
+  
+  .video-container {
+    padding-bottom: 85%; /* Even more space for very small screens */
   }
 }

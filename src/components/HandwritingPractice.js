@@ -17,6 +17,7 @@ function HandwritingPractice({ settings }) {
   const [showResult, setShowResult] = useState(false);
   const [characterAttempts, setCharacterAttempts] = useState(0);
   const [characterCorrect, setCharacterCorrect] = useState(false);
+  const [characterWeights, setCharacterWeights] = useState(new Map());
   // eslint-disable-next-line no-unused-vars
   const [candidates, setCandidates] = useState('Draw the character, and I\'ll show you what I recognize!');
   // eslint-disable-next-line no-unused-vars
@@ -42,7 +43,48 @@ function HandwritingPractice({ settings }) {
       return;
     }
 
-    const char = availableChars[Math.floor(Math.random() * availableChars.length)];
+    let char;
+    
+    if (availableChars.length >= 10) {
+      // Use weighted selection for larger pools
+      const weightedChars = availableChars.map(character => ({
+        ...character,
+        weight: characterWeights.get(character.char) || 1.0
+      }));
+      
+      const totalWeight = weightedChars.reduce((sum, character) => sum + character.weight, 0);
+      let random = Math.random() * totalWeight;
+      
+      char = weightedChars.find(character => {
+        random -= character.weight;
+        return random <= 0;
+      });
+      
+      // Fallback in case of rounding errors
+      if (!char) {
+        char = weightedChars[weightedChars.length - 1];
+      }
+    } else {
+      // Use simple random selection for small pools
+      char = availableChars[Math.floor(Math.random() * availableChars.length)];
+    }
+
+    // Update weights - reduce weight of selected character, increase others slightly
+    if (availableChars.length >= 10) {
+      setCharacterWeights(prev => {
+        const updated = new Map(prev);
+        updated.set(char.char, 0.3); // Much less likely to repeat
+        // Slowly increase weights of other characters
+        availableChars.forEach(character => {
+          if (character.char !== char.char) {
+            const current = updated.get(character.char) || 1.0;
+            updated.set(character.char, Math.min(current + 0.1, 1.5));
+          }
+        });
+        return updated;
+      });
+    }
+
     setCurrentChar(char);
     clearCanvas();
     setShowHint(false);
@@ -57,7 +99,7 @@ function HandwritingPractice({ settings }) {
     
     // Speak the character immediately
     speak(char.char);
-  }, [getEnabledChars]);
+  }, [getEnabledChars, characterWeights]);
 
   useEffect(() => {
     generateQuestion();
