@@ -1,11 +1,14 @@
 .falling-kana {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px);
-  overflow: hidden;
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  max-width: 100vw; /* Remove width constraint */
+  margin: 0; /* Remove centering margin */
+  position: fixed; /* Fix to viewport */
+  top: 0;
+  left: 0;
+  overflow: hidden; /* Prevent scrolling */
   background: linear-gradient(180deg,
     #87CEEB 0%,      /* Light sky blue at top */
     #B0E0E6 30%,     /* Powder blue */
@@ -156,8 +159,7 @@
   align-items: center;
   justify-content: center;
   padding: 12px;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
+
   z-index: 15;
 }
 
@@ -271,13 +273,85 @@
   right: 0;
   width: 100%;
   height: 100px;
-  background-image: url('./tokyo-skyline.svg');
+  background-image: url('./tokyo.jpg');
   background-size: 100% auto;
   background-position: bottom center;
   background-repeat: no-repeat;
   pointer-events: none;
   z-index: 5;
   mix-blend-mode: multiply;
+}
+
+/* Star Bubble Target Display */
+.target-display {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.star-bubble {
+  width: 120px;
+  height: 120px;
+  background-image: url('./star-bubble.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.score-circle {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #c94146;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+.target-letter {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+}
+
+/* Health Circle at Bottom Left */
+.health-circle {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #666;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.health-circle .health-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
 }
 
 /* Mobile adjustments */
