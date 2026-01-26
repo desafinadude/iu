@@ -4,6 +4,33 @@
   padding: 0;
 }
 
+/* Auto-save indicator */
+.save-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 .settings-header {
   margin-bottom: 30px;
 }
@@ -176,4 +203,91 @@
 .save-button:hover {
   background-color: #a83438;
   transform: translateY(-2px);
+}
+
+/* Font Selector Styles */
+.font-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.font-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.font-option:hover {
+  border-color: #c94146;
+  background-color: #fef7f7;
+}
+
+.font-option.active {
+  border-color: #c94146;
+  background-color: #fef7f7;
+  box-shadow: 0 0 0 2px rgba(201, 65, 70, 0.2);
+}
+
+.font-sample {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  min-width: 80px;
+  text-align: center;
+}
+
+.font-info {
+  flex: 1;
+}
+
+.font-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.font-desc {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Mobile responsive for font selector */
+@media (max-width: 768px) {
+  .font-selector {
+    grid-template-columns: 1fr;
+  }
+  
+  .font-option {
+    padding: 12px;
+  }
+  
+  .font-sample {
+    font-size: 20px;
+    min-width: 60px;
+  }
+  
+  .font-name {
+    font-size: 14px;
+  }
+  
+  .font-desc {
+    font-size: 12px;
+  }
+
+  .save-indicator {
+    top: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
 }

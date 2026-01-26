@@ -74,3 +74,64 @@
 body:has(.falling-kana) {
   overflow: hidden;
 }
+
+/* Japanese Font Classes */
+.font-noto {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.font-maru {
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.font-mincho {
+  font-family: 'Shippori Mincho', serif;
+}
+
+.font-kosugi {
+  font-family: 'Kosugi Maru', sans-serif;
+}
+
+.font-rounded {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.font-sawarabi-gothic {
+  font-family: 'Sawarabi Gothic', sans-serif;
+}
+
+.font-sawarabi-mincho {
+  font-family: 'Sawarabi Mincho', serif;
+}
+
+.font-yusei {
+  font-family: 'Yusei Magic', sans-serif;
+}
+
+.font-klee {
+  font-family: 'Klee One', cursive;
+}
+
+.font-hachi {
+  font-family: 'Hachi Maru Pop', cursive;
+}
+
+.font-rocknroll {
+  font-family: 'RocknRoll One', sans-serif;
+}
+
+.font-dela {
+  font-family: 'Dela Gothic One', sans-serif;
+}
+
+.font-rampart {
+  font-family: 'Rampart One', cursive;
+}
+
+.font-kaisei-decol {
+  font-family: 'Kaisei Decol', serif;
+}
+
+.font-kaisei-opti {
+  font-family: 'Kaisei Opti', serif;
+}

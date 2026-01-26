@@ -5,14 +5,6 @@ import { playCorrectSound } from '../utils/soundEffects';
 import { speak } from '../utils/speech';
 import '../styles/WordSearch.css';
 
-// Filter vocabulary data for words that work well in word search (shorter words)
-const WORD_LIST = vocabularyData
-  .filter(item => item.word.length <= 4) // Short words work best in word search
-  .map(item => ({
-    word: item.word,
-    translation: item.translation
-  }));
-
 const GRID_SIZE = 8;
 const WORDS_PER_PUZZLE = 5;
 
@@ -23,7 +15,7 @@ const DIRECTIONS = [
   { dx: 1, dy: 1 },  // diagonal down-right
 ];
 
-function WordSearch() {
+function WordSearch({ settings }) {
   const [grid, setGrid] = useState([]);
   const [words, setWords] = useState([]);
   const [foundWords, setFoundWords] = useState(new Set());
@@ -31,6 +23,34 @@ function WordSearch() {
   const [wordPositions, setWordPositions] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [puzzleComplete, setPuzzleComplete] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState(['all']);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+  // Get unique categories from vocabulary data
+  const allCategories = ['all', ...Array.from(new Set(vocabularyData
+    .map(item => item.category)
+    .filter(category => category)
+  )).sort()];
+
+  // Get filtered word list based on selected categories
+  const getFilteredWordList = useCallback(() => {
+    let filteredVocab = vocabularyData;
+    if (!selectedCategories.includes('all') && selectedCategories.length > 0) {
+      filteredVocab = vocabularyData.filter(word => 
+        selectedCategories.some(category => word.category === category)
+      );
+    }
+    
+    // If no words match the filter, fall back to all words
+    if (filteredVocab.length === 0) {
+      filteredVocab = vocabularyData;
+    }
+    
+    return filteredVocab.map(item => ({
+      word: item.word,
+      translation: item.translation
+    }));
+  }, [selectedCategories]);
 
   const getRandomHiragana = useCallback(() => {
     const basicHiragana = hiraganaData.filter(h => h.basic);
@@ -70,6 +90,9 @@ function WordSearch() {
   }, []);
 
   const generatePuzzle = useCallback(() => {
+    // Get current filtered word list
+    const WORD_LIST = getFilteredWordList();
+    
     // Create empty grid
     const newGrid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
 
@@ -123,11 +146,38 @@ function WordSearch() {
     setFoundWords(new Set());
     setSelectedCells([]);
     setPuzzleComplete(false);
-  }, [canPlaceWord, placeWord, getRandomHiragana]);
+  }, [canPlaceWord, placeWord, getRandomHiragana, getFilteredWordList]);
 
   useEffect(() => {
     generatePuzzle();
-  }, [generatePuzzle]);
+  }, [selectedCategories]); // Regenerate when categories change
+
+  const handleCategoryChange = (category) => {
+    if (category === 'all') {
+      setSelectedCategories(['all']);
+    } else {
+      setSelectedCategories(prev => {
+        const newSelection = prev.filter(cat => cat !== 'all');
+        if (newSelection.includes(category)) {
+          // Remove if already selected
+          return newSelection.filter(cat => cat !== category);
+        } else {
+          // Add to selection
+          return [...newSelection, category];
+        }
+      });
+    }
+  };
+
+  const getCategoryDisplayText = () => {
+    if (selectedCategories.includes('all') || selectedCategories.length === 0) {
+      return 'All Categories';
+    }
+    if (selectedCategories.length === 1) {
+      return selectedCategories[0].charAt(0).toUpperCase() + selectedCategories[0].slice(1);
+    }
+    return `${selectedCategories.length} Categories`;
+  };
 
   const getCellKey = (row, col) => `${row}-${col}`;
 
@@ -249,7 +299,38 @@ function WordSearch() {
 
   return (
     <div className="word-search">
-      
+      {showCategoryModal && (
+        <div className="category-modal-overlay" onClick={() => setShowCategoryModal(false)}>
+          <div className="category-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="category-modal-header">
+              <h3>Select Categories</h3>
+              <button 
+                className="close-modal-btn"
+                onClick={() => setShowCategoryModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="category-list">
+              <div 
+                className={`category-list-item ${selectedCategories.includes('all') ? 'selected' : ''}`}
+                onClick={() => handleCategoryChange('all')}
+              >
+                All Categories
+              </div>
+              {allCategories.filter(cat => cat !== 'all').map(category => (
+                <div 
+                  key={category}
+                  className={`category-list-item ${selectedCategories.includes(category) ? 'selected' : ''}`}
+                  onClick={() => handleCategoryChange(category)}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="word-list">
         {words.map((wordObj, index) => (
@@ -279,7 +360,7 @@ function WordSearch() {
                 data-col={colIndex}
                 className={`grid-cell ${
                   isCellInFoundWord(rowIndex, colIndex) ? 'found' : ''
-                } ${isCellSelected(rowIndex, colIndex) ? 'selected' : ''}`}
+                } ${isCellSelected(rowIndex, colIndex) ? 'selected' : ''} font-${settings?.fontStyle || 'noto'}`}
                 onMouseDown={() => handleCellMouseDown(rowIndex, colIndex)}
                 onMouseEnter={() => handleCellMouseEnter(rowIndex, colIndex)}
                 onTouchStart={(e) => handleTouchStart(e, rowIndex, colIndex)}
@@ -295,16 +376,34 @@ function WordSearch() {
         <div className="puzzle-complete">
           <h3>Congratulations!</h3>
           <p>You found all the words!</p>
-          <button className="new-puzzle-btn" onClick={generatePuzzle}>
-            New Puzzle
-          </button>
+          <div className="puzzle-controls">
+            <button className="new-puzzle-btn" onClick={generatePuzzle}>
+              New Puzzle
+            </button>
+            <button 
+              className="category-icon-button"
+              onClick={() => setShowCategoryModal(true)}
+              title={`Categories: ${getCategoryDisplayText()}`}
+            >
+              ☰
+            </button>
+          </div>
         </div>
       )}
 
       {!puzzleComplete && (
-        <button className="new-puzzle-btn" onClick={generatePuzzle}>
-          New Puzzle
-        </button>
+        <div className="puzzle-controls">
+          <button className="new-puzzle-btn" onClick={generatePuzzle}>
+            New Puzzle
+          </button>
+          <button 
+            className="category-icon-button"
+            onClick={() => setShowCategoryModal(true)}
+            title={`Categories: ${getCategoryDisplayText()}`}
+          >
+            ☰
+          </button>
+        </div>
       )}
     </div>
   );
