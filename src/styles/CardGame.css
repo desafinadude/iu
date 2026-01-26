@@ -2,11 +2,13 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #1a1a2e;
-  color: #eee;
+  background: #f5f0e8;
+  color: #333;
   position: relative;
   overflow: hidden;
   user-select: none;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* Top bar - score & info */
@@ -15,8 +17,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e0d8cc;
   flex-shrink: 0;
 }
 
@@ -29,7 +30,7 @@
 .cg-score {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #ffd700;
+  color: #c94146;
 }
 
 .cg-score span {
@@ -38,12 +39,12 @@
 
 .cg-turn {
   font-size: 0.85rem;
-  color: #aaa;
+  color: #999;
 }
 
 .cg-deck-count {
   font-size: 0.85rem;
-  color: #aaa;
+  color: #999;
 }
 
 .cg-actions {
@@ -53,8 +54,8 @@
 
 .cg-btn {
   padding: 6px 14px;
-  border: none;
-  border-radius: 6px;
+  border: 2px solid #000;
+  border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -67,21 +68,23 @@
 }
 
 .cg-btn-help {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ddd;
+  background: #fff;
+  color: #333;
 }
 
 .cg-btn-help:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: #eee;
+  transform: translateY(-1px);
 }
 
 .cg-btn-new {
-  background: rgba(201, 65, 70, 0.8);
+  background: #c94146;
   color: #fff;
+  border-color: #c94146;
 }
 
 .cg-btn-new:hover {
-  background: rgba(201, 65, 70, 1);
+  background: #b5393d;
 }
 
 /* Score progress bar */
@@ -92,14 +95,14 @@
 
 .cg-progress-bar {
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e0d8cc;
   border-radius: 3px;
   overflow: hidden;
 }
 
 .cg-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ff8c00);
+  background: #c94146;
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -119,7 +122,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: #666;
+  color: #999;
   margin-bottom: 10px;
 }
 
@@ -130,32 +133,33 @@
   gap: 6px;
   min-height: 80px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px dashed rgba(255, 255, 255, 0.15);
+  background: #fff;
+  border: 2px dashed #d5cdc0;
   border-radius: 12px;
   width: 100%;
   max-width: 500px;
   align-items: center;
   align-content: center;
-  transition: border-color 0.3s;
+  transition: all 0.3s;
 }
 
 .cg-sentence-cards.has-cards {
-  border-color: rgba(255, 215, 0, 0.3);
+  border-color: #c94146;
+  border-style: solid;
 }
 
 .cg-sentence-cards.valid {
-  border-color: rgba(67, 160, 71, 0.5);
-  background: rgba(67, 160, 71, 0.08);
+  border-color: #6bab6e;
+  background: #f2faf2;
 }
 
 .cg-sentence-cards.invalid {
-  border-color: rgba(201, 65, 70, 0.5);
-  background: rgba(201, 65, 70, 0.08);
+  border-color: #c94146;
+  background: #fef5f5;
 }
 
 .cg-sentence-empty {
-  color: #555;
+  color: #bbb;
   font-size: 0.85rem;
   text-align: center;
   line-height: 1.5;
@@ -169,39 +173,43 @@
 }
 
 .cg-btn-submit {
-  background: linear-gradient(135deg, #43a047, #388e3c);
-  color: #fff;
+  background: #C8E9E7;
+  color: #2d5f3f;
   padding: 8px 24px;
   font-size: 0.95rem;
+  border-color: #000;
 }
 
 .cg-btn-submit:hover {
-  background: linear-gradient(135deg, #4caf50, #43a047);
+  background: #b8e0dd;
+  transform: translateY(-1px);
 }
 
 .cg-btn-submit:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
+  transform: none;
 }
 
 .cg-btn-clear {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ccc;
+  background: #fff;
+  color: #666;
   padding: 8px 16px;
 }
 
 .cg-btn-clear:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #eee;
 }
 
 .cg-btn-discard {
-  background: rgba(233, 30, 99, 0.2);
-  color: #f48fb1;
+  background: #fff;
+  color: #c94146;
+  border-color: #c94146;
   padding: 8px 16px;
 }
 
 .cg-btn-discard:hover {
-  background: rgba(233, 30, 99, 0.35);
+  background: #fef5f5;
 }
 
 /* Validation message */
@@ -213,11 +221,11 @@
 }
 
 .cg-validation.valid {
-  color: #66bb6a;
+  color: #2d7d32;
 }
 
 .cg-validation.invalid {
-  color: #ef5350;
+  color: #c94146;
 }
 
 /* Score popup animation */
@@ -228,8 +236,8 @@
   transform: translate(-50%, -50%);
   font-size: 3rem;
   font-weight: 900;
-  color: #ffd700;
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  color: #c94146;
+  text-shadow: 0 2px 10px rgba(201, 65, 70, 0.3);
   animation: scorePopup 1.2s ease-out forwards;
   pointer-events: none;
   z-index: 100;
@@ -257,15 +265,15 @@
 .cg-hand-area {
   flex-shrink: 0;
   padding: 8px 10px 16px;
-  background: rgba(0, 0, 0, 0.25);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ece5d8;
+  border-top: 1px solid #d5cdc0;
 }
 
 .cg-hand-label {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: #555;
+  color: #999;
   text-align: center;
   margin-bottom: 8px;
 }
@@ -289,13 +297,14 @@
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
-  border: 2px solid transparent;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid #000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #fff;
 }
 
 .cg-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .cg-card:active {
@@ -309,7 +318,7 @@
 
 .cg-card.in-sentence:hover {
   transform: translateY(-2px);
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .cg-card-type {
@@ -317,7 +326,6 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  opacity: 0.7;
   margin-bottom: 2px;
 }
 
@@ -325,6 +333,7 @@
   font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.2;
+  color: #333;
 }
 
 .cg-card.in-sentence .cg-card-word {
@@ -333,51 +342,63 @@
 
 .cg-card-romaji {
   font-size: 0.55rem;
-  opacity: 0.6;
+  color: #999;
   margin-top: 1px;
 }
 
 .cg-card-meaning {
   font-size: 0.5rem;
-  opacity: 0.5;
+  color: #aaa;
   margin-top: 1px;
 }
 
-/* Card type colors */
+/* Card type colors - soft pastels matching app theme */
 .cg-card.type-noun {
-  background: linear-gradient(145deg, #2a5298, #1e3c72);
+  background: #e8f0fe;
   border-color: #4a90d9;
-  color: #d4e4ff;
+}
+.cg-card.type-noun .cg-card-type {
+  color: #4a90d9;
 }
 
 .cg-card.type-particle {
-  background: linear-gradient(145deg, #2e7d32, #1b5e20);
+  background: #e8f5e9;
   border-color: #43a047;
-  color: #c8e6c9;
+}
+.cg-card.type-particle .cg-card-type {
+  color: #43a047;
 }
 
 .cg-card.type-verb {
-  background: linear-gradient(145deg, #b71c1c, #8b1a1a);
+  background: #fde8e8;
   border-color: #c94146;
-  color: #ffcdd2;
+}
+.cg-card.type-verb .cg-card-type {
+  color: #c94146;
 }
 
 .cg-card.type-adjective {
-  background: linear-gradient(145deg, #6a1b9a, #4a148c);
+  background: #f3e5f5;
   border-color: #8e44ad;
-  color: #e1bee7;
+}
+.cg-card.type-adjective .cg-card-type {
+  color: #8e44ad;
 }
 
 .cg-card.type-adverb {
-  background: linear-gradient(145deg, #e65100, #bf360c);
+  background: #fef3e2;
   border-color: #e67e22;
-  color: #ffe0b2;
+}
+.cg-card.type-adverb .cg-card-type {
+  color: #e67e22;
 }
 
 .cg-card.type-copula {
-  background: linear-gradient(145deg, #ad1457, #880e4f);
+  background: #fce4ec;
   border-color: #e91e63;
-  color: #f8bbd0;
+}
+.cg-card.type-copula .cg-card-type {
+  color: #e91e63;
 }
 
 /* Discard mode */
@@ -387,14 +408,13 @@
 
 .cg-card.discard-mode:hover {
   opacity: 1;
-  border-color: #ef5350;
-  box-shadow: 0 0 12px rgba(239, 83, 80, 0.4);
+  border-color: #c94146;
+  box-shadow: 0 0 8px rgba(201, 65, 70, 0.3);
 }
 
 .cg-card.marked-discard {
-  opacity: 0.5;
-  border-color: #ef5350;
-  box-shadow: 0 0 8px rgba(239, 83, 80, 0.5);
+  opacity: 0.4;
+  border-color: #c94146;
 }
 
 .cg-card.marked-discard::after {
@@ -404,8 +424,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 2rem;
-  color: #ef5350;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: #c94146;
 }
 
 /* Help / Rules modal */
@@ -415,7 +434,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -424,35 +443,35 @@
 }
 
 .cg-modal {
-  background: #1e1e3a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  background: #fff;
+  border-radius: 12px;
   padding: 24px;
   max-width: 440px;
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  color: #ddd;
+  color: #333;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .cg-modal h2 {
   font-size: 1.3rem;
   margin-bottom: 16px;
-  color: #ffd700;
+  color: #c94146;
   text-align: center;
 }
 
 .cg-modal h3 {
   font-size: 0.95rem;
   margin: 16px 0 8px;
-  color: #fff;
+  color: #333;
 }
 
 .cg-modal p,
 .cg-modal li {
   font-size: 0.85rem;
   line-height: 1.6;
-  color: #bbb;
+  color: #555;
 }
 
 .cg-modal ul {
@@ -464,7 +483,7 @@
   display: block;
   margin: 20px auto 0;
   padding: 10px 32px;
-  background: linear-gradient(135deg, #c94146, #a33035);
+  background: #c94146;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -475,7 +494,7 @@
 }
 
 .cg-modal-close:hover {
-  background: linear-gradient(135deg, #d35459, #c94146);
+  background: #b5393d;
 }
 
 /* Card type legend in help */
@@ -501,7 +520,7 @@
 
 /* Example sentences in help */
 .cg-example {
-  background: rgba(255, 255, 255, 0.05);
+  background: #f5f0e8;
   border-radius: 8px;
   padding: 8px 10px;
   margin: 6px 0;
@@ -519,17 +538,20 @@
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.7rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #333;
 }
 
 .cg-example-translation {
   font-size: 0.75rem;
-  color: #999;
+  color: #888;
   font-style: italic;
 }
 
 .cg-example-points {
   font-size: 0.7rem;
-  color: #ffd700;
+  color: #c94146;
   font-weight: 600;
 }
 
@@ -540,7 +562,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -549,6 +571,12 @@
 
 .cg-game-over-content {
   text-align: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   animation: fadeInUp 0.5s ease;
 }
 
@@ -566,14 +594,13 @@
 .cg-game-over-title {
   font-size: 2.2rem;
   font-weight: 900;
-  color: #ffd700;
+  color: #c94146;
   margin-bottom: 8px;
-  text-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
 }
 
 .cg-game-over-subtitle {
   font-size: 1rem;
-  color: #aaa;
+  color: #666;
   margin-bottom: 6px;
 }
 
@@ -591,12 +618,12 @@
 .cg-stat-value {
   font-size: 2rem;
   font-weight: 800;
-  color: #fff;
+  color: #333;
 }
 
 .cg-stat-label {
   font-size: 0.75rem;
-  color: #888;
+  color: #999;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -606,26 +633,26 @@
   max-height: 150px;
   overflow-y: auto;
   text-align: left;
-  padding: 0 20px;
+  padding: 0 10px;
 }
 
 .cg-completed-sentence {
   padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #eee;
   font-size: 0.85rem;
 }
 
 .cg-completed-sentence-jp {
-  color: #ddd;
+  color: #333;
 }
 
 .cg-completed-sentence-en {
-  color: #777;
+  color: #999;
   font-size: 0.75rem;
 }
 
 .cg-completed-sentence-pts {
-  color: #ffd700;
+  color: #c94146;
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -633,8 +660,8 @@
 .cg-btn-play-again {
   margin-top: 16px;
   padding: 12px 40px;
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  color: #1a1a2e;
+  background: #c94146;
+  color: #fff;
   border: none;
   border-radius: 10px;
   font-size: 1.1rem;
@@ -646,7 +673,7 @@
 
 .cg-btn-play-again:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  background: #b5393d;
 }
 
 /* Start screen */
@@ -663,20 +690,20 @@
 .cg-start-title {
   font-size: 1.6rem;
   font-weight: 900;
-  color: #ffd700;
+  color: #c94146;
   margin-bottom: 4px;
 }
 
 .cg-start-title-jp {
   font-size: 2.4rem;
   font-weight: 900;
-  color: #fff;
+  color: #333;
   margin-bottom: 16px;
 }
 
 .cg-start-desc {
   font-size: 0.9rem;
-  color: #aaa;
+  color: #666;
   max-width: 320px;
   line-height: 1.6;
   margin-bottom: 24px;
@@ -684,8 +711,8 @@
 
 .cg-btn-start {
   padding: 14px 48px;
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  color: #1a1a2e;
+  background: #c94146;
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-size: 1.2rem;
@@ -698,24 +725,24 @@
 
 .cg-btn-start:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 24px rgba(255, 215, 0, 0.3);
+  background: #b5393d;
 }
 
 .cg-start-rules {
   font-size: 0.8rem;
-  color: #666;
+  color: #999;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .cg-start-rules:hover {
-  color: #aaa;
+  color: #666;
 }
 
 /* Target score display */
 .cg-target {
   font-size: 0.75rem;
-  color: #888;
+  color: #999;
 }
 
 /* Card entrance animation */
@@ -770,21 +797,21 @@
 .cg-sentence-reading {
   margin-top: 6px;
   font-size: 0.8rem;
-  color: #888;
+  color: #999;
   text-align: center;
   min-height: 18px;
 }
 
 /* Discard mode banner */
 .cg-discard-banner {
-  background: rgba(239, 83, 80, 0.15);
-  border: 1px solid rgba(239, 83, 80, 0.3);
+  background: #fef5f5;
+  border: 1px solid #EAA3A4;
   border-radius: 8px;
   padding: 8px 14px;
   margin-bottom: 8px;
   text-align: center;
   font-size: 0.8rem;
-  color: #ef9a9a;
+  color: #c94146;
 }
 
 .cg-discard-actions {
@@ -795,19 +822,20 @@
 }
 
 .cg-btn-discard-confirm {
-  background: rgba(239, 83, 80, 0.8);
+  background: #c94146;
   color: #fff;
   padding: 4px 14px;
   font-size: 0.8rem;
+  border-color: #c94146;
 }
 
 .cg-btn-discard-confirm:hover {
-  background: rgba(239, 83, 80, 1);
+  background: #b5393d;
 }
 
 .cg-btn-discard-cancel {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ccc;
+  background: #fff;
+  color: #666;
   padding: 4px 14px;
   font-size: 0.8rem;
 }
@@ -819,7 +847,8 @@
 }
 
 .cg-last-sentence {
-  background: rgba(255, 255, 255, 0.05);
+  background: #fff;
+  border: 1px solid #e0d8cc;
   border-radius: 8px;
   padding: 6px 10px;
   display: flex;
@@ -829,10 +858,10 @@
 }
 
 .cg-last-sentence-text {
-  color: #aaa;
+  color: #666;
 }
 
 .cg-last-sentence-pts {
-  color: #ffd700;
+  color: #c94146;
   font-weight: 700;
 }
