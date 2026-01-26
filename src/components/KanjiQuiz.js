@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { kanjiData } from '../data/kanjiData';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
@@ -12,6 +12,8 @@ function KanjiQuiz({ settings }) {
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [characterWeights, setCharacterWeights] = useState(new Map());
+  const characterWeightsRef = useRef(characterWeights);
+  characterWeightsRef.current = characterWeights;
   const [selectedCategories, setSelectedCategories] = useState(['all']);
   const [selectedGrades, setSelectedGrades] = useState(['all']);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -53,14 +55,15 @@ function KanjiQuiz({ settings }) {
     
     if (availableKanji.length >= 10) {
       // Use weighted selection for larger pools
+      const weights = characterWeightsRef.current;
       const weightedKanji = availableKanji.map(kanji => ({
         ...kanji,
-        weight: characterWeights.get(kanji.kanji) || 1.0
+        weight: weights.get(kanji.kanji) || 1.0
       }));
-      
+
       const totalWeight = weightedKanji.reduce((sum, kanji) => sum + kanji.weight, 0);
       let random = Math.random() * totalWeight;
-      
+
       for (const kanji of weightedKanji) {
         random -= kanji.weight;
         if (random <= 0) {
@@ -97,7 +100,7 @@ function KanjiQuiz({ settings }) {
     setOptions(allOptions);
     setSelectedAnswer(null);
     setShowResult(false);
-  }, [getFilteredKanji, characterWeights]);
+  }, [getFilteredKanji]);
 
   const handleAnswer = (selectedKanji) => {
     if (selectedAnswer) return;

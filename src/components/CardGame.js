@@ -329,10 +329,7 @@ function CardGame() {
             <div key={i} className="cg-example">
               <div className="cg-example-cards">
                 {ex.cards.map((c, j) => (
-                  <span key={j} className="cg-example-chip" style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    color: '#ddd'
-                  }}>
+                  <span key={j} className="cg-example-chip">
                     {c}
                   </span>
                 ))}
