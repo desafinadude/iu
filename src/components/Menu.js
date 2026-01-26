@@ -5,6 +5,7 @@ function Menu({ isOpen, onClose, onMenuClick, currentView }) {
   const menuItems = [
     { id: 'kana', label: 'Kana Quiz' },
     { id: 'reverseKana', label: 'Reverse Kana Quiz' },
+    { id: 'kanji', label: 'Kanji Quiz' },
     { id: 'vocab', label: 'Vocabulary' },
     { id: 'handwriting', label: 'Handwriting' },
     { id: 'fallingKana', label: 'Falling Kana' },
