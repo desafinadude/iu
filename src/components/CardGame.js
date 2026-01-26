@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { shuffle } from '../utils/helpers';
+import { speak } from '../utils/speech';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import {
   CARD_TYPES,
@@ -79,6 +80,8 @@ function CardGame() {
       return;
     }
 
+    speak(card.word);
+
     const newHand = [...hand];
     newHand.splice(cardIndex, 1);
     setHand(newHand);
@@ -120,7 +123,10 @@ function CardGame() {
     setTimeout(() => setScorePopup(null), 1200);
 
     // Build sentence text
-    const sentenceText = sentence.map(c => c.word).join(' ');
+    const sentenceText = sentence.map(c => c.word).join('');
+
+    // Speak the full sentence
+    setTimeout(() => speak(sentenceText), 400);
     const sentenceMeaning = sentence.map(c => c.meaning).join(' ');
 
     const completedEntry = {
@@ -261,7 +267,12 @@ function CardGame() {
             {completedSentences.length > 0 && (
               <div className="cg-game-over-sentences">
                 {completedSentences.map((s, i) => (
-                  <div key={i} className="cg-completed-sentence">
+                  <div
+                    key={i}
+                    className="cg-completed-sentence"
+                    onClick={() => speak(s.text.replace(/ /g, ''))}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <span className="cg-completed-sentence-jp">{s.text}</span>
                     {' '}
                     <span className="cg-completed-sentence-en">({s.meaning})</span>
@@ -387,7 +398,11 @@ function CardGame() {
       {/* Last completed sentence */}
       {lastSentence && (
         <div className="cg-history">
-          <div className="cg-last-sentence">
+          <div
+            className="cg-last-sentence"
+            onClick={() => speak(lastSentence.text.replace(/ /g, ''))}
+            style={{ cursor: 'pointer' }}
+          >
             <span className="cg-last-sentence-text">
               {lastSentence.text} — <em>{lastSentence.meaning}</em>
             </span>
@@ -422,9 +437,13 @@ function CardGame() {
           )}
         </div>
 
-        {/* Sentence reading */}
+        {/* Sentence reading - tap to hear */}
         {sentence.length > 0 && (
-          <div className="cg-sentence-reading">
+          <div
+            className="cg-sentence-reading"
+            onClick={() => speak(sentence.map(c => c.word).join(''))}
+            style={{ cursor: 'pointer' }}
+          >
             {sentence.map(c => c.word).join(' ')}
             {canEndHere() && ' ✓'}
           </div>
