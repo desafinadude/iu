@@ -188,7 +188,7 @@ function KanjiQuiz({ settings }) {
 
   useEffect(() => {
     generateQuestion();
-  }, [selectedCategories, selectedGrades]);
+  }, [selectedCategories, selectedGrades, generateQuestion]);
 
   const isCorrect = selectedAnswer && selectedAnswer.kanji === currentQuestion?.kanji;
 
