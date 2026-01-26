@@ -133,7 +133,7 @@ function ReverseKanaQuiz({ settings }) {
           <div className="question-number">{questionNumber + 1}</div>
           <div className="score-fraction">{score}/{totalQuestions}</div>
         </div>
-        <div className={`character-display ${settings.fontStyle}`}>
+        <div className={`character-display font-${settings.fontStyle}`}>
           {currentQuestion?.char}
         </div>
       </div>

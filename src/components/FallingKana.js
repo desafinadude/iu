@@ -328,7 +328,7 @@ function FallingKana({ settings }) {
         {fallingChars.map(char => (
           <button
             key={char.id}
-            className={`falling-char ${settings.fontStyle}`}
+            className={`falling-char font-${settings.fontStyle}`}
             style={{
               left: char.x,
               top: char.y

@@ -382,7 +382,7 @@ function HandwritingPractice({ settings }) {
           <div className="score-fraction">{score}/{totalQuestions}</div>
         </div>
         <button
-          className={`speaker-button ${settings.fontStyle}`}
+          className={`speaker-button font-${settings.fontStyle}`}
           onClick={handleSpeakerClick}
           title="Click to hear pronunciation"
         >
@@ -404,7 +404,7 @@ function HandwritingPractice({ settings }) {
             onTouchMove={draw}
             onTouchEnd={stopDrawing}
           />
-          <div className={`hint-overlay ${showHint ? 'show' : ''} ${settings.fontStyle}`}>
+          <div className={`hint-overlay ${showHint ? 'show' : ''} font-${settings.fontStyle}`}>
             {currentChar?.char}
           </div>
           <button className="canvas-corner-btn top-left" onClick={handleShowHint} title="Show Hint">

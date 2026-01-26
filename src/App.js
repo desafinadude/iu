@@ -151,7 +151,7 @@ function App() {
         {currentView === 'vocab' && <VocabularyPractice settings={settings} />}
         {currentView === 'handwriting' && <HandwritingPractice settings={settings} />}
         {currentView === 'fallingKana' && <FallingKana settings={settings} />}
-        {currentView === 'wordSearch' && <WordSearch />}
+        {currentView === 'wordSearch' && <WordSearch settings={settings} />}
         {currentView === 'settings' && <Settings settings={settings} onSave={saveSettings} />}
         {currentView === 'resources' && <Resources />}
       </div>

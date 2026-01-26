@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import '../styles/Settings.css';
 
 function Settings({ settings, onSave }) {
   const [localSettings, setLocalSettings] = useState(settings);
+  const [saveIndicator, setSaveIndicator] = useState('');
+  const isFirstRender = useRef(true);
+
+  // Auto-save whenever settings change (except on first render)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    
+    onSave(localSettings);
+    setSaveIndicator('Settings saved automatically ✓');
+    const timer = setTimeout(() => setSaveIndicator(''), 2000);
+    return () => clearTimeout(timer);
+  }, [localSettings, onSave]);
 
   // Transposed grids - now columns are vowels (A,I,U,E,O) and rows are consonants
   const hiraganaGrid = [
@@ -84,11 +99,6 @@ function Settings({ settings, onSave }) {
     setLocalSettings({ ...localSettings, enabledKatakana: new Set() });
   };
 
-  const handleSave = () => {
-    onSave(localSettings);
-    alert('Settings saved!');
-  };
-
   const renderKanaTable = (grid, isHiragana) => {
     const enabledSet = isHiragana ? localSettings.enabledHiragana : localSettings.enabledKatakana;
 
@@ -126,6 +136,11 @@ function Settings({ settings, onSave }) {
 
   return (
     <div className="settings">
+      {saveIndicator && (
+        <div className="save-indicator">
+          {saveIndicator}
+        </div>
+      )}
      
 
       {/* <div className="settings-section">
@@ -203,9 +218,40 @@ function Settings({ settings, onSave }) {
         {renderKanaTable(katakanaGrid, false)}
       </div>
 
-      <button className="save-button" onClick={handleSave}>
-        Save Settings
-      </button>
+      <div className="settings-section">
+        <h3>Japanese Font Style</h3>
+        <div className="font-selector">
+          {[
+            { value: 'noto', label: 'Noto Sans JP', description: 'Clean and modern' },
+            { value: 'maru', label: 'Zen Maru Gothic', description: 'Rounded and friendly' },
+            { value: 'mincho', label: 'Shippori Mincho', description: 'Traditional serif' },
+            { value: 'kosugi', label: 'Kosugi Maru', description: 'Soft and rounded' },
+            { value: 'rounded', label: 'M PLUS Rounded 1c', description: 'Modern rounded' },
+            { value: 'sawarabi-gothic', label: 'Sawarabi Gothic', description: 'Simple gothic' },
+            { value: 'sawarabi-mincho', label: 'Sawarabi Mincho', description: 'Traditional mincho' },
+            { value: 'yusei', label: 'Yusei Magic', description: 'Handwritten style' },
+            { value: 'klee', label: 'Klee One', description: 'Textbook style' },
+            { value: 'hachi', label: 'Hachi Maru Pop', description: 'Playful and bold' },
+            { value: 'rocknroll', label: 'RocknRoll One', description: 'Dynamic and energetic' },
+            { value: 'dela', label: 'Dela Gothic One', description: 'Bold gothic' },
+            { value: 'rampart', label: 'Rampart One', description: 'Decorative' },
+            { value: 'kaisei-decol', label: 'Kaisei Decol', description: 'Decorative serif' },
+            { value: 'kaisei-opti', label: 'Kaisei Opti', description: 'Optical serif' }
+          ].map(font => (
+            <button
+              key={font.value}
+              className={`font-option ${localSettings.fontStyle === font.value ? 'active' : ''} font-${font.value}`}
+              onClick={() => setLocalSettings({ ...localSettings, fontStyle: font.value })}
+            >
+              <div className="font-sample">あいうえお</div>
+              <div className="font-info">
+                <div className="font-name">{font.label}</div>
+                <div className="font-desc">{font.description}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

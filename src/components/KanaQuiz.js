@@ -145,7 +145,7 @@ function KanaQuiz({ settings }) {
           <div className="score-fraction">{score}/{totalQuestions}</div>
         </div>
         <button
-          className={`speaker-button ${settings.fontStyle}`}
+          className={`speaker-button font-${settings.fontStyle}`}
           onClick={handleSpeakerClick}
           title="Click to hear pronunciation"
         >
@@ -165,7 +165,7 @@ function KanaQuiz({ settings }) {
                   ? 'wrong'
                   : ''
                 : ''
-            } ${settings.fontStyle}`}
+            } font-${settings.fontStyle}`}
             onClick={() => handleAnswer(option)}
             disabled={showResult}
           >
