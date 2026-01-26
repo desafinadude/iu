@@ -216,6 +216,35 @@ body:not(.quiz-active) .kana-quiz {
   color: #666;
 }
 
+/* Timer bar */
+.quiz-timer-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #e0d8cc;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.quiz-timer-fill {
+  height: 100%;
+  background: #c94146;
+  border-radius: 3px;
+  transition: width 1s linear;
+}
+
+.quiz-timer-fill.urgent {
+  background: #d32f2f;
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .kana-quiz {

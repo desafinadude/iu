@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
 import '../styles/KanaQuiz.css';
+
+const TIMER_DURATION = 10;
 
 function KanaQuiz({ settings }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -13,6 +15,8 @@ function KanaQuiz({ settings }) {
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [characterWeights, setCharacterWeights] = useState(new Map());
+  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  const timerRef = useRef(null);
 
   const totalQuestions = 20;
 
@@ -87,19 +91,57 @@ function KanaQuiz({ settings }) {
     setOptions(allOptions);
     setShowResult(false);
     setSelectedAnswer(null);
+    startTimer();
 
     // Speak the character automatically
     speak(correctAnswer.char);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getEnabledChars]);
+  }, [getEnabledChars, startTimer]);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(TIMER_DURATION);
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => stopTimer();
+  }, [stopTimer]);
 
   useEffect(() => {
     generateQuestion();
   }, [generateQuestion]);
 
+  // Handle timer running out
+  useEffect(() => {
+    if (timeLeft === 0 && !showResult && currentQuestion) {
+      setSelectedAnswer(null);
+      setShowResult(true);
+      speak(currentQuestion.char);
+    }
+  }, [timeLeft, showResult, currentQuestion]);
+
   const handleAnswer = (option) => {
     if (showResult || !currentQuestion) return;
 
+    stopTimer();
     setSelectedAnswer(option);
     setShowResult(true);
 
@@ -144,6 +186,14 @@ function KanaQuiz({ settings }) {
           <div className="question-number">{questionNumber + 1}</div>
           <div className="score-fraction">{score}/{totalQuestions}</div>
         </div>
+        {!showResult && (
+          <div className="quiz-timer-bar">
+            <div
+              className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
+              style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
+            />
+          </div>
+        )}
         <button
           className={`speaker-button font-${settings.fontStyle}`}
           onClick={handleSpeakerClick}
