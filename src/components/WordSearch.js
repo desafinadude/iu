@@ -1,32 +1,17 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
+import { vocabularyData } from '../data/vocabularyData';
 import { playCorrectSound } from '../utils/soundEffects';
 import { speak } from '../utils/speech';
 import '../styles/WordSearch.css';
 
-// Word list for word search - short words work best
-const WORD_LIST = [
-  { word: 'いぬ', translation: 'Dog' },
-  { word: 'ねこ', translation: 'Cat' },
-  { word: 'あめ', translation: 'Rain' },
-  { word: 'そら', translation: 'Sky' },
-  { word: 'やま', translation: 'Mountain' },
-  { word: 'うみ', translation: 'Sea' },
-  { word: 'はな', translation: 'Flower' },
-  { word: 'とり', translation: 'Bird' },
-  { word: 'さかな', translation: 'Fish' },
-  { word: 'みず', translation: 'Water' },
-  { word: 'ほん', translation: 'Book' },
-  { word: 'いえ', translation: 'House' },
-  { word: 'あお', translation: 'Blue' },
-  { word: 'あか', translation: 'Red' },
-  { word: 'つき', translation: 'Moon' },
-  { word: 'ゆき', translation: 'Snow' },
-  { word: 'かぜ', translation: 'Wind' },
-  { word: 'くも', translation: 'Cloud' },
-  { word: 'ひと', translation: 'Person' },
-  { word: 'あさ', translation: 'Morning' },
-];
+// Filter vocabulary data for words that work well in word search (shorter words)
+const WORD_LIST = vocabularyData
+  .filter(item => item.word.length <= 4) // Short words work best in word search
+  .map(item => ({
+    word: item.word,
+    translation: item.translation
+  }));
 
 const GRID_SIZE = 8;
 const WORDS_PER_PUZZLE = 5;
@@ -264,10 +249,7 @@ function WordSearch() {
 
   return (
     <div className="word-search">
-      <div className="word-search-header">
-        <h2>Word Search</h2>
-        <p>Find the hidden Japanese words!</p>
-      </div>
+      
 
       <div className="word-list">
         {words.map((wordObj, index) => (
