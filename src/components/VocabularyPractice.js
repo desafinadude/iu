@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { vocabularyData } from '../data/vocabularyData';
 import { speak } from '../utils/speech';
 import { getRandomElement } from '../utils/helpers';
@@ -16,11 +16,7 @@ function VocabularyPractice({ settings }) {
     .filter(category => category)
   )).sort()];
 
-  useEffect(() => {
-    generateWord();
-  }, [selectedCategories]);
-
-  const generateWord = () => {
+  const generateWord = useCallback(() => {
     // Filter vocabulary by selected categories
     let filteredVocab = vocabularyData;
     if (!selectedCategories.includes('all') && selectedCategories.length > 0) {
@@ -37,7 +33,11 @@ function VocabularyPractice({ settings }) {
     const word = getRandomElement(filteredVocab);
     setCurrentWord(word);
     setShowTranslation(false); // Hide translation for new word
-  };
+  }, [selectedCategories]);
+
+  useEffect(() => {
+    generateWord();
+  }, [generateWord]);
 
   const handleCategoryChange = (category) => {
     if (category === 'all') {

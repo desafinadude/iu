@@ -150,7 +150,7 @@ function WordSearch({ settings }) {
 
   useEffect(() => {
     generatePuzzle();
-  }, [selectedCategories]); // Regenerate when categories change
+  }, [selectedCategories, generatePuzzle]); // Regenerate when categories change
 
   const handleCategoryChange = (category) => {
     if (category === 'all') {
