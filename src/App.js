@@ -8,6 +8,7 @@ import VocabularyPractice from './components/VocabularyPractice';
 import HandwritingPractice from './components/HandwritingPractice';
 import FallingKana from './components/FallingKana';
 import WordSearch from './components/WordSearch';
+import CardGame from './components/CardGame';
 import Settings from './components/Settings';
 import Resources from './components/Resources';
 import './styles/App.css';
@@ -96,7 +97,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'reverseKana', 'kanji', 'vocab', 'handwriting', 'fallingKana', 'wordSearch'];
+    const quizViews = ['kana', 'reverseKana', 'kanji', 'vocab', 'handwriting', 'fallingKana', 'wordSearch', 'cardGame'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -154,6 +155,7 @@ function App() {
         {currentView === 'handwriting' && <HandwritingPractice settings={settings} />}
         {currentView === 'fallingKana' && <FallingKana settings={settings} />}
         {currentView === 'wordSearch' && <WordSearch settings={settings} />}
+        {currentView === 'cardGame' && <CardGame />}
         {currentView === 'settings' && <Settings settings={settings} onSave={saveSettings} />}
         {currentView === 'resources' && <Resources />}
       </div>
