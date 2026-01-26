@@ -8,7 +8,6 @@ function Menu({ isOpen, onClose, onMenuClick, currentView }) {
     { id: 'kanji', label: 'Kanji Quiz' },
     { id: 'vocab', label: 'Vocabulary' },
     { id: 'handwriting', label: 'Handwriting' },
-    { id: 'fallingKana', label: 'Falling Kana' },
     { id: 'wordSearch', label: 'Word Search' },
     { id: 'cardGame', label: 'Card Game' },
     { id: 'resources', label: 'Resources' },
