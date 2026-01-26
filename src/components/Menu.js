@@ -10,6 +10,7 @@ function Menu({ isOpen, onClose, onMenuClick, currentView }) {
     { id: 'handwriting', label: 'Handwriting' },
     { id: 'fallingKana', label: 'Falling Kana' },
     { id: 'wordSearch', label: 'Word Search' },
+    { id: 'cardGame', label: 'Card Game' },
     { id: 'resources', label: 'Resources' },
     { id: 'settings', label: 'Settings' },
     { id: 'about', label: 'About' }
