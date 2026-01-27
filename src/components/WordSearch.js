@@ -15,6 +15,20 @@ const DIRECTIONS = [
   { dx: 1, dy: 1 },  // diagonal down-right
 ];
 
+const loadSavedCategories = () => {
+  try {
+    const saved = localStorage.getItem('wordSearchCategories');
+    if (saved) return JSON.parse(saved);
+  } catch (e) { /* ignore */ }
+  return null;
+};
+
+const saveCategoriesStorage = (categories) => {
+  try {
+    localStorage.setItem('wordSearchCategories', JSON.stringify(categories));
+  } catch (e) { /* ignore */ }
+};
+
 function WordSearch({ settings }) {
   const [grid, setGrid] = useState([]);
   const [words, setWords] = useState([]);
@@ -23,8 +37,13 @@ function WordSearch({ settings }) {
   const [wordPositions, setWordPositions] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [puzzleComplete, setPuzzleComplete] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState(['all']);
+  const [selectedCategories, setSelectedCategories] = useState(loadSavedCategories() || ['all']);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+  // Save categories when they change
+  useEffect(() => {
+    saveCategoriesStorage(selectedCategories);
+  }, [selectedCategories]);
 
   // Get unique categories from vocabulary data
   const allCategories = ['all', ...Array.from(new Set(vocabularyData
