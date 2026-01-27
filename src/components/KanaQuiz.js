@@ -33,6 +33,28 @@ function KanaQuiz({ settings }) {
     });
   }, [settings]);
 
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(TIMER_DURATION);
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
   const generateQuestion = useCallback(() => {
     const availableChars = getEnabledChars();
     if (availableChars.length === 0) {
@@ -97,28 +119,6 @@ function KanaQuiz({ settings }) {
     speak(correctAnswer.char);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getEnabledChars, startTimer]);
-
-  const startTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setTimeLeft(TIMER_DURATION);
-    timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }, []);
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
 
   // Clean up timer on unmount
   useEffect(() => {
