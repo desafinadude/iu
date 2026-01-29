@@ -1,0 +1,157 @@
+.results-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.results-modal {
+  background: linear-gradient(145deg, #fff 0%, #f8f4f0 100%);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: min(400px, 90vw);
+  padding: 30px;
+  text-align: center;
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.results-header {
+  margin-bottom: 20px;
+}
+
+.results-header h2 {
+  font-size: 28px;
+  color: #c94146;
+  margin: 0 0 8px 0;
+}
+
+.quiz-type {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.results-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+.results-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f5f1ed;
+  border-radius: 12px;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #c94146;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: #ddd;
+}
+
+.play-again-button {
+  width: 100%;
+  padding: 16px 32px;
+  background: #c94146;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-again-button:hover {
+  background: #b33a3f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(201, 65, 70, 0.4);
+}
+
+.play-again-button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .results-modal {
+    padding: 24px 20px;
+    width: min(350px, 85vw);
+  }
+
+  .results-header h2 {
+    font-size: 24px;
+  }
+
+  .results-message {
+    font-size: 20px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .results-stats {
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .play-again-button {
+    padding: 14px 28px;
+    font-size: 16px;
+  }
+}

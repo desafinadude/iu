@@ -3,22 +3,24 @@ import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
+import ResultsModal from './ResultsModal';
 import '../styles/KanaQuiz.css';
 
 const TIMER_DURATION = 10;
+const MAX_LIVES = 3;
 
 function KanaQuiz({ settings }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
   const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(MAX_LIVES);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [characterWeights, setCharacterWeights] = useState(new Map());
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  const [gameOver, setGameOver] = useState(false);
   const timerRef = useRef(null);
-
-  const totalQuestions = 20;
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -63,22 +65,22 @@ function KanaQuiz({ settings }) {
     }
 
     let correctAnswer;
-    
+
     if (availableChars.length >= 10) {
       // Use weighted selection for larger pools
       const weightedChars = availableChars.map(char => ({
         ...char,
         weight: characterWeights.get(char.char) || 1.0
       }));
-      
+
       const totalWeight = weightedChars.reduce((sum, char) => sum + char.weight, 0);
       let random = Math.random() * totalWeight;
-      
+
       correctAnswer = weightedChars.find(char => {
         random -= char.weight;
         return random <= 0;
       });
-      
+
       // Fallback in case of rounding errors
       if (!correctAnswer) {
         correctAnswer = weightedChars[weightedChars.length - 1];
@@ -126,20 +128,27 @@ function KanaQuiz({ settings }) {
   }, [stopTimer]);
 
   useEffect(() => {
-    generateQuestion();
-  }, [generateQuestion]);
+    if (!gameOver) {
+      generateQuestion();
+    }
+  }, [generateQuestion, gameOver]);
 
   // Handle timer running out
   useEffect(() => {
-    if (timeLeft === 0 && !showResult && currentQuestion) {
+    if (timeLeft === 0 && !showResult && currentQuestion && !gameOver) {
       setSelectedAnswer(null);
       setShowResult(true);
+      const newLives = lives - 1;
+      setLives(newLives);
       speak(currentQuestion.char);
+      if (newLives <= 0) {
+        setGameOver(true);
+      }
     }
-  }, [timeLeft, showResult, currentQuestion]);
+  }, [timeLeft, showResult, currentQuestion, lives, gameOver]);
 
   const handleAnswer = (option) => {
-    if (showResult || !currentQuestion) return;
+    if (showResult || !currentQuestion || gameOver) return;
 
     stopTimer();
     setSelectedAnswer(option);
@@ -148,6 +157,12 @@ function KanaQuiz({ settings }) {
     const isCorrect = option.char === currentQuestion.char;
     if (isCorrect) {
       setScore(score + 1);
+    } else {
+      const newLives = lives - 1;
+      setLives(newLives);
+      if (newLives <= 0) {
+        setGameOver(true);
+      }
     }
 
     // Speak the correct pronunciation
@@ -155,16 +170,18 @@ function KanaQuiz({ settings }) {
   };
 
   const handleNext = () => {
-    if (questionNumber + 1 >= totalQuestions) {
-      // Show final results
-      alert(`Quiz Complete! Score: ${score + (selectedAnswer?.char === currentQuestion?.char ? 1 : 0)}/${totalQuestions}`);
-      setQuestionNumber(0);
-      setScore(0);
-      generateQuestion();
-    } else {
-      setQuestionNumber(questionNumber + 1);
-      generateQuestion();
-    }
+    if (gameOver) return;
+    setQuestionNumber(questionNumber + 1);
+    generateQuestion();
+  };
+
+  const handlePlayAgain = () => {
+    setQuestionNumber(0);
+    setScore(0);
+    setLives(MAX_LIVES);
+    setGameOver(false);
+    setCharacterWeights(new Map());
+    generateQuestion();
   };
 
   const isCorrect = selectedAnswer?.char === currentQuestion?.char;
@@ -181,10 +198,21 @@ function KanaQuiz({ settings }) {
 
   return (
     <div className="kana-quiz">
+      {gameOver && (
+        <ResultsModal
+          score={score}
+          questionsAnswered={questionNumber + 1}
+          onPlayAgain={handlePlayAgain}
+          quizType="Kana"
+        />
+      )}
+
       <div className="quiz-question">
         <div className="score-display">
-          <div className="question-number">{questionNumber + 1}</div>
-          <div className="score-fraction">{score}/{totalQuestions}</div>
+          <div className="lives-display">
+            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
+          </div>
+          <div className="score-fraction">{score}</div>
         </div>
         {!showResult && (
           <div className="quiz-timer-bar">
@@ -217,7 +245,7 @@ function KanaQuiz({ settings }) {
                 : ''
             } font-${settings.fontStyle}`}
             onClick={() => handleAnswer(option)}
-            disabled={showResult}
+            disabled={showResult || gameOver}
           >
             {option.char}
           </button>
@@ -225,9 +253,9 @@ function KanaQuiz({ settings }) {
       </div>
 
       <div className="button-area">
-        {showResult && (
+        {showResult && !gameOver && (
           <button className={`next-button ${isCorrect ? 'correct' : 'wrong'}`} onClick={handleNext}>
-            {questionNumber + 1 >= totalQuestions ? 'Finish' : 'Next Question'}
+            Next Question
           </button>
         )}
       </div>

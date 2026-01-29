@@ -38,9 +38,8 @@ body:not(.quiz-active) .kana-quiz {
   right: 10px;
   background-color: #c94146;
   color: white;
-  border-radius: 50%;
-  width: 65px;
-  height: 65px;
+  border-radius: 12px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,15 +47,18 @@ body:not(.quiz-active) .kana-quiz {
   font-weight: bold;
   z-index: 2;
   line-height: 1;
+  min-width: 60px;
 }
 
-.question-number {
-  font-size: 16px;
+.lives-display {
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
 }
 
 .score-fraction {
-  font-size: 11px;
-  margin-top: 2px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .question-text {
@@ -263,18 +265,19 @@ body:not(.quiz-active) .kana-quiz {
   }
   
   .score-display {
-    width: 50px;
-    height: 50px;
+    padding: 6px 10px;
     bottom: 5px;
     right: 5px;
+    min-width: 50px;
   }
-  
-  .question-number {
-    font-size: 14px;
+
+  .lives-display {
+    font-size: 12px;
+    letter-spacing: 1px;
   }
-  
+
   .score-fraction {
-    font-size: 9px;
+    font-size: 16px;
   }
 }
 
