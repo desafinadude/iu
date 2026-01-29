@@ -189,14 +189,12 @@ function ReverseKanaQuiz({ settings }) {
   if (!hasStarted) {
     return (
       <div className="kana-quiz">
-        <div className="start-overlay">
-          <div className="start-modal">
-            <h2>Reverse Kana Quiz</h2>
-            <p>See the kana, select the sound</p>
-            <button className="start-button" onClick={handleStart}>
-              START
-            </button>
-          </div>
+        <div className="quiz-instructions">
+          <h2>Reverse Kana Quiz</h2>
+          <p>See the kana, select the sound</p>
+          <button className="start-button" onClick={handleStart}>
+            START
+          </button>
         </div>
       </div>
     );

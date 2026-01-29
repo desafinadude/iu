@@ -2,7 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
+import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
+import ResultsModal from './ResultsModal';
 import '../styles/HandwritingPractice.css';
+
+const TIMER_DURATION = 10;
+const MAX_LIVES = 3;
 
 function HandwritingPractice({ settings }) {
   const canvasRef = useRef(null);
@@ -13,11 +18,15 @@ function HandwritingPractice({ settings }) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [strokes, setStrokes] = useState([]);
   const [currentStroke, setCurrentStroke] = useState([]);
-  const [showHint, setShowHint] = useState(false);
+  const [showCharacter, setShowCharacter] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [characterAttempts, setCharacterAttempts] = useState(0);
   const [characterCorrect, setCharacterCorrect] = useState(false);
   const [characterWeights, setCharacterWeights] = useState(new Map());
+  const [lives, setLives] = useState(MAX_LIVES);
+  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  const [gameOver, setGameOver] = useState(false);
+  const timerRef = useRef(null);
   // eslint-disable-next-line no-unused-vars
   const [candidates, setCandidates] = useState('Draw the character, and I\'ll show you what I recognize!');
   // eslint-disable-next-line no-unused-vars
@@ -35,6 +44,28 @@ function HandwritingPractice({ settings }) {
       }
     });
   }, [settings]);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(TIMER_DURATION);
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
 
   const generateQuestion = useCallback(() => {
     const availableChars = getEnabledChars();
@@ -87,12 +118,15 @@ function HandwritingPractice({ settings }) {
 
     setCurrentChar(char);
     clearCanvas();
-    setShowHint(false);
+    setShowCharacter(false);
     setShowResult(false);
     
     // Reset per-character tracking
     setCharacterAttempts(0);
     setCharacterCorrect(false);
+    
+    // Start timer for this question
+    startTimer();
     
     // Update question count
     setTotalQuestions(prev => prev + 1);
@@ -106,6 +140,21 @@ function HandwritingPractice({ settings }) {
     generateQuestion();
     setupCanvas();
   }, [generateQuestion]);
+
+  // Handle timer running out
+  useEffect(() => {
+    if (timeLeft === 0 && !showResult && currentChar && !gameOver) {
+      setShowResult(true);
+      setShowCharacter(true);
+      playWrongSound();
+      const newLives = lives - 1;
+      setLives(newLives);
+      speak(currentChar.char);
+      if (newLives <= 0) {
+        setGameOver(true);
+      }
+    }
+  }, [timeLeft, showResult, currentChar, lives, gameOver]);
 
   const setupCanvas = () => {
     const canvas = canvasRef.current;
@@ -266,6 +315,10 @@ function HandwritingPractice({ settings }) {
       return;
     }
 
+    // Stop timer and show the character when checking answer
+    stopTimer();
+    setShowCharacter(true);
+
     try {
       // Format strokes for Google InputTools API
       const ink = strokes.map(stroke => {
@@ -315,14 +368,20 @@ function HandwritingPractice({ settings }) {
         setScore(newScore);
         setShowResult(true);
         setCharacterCorrect(true);
+        playCorrectSound();
         setCandidateClass('candidates correct');
         setCandidates(`✅ Correct! ${correctChar} (${currentChar.romaji})`);
       } else {
-        // Wrong - just show hint
+        // Wrong - lose a life
         setShowResult(true);
-        setShowHint(true);
+        playWrongSound();
+        const newLives = lives - 1;
+        setLives(newLives);
         setCandidateClass('candidates incorrect');
         setCandidates(`❌ Try again! Looking for: ${correctChar} (${currentChar.romaji})`);
+        if (newLives <= 0) {
+          setGameOver(true);
+        }
       }
     } catch (error) {
       console.error('Recognition error:', error);
@@ -338,19 +397,32 @@ function HandwritingPractice({ settings }) {
   };
 
   const handleShowHint = () => {
-    setShowHint(true);
-    setTimeout(() => setShowHint(false), 8000);
+    setShowCharacter(!showCharacter);
+    if (!showCharacter) {
+      // If we're showing the character, hide it after a shorter timeout
+      setTimeout(() => setShowCharacter(false), 4000);
+    }
   };
 
   const handleClearCanvas = () => {
     clearCanvas();
-    setShowHint(false);
     setCandidates('Draw the character, and I\'ll show you what I recognize!');
     setCandidateClass('candidates');
   };
 
   const handleNext = () => {
     setQuestionNumber(questionNumber + 1);
+    generateQuestion();
+  };
+
+  const handlePlayAgain = () => {
+    setScore(0);
+    setQuestionNumber(0);
+    setTotalQuestions(0);
+    setLives(MAX_LIVES);
+    setGameOver(false);
+    setShowResult(false);
+    setShowCharacter(false);
     generateQuestion();
   };
 
@@ -373,20 +445,39 @@ function HandwritingPractice({ settings }) {
 
   return (
     <div className="handwriting-practice">
+      {gameOver && (
+        <ResultsModal
+          score={score}
+          questionsAnswered={questionNumber + 1}
+          onPlayAgain={handlePlayAgain}
+          quizType="Handwriting"
+        />
+      )}
+
       <div className="handwriting-question">
+        <div className="timer-lives-row">
+          <div className="question-number">{questionNumber + 1}</div>
+          <div className="lives-display">
+            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
+          </div>
+          {!showResult && (
+            <div className="quiz-timer-bar">
+              <div
+                className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
+                style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
+              />
+            </div>
+          )}
+        </div>
         <div className="accuracy-display" style={{backgroundColor: getAccuracyColor()}}>
           {getCorrectPercentage()}%
-        </div>
-        <div className="score-display">
-          <div className="question-number">{questionNumber + 1}</div>
-          <div className="score-fraction">{score}/{totalQuestions}</div>
         </div>
         <button
           className={`speaker-button font-${settings.fontStyle}`}
           onClick={handleSpeakerClick}
           title="Click to hear pronunciation"
         >
-          {currentChar.romaji}
+          {showCharacter ? currentChar.char : currentChar.romaji}
         </button>
       </div>
 
@@ -404,10 +495,7 @@ function HandwritingPractice({ settings }) {
             onTouchMove={draw}
             onTouchEnd={stopDrawing}
           />
-          <div className={`hint-overlay ${showHint ? 'show' : ''} font-${settings.fontStyle}`}>
-            {currentChar?.char}
-          </div>
-          <button className="canvas-corner-btn top-left" onClick={handleShowHint} title="Show Hint">
+          <button className="canvas-corner-btn top-left" onClick={handleShowHint} title="Toggle Hint">
             💡
           </button>
           <button className="canvas-corner-btn top-right" onClick={handleClearCanvas} title="Clear Canvas">

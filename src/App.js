@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen';
+import HomePage from './components/HomePage';
 import Menu from './components/Menu';
 import KanaQuiz from './components/KanaQuiz';
 import ReverseKanaQuiz from './components/ReverseKanaQuiz';
@@ -13,7 +14,7 @@ import './styles/App.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('kana'); // kana, reverseKana, kanji, vocab, handwriting, wordSearch, settings, resources
+  const [currentView, setCurrentView] = useState('home'); // home, kana, reverseKana, kanji, vocab, handwriting, wordSearch, settings, resources
   const [menuOpen, setMenuOpen] = useState(false);
   const [settings, setSettings] = useState({
     enabledHiragana: new Set([
@@ -124,6 +125,14 @@ function App() {
     setMenuOpen(false);
   };
 
+  const handleActivitySelect = (activity) => {
+    setCurrentView(activity);
+  };
+
+  const handleBackToHome = () => {
+    setCurrentView('home');
+  };
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -135,12 +144,13 @@ function App() {
         onClose={() => setMenuOpen(false)}
         onMenuClick={handleMenuClick}
         currentView={currentView}
+        onBackToHome={handleBackToHome}
       />
 
       <div className="app-header">
         <div className="app-title">
           <div className="title-japanese">こい<span>かた</span></div>
-          <div className="title-english">{currentView}</div>
+          <div className="title-english">{currentView === 'home' ? 'home' : currentView}</div>
         </div>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
           ☰
@@ -148,6 +158,7 @@ function App() {
       </div>
 
       <div className="app-content">
+        {currentView === 'home' && <HomePage onActivitySelect={handleActivitySelect} />}
         {currentView === 'kana' && <KanaQuiz settings={settings} />}
         {currentView === 'reverseKana' && <ReverseKanaQuiz settings={settings} />}
         {currentView === 'kanji' && <KanjiQuiz settings={settings} />}

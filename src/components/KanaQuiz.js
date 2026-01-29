@@ -204,14 +204,12 @@ function KanaQuiz({ settings }) {
   if (!hasStarted) {
     return (
       <div className="kana-quiz">
-        <div className="start-overlay">
-          <div className="start-modal">
-            <h2>Kana Quiz</h2>
-            <p>Listen and select the correct kana</p>
-            <button className="start-button" onClick={handleStart}>
-              START
-            </button>
-          </div>
+        <div className="quiz-instructions">
+          <h2>Kana Quiz</h2>
+          <p>Listen and select the correct kana</p>
+          <button className="start-button" onClick={handleStart}>
+            START
+          </button>
         </div>
       </div>
     );
