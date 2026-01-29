@@ -152,29 +152,25 @@
 }
 
 .vocab-word-bubble {
-  background-image: url('./thinking-bubble.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  border: none;
-  background-color: transparent;
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  /* Make it bigger for better text spacing */
-  width: min(480px, 85vw);
-  height: min(360px, 70vw);
-  max-width: 520px;
-  max-height: 400px;
-  padding: 30px 50px 80px 50px;
+  width: min(400px, 85vw);
+  min-height: 120px;
+  max-width: 450px;
+  padding: 30px 40px;
   box-sizing: border-box;
 }
 
 .vocab-word-bubble:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .vocab-word-text {
@@ -307,9 +303,9 @@
   }
   
   .vocab-word-bubble {
-    width: min(380px, 90vw);
-    height: min(280px, 70vw);
-    padding: 25px 40px 60px 40px;
+    width: min(340px, 90vw);
+    min-height: 100px;
+    padding: 20px 30px;
   }
   
   .vocab-word-text {

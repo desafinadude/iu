@@ -19,6 +19,7 @@ function KanjiQuiz({ settings }) {
   const [characterWeights, setCharacterWeights] = useState(new Map());
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const timerRef = useRef(null);
   const characterWeightsRef = useRef(characterWeights);
   characterWeightsRef.current = characterWeights;
@@ -230,7 +231,7 @@ function KanjiQuiz({ settings }) {
     setShowResult(false);
     setSelectedAnswer(null);
     setCharacterWeights(new Map());
-    generateQuestion();
+    setHasStarted(false);
   };
 
   const handleKanjiClick = () => {
@@ -240,10 +241,14 @@ function KanjiQuiz({ settings }) {
   };
 
   useEffect(() => {
-    if (!gameOver) {
+    if (hasStarted && !gameOver) {
       generateQuestion();
     }
-  }, [selectedCategories, selectedGrades, generateQuestion, gameOver]);
+  }, [selectedCategories, selectedGrades, generateQuestion, gameOver, hasStarted]);
+
+  const handleStart = () => {
+    setHasStarted(true);
+  };
 
   const isCorrect = selectedAnswer && selectedAnswer.kanji === currentQuestion?.kanji;
 
@@ -253,6 +258,18 @@ function KanjiQuiz({ settings }) {
 
   return (
     <div className="kana-quiz">
+      {!hasStarted && (
+        <div className="start-overlay">
+          <div className="start-modal">
+            <h2>Kanji Quiz</h2>
+            <p>See the kanji, select the meaning</p>
+            <button className="start-button" onClick={handleStart}>
+              START
+            </button>
+          </div>
+        </div>
+      )}
+
       {gameOver && (
         <ResultsModal
           score={score}
@@ -318,10 +335,10 @@ function KanjiQuiz({ settings }) {
 
       <div className="quiz-question">
         <div className="score-display">
-          <div className="lives-display">
-            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
-          </div>
           <div className="score-fraction">{score}</div>
+        </div>
+        <div className="lives-display">
+          {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
         </div>
         {!showResult && (
           <div className="quiz-timer-bar">
