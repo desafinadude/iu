@@ -1,8 +1,9 @@
 import React from 'react';
 import '../styles/Menu.css';
 
-function Menu({ isOpen, onClose, onMenuClick, currentView }) {
+function Menu({ isOpen, onClose, onMenuClick, currentView, onBackToHome }) {
   const menuItems = [
+    { id: 'home', label: 'Home', action: onBackToHome },
     { id: 'kana', label: 'Kana Quiz' },
     { id: 'reverseKana', label: 'Reverse Kana Quiz' },
     { id: 'kanji', label: 'Kanji Quiz' },
@@ -36,7 +37,14 @@ function Menu({ isOpen, onClose, onMenuClick, currentView }) {
             <button
               key={item.id}
               className={`menu-item ${currentView === item.id ? 'active' : ''}`}
-              onClick={() => onMenuClick(item.id)}
+              onClick={() => {
+                if (item.action) {
+                  item.action();
+                } else {
+                  onMenuClick(item.id);
+                }
+                onClose();
+              }}
             >
               {item.label}
             </button>

@@ -1,6 +1,6 @@
 .handwriting-practice {
   display: grid;
-  grid-template-rows: 20% 60% 20%;
+  grid-template-rows: 30% 60% 10%;
   height: calc(100vh - 60px); /* Subtract header height like quiz pages */
   overflow: hidden;
   max-width: 600px;
@@ -12,28 +12,15 @@
 
 .handwriting-question {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  position: relative;
-}
-
-.score-display {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: #c94146;
-  color: white;
-  border-radius: 50%;
-  width: 65px;
-  height: 65px;
-  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  z-index: 2;
-  line-height: 1;
+  justify-content: flex-start;
+  text-align: center;
+  position: relative;
+  margin-top: 30px; /* Add space to avoid speech bubble cutoff */
+  min-height: 120px; /* Make question area bigger vertically */
+  padding: 20px 0; /* Add some vertical padding */
+  gap: 15px; /* Add space between timer and speech bubble */
 }
 
 .question-number {
@@ -101,7 +88,6 @@
   position: relative;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   flex: 1;
   width: 100%;
   max-width: 100%;
@@ -121,29 +107,6 @@ canvas {
   max-height: 100%;
 }
 
-.hint-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: min(320px, 70vw);
-  font-weight: bold;
-  color: #888888;
-  border-radius: 12px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.hint-overlay.show {
-  opacity: 1;
-}
-
 .canvas-corner-btn {
   position: absolute;
   width: 40px;
@@ -154,7 +117,6 @@ canvas {
   font-size: 18px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .canvas-corner-btn:hover {
@@ -285,39 +247,6 @@ canvas {
   color: #666;
 }
 
-/* Font classes for hint overlay */
-.hint-overlay.noto {
-  font-family: 'Noto Sans JP', sans-serif;
-}
-
-.hint-overlay.maru {
-  font-family: 'Zen Maru Gothic', sans-serif;
-}
-
-.hint-overlay.mincho {
-  font-family: 'Shippori Mincho', serif;
-}
-
-.hint-overlay.kosugi {
-  font-family: 'Kosugi Maru', sans-serif;
-}
-
-.hint-overlay.rounded {
-  font-family: 'M PLUS Rounded 1c', sans-serif;
-}
-
-.hint-overlay.yusei {
-  font-family: 'Yusei Magic', sans-serif;
-}
-
-.hint-overlay.klee {
-  font-family: 'Klee One', cursive;
-}
-
-.hint-overlay.hachi {
-  font-family: 'Hachi Maru Pop', cursive;
-}
-
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .handwriting-practice {
@@ -339,27 +268,10 @@ canvas {
     min-width: 100px;
   }
   
-  .hint-overlay {
-    font-size: min(80px, 15vw);
-  }
-  
   .canvas-corner-btn {
     width: 30px;
     height: 30px;
     font-size: 14px;
-  }
-  
-  .score-display {
-    width: 50px;
-    height: 50px;
-    bottom: 5px;
-    right: 5px;
-  }
-  
-
-  
-  .score-fraction {
-    font-size: 9px;
   }
   
   .accuracy-display {

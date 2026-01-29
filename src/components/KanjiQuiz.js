@@ -263,14 +263,12 @@ function KanjiQuiz({ settings }) {
   if (!hasStarted) {
     return (
       <div className="kana-quiz">
-        <div className="start-overlay">
-          <div className="start-modal">
-            <h2>Kanji Quiz</h2>
-            <p>See the kanji, select the meaning</p>
-            <button className="start-button" onClick={handleStart}>
-              START
-            </button>
-          </div>
+        <div className="quiz-instructions">
+          <h2>Kanji Quiz</h2>
+          <p>See the kanji, select the meaning</p>
+          <button className="start-button" onClick={handleStart}>
+            START
+          </button>
         </div>
       </div>
     );
@@ -361,16 +359,16 @@ function KanjiQuiz({ settings }) {
             </div>
           )}
         </div>
-        <div className="character-with-hint">
-          <button
-            className={`character-display font-${settings?.fontStyle || 'noto'}`}
-            onClick={handleKanjiClick}
-            title="Click to hear pronunciation"
-          >
-            {currentQuestion.kanji}
-          </button>
-          <div className="reading-hint">{currentQuestion.reading}</div>
-        </div>
+        <button
+          className={`speaker-button font-${settings?.fontStyle || 'noto'}`}
+          onClick={handleKanjiClick}
+          title="Click to hear pronunciation"
+        >
+          <div className="kanji-with-reading">
+            <div className="kanji-char">{currentQuestion.kanji}</div>
+            <div className="reading-hint">{currentQuestion.reading}</div>
+          </div>
+        </button>
       </div>
 
       <div className="options-grid">

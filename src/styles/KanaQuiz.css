@@ -128,6 +128,7 @@ body:not(.quiz-active) .kana-quiz {
   gap: 8px;
   padding: 8px;
   height: 100%;
+  align-content: center;
 }
 
 .option-button {
@@ -135,7 +136,7 @@ body:not(.quiz-active) .kana-quiz {
   border: 2px solid #000;
   border-radius: 12px;
   padding: 0;
-  font-size: min(28px, 6vw);
+  font-size: min(24px, 5vw);
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -156,7 +157,7 @@ body:not(.quiz-active) .kana-quiz {
 }
 
 .option-button.romaji {
-  font-size: min(22px, 5vw);
+  font-size: min(18px, 4vw);
 }
 
 .option-button.correct {
@@ -212,6 +213,22 @@ body:not(.quiz-active) .kana-quiz {
   justify-content: center;
 }
 
+.kanji-with-reading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  padding-top: 20px;
+}
+
+.kanji-with-reading .reading-hint {
+  font-size: 15px;
+  color: #888;
+  margin-top: 8px;
+  font-style: normal;
+  font-weight: normal;
+}
+
 .quiz-loading {
   text-align: center;
   padding: 40px;
@@ -246,61 +263,32 @@ body:not(.quiz-active) .kana-quiz {
   50% { opacity: 0.6; }
 }
 
-/* Start overlay */
-.start-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+/* Quiz instructions - replaces the modal */
+.quiz-instructions {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.start-modal {
-  background: linear-gradient(145deg, #fff 0%, #f8f4f0 100%);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  width: min(350px, 85vw);
-  padding: 40px 30px;
+  min-height: 60vh;
+  padding: 40px;
   text-align: center;
-  animation: slideUp 0.4s ease;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.start-modal h2 {
-  font-size: 28px;
+.quiz-instructions h2 {
+  font-size: 2.5rem;
   color: #333;
-  margin: 0 0 10px 0;
+  margin: 0 0 1rem 0;
+  font-weight: bold;
 }
 
-.start-modal p {
-  font-size: 16px;
+.quiz-instructions p {
+  font-size: 1.2rem;
   color: #666;
-  margin: 0 0 30px 0;
+  margin: 0 0 2rem 0;
+  max-width: 400px;
 }
 
 .start-button {
-  width: 100%;
   padding: 16px 32px;
   background: #c94146;
   color: white;
@@ -310,12 +298,50 @@ body:not(.quiz-active) .kana-quiz {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 150px;
 }
 
 .start-button:hover {
   background: #b33a3f;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(201, 65, 70, 0.4);
+}
+
+/* Responsive quiz instructions */
+@media (max-width: 768px) {
+  .quiz-instructions {
+    padding: 20px;
+    min-height: 50vh;
+  }
+
+  .quiz-instructions h2 {
+    font-size: 2rem;
+  }
+
+  .quiz-instructions p {
+    font-size: 1rem;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .start-button {
+    padding: 14px 28px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-instructions h2 {
+    font-size: 1.8rem;
+  }
+
+  .quiz-instructions p {
+    font-size: 0.9rem;
+  }
+
+  .start-button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
 }
 
 .start-button:active {
