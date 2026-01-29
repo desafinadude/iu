@@ -25,6 +25,8 @@ function WordSearch({ settings }) {
   const [puzzleComplete, setPuzzleComplete] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showingKana, setShowingKana] = useState(new Set());
+  const [longPressTimer, setLongPressTimer] = useState(null);
 
   // Get unique categories from vocabulary data
   const allCategories = ['all', ...Array.from(new Set(vocabularyData
@@ -293,6 +295,28 @@ function WordSearch({ settings }) {
     handleMouseUp();
   };
 
+  const handleLongPressStart = (wordObj) => {
+    const timer = setTimeout(() => {
+      setShowingKana(prev => new Set([...prev, wordObj.translation]));
+      // Hide kana after 3 seconds
+      setTimeout(() => {
+        setShowingKana(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(wordObj.translation);
+          return newSet;
+        });
+      }, 3000);
+    }, 500); // 500ms for long press detection
+    setLongPressTimer(timer);
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
   const handleWordClick = (wordObj) => {
     speak(wordObj.word);
   };
@@ -338,8 +362,14 @@ function WordSearch({ settings }) {
             key={index}
             className={`word-item ${foundWords.has(wordObj.word) ? 'found' : ''}`}
             onClick={() => handleWordClick(wordObj)}
+            onMouseDown={() => handleLongPressStart(wordObj)}
+            onMouseUp={handleLongPressEnd}
+            onMouseLeave={handleLongPressEnd}
+            onTouchStart={() => handleLongPressStart(wordObj)}
+            onTouchEnd={handleLongPressEnd}
+            onTouchCancel={handleLongPressEnd}
           >
-            {wordObj.translation}
+            {showingKana.has(wordObj.translation) ? wordObj.word : wordObj.translation}
           </button>
         ))}
       </div>

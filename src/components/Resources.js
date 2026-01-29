@@ -72,19 +72,17 @@ function Resources() {
 
         <div className="chapters-section">
           <h4>Video Chapters</h4>
-          <div className="chapters-grid">
+          <select 
+            className="chapters-dropdown"
+            value={currentChapter || 0}
+            onChange={(e) => jumpToChapter(parseInt(e.target.value))}
+          >
             {chapters.map((chapter, index) => (
-              <button
-                key={index}
-                className={`chapter-button ${currentChapter === chapter.time ? 'active' : ''}`}
-                onClick={() => jumpToChapter(chapter.time)}
-              >
-                <div className="chapter-title">{chapter.title}</div>
-                <div className="chapter-time">{Math.floor(chapter.time / 60)}:{(chapter.time % 60).toString().padStart(2, '0')}</div>
-                <div className="chapter-description">{chapter.description}</div>
-              </button>
+              <option key={index} value={chapter.time}>
+                {chapter.title} ({Math.floor(chapter.time / 60)}:{(chapter.time % 60).toString().padStart(2, '0')}) - {chapter.description}
+              </option>
             ))}
-          </div>
+          </select>
         </div>
       </div>
 
