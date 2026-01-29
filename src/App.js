@@ -6,16 +6,14 @@ import ReverseKanaQuiz from './components/ReverseKanaQuiz';
 import KanjiQuiz from './components/KanjiQuiz';
 import VocabularyPractice from './components/VocabularyPractice';
 import HandwritingPractice from './components/HandwritingPractice';
-import FallingKana from './components/FallingKana';
 import WordSearch from './components/WordSearch';
-import CardGame from './components/CardGame';
 import Settings from './components/Settings';
 import Resources from './components/Resources';
 import './styles/App.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('kana'); // kana, reverseKana, vocab, handwriting, fallingKana, settings, resources
+  const [currentView, setCurrentView] = useState('kana'); // kana, reverseKana, kanji, vocab, handwriting, wordSearch, settings, resources
   const [menuOpen, setMenuOpen] = useState(false);
   const [settings, setSettings] = useState({
     enabledHiragana: new Set([
@@ -97,7 +95,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'reverseKana', 'kanji', 'vocab', 'handwriting', 'fallingKana', 'wordSearch', 'cardGame'];
+    const quizViews = ['kana', 'reverseKana', 'kanji', 'vocab', 'handwriting', 'wordSearch'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -153,9 +151,7 @@ function App() {
         {currentView === 'kanji' && <KanjiQuiz settings={settings} />}
         {currentView === 'vocab' && <VocabularyPractice settings={settings} />}
         {currentView === 'handwriting' && <HandwritingPractice settings={settings} />}
-        {currentView === 'fallingKana' && <FallingKana settings={settings} />}
         {currentView === 'wordSearch' && <WordSearch settings={settings} />}
-        {currentView === 'cardGame' && <CardGame />}
         {currentView === 'settings' && <Settings settings={settings} onSave={saveSettings} />}
         {currentView === 'resources' && <Resources />}
       </div>
