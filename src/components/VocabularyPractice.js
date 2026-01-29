@@ -114,7 +114,7 @@ function VocabularyPractice({ settings }) {
 
       <div className="vocab-main-area">
         <button
-          className="vocab-word-bubble"
+          className="vocab-word-button"
           onClick={handleWordClick}
         >
           <div className={`vocab-word-text font-${settings.fontStyle}`}>{currentWord.word}</div>

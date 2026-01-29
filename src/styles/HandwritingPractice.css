@@ -37,7 +37,7 @@
 }
 
 .question-number {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .score-fraction {
@@ -356,9 +356,7 @@ canvas {
     right: 5px;
   }
   
-  .question-number {
-    font-size: 14px;
-  }
+
   
   .score-fraction {
     font-size: 9px;

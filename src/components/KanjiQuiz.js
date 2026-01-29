@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { kanjiData } from '../data/kanjiData';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
+import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
 import '../styles/KanaQuiz.css';
 
@@ -130,6 +131,10 @@ function KanjiQuiz({ settings }) {
     setSelectedAnswer(null);
     setShowResult(false);
     startTimer();
+
+    // Speak the kanji reading automatically
+    speak(correctAnswer.reading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getFilteredKanji, startTimer]);
 
   // Clean up timer on unmount
@@ -142,6 +147,7 @@ function KanjiQuiz({ settings }) {
     if (timeLeft === 0 && !showResult && currentQuestion && !gameOver) {
       setSelectedAnswer(null);
       setShowResult(true);
+      playWrongSound();
       const newLives = lives - 1;
       setLives(newLives);
       if (newLives <= 0) {
@@ -176,9 +182,11 @@ function KanjiQuiz({ settings }) {
 
     if (isCorrect) {
       setScore(score + 1);
+      playCorrectSound();
     } else {
       const newLives = lives - 1;
       setLives(newLives);
+      playWrongSound();
       if (newLives <= 0) {
         setGameOver(true);
       }
@@ -252,13 +260,9 @@ function KanjiQuiz({ settings }) {
 
   const isCorrect = selectedAnswer && selectedAnswer.kanji === currentQuestion?.kanji;
 
-  if (!currentQuestion) {
-    return <div className="quiz-loading">Loading...</div>;
-  }
-
-  return (
-    <div className="kana-quiz">
-      {!hasStarted && (
+  if (!hasStarted) {
+    return (
+      <div className="kana-quiz">
         <div className="start-overlay">
           <div className="start-modal">
             <h2>Kanji Quiz</h2>
@@ -268,7 +272,16 @@ function KanjiQuiz({ settings }) {
             </button>
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  if (!currentQuestion) {
+    return <div className="quiz-loading">Loading...</div>;
+  }
+
+  return (
+    <div className="kana-quiz">
 
       {gameOver && (
         <ResultsModal
@@ -334,20 +347,20 @@ function KanjiQuiz({ settings }) {
       )}
 
       <div className="quiz-question">
-        <div className="score-display">
-          <div className="score-fraction">{score}</div>
-        </div>
-        <div className="lives-display">
-          {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
-        </div>
-        {!showResult && (
-          <div className="quiz-timer-bar">
-            <div
-              className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
-              style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
-            />
+        <div className="timer-lives-row">
+          <div className="question-number">{questionNumber + 1}</div>
+          <div className="lives-display">
+            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
           </div>
-        )}
+          {!showResult && (
+            <div className="quiz-timer-bar">
+              <div
+                className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
+                style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
+              />
+            </div>
+          )}
+        </div>
         <div className="character-with-hint">
           <button
             className={`character-display font-${settings?.fontStyle || 'noto'}`}

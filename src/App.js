@@ -45,7 +45,8 @@ function App() {
     includeDakutenHiragana: true,
     includeDakutenKatakana: true,
     recognitionStrictness: 50,
-    fontStyle: 'noto'
+    fontStyle: 'noto',
+    selectedVoice: 0  // Index of selected Japanese voice
   });
 
   useEffect(() => {
@@ -83,7 +84,8 @@ function App() {
         includeDakutenHiragana: parsed.includeDakutenHiragana ?? true,
         includeDakutenKatakana: parsed.includeDakutenKatakana ?? true,
         recognitionStrictness: parsed.recognitionStrictness || 50,
-        fontStyle: parsed.fontStyle || 'noto'
+        fontStyle: parsed.fontStyle || 'noto',
+        selectedVoice: parsed.selectedVoice || 0
       });
     }
 
