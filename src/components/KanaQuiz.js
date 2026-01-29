@@ -20,6 +20,7 @@ function KanaQuiz({ settings }) {
   const [characterWeights, setCharacterWeights] = useState(new Map());
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const timerRef = useRef(null);
 
   const getEnabledChars = useCallback(() => {
@@ -128,10 +129,14 @@ function KanaQuiz({ settings }) {
   }, [stopTimer]);
 
   useEffect(() => {
-    if (!gameOver) {
+    if (hasStarted && !gameOver) {
       generateQuestion();
     }
-  }, [generateQuestion, gameOver]);
+  }, [generateQuestion, gameOver, hasStarted]);
+
+  const handleStart = () => {
+    setHasStarted(true);
+  };
 
   // Handle timer running out
   useEffect(() => {
@@ -181,7 +186,7 @@ function KanaQuiz({ settings }) {
     setLives(MAX_LIVES);
     setGameOver(false);
     setCharacterWeights(new Map());
-    generateQuestion();
+    setHasStarted(false);
   };
 
   const isCorrect = selectedAnswer?.char === currentQuestion?.char;
@@ -198,6 +203,18 @@ function KanaQuiz({ settings }) {
 
   return (
     <div className="kana-quiz">
+      {!hasStarted && (
+        <div className="start-overlay">
+          <div className="start-modal">
+            <h2>Kana Quiz</h2>
+            <p>Listen and select the correct kana</p>
+            <button className="start-button" onClick={handleStart}>
+              START
+            </button>
+          </div>
+        </div>
+      )}
+
       {gameOver && (
         <ResultsModal
           score={score}
@@ -209,10 +226,10 @@ function KanaQuiz({ settings }) {
 
       <div className="quiz-question">
         <div className="score-display">
-          <div className="lives-display">
-            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
-          </div>
           <div className="score-fraction">{score}</div>
+        </div>
+        <div className="lives-display">
+          {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
         </div>
         {!showResult && (
           <div className="quiz-timer-bar">

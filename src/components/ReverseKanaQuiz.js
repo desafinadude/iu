@@ -20,6 +20,7 @@ function ReverseKanaQuiz({ settings }) {
   const [characterWeights, setCharacterWeights] = useState(new Map());
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const timerRef = useRef(null);
 
   const getEnabledChars = useCallback(() => {
@@ -120,10 +121,14 @@ function ReverseKanaQuiz({ settings }) {
   }, [stopTimer]);
 
   useEffect(() => {
-    if (!gameOver) {
+    if (hasStarted && !gameOver) {
       generateQuestion();
     }
-  }, [generateQuestion, gameOver]);
+  }, [generateQuestion, gameOver, hasStarted]);
+
+  const handleStart = () => {
+    setHasStarted(true);
+  };
 
   // Handle timer running out
   useEffect(() => {
@@ -172,7 +177,7 @@ function ReverseKanaQuiz({ settings }) {
     setLives(MAX_LIVES);
     setGameOver(false);
     setCharacterWeights(new Map());
-    generateQuestion();
+    setHasStarted(false);
   };
 
   const isCorrect = selectedAnswer?.char === currentQuestion?.char;
@@ -183,6 +188,18 @@ function ReverseKanaQuiz({ settings }) {
 
   return (
     <div className="kana-quiz">
+      {!hasStarted && (
+        <div className="start-overlay">
+          <div className="start-modal">
+            <h2>Reverse Kana Quiz</h2>
+            <p>See the kana, select the sound</p>
+            <button className="start-button" onClick={handleStart}>
+              START
+            </button>
+          </div>
+        </div>
+      )}
+
       {gameOver && (
         <ResultsModal
           score={score}
@@ -194,10 +211,10 @@ function ReverseKanaQuiz({ settings }) {
 
       <div className="quiz-question">
         <div className="score-display">
-          <div className="lives-display">
-            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
-          </div>
           <div className="score-fraction">{score}</div>
+        </div>
+        <div className="lives-display">
+          {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
         </div>
         {!showResult && (
           <div className="quiz-timer-bar">
