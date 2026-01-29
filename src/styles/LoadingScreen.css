@@ -35,6 +35,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.loading-icon.loading {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.loading-icon.loaded {
+  opacity: 1;
   animation: pulse 2s ease-in-out infinite;
 }
 

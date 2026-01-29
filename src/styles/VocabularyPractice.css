@@ -151,10 +151,10 @@
   margin-bottom: 20px;
 }
 
-.vocab-word-bubble {
+.vocab-word-button {
   background-color: #fff;
   border: 2px solid #000;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -168,9 +168,14 @@
   box-sizing: border-box;
 }
 
-.vocab-word-bubble:hover {
+.vocab-word-button:hover {
+  background-color: #f5f5f5;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vocab-word-button:hover .vocab-word-text {
+  color: #333;
 }
 
 .vocab-word-text {
@@ -302,7 +307,7 @@
     margin-bottom: 15px;
   }
   
-  .vocab-word-bubble {
+  .vocab-word-button {
     width: min(340px, 90vw);
     min-height: 100px;
     padding: 20px 30px;

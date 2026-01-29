@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
+import { getAvailableJapaneseVoices, setJapaneseVoice } from '../utils/speech';
 import '../styles/Settings.css';
 
 function Settings({ settings, onSave }) {
   const [localSettings, setLocalSettings] = useState(settings);
   const [saveIndicator, setSaveIndicator] = useState('');
+  const [availableVoices, setAvailableVoices] = useState([]);
   const isFirstRender = useRef(true);
 
   // Auto-save whenever settings change (except on first render)
@@ -20,6 +22,31 @@ function Settings({ settings, onSave }) {
     const timer = setTimeout(() => setSaveIndicator(''), 2000);
     return () => clearTimeout(timer);
   }, [localSettings, onSave]);
+
+  // Load available voices and set up voice change handling
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = getAvailableJapaneseVoices();
+      setAvailableVoices(voices);
+    };
+
+    // Load voices initially
+    loadVoices();
+
+    // Listen for voice changes (voices might load asynchronously)
+    const speechSynthesis = window.speechSynthesis;
+    if (speechSynthesis) {
+      speechSynthesis.addEventListener('voiceschanged', loadVoices);
+      return () => speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+    }
+  }, []);
+
+  // Update speech voice when selection changes
+  useEffect(() => {
+    if (localSettings.selectedVoice !== undefined) {
+      setJapaneseVoice(localSettings.selectedVoice);
+    }
+  }, [localSettings.selectedVoice]);
 
   // Transposed grids - now columns are vowels (A,I,U,E,O) and rows are consonants
   const hiraganaGrid = [
@@ -250,6 +277,31 @@ function Settings({ settings, onSave }) {
               </div>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Voice Selection Section */}
+      <div className="settings-section">
+        <h3>Japanese Voice</h3>
+        <div className="voice-selector">
+          {availableVoices.length > 0 ? (
+            availableVoices.map((voice, index) => (
+              <button
+                key={index}
+                className={`voice-option ${localSettings.selectedVoice === index ? 'active' : ''}`}
+                onClick={() => setLocalSettings({ ...localSettings, selectedVoice: index })}
+              >
+                <div className="voice-info">
+                  <div className="voice-name">{voice.name}</div>
+                  <div className="voice-details">
+                    {voice.lang} • {voice.localService ? 'Local' : 'Remote'}
+                  </div>
+                </div>
+              </button>
+            ))
+          ) : (
+            <div className="no-voices">No Japanese voices available</div>
+          )}
         </div>
       </div>
     </div>

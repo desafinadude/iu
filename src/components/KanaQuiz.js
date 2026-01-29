@@ -3,6 +3,7 @@ import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
+import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
 import '../styles/KanaQuiz.css';
 
@@ -143,6 +144,7 @@ function KanaQuiz({ settings }) {
     if (timeLeft === 0 && !showResult && currentQuestion && !gameOver) {
       setSelectedAnswer(null);
       setShowResult(true);
+      playWrongSound();
       const newLives = lives - 1;
       setLives(newLives);
       speak(currentQuestion.char);
@@ -162,9 +164,11 @@ function KanaQuiz({ settings }) {
     const isCorrect = option.char === currentQuestion.char;
     if (isCorrect) {
       setScore(score + 1);
+      playCorrectSound();
     } else {
       const newLives = lives - 1;
       setLives(newLives);
+      playWrongSound();
       if (newLives <= 0) {
         setGameOver(true);
       }
@@ -197,13 +201,9 @@ function KanaQuiz({ settings }) {
     }
   };
 
-  if (!currentQuestion) {
-    return <div className="quiz-loading">Loading...</div>;
-  }
-
-  return (
-    <div className="kana-quiz">
-      {!hasStarted && (
+  if (!hasStarted) {
+    return (
+      <div className="kana-quiz">
         <div className="start-overlay">
           <div className="start-modal">
             <h2>Kana Quiz</h2>
@@ -213,7 +213,16 @@ function KanaQuiz({ settings }) {
             </button>
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  if (!currentQuestion) {
+    return <div className="quiz-loading">Loading...</div>;
+  }
+
+  return (
+    <div className="kana-quiz">
 
       {gameOver && (
         <ResultsModal
@@ -225,20 +234,20 @@ function KanaQuiz({ settings }) {
       )}
 
       <div className="quiz-question">
-        <div className="score-display">
-          <div className="score-fraction">{score}</div>
-        </div>
-        <div className="lives-display">
-          {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
-        </div>
-        {!showResult && (
-          <div className="quiz-timer-bar">
-            <div
-              className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
-              style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
-            />
+        <div className="timer-lives-row">
+          <div className="question-number">{questionNumber + 1}</div>
+          <div className="lives-display">
+            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
           </div>
-        )}
+          {!showResult && (
+            <div className="quiz-timer-bar">
+              <div
+                className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
+                style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
+              />
+            </div>
+          )}
+        </div>
         <button
           className={`speaker-button font-${settings.fontStyle}`}
           onClick={handleSpeakerClick}
