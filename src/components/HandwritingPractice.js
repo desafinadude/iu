@@ -14,7 +14,6 @@ function HandwritingPractice({ settings }) {
   const [currentChar, setCurrentChar] = useState(null);
   const [score, setScore] = useState(0);
   const [questionNumber, setQuestionNumber] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
   const [isDrawing, setIsDrawing] = useState(false);
   const [strokes, setStrokes] = useState([]);
   const [currentStroke, setCurrentStroke] = useState([]);
@@ -127,9 +126,6 @@ function HandwritingPractice({ settings }) {
     
     // Start timer for this question
     startTimer();
-    
-    // Update question count
-    setTotalQuestions(prev => prev + 1);
     
     // Speak the character immediately
     speak(char.char);
@@ -418,7 +414,6 @@ function HandwritingPractice({ settings }) {
   const handlePlayAgain = () => {
     setScore(0);
     setQuestionNumber(0);
-    setTotalQuestions(0);
     setLives(MAX_LIVES);
     setGameOver(false);
     setShowResult(false);
