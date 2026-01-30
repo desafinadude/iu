@@ -1,0 +1,6048 @@
+{
+  "vocabulary": [
+    {
+      "word": "会う",
+      "furigana": "あう",
+      "romaji": "au",
+      "meaning": "to meet",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "青い",
+      "furigana": "あおい",
+      "romaji": "aoi",
+      "meaning": "blue",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "赤い",
+      "furigana": "あかい",
+      "romaji": "akai",
+      "meaning": "red",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "明るい",
+      "furigana": "あかるい",
+      "romaji": "akarui",
+      "meaning": "light, bright",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "秋",
+      "furigana": "あき",
+      "romaji": "aki",
+      "meaning": "autumn, fall",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "開く",
+      "furigana": "あく",
+      "romaji": "aku",
+      "meaning": "open",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "開ける",
+      "furigana": "あける",
+      "romaji": "akeru",
+      "meaning": "to open",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "朝",
+      "furigana": "あさ",
+      "romaji": "asa",
+      "meaning": "morning",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "朝ご飯",
+      "furigana": "あさごはん",
+      "romaji": "asagohan",
+      "meaning": "breakfast",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あさって",
+      "furigana": "あさって",
+      "romaji": "asatte",
+      "meaning": "the day after tomorrow",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "足",
+      "furigana": "あし",
+      "romaji": "ashi",
+      "meaning": "leg, foot",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "明日",
+      "furigana": "あした",
+      "romaji": "ashita",
+      "meaning": "tomorrow",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あそこ",
+      "furigana": "あそこ",
+      "romaji": "asoko",
+      "meaning": "over there",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "遊ぶ",
+      "furigana": "あそぶ",
+      "romaji": "asobu",
+      "meaning": "to play",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "温かい",
+      "furigana": "あたたかい",
+      "romaji": "atatakai",
+      "meaning": "warm",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "頭",
+      "furigana": "あたま",
+      "romaji": "atama",
+      "meaning": "head",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "新しい",
+      "furigana": "あたらしい",
+      "romaji": "atarashii",
+      "meaning": "new",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あちら",
+      "furigana": "あちら",
+      "romaji": "achira",
+      "meaning": "over there (polite)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "暑い",
+      "furigana": "あつい",
+      "romaji": "atsui",
+      "meaning": "hot (air)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "厚い",
+      "furigana": "あつい",
+      "romaji": "atsui",
+      "meaning": "thick",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "後",
+      "furigana": "あと",
+      "romaji": "ato",
+      "meaning": "later, after",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "貴方",
+      "furigana": "あなた",
+      "romaji": "anata",
+      "meaning": "you",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "兄",
+      "furigana": "あに",
+      "romaji": "ani",
+      "meaning": "older brother",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "姉",
+      "furigana": "あね",
+      "romaji": "ane",
+      "meaning": "older sister",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あの",
+      "furigana": "あの",
+      "romaji": "ano",
+      "meaning": "that (over there)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あの",
+      "furigana": "あの",
+      "romaji": "ano",
+      "meaning": "well, then",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "アパート",
+      "furigana": "アパート",
+      "romaji": "apaato",
+      "meaning": "apartment",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "浴びる",
+      "furigana": "あびる",
+      "romaji": "abiru",
+      "meaning": "to take a shower",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "危ない",
+      "furigana": "あぶない",
+      "romaji": "abunai",
+      "meaning": "dangerous",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "甘い",
+      "furigana": "あまい",
+      "romaji": "amai",
+      "meaning": "sweet",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あまり",
+      "furigana": "あまり",
+      "romaji": "amari",
+      "meaning": "not so",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "雨",
+      "furigana": "あめ",
+      "romaji": "ame",
+      "meaning": "rain",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "洗う",
+      "furigana": "あらう",
+      "romaji": "arau",
+      "meaning": "to wash",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "有る",
+      "furigana": "ある",
+      "romaji": "aru",
+      "meaning": "to be, to exist",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ある",
+      "furigana": "ある",
+      "romaji": "aru",
+      "meaning": "to possess",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "歩く",
+      "furigana": "あるく",
+      "romaji": "aruku",
+      "meaning": "to walk",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "あれ",
+      "furigana": "あれ",
+      "romaji": "are",
+      "meaning": "that one",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "良い",
+      "furigana": "いい / よい",
+      "romaji": "ii, yoi",
+      "meaning": "good",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "いいえ",
+      "furigana": "いいえ",
+      "romaji": "iie",
+      "meaning": "no",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "言う",
+      "furigana": "いう",
+      "romaji": "iu",
+      "meaning": "to say, to tell",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "家",
+      "furigana": "いえ",
+      "romaji": "ie",
+      "meaning": "house, home",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "行く",
+      "furigana": "いく",
+      "romaji": "iku",
+      "meaning": "to go",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "いくつ",
+      "furigana": "いくつ",
+      "romaji": "ikutsu",
+      "meaning": "how many, how old",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "いくら",
+      "furigana": "いくら",
+      "romaji": "ikura",
+      "meaning": "how much",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "池",
+      "furigana": "いけ",
+      "romaji": "ike",
+      "meaning": "pond",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "医者",
+      "furigana": "いしゃ",
+      "romaji": "isha",
+      "meaning": "doctor",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "椅子",
+      "furigana": "いす",
+      "romaji": "isu",
+      "meaning": "chair",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "忙しい",
+      "furigana": "いそがしい",
+      "romaji": "isogashii",
+      "meaning": "to be busy",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "痛い",
+      "furigana": "いたい",
+      "romaji": "itai",
+      "meaning": "to be painful",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一",
+      "furigana": "いち",
+      "romaji": "ichi",
+      "meaning": "one",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一日",
+      "furigana": "いちにち",
+      "romaji": "ichinichi",
+      "meaning": "one day",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一番",
+      "furigana": "いちばん",
+      "romaji": "ichiban",
+      "meaning": "No. 1, the best, the first",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "いつ",
+      "furigana": "いつ",
+      "romaji": "itsu",
+      "meaning": "when",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "五日",
+      "furigana": "いつか",
+      "romaji": "itsuka",
+      "meaning": "the 5th day of the month, 5 days",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一緒",
+      "furigana": "いっしょ",
+      "romaji": "issho",
+      "meaning": "together",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "五つ",
+      "furigana": "いつつ",
+      "romaji": "itsutsu",
+      "meaning": "five",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "いつも",
+      "furigana": "いつも",
+      "romaji": "itsumo",
+      "meaning": "always",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今",
+      "furigana": "いま",
+      "romaji": "ima",
+      "meaning": "now",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "意味",
+      "furigana": "いみ",
+      "romaji": "imi",
+      "meaning": "meaning",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "妹",
+      "furigana": "いもうと",
+      "romaji": "imouto",
+      "meaning": "someone’s younger sister",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "いや",
+      "furigana": "いや",
+      "romaji": "iya",
+      "meaning": "not likable, unpleasant",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "入口",
+      "furigana": "いりぐち",
+      "romaji": "iriguchi",
+      "meaning": "entrance",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "入れる",
+      "furigana": "いれる",
+      "romaji": "ireru",
+      "meaning": "to insert, to put in",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "色",
+      "furigana": "いろ",
+      "romaji": "iro",
+      "meaning": "color",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "色々",
+      "furigana": "いろいろ",
+      "romaji": "iroiro",
+      "meaning": "various",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "上",
+      "furigana": "うえ",
+      "romaji": "ue",
+      "meaning": "top, on, above",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "後ろ",
+      "furigana": "うしろ",
+      "romaji": "ushiro",
+      "meaning": "back, rear, behind",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "薄い",
+      "furigana": "うすい",
+      "romaji": "usui",
+      "meaning": "thin",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "歌",
+      "furigana": "うた",
+      "romaji": "uta",
+      "meaning": "song",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "歌う",
+      "furigana": "うたう",
+      "romaji": "utau",
+      "meaning": "to sing",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "内",
+      "furigana": "うち",
+      "romaji": "uchi",
+      "meaning": "home",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "生まれる",
+      "furigana": "うまれる",
+      "romaji": "umareru",
+      "meaning": "to be born",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "海",
+      "furigana": "うみ",
+      "romaji": "umi",
+      "meaning": "sea",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "売る",
+      "furigana": "うる",
+      "romaji": "uru",
+      "meaning": "to sell",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "上着",
+      "furigana": "うわぎ",
+      "romaji": "uwagi",
+      "meaning": "coat, jacket",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "絵",
+      "furigana": "え",
+      "romaji": "e",
+      "meaning": "picture",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "映画",
+      "furigana": "えいが",
+      "romaji": "eiga",
+      "meaning": "movie",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "映画館",
+      "furigana": "えいがかん",
+      "romaji": "eigakan",
+      "meaning": "cinema",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "英語",
+      "furigana": "えいご",
+      "romaji": "eigo",
+      "meaning": "English language",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ええ",
+      "furigana": "ええ",
+      "romaji": "ee",
+      "meaning": "Yes, I see",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "駅",
+      "furigana": "えき",
+      "romaji": "eki",
+      "meaning": "station",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "エレベータ",
+      "furigana": "エレベータ",
+      "romaji": "erebeeta",
+      "meaning": "elevator",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "円",
+      "furigana": "えん",
+      "romaji": "en",
+      "meaning": "Yen",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鉛筆",
+      "furigana": "えんぴつ",
+      "romaji": "enpitsu",
+      "meaning": "pencil",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "御",
+      "furigana": "お",
+      "romaji": "o",
+      "meaning": "honorific prefix",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "美味しい",
+      "furigana": "おいしい",
+      "romaji": "oishii",
+      "meaning": "tasty, delicious",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大きい",
+      "furigana": "おおきい",
+      "romaji": "ookii",
+      "meaning": "big",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お母さん",
+      "furigana": "おかあさん",
+      "romaji": "okaasan",
+      "meaning": "my own mother",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お菓子",
+      "furigana": "おかし",
+      "romaji": "okashi",
+      "meaning": "confectionary, cake",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お金",
+      "furigana": "おかね",
+      "romaji": "okane",
+      "meaning": "money",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "起きる",
+      "furigana": "おきる",
+      "romaji": "okiru",
+      "meaning": "to get up, to stand up",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "置く",
+      "furigana": "おく",
+      "romaji": "oku",
+      "meaning": "to put, to place",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "奥さん",
+      "furigana": "おくさん",
+      "romaji": "okusan",
+      "meaning": "someone’s wife",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "送る",
+      "furigana": "おくる",
+      "romaji": "okuru",
+      "meaning": "to send",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お酒",
+      "furigana": "おさけ",
+      "romaji": "osake",
+      "meaning": "alcohol, sake",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お皿",
+      "furigana": "おさら",
+      "romaji": "osara",
+      "meaning": "plate",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "伯父さん",
+      "furigana": "おじさん",
+      "romaji": "ojisan",
+      "meaning": "uncle",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "おじいさん",
+      "furigana": "おじいさん",
+      "romaji": "ojiisan",
+      "meaning": "grand father",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "押す",
+      "furigana": "おす",
+      "romaji": "osu",
+      "meaning": "to push",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "遅い",
+      "furigana": "おそい",
+      "romaji": "osoi",
+      "meaning": "late, slow",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お茶",
+      "furigana": "おちゃ",
+      "romaji": "ocha",
+      "meaning": "tea",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お手洗い",
+      "furigana": "おてあらい",
+      "romaji": "otearai",
+      "meaning": "toilet, lavatory",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お父さん",
+      "furigana": "おとうさん",
+      "romaji": "otousan",
+      "meaning": "father",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "弟",
+      "furigana": "おとうと",
+      "romaji": "otouto",
+      "meaning": "someone’s younger brother",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "男",
+      "furigana": "おとこ",
+      "romaji": "otoko",
+      "meaning": "man",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "男の子",
+      "furigana": "おとこのこ",
+      "romaji": "otokonoko",
+      "meaning": "boy",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一昨日",
+      "furigana": "おととい",
+      "romaji": "ototoi",
+      "meaning": "the day before yesterday",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一昨年",
+      "furigana": "おととし",
+      "romaji": "ototoshi",
+      "meaning": "the year before last",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大人",
+      "furigana": "おとな",
+      "romaji": "otona",
+      "meaning": "adult",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お腹",
+      "furigana": "おなか",
+      "romaji": "onaka",
+      "meaning": "stomach",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "同じ",
+      "furigana": "おなじ",
+      "romaji": "onaji",
+      "meaning": "same",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お兄さん",
+      "furigana": "おにいさん",
+      "romaji": "oniisan",
+      "meaning": "someone’s elder brother",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お姉さん",
+      "furigana": "おねえさん",
+      "romaji": "oneesan",
+      "meaning": "someone’s elder sister",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "伯母さん",
+      "furigana": "おばさん",
+      "romaji": "obasan",
+      "meaning": "aunt",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お弁当",
+      "furigana": "おべんとう",
+      "romaji": "obentou",
+      "meaning": "lunchbox",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "覚える",
+      "furigana": "おぼえる",
+      "romaji": "oboeru",
+      "meaning": "to memorize, to remember",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "重い",
+      "furigana": "おもい",
+      "romaji": "omoi",
+      "meaning": "heavy",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "面白い",
+      "furigana": "おもしろい",
+      "romaji": "omoshiroi",
+      "meaning": "interesting, funny",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "泳ぐ",
+      "furigana": "およぐ",
+      "romaji": "oyogu",
+      "meaning": "to swim",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "降りる",
+      "furigana": "おりる",
+      "romaji": "oriru",
+      "meaning": "to get off",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "終わる",
+      "furigana": "おわる",
+      "romaji": "owaru",
+      "meaning": "to end",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "音楽",
+      "furigana": "おんがく",
+      "romaji": "ongaku",
+      "meaning": "music",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "女",
+      "furigana": "おんな",
+      "romaji": "onna",
+      "meaning": "woman",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "女の子",
+      "furigana": "おんなのこ",
+      "romaji": "onnanoko",
+      "meaning": "girl",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜回",
+      "furigana": "〜かい",
+      "romaji": "~kai",
+      "meaning": "~times",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜階",
+      "furigana": "〜かい",
+      "romaji": "~kai",
+      "meaning": "~floor",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "外国",
+      "furigana": "がいこく",
+      "romaji": "gaikoku",
+      "meaning": "foreign country",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "外国人",
+      "furigana": "がいこくじん",
+      "romaji": "gaikokujin",
+      "meaning": "foreigner",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "会社",
+      "furigana": "かいしゃ",
+      "romaji": "kaisha",
+      "meaning": "company, enterprise",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "階段",
+      "furigana": "かいだん",
+      "romaji": "kaidan",
+      "meaning": "stairs",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "買物",
+      "furigana": "かいもの",
+      "romaji": "kaimono",
+      "meaning": "shopping",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "買う",
+      "furigana": "かう",
+      "romaji": "kau",
+      "meaning": "to buy",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "返す",
+      "furigana": "かえす",
+      "romaji": "kaesu",
+      "meaning": "to return an object",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "帰る",
+      "furigana": "かえる",
+      "romaji": "kaeru",
+      "meaning": "to return home",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "顔",
+      "furigana": "かお",
+      "romaji": "kao",
+      "meaning": "face",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鍵",
+      "furigana": "かぎ",
+      "romaji": "kagi",
+      "meaning": "key",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "書く",
+      "furigana": "かく",
+      "romaji": "kaku",
+      "meaning": "to write",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "学生",
+      "furigana": "がくせい",
+      "romaji": "gakusei",
+      "meaning": "student",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜か月",
+      "furigana": "〜かげつ",
+      "romaji": "~kagetsu",
+      "meaning": "~ number of months",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "傘",
+      "furigana": "かさ",
+      "romaji": "kasa",
+      "meaning": "umbrella",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "貸す",
+      "furigana": "かす",
+      "romaji": "kasu",
+      "meaning": "to lend",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "風",
+      "furigana": "かぜ",
+      "romaji": "kaze",
+      "meaning": "wind",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "風邪",
+      "furigana": "かぜ",
+      "romaji": "kaze",
+      "meaning": "a cold",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "家族",
+      "furigana": "かぞく",
+      "romaji": "kazoku",
+      "meaning": "family",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "方",
+      "furigana": "かた",
+      "romaji": "kata",
+      "meaning": "person (polite)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "片仮名",
+      "furigana": "かたかな",
+      "romaji": "katakana",
+      "meaning": "Katakana",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一月",
+      "furigana": "いちがつ",
+      "romaji": "ichigatsu",
+      "meaning": "January",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二月",
+      "furigana": "にがつ",
+      "romaji": "nigatsu",
+      "meaning": "February",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "三月",
+      "furigana": "さんがつ",
+      "romaji": "sangatsu",
+      "meaning": "March",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "四月",
+      "furigana": "しがつ",
+      "romaji": "shigatsu",
+      "meaning": "April",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "五月",
+      "furigana": "ごがつ",
+      "romaji": "gogatsu",
+      "meaning": "May",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "六月",
+      "furigana": "ろくがつ",
+      "romaji": "rokugatsu",
+      "meaning": "June",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "七月",
+      "furigana": "しちがつ",
+      "romaji": "shichigatsu",
+      "meaning": "July",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "八月",
+      "furigana": "はちがつ",
+      "romaji": "hachigatsu",
+      "meaning": "August",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "九月",
+      "furigana": "くがつ",
+      "romaji": "kugatsu",
+      "meaning": "September",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "十月",
+      "furigana": "じゅうがつ",
+      "romaji": "juugatsu",
+      "meaning": "October",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "十一月",
+      "furigana": "じゅういちがつ",
+      "romaji": "juuichigatsu",
+      "meaning": "November",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "十二月",
+      "furigana": "じゅうにがつ",
+      "romaji": "juunigatsu",
+      "meaning": "December",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "学校",
+      "furigana": "がっこう",
+      "romaji": "gakkou",
+      "meaning": "school",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "角",
+      "furigana": "かど",
+      "romaji": "kado",
+      "meaning": "corner",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "家内",
+      "furigana": "かない",
+      "romaji": "kanai",
+      "meaning": "my wife",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鞄",
+      "furigana": "かばん",
+      "romaji": "kaban",
+      "meaning": "bag",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "花瓶",
+      "furigana": "かびん",
+      "romaji": "kabin",
+      "meaning": "vase",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "冠る",
+      "furigana": "かぶる",
+      "romaji": "kaburu",
+      "meaning": "to put on a hat",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "紙",
+      "furigana": "かみ",
+      "romaji": "kami",
+      "meaning": "paper",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "カメラ",
+      "furigana": "かめら",
+      "romaji": "kamera",
+      "meaning": "camera",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "火曜日",
+      "furigana": "かようび",
+      "romaji": "kayoubi",
+      "meaning": "Tuesday",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "辛い",
+      "furigana": "からい",
+      "romaji": "karai",
+      "meaning": "hot, spicy",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "体",
+      "furigana": "からだ",
+      "romaji": "karada",
+      "meaning": "body",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "借りる",
+      "furigana": "かりる",
+      "romaji": "kariru",
+      "meaning": "to borrow",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "軽い",
+      "furigana": "かるい",
+      "romaji": "karui",
+      "meaning": "light (not heavy)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "カレンダー",
+      "furigana": "カレンダー",
+      "romaji": "karendaa",
+      "meaning": "calendar",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "川",
+      "furigana": "かわ",
+      "romaji": "kawa",
+      "meaning": "river",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜側",
+      "furigana": "~がわ",
+      "romaji": "~gawa",
+      "meaning": "~side",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "可愛い",
+      "furigana": "かわいい",
+      "romaji": "kawaii",
+      "meaning": "cute, pretty",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "漢字",
+      "furigana": "かんじ",
+      "romaji": "kanji",
+      "meaning": "Kanji character",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "木",
+      "furigana": "き",
+      "romaji": "ki",
+      "meaning": "tree",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "黄色い",
+      "furigana": "きいろい",
+      "romaji": "kiiroi",
+      "meaning": "yellow",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "消える",
+      "furigana": "きえる",
+      "romaji": "kieru",
+      "meaning": "to go out, to vanish",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "聞く",
+      "furigana": "きく",
+      "romaji": "kiku",
+      "meaning": "to hear, to listen, to ask",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "北",
+      "furigana": "きた",
+      "romaji": "kita",
+      "meaning": "north",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ギター",
+      "furigana": "ギター",
+      "romaji": "gitaa",
+      "meaning": "guitar",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "汚い",
+      "furigana": "きたない",
+      "romaji": "kitanai",
+      "meaning": "dirty",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "喫茶店",
+      "furigana": "きっさてん",
+      "romaji": "kissaten",
+      "meaning": "coffee shop",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "切手",
+      "furigana": "きって",
+      "romaji": "kitte",
+      "meaning": "stamp",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "切符",
+      "furigana": "きっぷ",
+      "romaji": "kippu",
+      "meaning": "ticket",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "昨日",
+      "furigana": "きのう",
+      "romaji": "kinou",
+      "meaning": "yesterday",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "九",
+      "furigana": "きゅう",
+      "romaji": "kyuu",
+      "meaning": "nine",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "牛肉",
+      "furigana": "ぎゅうにく",
+      "romaji": "gyuuniku",
+      "meaning": "beef",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "牛乳",
+      "furigana": "ぎゅうにゅう",
+      "romaji": "gyuunyuu",
+      "meaning": "milk",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今日",
+      "furigana": "きょう",
+      "romaji": "kyou",
+      "meaning": "today",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "教室",
+      "furigana": "きょうしつ",
+      "romaji": "kyoushitsu",
+      "meaning": "class room",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "兄弟",
+      "furigana": "きょうだい",
+      "romaji": "kyoudai",
+      "meaning": "siblings",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "去年",
+      "furigana": "きょねん",
+      "romaji": "kyonen",
+      "meaning": "last year",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "嫌い",
+      "furigana": "きらい",
+      "romaji": "kirai",
+      "meaning": "unpleasant, not likable",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "切る",
+      "furigana": "きる",
+      "romaji": "kiru",
+      "meaning": "to cut",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "着る",
+      "furigana": "きる",
+      "romaji": "kiru",
+      "meaning": "to wear, to put on",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "来る",
+      "furigana": "くる",
+      "romaji": "kuru",
+      "meaning": "to come",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "キロ",
+      "furigana": "キロ",
+      "romaji": "kiro",
+      "meaning": "kg",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "キロ",
+      "furigana": "キロ",
+      "romaji": "kiro",
+      "meaning": "km",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "銀行",
+      "furigana": "ぎんこう",
+      "romaji": "ginkou",
+      "meaning": "bank",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "金曜日",
+      "furigana": "きんようび",
+      "romaji": "kinyoubi",
+      "meaning": "Friday",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "九",
+      "furigana": "く",
+      "romaji": "ku",
+      "meaning": "nine",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "薬",
+      "furigana": "くすり",
+      "romaji": "kusuri",
+      "meaning": "medicine",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "下さい",
+      "furigana": "ください",
+      "romaji": "kudasai",
+      "meaning": "give me…",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "果物",
+      "furigana": "くだもの",
+      "romaji": "kudamono",
+      "meaning": "fruit",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "口",
+      "furigana": "くち",
+      "romaji": "kuchi",
+      "meaning": "mouth",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "靴",
+      "furigana": "くつ",
+      "romaji": "kutsu",
+      "meaning": "shoe",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "靴下",
+      "furigana": "くつした",
+      "romaji": "kutsushita",
+      "meaning": "socks",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "国",
+      "furigana": "くに",
+      "romaji": "kuni",
+      "meaning": "country",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "曇り",
+      "furigana": "くもり",
+      "romaji": "kumori",
+      "meaning": "cloudy weather",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "暗い",
+      "furigana": "くらい",
+      "romaji": "kurai",
+      "meaning": "dark",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ぐらい",
+      "furigana": "ぐらい",
+      "romaji": "gurai",
+      "meaning": "about",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "クラス",
+      "furigana": "クラス",
+      "romaji": "kurasu",
+      "meaning": "class",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "グラム",
+      "furigana": "グラム",
+      "romaji": "guramu",
+      "meaning": "gram",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "車",
+      "furigana": "くるま",
+      "romaji": "kuruma",
+      "meaning": "car",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "黒い",
+      "furigana": "くろい",
+      "romaji": "kuroi",
+      "meaning": "black",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今朝",
+      "furigana": "けさ",
+      "romaji": "kesa",
+      "meaning": "this morning",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "消す",
+      "furigana": "けす",
+      "romaji": "kesu",
+      "meaning": "to turn off, switch off",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "結婚",
+      "furigana": "けっこん",
+      "romaji": "kekkon",
+      "meaning": "marriage",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "月曜日",
+      "furigana": "げつようび",
+      "romaji": "getsuyoubi",
+      "meaning": "Monday",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "玄関",
+      "furigana": "げんかん",
+      "romaji": "genkan",
+      "meaning": "entrance of a house",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "元気",
+      "furigana": "げんき",
+      "romaji": "genki",
+      "meaning": "vigor, health, vitality",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜個",
+      "furigana": "〜こ",
+      "romaji": "~ko",
+      "meaning": "counter for small objects",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "五",
+      "furigana": "ご",
+      "romaji": "go",
+      "meaning": "five",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜語",
+      "furigana": "〜ご",
+      "romaji": "~go",
+      "meaning": "~ language",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "公園",
+      "furigana": "こうえん",
+      "romaji": "kouen",
+      "meaning": "park, large garden",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "交番",
+      "furigana": "こうばん",
+      "romaji": "kouban",
+      "meaning": "police box",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "声",
+      "furigana": "こえ",
+      "romaji": "koe",
+      "meaning": "voice",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "コート",
+      "furigana": "コート",
+      "romaji": "kooto",
+      "meaning": "coat",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ここ",
+      "furigana": "ここ",
+      "romaji": "koko",
+      "meaning": "here",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "午後",
+      "furigana": "ごご",
+      "romaji": "gogo",
+      "meaning": "afternoon",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "九日",
+      "furigana": "ここのか",
+      "romaji": "kokonoka",
+      "meaning": "9th day of a month, 9 days",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "九つ",
+      "furigana": "ここのつ",
+      "romaji": "kokonotsu",
+      "meaning": "nine",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ご主人",
+      "furigana": "ごしゅじん",
+      "romaji": "goshujin",
+      "meaning": "someone else’s husband",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "午前",
+      "furigana": "ごぜん",
+      "romaji": "gozen",
+      "meaning": "morning, a.m.",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "答える",
+      "furigana": "こたえる",
+      "romaji": "kotaeru",
+      "meaning": "to answer",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "こちら",
+      "furigana": "こちら",
+      "romaji": "kochira",
+      "meaning": "this side, this place",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "コップ",
+      "furigana": "コップ",
+      "romaji": "koppu",
+      "meaning": "cup, glass",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今年",
+      "furigana": "ことし",
+      "romaji": "kotoshi",
+      "meaning": "this year",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "言葉",
+      "furigana": "ことば",
+      "romaji": "kotoba",
+      "meaning": "phrase, language",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "子供",
+      "furigana": "こども",
+      "romaji": "kodomo",
+      "meaning": "child",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "この",
+      "furigana": "この",
+      "romaji": "kono",
+      "meaning": "this…",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "御飯",
+      "furigana": "ごはん",
+      "romaji": "gohan",
+      "meaning": "meal, cooked rice",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "困る",
+      "furigana": "こまる",
+      "romaji": "komaru",
+      "meaning": "to be in trouble",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "これ",
+      "furigana": "これ",
+      "romaji": "kore",
+      "meaning": "this",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ごろ",
+      "furigana": "ごろ",
+      "romaji": "goro",
+      "meaning": "around…",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今月",
+      "furigana": "こんげつ",
+      "romaji": "kongetsu",
+      "meaning": "this month",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今週",
+      "furigana": "こんしゅう",
+      "romaji": "konshuu",
+      "meaning": "this week",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "こんな",
+      "furigana": "こんな",
+      "romaji": "konna",
+      "meaning": "this sort of, this kind of",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "今晩",
+      "furigana": "こんばん",
+      "romaji": "konban",
+      "meaning": "this evening",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "さあ",
+      "furigana": "さあ",
+      "romaji": "saa",
+      "meaning": "well…",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜歳",
+      "furigana": "〜さい",
+      "romaji": "~sai",
+      "meaning": "years old",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "魚",
+      "furigana": "さかな",
+      "romaji": "sakana",
+      "meaning": "fish",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "先",
+      "furigana": "さき",
+      "romaji": "saki",
+      "meaning": "earlier, former",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "咲く",
+      "furigana": "さく",
+      "romaji": "saku",
+      "meaning": "to blossom",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "作文",
+      "furigana": "さくぶん",
+      "romaji": "sakubun",
+      "meaning": "composition",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "冊",
+      "furigana": "〜さつ",
+      "romaji": "~satsu",
+      "meaning": "counter for books",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "雑誌",
+      "furigana": "ざっし",
+      "romaji": "zasshi",
+      "meaning": "magazine",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "砂糖",
+      "furigana": "さとう",
+      "romaji": "satou",
+      "meaning": "sugar",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "寒い",
+      "furigana": "さむい",
+      "romaji": "samui",
+      "meaning": "cold",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "再来年",
+      "furigana": "さらいねん",
+      "romaji": "sarainen",
+      "meaning": "the year after next year",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "三",
+      "furigana": "さん",
+      "romaji": "san",
+      "meaning": "three",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜さん",
+      "furigana": "〜さん",
+      "romaji": "~san",
+      "meaning": "Mr., Mrs.",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "散歩",
+      "furigana": "さんぽ",
+      "romaji": "sanpo",
+      "meaning": "to take a walk",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "四",
+      "furigana": "し",
+      "romaji": "shi",
+      "meaning": "four",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜時",
+      "furigana": "〜じ",
+      "romaji": "~ji",
+      "meaning": "o’clock",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "塩",
+      "furigana": "しお",
+      "romaji": "shio",
+      "meaning": "salt",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "しかし",
+      "furigana": "しかし",
+      "romaji": "shikashi",
+      "meaning": "however, but",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "時間",
+      "furigana": "じかん",
+      "romaji": "jikan",
+      "meaning": "time",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜時間",
+      "furigana": "〜じかん",
+      "romaji": "~jikan",
+      "meaning": "~hours (classificator)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "仕事",
+      "furigana": "しごと",
+      "romaji": "shigoto",
+      "meaning": "work",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "辞書",
+      "furigana": "じしょ",
+      "romaji": "jisho",
+      "meaning": "dictionary",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "静か",
+      "furigana": "しずか",
+      "romaji": "shizuka",
+      "meaning": "quiet",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "下",
+      "furigana": "した",
+      "romaji": "shita",
+      "meaning": "under, below",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "質問",
+      "furigana": "しつもん",
+      "romaji": "shitsumon",
+      "meaning": "question",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "自転車",
+      "furigana": "じてんしゃ",
+      "romaji": "jitensha",
+      "meaning": "bicycle",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "自動車",
+      "furigana": "じどうしゃ",
+      "romaji": "jidousha",
+      "meaning": "car, vehicle",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "死ぬ",
+      "furigana": "しぬ",
+      "romaji": "shinu",
+      "meaning": "to die, to pas away",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "字引",
+      "furigana": "じびき",
+      "romaji": "jibiki",
+      "meaning": "dictionary",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "自分",
+      "furigana": "じぶん",
+      "romaji": "jibun",
+      "meaning": "oneself",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "閉まる",
+      "furigana": "しまる",
+      "romaji": "shimaru",
+      "meaning": "to close",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "閉める",
+      "furigana": "しめる",
+      "romaji": "shimeru",
+      "meaning": "to close",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "締める",
+      "furigana": "しめる",
+      "romaji": "shimeru",
+      "meaning": "to fasten a seatbelt",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "じゃ",
+      "furigana": "じゃ",
+      "romaji": "ja",
+      "meaning": "well, then",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "写真",
+      "furigana": "しゃしん",
+      "romaji": "shashin",
+      "meaning": "photo",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "シャツ",
+      "furigana": "シャツ",
+      "romaji": "shatsu",
+      "meaning": "shirt",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "十",
+      "furigana": "じゅう",
+      "romaji": "juu",
+      "meaning": "ten",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "~週間",
+      "furigana": "〜しゅうかん",
+      "romaji": "~shuukan",
+      "meaning": "… weeks",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "授業",
+      "furigana": "じゅぎょう",
+      "romaji": "jugyou",
+      "meaning": "lesson, class",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "宿題",
+      "furigana": "しゅくだい",
+      "romaji": "shukudai",
+      "meaning": "homework",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "上手",
+      "furigana": "じょうず",
+      "romaji": "jouzu",
+      "meaning": "to be good at something",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "丈夫",
+      "furigana": "じょうぶ",
+      "romaji": "joubu",
+      "meaning": "to be strong, durable",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "醤油",
+      "furigana": "しょうゆ",
+      "romaji": "shouyu",
+      "meaning": "soy sauce",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "食堂",
+      "furigana": "しょくどう",
+      "romaji": "shokudou",
+      "meaning": "dining room, canteen",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "知る",
+      "furigana": "しる",
+      "romaji": "shiru",
+      "meaning": "to know",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "白い",
+      "furigana": "しろい",
+      "romaji": "shiroi",
+      "meaning": "white",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜人",
+      "furigana": "〜じん",
+      "romaji": "~jin",
+      "meaning": "~an, ~ese (nationality)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "新聞",
+      "furigana": "しんぶん",
+      "romaji": "shinbun",
+      "meaning": "newspaper",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "水曜日",
+      "furigana": "すいようび",
+      "romaji": "suiyoubi",
+      "meaning": "Wednesday",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "吸う",
+      "furigana": "すう",
+      "romaji": "suu",
+      "meaning": "to breathe, to smoke",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "スカート",
+      "furigana": "スカート",
+      "romaji": "sukaato",
+      "meaning": "skirt",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "好き",
+      "furigana": "すき",
+      "romaji": "suki",
+      "meaning": "to like",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜過ぎ",
+      "furigana": "〜すぎ",
+      "romaji": "~sugi",
+      "meaning": "past, over",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "すぐに",
+      "furigana": "すぐに",
+      "romaji": "sugu ni",
+      "meaning": "at once",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "少し",
+      "furigana": "すこし",
+      "romaji": "sukoshi",
+      "meaning": "a little",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "涼しい",
+      "furigana": "すずしい",
+      "romaji": "suzushii",
+      "meaning": "cool",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜ずつ",
+      "furigana": "〜ずつ",
+      "romaji": "~zutsu",
+      "meaning": "each",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ストーブ",
+      "furigana": "ストーブ",
+      "romaji": "sutoobu",
+      "meaning": "stove, heater",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "スプーン",
+      "furigana": "スプーン",
+      "romaji": "supuun",
+      "meaning": "spoon",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "スポーツ",
+      "furigana": "スポーツ",
+      "romaji": "supootsu",
+      "meaning": "sports",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ズボン",
+      "furigana": "ズボン",
+      "romaji": "zubon",
+      "meaning": "trousers",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "住む",
+      "furigana": "すむ",
+      "romaji": "sumu",
+      "meaning": "to live, to reside somewhere",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "スリッパ",
+      "furigana": "スリッパ",
+      "romaji": "surippa",
+      "meaning": "slipper",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "する",
+      "furigana": "する",
+      "romaji": "suru",
+      "meaning": "to do",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "座る",
+      "furigana": "すわる",
+      "romaji": "suwaru",
+      "meaning": "to sit",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "背",
+      "furigana": "せい",
+      "romaji": "sei",
+      "meaning": "height",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "生徒",
+      "furigana": "せいと",
+      "romaji": "seito",
+      "meaning": "student",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "セーター",
+      "furigana": "セーター",
+      "romaji": "seetaa",
+      "meaning": "sweater",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "石鹸",
+      "furigana": "せっけん",
+      "romaji": "sekken",
+      "meaning": "soap",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "背広",
+      "furigana": "せびろ",
+      "romaji": "sebiro",
+      "meaning": "jacket, suit",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "狭い",
+      "furigana": "せまい",
+      "romaji": "semai",
+      "meaning": "narrow",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ゼロ",
+      "furigana": "ゼロ",
+      "romaji": "zero",
+      "meaning": "zero",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "千",
+      "furigana": "せん",
+      "romaji": "sen",
+      "meaning": "1,000, thousand",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "先月",
+      "furigana": "せんげつ",
+      "romaji": "sengetsu",
+      "meaning": "last month",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "先週",
+      "furigana": "せんしゅう",
+      "romaji": "senshuu",
+      "meaning": "last week",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "先生",
+      "furigana": "せんせい",
+      "romaji": "sensei",
+      "meaning": "teacher",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "洗濯",
+      "furigana": "せんたく",
+      "romaji": "sentaku",
+      "meaning": "washing, to wash",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "全部",
+      "furigana": "ぜんぶ",
+      "romaji": "zenbu",
+      "meaning": "all",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "そう",
+      "furigana": "そう",
+      "romaji": "sou",
+      "meaning": "so",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "掃除",
+      "furigana": "そうじ",
+      "romaji": "souji",
+      "meaning": "to clean",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "そうして",
+      "furigana": "そうして",
+      "romaji": "soushite",
+      "meaning": "and then",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "そこ",
+      "furigana": "そこ",
+      "romaji": "soko",
+      "meaning": "there",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "そちら",
+      "furigana": "そちら",
+      "romaji": "sochira",
+      "meaning": "there (polite)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "外",
+      "furigana": "そと",
+      "romaji": "soto",
+      "meaning": "outside",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "その",
+      "furigana": "その",
+      "romaji": "sono",
+      "meaning": "that…",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "そば",
+      "furigana": "そば",
+      "romaji": "soba",
+      "meaning": "next to",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "空",
+      "furigana": "そら",
+      "romaji": "sora",
+      "meaning": "sky",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "それ",
+      "furigana": "それ",
+      "romaji": "sore",
+      "meaning": "that",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "それから",
+      "furigana": "それから",
+      "romaji": "sorekara",
+      "meaning": "after that",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "それでは",
+      "furigana": "それでは",
+      "romaji": "soredewa",
+      "meaning": "then, well",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜台",
+      "furigana": "〜だい",
+      "romaji": "~dai",
+      "meaning": "counter for machines",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大学",
+      "furigana": "だいがく",
+      "romaji": "daigaku",
+      "meaning": "university",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大使館",
+      "furigana": "たいしかん",
+      "romaji": "taishikan",
+      "meaning": "embassy",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大丈夫",
+      "furigana": "だいじょうぶ",
+      "romaji": "daijoubu",
+      "meaning": "OK",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大好き",
+      "furigana": "だいすき",
+      "romaji": "daisuki",
+      "meaning": "to be very fond of",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大切",
+      "furigana": "たいせつ",
+      "romaji": "taisetsu",
+      "meaning": "very important",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "台所",
+      "furigana": "だいどころ",
+      "romaji": "daidokoro",
+      "meaning": "kitchen",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "大変",
+      "furigana": "たいへん",
+      "romaji": "taihen",
+      "meaning": "very, serious",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "高い",
+      "furigana": "たかい",
+      "romaji": "takai",
+      "meaning": "high, expensive",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "沢山",
+      "furigana": "たくさん",
+      "romaji": "takusan",
+      "meaning": "many, much",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "タクシー",
+      "furigana": "タクシー",
+      "romaji": "takushii",
+      "meaning": "taxi",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "出す",
+      "furigana": "だす",
+      "romaji": "dasu",
+      "meaning": "to take out, hand in",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "~達",
+      "furigana": "〜たち",
+      "romaji": "~tachi",
+      "meaning": "more than one, and others",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "立つ",
+      "furigana": "たつ",
+      "romaji": "tatsu",
+      "meaning": "to stand",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "建物",
+      "furigana": "たてもの",
+      "romaji": "tatemono",
+      "meaning": "building",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "楽しい",
+      "furigana": "たのしい",
+      "romaji": "tanoshii",
+      "meaning": "pleasant, enjoyable",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "頼む",
+      "furigana": "たのむ",
+      "romaji": "tanomu",
+      "meaning": "to ask, to request",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "たばこ",
+      "furigana": "たばこ",
+      "romaji": "tabako",
+      "meaning": "cigarette",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "多分",
+      "furigana": "たぶん",
+      "romaji": "tabun",
+      "meaning": "perhaps, probably",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "食べ物",
+      "furigana": "たべもの",
+      "romaji": "tabemono",
+      "meaning": "food",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "食べる",
+      "furigana": "たべる",
+      "romaji": "taberu",
+      "meaning": "to eat",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "卵",
+      "furigana": "たまご",
+      "romaji": "tamago",
+      "meaning": "egg",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "誰",
+      "furigana": "だれ",
+      "romaji": "dare",
+      "meaning": "who?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "誕生日",
+      "furigana": "たんじょうび",
+      "romaji": "tanjoubi",
+      "meaning": "birthday",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "だんだん",
+      "furigana": "だんだん",
+      "romaji": "dandan",
+      "meaning": "gradually",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "小さい",
+      "furigana": "ちいさい",
+      "romaji": "chiisai",
+      "meaning": "small",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "近い",
+      "furigana": "ちかい",
+      "romaji": "chikai",
+      "meaning": "near, close",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "違う",
+      "furigana": "ちがう",
+      "romaji": "chigau",
+      "meaning": "different",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "地下鉄",
+      "furigana": "ちかてつ",
+      "romaji": "chikatetsu",
+      "meaning": "subway",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "地図",
+      "furigana": "ちず",
+      "romaji": "chizu",
+      "meaning": "map",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "父",
+      "furigana": "ちち",
+      "romaji": "chichi",
+      "meaning": "my father",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "茶色",
+      "furigana": "ちゃいろ",
+      "romaji": "chairo",
+      "meaning": "brown",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "茶碗",
+      "furigana": "ちゃわん",
+      "romaji": "chawan",
+      "meaning": "rice bowl",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜中",
+      "furigana": "〜ちゅう",
+      "romaji": "~chuu",
+      "meaning": "in the middle of",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ちょうど",
+      "furigana": "ちょうど",
+      "romaji": "choudo",
+      "meaning": "just",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ちょっと",
+      "furigana": "ちょっと",
+      "romaji": "chotto",
+      "meaning": "a little",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一日",
+      "furigana": "ついたち",
+      "romaji": "tsuitachi",
+      "meaning": "the 1st day of a month",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "使う",
+      "furigana": "つかう",
+      "romaji": "tsukau",
+      "meaning": "to use",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "疲れる",
+      "furigana": "つかれる",
+      "romaji": "tsukareru",
+      "meaning": "to get tired",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "次",
+      "furigana": "つぎ",
+      "romaji": "tsugi",
+      "meaning": "next",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "着く",
+      "furigana": "つく",
+      "romaji": "tsuku",
+      "meaning": "to arrive",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "机",
+      "furigana": "つくえ",
+      "romaji": "tsukue",
+      "meaning": "table",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "作る",
+      "furigana": "つくる",
+      "romaji": "tsukuru",
+      "meaning": "to make, to produce",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "点ける",
+      "furigana": "つける",
+      "romaji": "tsukeru",
+      "meaning": "to turn on",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "勤める",
+      "furigana": "つとめる",
+      "romaji": "tsutomeru",
+      "meaning": "to work for someone",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "詰らない",
+      "furigana": "つまらない",
+      "romaji": "tsumaranai",
+      "meaning": "uninteresting",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "冷たい",
+      "furigana": "つめたい",
+      "romaji": "tsumetai",
+      "meaning": "cold",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "強い",
+      "furigana": "つよい",
+      "romaji": "tsuyoi",
+      "meaning": "strong",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "手",
+      "furigana": "て",
+      "romaji": "te",
+      "meaning": "hand",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "テープ",
+      "furigana": "テープ",
+      "romaji": "teepu",
+      "meaning": "tape",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "テープレコーダー",
+      "furigana": "テープレコーダー",
+      "romaji": "teepu rekoodaa",
+      "meaning": "tape recorder",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "テーブル",
+      "furigana": "テーブル",
+      "romaji": "teeburu",
+      "meaning": "table",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "出かける",
+      "furigana": "でかける",
+      "romaji": "dekakeru",
+      "meaning": "to go out",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "手紙",
+      "furigana": "てがみ",
+      "romaji": "tegami",
+      "meaning": "letter",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "出来る",
+      "furigana": "できる",
+      "romaji": "dekiru",
+      "meaning": "can",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "出口",
+      "furigana": "でぐち",
+      "romaji": "deguchi",
+      "meaning": "exit",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "テスト",
+      "furigana": "テスト",
+      "romaji": "tesuto",
+      "meaning": "test",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "では",
+      "furigana": "では",
+      "romaji": "dewa",
+      "meaning": "then, well",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "デパート",
+      "furigana": "デパート",
+      "romaji": "depaato",
+      "meaning": "department store",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "でも",
+      "furigana": "でも",
+      "romaji": "demo",
+      "meaning": "but",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "出ます",
+      "furigana": "でます",
+      "romaji": "demasu",
+      "meaning": "to leave",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "テレビ",
+      "furigana": "テレビ",
+      "romaji": "terebi",
+      "meaning": "TV",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "天気",
+      "furigana": "てんき",
+      "romaji": "tenki",
+      "meaning": "weather",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "電気",
+      "furigana": "でんき",
+      "romaji": "denki",
+      "meaning": "electricity",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "電車",
+      "furigana": "でんしゃ",
+      "romaji": "densha",
+      "meaning": "train",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "電話",
+      "furigana": "でんわ",
+      "romaji": "denwa",
+      "meaning": "phone",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "戸",
+      "furigana": "と",
+      "romaji": "to",
+      "meaning": "door",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜度",
+      "furigana": "〜ど",
+      "romaji": "~do",
+      "meaning": "~times, ~degree",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ドア",
+      "furigana": "ドア",
+      "romaji": "doa",
+      "meaning": "door",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "トイレ",
+      "furigana": "トイレ",
+      "romaji": "toire",
+      "meaning": "toilet, lavatory",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どう",
+      "furigana": "どう",
+      "romaji": "dou",
+      "meaning": "how?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どうして",
+      "furigana": "どうして",
+      "romaji": "doushite",
+      "meaning": "why?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どうぞ",
+      "furigana": "どうぞ",
+      "romaji": "douzo",
+      "meaning": "please, here you are",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "動物",
+      "furigana": "どうぶつ",
+      "romaji": "doubutsu",
+      "meaning": "animal",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どうも",
+      "furigana": "どうも",
+      "romaji": "doumo",
+      "meaning": "thanks",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "十",
+      "furigana": "とお",
+      "romaji": "too",
+      "meaning": "ten",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "遠い",
+      "furigana": "とおい",
+      "romaji": "tooi",
+      "meaning": "far",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "十日",
+      "furigana": "とおか",
+      "romaji": "tooka",
+      "meaning": "the 10th day of a month, 10 days",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "時々",
+      "furigana": "ときどき",
+      "romaji": "tokidoki",
+      "meaning": "sometimes",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "時計",
+      "furigana": "とけい",
+      "romaji": "tokei",
+      "meaning": "watch, clock",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どこ",
+      "furigana": "どこ",
+      "romaji": "doko",
+      "meaning": "where?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "所",
+      "furigana": "ところ",
+      "romaji": "tokoro",
+      "meaning": "place",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "図書館",
+      "furigana": "としょかん",
+      "romaji": "toshokan",
+      "meaning": "library",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どちら",
+      "furigana": "どちら",
+      "romaji": "dochira",
+      "meaning": "which, where (polite)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "とても",
+      "furigana": "とても",
+      "romaji": "totemo",
+      "meaning": "very much, quiet",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どなた",
+      "furigana": "どなた",
+      "romaji": "donata",
+      "meaning": "who (polite)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "隣り",
+      "furigana": "となり",
+      "romaji": "tonari",
+      "meaning": "next to",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どの",
+      "furigana": "どの",
+      "romaji": "dono",
+      "meaning": "which?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "飛ぶ",
+      "furigana": "とぶ",
+      "romaji": "tobu",
+      "meaning": "to fly",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "止まる",
+      "furigana": "とまる",
+      "romaji": "tomaru",
+      "meaning": "to stop",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "友達",
+      "furigana": "ともだち",
+      "romaji": "tomodachi",
+      "meaning": "friend",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "土曜日",
+      "furigana": "どようび",
+      "romaji": "doyoubi",
+      "meaning": "Saturday",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鳥",
+      "furigana": "とり",
+      "romaji": "tori",
+      "meaning": "bird",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鶏肉",
+      "furigana": "とりにく",
+      "romaji": "toriniku",
+      "meaning": "chicken meat",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "取る",
+      "furigana": "とる",
+      "romaji": "toru",
+      "meaning": "to take",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "撮る",
+      "furigana": "とる",
+      "romaji": "toru",
+      "meaning": "to take a photo",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どれ",
+      "furigana": "どれ",
+      "romaji": "dore",
+      "meaning": "which?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "どんな",
+      "furigana": "どんな",
+      "romaji": "donna",
+      "meaning": "what kind of?",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ナイフ",
+      "furigana": "ナイフ",
+      "romaji": "naifu",
+      "meaning": "knife",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "中",
+      "furigana": "なか",
+      "romaji": "naka",
+      "meaning": "inside",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "長い",
+      "furigana": "ながい",
+      "romaji": "nagai",
+      "meaning": "long",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鳴く",
+      "furigana": "なく",
+      "romaji": "naku",
+      "meaning": "to sing, mew, moo",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "夏",
+      "furigana": "なつ",
+      "romaji": "natsu",
+      "meaning": "summer",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "夏休み",
+      "furigana": "なつやすみ",
+      "romaji": "natsuyasumi",
+      "meaning": "summer vacation",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜など",
+      "furigana": "〜など",
+      "romaji": "~nado",
+      "meaning": "and so on",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "七つ",
+      "furigana": "ななつ",
+      "romaji": "nanatsu",
+      "meaning": "seven",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "何",
+      "furigana": "なに",
+      "romaji": "nani",
+      "meaning": "what?",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "七日",
+      "furigana": "なのか",
+      "romaji": "nanoka",
+      "meaning": "the 7th of a month, 7 days",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "名前",
+      "furigana": "なまえ",
+      "romaji": "namae",
+      "meaning": "name",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "習う",
+      "furigana": "ならう",
+      "romaji": "narau",
+      "meaning": "to learn",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "並ぶ",
+      "furigana": "ならぶ",
+      "romaji": "narabu",
+      "meaning": "to form a line",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "並べる",
+      "furigana": "ならべる",
+      "romaji": "naraberu",
+      "meaning": "to line up",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二",
+      "furigana": "に",
+      "romaji": "ni",
+      "meaning": "two",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "賑やか",
+      "furigana": "にぎやか",
+      "romaji": "nigiyaka",
+      "meaning": "lively",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お肉",
+      "furigana": "おにく",
+      "romaji": "oniku",
+      "meaning": "meat",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "西",
+      "furigana": "にし",
+      "romaji": "nishi",
+      "meaning": "west",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜日",
+      "furigana": "〜にち",
+      "romaji": "~nichi",
+      "meaning": "…st, ..nd, ..th",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "日曜日",
+      "furigana": "にちようび",
+      "romaji": "nichiyoubi",
+      "meaning": "Sunday",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "荷物",
+      "furigana": "にもつ",
+      "romaji": "nimotsu",
+      "meaning": "luggage",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ニュース",
+      "furigana": "ニュース",
+      "romaji": "nyuusu",
+      "meaning": "news",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "庭",
+      "furigana": "にわ",
+      "romaji": "niwa",
+      "meaning": "garden",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜人",
+      "furigana": "~にん",
+      "romaji": "~nin",
+      "meaning": "… people",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "脱ぐ",
+      "furigana": "ぬぐ",
+      "romaji": "nugu",
+      "meaning": "to take off clothes",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ネクタイ",
+      "furigana": "ネクタイ",
+      "romaji": "nekutai",
+      "meaning": "necktie",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "寝る",
+      "furigana": "ねる",
+      "romaji": "neru",
+      "meaning": "to go to bed",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜年",
+      "furigana": "〜ねん",
+      "romaji": "~nen",
+      "meaning": "~years",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ノート",
+      "furigana": "ノート",
+      "romaji": "nooto",
+      "meaning": "notebook",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "登る",
+      "furigana": "のぼる",
+      "romaji": "noboru",
+      "meaning": "to climb up",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "飲物",
+      "furigana": "のみもの",
+      "romaji": "nomimono",
+      "meaning": "drinks",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "飲む",
+      "furigana": "のむ",
+      "romaji": "nomu",
+      "meaning": "to drink",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "乗る",
+      "furigana": "のる",
+      "romaji": "noru",
+      "meaning": "to take, to ride",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "歯",
+      "furigana": "は",
+      "romaji": "ha",
+      "meaning": "teeth",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "パーテイー",
+      "furigana": "パーテイー",
+      "romaji": "paateii",
+      "meaning": "party",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "はい",
+      "furigana": "はい",
+      "romaji": "hai",
+      "meaning": "yes",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜はい",
+      "furigana": "〜はい",
+      "romaji": "~hai",
+      "meaning": "cups of ~",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "灰皿",
+      "furigana": "はいざら",
+      "romaji": "haizara",
+      "meaning": "ashtray",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "入る",
+      "furigana": "はいる",
+      "romaji": "hairu",
+      "meaning": "to enter",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "葉書",
+      "furigana": "はがき",
+      "romaji": "hagaki",
+      "meaning": "postcard",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "履く",
+      "furigana": "はく",
+      "romaji": "haku",
+      "meaning": "to put on shoes",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "箱",
+      "furigana": "はこ",
+      "romaji": "hako",
+      "meaning": "box",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "橋",
+      "furigana": "はし",
+      "romaji": "hashi",
+      "meaning": "bridge",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "箸",
+      "furigana": "はし",
+      "romaji": "hashi",
+      "meaning": "chopsticks",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "始まる",
+      "furigana": "はじまる",
+      "romaji": "hajimaru",
+      "meaning": "to begin, to start",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "始め",
+      "furigana": "はじめ",
+      "romaji": "hajime",
+      "meaning": "start, the beginning",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "初めて",
+      "furigana": "はじめて",
+      "romaji": "hajimete",
+      "meaning": "for the first time",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "走る",
+      "furigana": "はしる",
+      "romaji": "hashiru",
+      "meaning": "to run",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "バス",
+      "furigana": "バス",
+      "romaji": "basu",
+      "meaning": "bus",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "バター",
+      "furigana": "バター",
+      "romaji": "bataa",
+      "meaning": "butter",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二十歳",
+      "furigana": "はたち",
+      "romaji": "hatachi",
+      "meaning": "20 years old",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "働く",
+      "furigana": "はたらく",
+      "romaji": "hataraku",
+      "meaning": "to work",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "八",
+      "furigana": "はち",
+      "romaji": "hachi",
+      "meaning": "eight",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二十日",
+      "furigana": "はつか",
+      "romaji": "hatsuka",
+      "meaning": "the 20th of the month, 20 days",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "花",
+      "furigana": "はな",
+      "romaji": "hana",
+      "meaning": "flower",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "鼻",
+      "furigana": "はな",
+      "romaji": "hana",
+      "meaning": "nose",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "話",
+      "furigana": "はなし",
+      "romaji": "hanashi",
+      "meaning": "conversation, tale",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "話す",
+      "furigana": "はなす",
+      "romaji": "hanasu",
+      "meaning": "to talk, to speak, to tell",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "母",
+      "furigana": "はは",
+      "romaji": "haha",
+      "meaning": "my mother",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "早い",
+      "furigana": "はやい",
+      "romaji": "hayai",
+      "meaning": "early",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "速い",
+      "furigana": "はやい",
+      "romaji": "hayai",
+      "meaning": "fast, quick",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "春",
+      "furigana": "はる",
+      "romaji": "haru",
+      "meaning": "spring",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "張る",
+      "furigana": "はる",
+      "romaji": "haru",
+      "meaning": "to put something on, to stick",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "晴れる",
+      "furigana": "はれる",
+      "romaji": "hareru",
+      "meaning": "to clear up",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜半",
+      "furigana": "〜はん",
+      "romaji": "~han",
+      "meaning": "Half~",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "晩",
+      "furigana": "ばん",
+      "romaji": "ban",
+      "meaning": "evening",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "~番",
+      "furigana": "〜ばん",
+      "romaji": "~ban",
+      "meaning": "No.~, ranking",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "パン",
+      "furigana": "パン",
+      "romaji": "pan",
+      "meaning": "bread",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ハンカチ",
+      "furigana": "ハンカチ",
+      "romaji": "hankachi",
+      "meaning": "handkerchief",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "番号",
+      "furigana": "ばんごう",
+      "romaji": "bangou",
+      "meaning": "number",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "晩ご飯",
+      "furigana": "ばんごはん",
+      "romaji": "bangohan",
+      "meaning": "dinner",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "半分",
+      "furigana": "はんぶん",
+      "romaji": "hanbun",
+      "meaning": "half",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "東",
+      "furigana": "ひがし",
+      "romaji": "higashi",
+      "meaning": "east",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜匹",
+      "furigana": "〜ひき",
+      "romaji": "~hiki",
+      "meaning": "counter for animals",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "引く",
+      "furigana": "ひく",
+      "romaji": "hiku",
+      "meaning": "to pull",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "弾く",
+      "furigana": "ひく",
+      "romaji": "hiku",
+      "meaning": "to play (an instrument)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "低い",
+      "furigana": "ひくい",
+      "romaji": "hikui",
+      "meaning": "low",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "飛行機",
+      "furigana": "ひこうき",
+      "romaji": "hikouki",
+      "meaning": "plane",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "左",
+      "furigana": "ひだり",
+      "romaji": "hidari",
+      "meaning": "left",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "人",
+      "furigana": "ひと",
+      "romaji": "hito",
+      "meaning": "person",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一つ",
+      "furigana": "ひとつ",
+      "romaji": "hitotsu",
+      "meaning": "one",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一月",
+      "furigana": "ひとつき",
+      "romaji": "hitotsuki",
+      "meaning": "one month",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "一人",
+      "furigana": "ひとり",
+      "romaji": "hitori",
+      "meaning": "one person",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "暇",
+      "furigana": "ひま",
+      "romaji": "hima",
+      "meaning": "free time, leisure",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "百",
+      "furigana": "ひゃく",
+      "romaji": "hyaku",
+      "meaning": "hundred",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "病院",
+      "furigana": "びょういん",
+      "romaji": "byouin",
+      "meaning": "hospital",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "病気",
+      "furigana": "びょうき",
+      "romaji": "byouki",
+      "meaning": "ill, sick",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "平仮名",
+      "furigana": "ひらがな",
+      "romaji": "hiragana",
+      "meaning": "hiragana characters",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "昼",
+      "furigana": "ひる",
+      "romaji": "hiru",
+      "meaning": "noon",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "昼ご飯",
+      "furigana": "ひるごはん",
+      "romaji": "hirugohan",
+      "meaning": "lunch",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "広い",
+      "furigana": "ひろい",
+      "romaji": "hiroi",
+      "meaning": "wide, spacious",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "フィルム",
+      "furigana": "フィルム",
+      "romaji": "firumu",
+      "meaning": "film",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "封筒",
+      "furigana": "ふうとう",
+      "romaji": "fuutou",
+      "meaning": "envelope",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "プール",
+      "furigana": "プール",
+      "romaji": "puuru",
+      "meaning": "pool",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "フォーク",
+      "furigana": "フォーク",
+      "romaji": "fooku",
+      "meaning": "fork",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "吹く",
+      "furigana": "ふく",
+      "romaji": "fuku",
+      "meaning": "to blow (wind)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "服",
+      "furigana": "ふく",
+      "romaji": "fuku",
+      "meaning": "clothes",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二つ",
+      "furigana": "ふたつ",
+      "romaji": "futatsu",
+      "meaning": "two",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "豚肉",
+      "furigana": "ぶたにく",
+      "romaji": "butaniku",
+      "meaning": "pork",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二人",
+      "furigana": "ふたり",
+      "romaji": "futari",
+      "meaning": "two people",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "二日",
+      "furigana": "ふつか",
+      "romaji": "futsuka",
+      "meaning": "2nd day of the month, 2 days",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "太い",
+      "furigana": "ふとい",
+      "romaji": "futoi",
+      "meaning": "thick, fat",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "降る",
+      "furigana": "ふる",
+      "romaji": "furu",
+      "meaning": "to fall (rain, snow)",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "古い",
+      "furigana": "ふるい",
+      "romaji": "furui",
+      "meaning": "old",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お風呂",
+      "furigana": "おふろ",
+      "romaji": "ofuro",
+      "meaning": "bath",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜分",
+      "furigana": "〜ふん",
+      "romaji": "~fun",
+      "meaning": "~minutes",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ページ",
+      "furigana": "ページ",
+      "romaji": "peeji",
+      "meaning": "page",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "下手",
+      "furigana": "へた",
+      "romaji": "heta",
+      "meaning": "not good at something",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ベッド",
+      "furigana": "ベッド",
+      "romaji": "beddo",
+      "meaning": "bed",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "部屋",
+      "furigana": "へや",
+      "romaji": "heya",
+      "meaning": "room",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "辺",
+      "furigana": "へん",
+      "romaji": "hen",
+      "meaning": "side, part, area",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ペン",
+      "furigana": "ぺん",
+      "romaji": "pen",
+      "meaning": "pen",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "勉強",
+      "furigana": "べんきょう",
+      "romaji": "benkyou",
+      "meaning": "to study",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "便利",
+      "furigana": "べんり",
+      "romaji": "benri",
+      "meaning": "convenient",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "方",
+      "furigana": "ほう",
+      "romaji": "hou",
+      "meaning": "~より〜のほうが〜",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "帽子",
+      "furigana": "ぼうし",
+      "romaji": "boushi",
+      "meaning": "hat",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ボールペン",
+      "furigana": "ボールペン",
+      "romaji": "boorupen",
+      "meaning": "ballpen",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "他",
+      "furigana": "ほか",
+      "romaji": "hoka",
+      "meaning": "another, other",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ポケット",
+      "furigana": "ポケット",
+      "romaji": "poketto",
+      "meaning": "pocket",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "欲しい",
+      "furigana": "ほしい",
+      "romaji": "hoshii",
+      "meaning": "to want something",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "細い",
+      "furigana": "ほそい",
+      "romaji": "hosoi",
+      "meaning": "thin, fine",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ボタン",
+      "furigana": "ボタン",
+      "romaji": "botan",
+      "meaning": "button",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ホテル",
+      "furigana": "ホテル",
+      "romaji": "hoteru",
+      "meaning": "hotel",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "本",
+      "furigana": "ほん",
+      "romaji": "hon",
+      "meaning": "book",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜本",
+      "furigana": "~ほん",
+      "romaji": "~hon",
+      "meaning": "counter for long objects",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "本棚",
+      "furigana": "ほんだな",
+      "romaji": "hondana",
+      "meaning": "bookshelf",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "本当に",
+      "furigana": "ほんとうに",
+      "romaji": "hontouni",
+      "meaning": "really",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜枚",
+      "furigana": "〜まい",
+      "romaji": "~mai",
+      "meaning": "counter for thin objects",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "毎朝",
+      "furigana": "まいあさ",
+      "romaji": "maiasa",
+      "meaning": "every morning",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "毎月",
+      "furigana": "まいつき/まいげつ",
+      "romaji": "maitsuki/maigetsu",
+      "meaning": "every month",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "毎週",
+      "furigana": "まいしゅう",
+      "romaji": "maishuu",
+      "meaning": "every week",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "毎日",
+      "furigana": "まいにち",
+      "romaji": "mainichi",
+      "meaning": "every day",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "毎年",
+      "furigana": "まいとし/まいねん",
+      "romaji": "maitoshi/mainen",
+      "meaning": "every year",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "毎晩",
+      "furigana": "まいばん",
+      "romaji": "maiban",
+      "meaning": "every evening",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "前",
+      "furigana": "まえ",
+      "romaji": "mae",
+      "meaning": "front",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜前",
+      "furigana": "〜まえ",
+      "romaji": "~mae",
+      "meaning": "before, in front of",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "曲がる",
+      "furigana": "まがる",
+      "romaji": "magaru",
+      "meaning": "to turn",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "不味い",
+      "furigana": "まずい",
+      "romaji": "mazui",
+      "meaning": "bad tasting",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "また",
+      "furigana": "また",
+      "romaji": "mata",
+      "meaning": "also, again",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "まだ",
+      "furigana": "まだ",
+      "romaji": "mada",
+      "meaning": "not yet",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "町",
+      "furigana": "まち",
+      "romaji": "machi",
+      "meaning": "city, town",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "待つ",
+      "furigana": "まつ",
+      "romaji": "matsu",
+      "meaning": "to wait",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "真直ぐに",
+      "furigana": "まっすぐに",
+      "romaji": "massugu ni",
+      "meaning": "straight ahead",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "マッチ",
+      "furigana": "マッチ",
+      "romaji": "machi",
+      "meaning": "matches",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "窓",
+      "furigana": "まど",
+      "romaji": "mado",
+      "meaning": "window",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "丸い",
+      "furigana": "まるい",
+      "romaji": "marui",
+      "meaning": "round",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "万",
+      "furigana": "まん",
+      "romaji": "man",
+      "meaning": "ten thousand",
+      "is_essential_kanji": true,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "万年筆",
+      "furigana": "まんねんひつ",
+      "romaji": "mannenhitsu",
+      "meaning": "fountain pen",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "磨く",
+      "furigana": "みがく",
+      "romaji": "migaku",
+      "meaning": "to polish, to brush",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "右",
+      "furigana": "みぎ",
+      "romaji": "migi",
+      "meaning": "right",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "短い",
+      "furigana": "みじかい",
+      "romaji": "mijikai",
+      "meaning": "short",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "お水",
+      "furigana": "おみず",
+      "romaji": "omizu",
+      "meaning": "water",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "店",
+      "furigana": "みせ",
+      "romaji": "mise",
+      "meaning": "shop",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "見せる",
+      "furigana": "みせる",
+      "romaji": "miseru",
+      "meaning": "to look, to watch",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "道",
+      "furigana": "みち",
+      "romaji": "michi",
+      "meaning": "road",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "三日",
+      "furigana": "みっか",
+      "romaji": "mikka",
+      "meaning": "3rd day of a month, 3 days",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "三つ",
+      "furigana": "みっつ",
+      "romaji": "mittsu",
+      "meaning": "three",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "皆さん",
+      "furigana": "みなさん",
+      "romaji": "minsan",
+      "meaning": "everyone",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "南",
+      "furigana": "みなみ",
+      "romaji": "minami",
+      "meaning": "south",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "耳",
+      "furigana": "みみ",
+      "romaji": "mimi",
+      "meaning": "ear",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "見る",
+      "furigana": "みる",
+      "romaji": "miru",
+      "meaning": "to see, to watch",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "皆",
+      "furigana": "みんな",
+      "romaji": "minna",
+      "meaning": "all, everyone",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "六日",
+      "furigana": "むいか",
+      "romaji": "muika",
+      "meaning": "the 6th day of a month, 6 days",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "向こう",
+      "furigana": "むこう",
+      "romaji": "mukou",
+      "meaning": "over there",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "難しい",
+      "furigana": "むずかしい",
+      "romaji": "muzukashii",
+      "meaning": "difficult",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "六つ",
+      "furigana": "むっつ",
+      "romaji": "muttsu",
+      "meaning": "six",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "目",
+      "furigana": "め",
+      "romaji": "me",
+      "meaning": "eye",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "メートル",
+      "furigana": "メートル",
+      "romaji": "meetoru",
+      "meaning": "meter",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "めがね",
+      "furigana": "めがね",
+      "romaji": "megane",
+      "meaning": "a pair of glasses",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "もう",
+      "furigana": "もう",
+      "romaji": "mou",
+      "meaning": "already, yet",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "もう",
+      "furigana": "もう",
+      "romaji": "mou",
+      "meaning": "(one) more",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "木曜日",
+      "furigana": "もくようび",
+      "romaji": "mokuyoubi",
+      "meaning": "Thursday",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "もしもし",
+      "furigana": "もしもし",
+      "romaji": "moshimoshi",
+      "meaning": "hello on the phone",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "勿論",
+      "furigana": "もちろん",
+      "romaji": "mochiron",
+      "meaning": "of course",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "持つ",
+      "furigana": "もつ",
+      "romaji": "motsu",
+      "meaning": "to have, to own",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "もっと",
+      "furigana": "もっと",
+      "romaji": "motto",
+      "meaning": "more",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "物",
+      "furigana": "もの",
+      "romaji": "mono",
+      "meaning": "thing",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "門",
+      "furigana": "もん",
+      "romaji": "mon",
+      "meaning": "gate",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "問題",
+      "furigana": "もんだい",
+      "romaji": "mondai",
+      "meaning": "problem, question",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "〜屋",
+      "furigana": "〜や",
+      "romaji": "~ya",
+      "meaning": "shop. store",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "八百屋",
+      "furigana": "やおや",
+      "romaji": "yaoya",
+      "meaning": "vegetable shop",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "野菜",
+      "furigana": "やさい",
+      "romaji": "yasai",
+      "meaning": "vegetable",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "優しい",
+      "furigana": "やさしい",
+      "romaji": "yasashii",
+      "meaning": "gentle",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "安い",
+      "furigana": "やすい",
+      "romaji": "yasui",
+      "meaning": "cheap, inexpensive",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "休み",
+      "furigana": "やすみ",
+      "romaji": "yasumi",
+      "meaning": "holiday, vacation",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "休む",
+      "furigana": "やすむ",
+      "romaji": "yasumu",
+      "meaning": "to rest",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "八つ",
+      "furigana": "やっつ",
+      "romaji": "yattsu",
+      "meaning": "eight",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "山",
+      "furigana": "やま",
+      "romaji": "yama",
+      "meaning": "mountain",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "八日",
+      "furigana": "ようか",
+      "romaji": "youka",
+      "meaning": "8th day of the month, 8 days",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "洋服",
+      "furigana": "ようふく",
+      "romaji": "youfuku",
+      "meaning": "western style clothing",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "よく",
+      "furigana": "よく",
+      "romaji": "yoku",
+      "meaning": "often",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "横",
+      "furigana": "よこ",
+      "romaji": "yoko",
+      "meaning": "horizontal",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "四日",
+      "furigana": "よっか",
+      "romaji": "yokka",
+      "meaning": "4th day of the month, 4 days",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "四つ",
+      "furigana": "よっつ",
+      "romaji": "yottsu",
+      "meaning": "four",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "呼ぶ",
+      "furigana": "よぶ",
+      "romaji": "yobu",
+      "meaning": "to call",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "読む",
+      "furigana": "よむ",
+      "romaji": "yomu",
+      "meaning": "to read",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "夜",
+      "furigana": "よる",
+      "romaji": "yoru",
+      "meaning": "night",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "来月",
+      "furigana": "らいげつ",
+      "romaji": "raigetsu",
+      "meaning": "next month",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "来週",
+      "furigana": "らいしゅう",
+      "romaji": "raishuu",
+      "meaning": "next week",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "来年",
+      "furigana": "らいねん",
+      "romaji": "rainen",
+      "meaning": "next year",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ラジオ",
+      "furigana": "ラジオ",
+      "romaji": "rajio",
+      "meaning": "radio",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "立派",
+      "furigana": "りっぱ",
+      "romaji": "rippa",
+      "meaning": "splendid",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "留学生",
+      "furigana": "りゅうがくせい",
+      "romaji": "ryuugakusei",
+      "meaning": "foreign student",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "両親",
+      "furigana": "りょうしん",
+      "romaji": "ryoushin",
+      "meaning": "parents",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "料理",
+      "furigana": "りょうり",
+      "romaji": "ryouri",
+      "meaning": "cooking",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "旅行",
+      "furigana": "りょこう",
+      "romaji": "ryokou",
+      "meaning": "travel",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "冷蔵庫",
+      "furigana": "れいぞうこ",
+      "romaji": "reizouko",
+      "meaning": "refrigerator",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "レコード",
+      "furigana": "レコード",
+      "romaji": "rekoodo",
+      "meaning": "record",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "レストラン",
+      "furigana": "レストラン",
+      "romaji": "resutoran",
+      "meaning": "restaurant",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "練習",
+      "furigana": "れんしゅう",
+      "romaji": "renshuu",
+      "meaning": "practice",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "六",
+      "furigana": "ろく",
+      "romaji": "roku",
+      "meaning": "six",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "ワイシャツ",
+      "furigana": "ワイシャツ",
+      "romaji": "waishatsu",
+      "meaning": "white shirt",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "若い",
+      "furigana": "わかい",
+      "romaji": "wakai",
+      "meaning": "young",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "分かる",
+      "furigana": "わかる",
+      "romaji": "wakaru",
+      "meaning": "to know, to understand",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "忘れる",
+      "furigana": "わすれる",
+      "romaji": "wasureru",
+      "meaning": "to forget",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "私",
+      "furigana": "わたし",
+      "romaji": "watashi",
+      "meaning": "me, I",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "渡す",
+      "furigana": "わたす",
+      "romaji": "watasu",
+      "meaning": "to hand over",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "渡る",
+      "furigana": "わたる",
+      "romaji": "wataru",
+      "meaning": "to cross",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    },
+    {
+      "word": "悪い",
+      "furigana": "わるい",
+      "romaji": "warui",
+      "meaning": "bad",
+      "is_essential_kanji": false,
+      "category": "general",
+      "level": "N5"
+    }
+  ],
+  "essentialKanji": [
+    "々",
+    "い",
+    "う",
+    "お",
+    "か",
+    "き",
+    "く",
+    "け",
+    "さ",
+    "し",
+    "す",
+    "つ",
+    "の",
+    "べ",
+    "ま",
+    "む",
+    "る",
+    "れ",
+    "ろ",
+    "ん",
+    "一",
+    "七",
+    "万",
+    "三",
+    "下",
+    "中",
+    "九",
+    "二",
+    "五",
+    "人",
+    "今",
+    "会",
+    "住",
+    "何",
+    "先",
+    "入",
+    "八",
+    "六",
+    "出",
+    "分",
+    "前",
+    "北",
+    "十",
+    "千",
+    "午",
+    "半",
+    "口",
+    "古",
+    "名",
+    "四",
+    "国",
+    "土",
+    "夏",
+    "外",
+    "大",
+    "天",
+    "女",
+    "子",
+    "学",
+    "家",
+    "小",
+    "少",
+    "川",
+    "左",
+    "年",
+    "広",
+    "後",
+    "手",
+    "日",
+    "昼",
+    "時",
+    "晩",
+    "曜",
+    "書",
+    "月",
+    "朝",
+    "木",
+    "本",
+    "来",
+    "東",
+    "校",
+    "歩",
+    "母",
+    "毎",
+    "気",
+    "水",
+    "火",
+    "父",
+    "生",
+    "男",
+    "百",
+    "社",
+    "空",
+    "立",
+    "紙",
+    "聞",
+    "花",
+    "行",
+    "西",
+    "言",
+    "計",
+    "話",
+    "買",
+    "赤",
+    "走",
+    "足",
+    "車",
+    "近",
+    "週",
+    "金",
+    "銀",
+    "長",
+    "雨",
+    "電",
+    "食",
+    "飲",
+    "駅"
+  ],
+  "level": "N5",
+  "totalWords": 658,
+  "totalEssentialKanji": 117
+}
