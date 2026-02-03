@@ -1,0 +1,389 @@
+[
+  {
+    "word": "アパート",
+    "romaji": "apaato",
+    "meaning": "apartment",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "アパート"
+  },
+  {
+    "word": "バス",
+    "romaji": "basu",
+    "meaning": "bus",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "バス"
+  },
+  {
+    "word": "バター",
+    "romaji": "bataa",
+    "meaning": "butter",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "バター"
+  },
+  {
+    "word": "ベッド",
+    "romaji": "beddo",
+    "meaning": "bed",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ベッド"
+  },
+  {
+    "word": "ボールペン",
+    "romaji": "boorupen",
+    "meaning": "ball-point pen",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ボールペン"
+  },
+  {
+    "word": "ボタン",
+    "romaji": "botan",
+    "meaning": "button",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ボタン"
+  },
+  {
+    "word": "デパート",
+    "romaji": "depaato",
+    "meaning": "department store",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "デパート"
+  },
+  {
+    "word": "ドア",
+    "romaji": "doa",
+    "meaning": "door",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ドア"
+  },
+  {
+    "word": "エレベーター",
+    "romaji": "erebeetaa",
+    "meaning": "elevator",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "エレベーター"
+  },
+  {
+    "word": "フィルム",
+    "romaji": "firumu",
+    "meaning": "film",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "フィルム"
+  },
+  {
+    "word": "フォーク",
+    "romaji": "fooku",
+    "meaning": "fork",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "フォーク"
+  },
+  {
+    "word": "ギター",
+    "romaji": "gitaa",
+    "meaning": "guitar",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ギター"
+  },
+  {
+    "word": "グラム",
+    "romaji": "guramu",
+    "meaning": "gram",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "グラム"
+  },
+  {
+    "word": "ハンカチ",
+    "romaji": "hankachi",
+    "meaning": "handkerchief",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ハンカチ"
+  },
+  {
+    "word": "ホテル",
+    "romaji": "hoteru",
+    "meaning": "hotel",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ホテル"
+  },
+  {
+    "word": "カメラ",
+    "romaji": "kamera",
+    "meaning": "camera",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "カメラ"
+  },
+  {
+    "word": "カップ",
+    "romaji": "kappu",
+    "meaning": "cup",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "カップ"
+  },
+  {
+    "word": "カレー",
+    "romaji": "karee",
+    "meaning": "curry",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "カレー"
+  },
+  {
+    "word": "カレンダー",
+    "romaji": "karendaa",
+    "meaning": "calendar",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "カレンダー"
+  },
+  {
+    "word": "キログラム",
+    "romaji": "kiro guramu",
+    "meaning": "kilogram",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "キログラム"
+  },
+  {
+    "word": "キロメートル",
+    "romaji": "kiro meetoru",
+    "meaning": "kilometer",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "キロメートル"
+  },
+  {
+    "word": "コーヒー",
+    "romaji": "koohii",
+    "meaning": "coffee",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "コーヒー"
+  },
+  {
+    "word": "コート",
+    "romaji": "kooto",
+    "meaning": "coat",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "コート"
+  },
+  {
+    "word": "コピー",
+    "romaji": "kopii",
+    "meaning": "copy; photocopy",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "コピー"
+  },
+  {
+    "word": "コップ",
+    "romaji": "koppu",
+    "meaning": "glass (drinking vessel); tumbler",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "コップ"
+  },
+  {
+    "word": "クラス",
+    "romaji": "kurasu",
+    "meaning": "class",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "クラス"
+  },
+  {
+    "word": "ナイフ",
+    "romaji": "naifu",
+    "meaning": "knife",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ナイフ"
+  },
+  {
+    "word": "ノート",
+    "romaji": "nooto",
+    "meaning": "notebook",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ノート"
+  },
+  {
+    "word": "パン",
+    "romaji": "pan",
+    "meaning": "bread",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "パン"
+  },
+  {
+    "word": "ペン",
+    "romaji": "pen",
+    "meaning": "pen",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ペン"
+  },
+  {
+    "word": "ピアノ",
+    "romaji": "piano",
+    "meaning": "piano",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ピアノ"
+  },
+  {
+    "word": "ページ",
+    "romaji": "peeji",
+    "meaning": "page",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ページ"
+  },
+  {
+    "word": "ラジオ",
+    "romaji": "rajio",
+    "meaning": "radio",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "ラジオ"
+  },
+  {
+    "word": "レストラン",
+    "romaji": "resutoran",
+    "meaning": "restaurant",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "レストラン"
+  },
+  {
+    "word": "サラダ",
+    "romaji": "sarada",
+    "meaning": "salad",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "サラダ"
+  },
+  {
+    "word": "スープ",
+    "romaji": "suupu",
+    "meaning": "soup",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "スープ"
+  },
+  {
+    "word": "スポーツ",
+    "romaji": "supootsu",
+    "meaning": "sport",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "スポーツ"
+  },
+  {
+    "word": "テーブル",
+    "romaji": "teeburu",
+    "meaning": "table",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "テーブル"
+  },
+  {
+    "word": "テープ",
+    "romaji": "teepu",
+    "meaning": "tape",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "テープ"
+  },
+  {
+    "word": "テレビ",
+    "romaji": "terebi",
+    "meaning": "television",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "テレビ"
+  },
+  {
+    "word": "テスト",
+    "romaji": "tesuto",
+    "meaning": "test",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "テスト"
+  },
+  {
+    "word": "トイレ",
+    "romaji": "toire",
+    "meaning": "toilet",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "トイレ"
+  },
+  {
+    "word": "バイク",
+    "romaji": "baiku",
+    "meaning": "motorcycle",
+    "category": "katakana_loanword",
+    "level": "N5",
+    "is_essential_kanji": false,
+    "furigana": "バイク"
+  }
+]
