@@ -6,7 +6,8 @@ function Menu({ isOpen, onClose, onMenuClick, currentView, onBackToHome }) {
     { id: 'home', label: 'Home', action: onBackToHome },
     { id: 'kana', label: 'Kana Quiz' },
     { id: 'reverseKana', label: 'Reverse Kana Quiz' },
-    { id: 'kanji', label: 'Kanji Quiz' },
+    { id: 'kanaMatch', label: 'Kana Matching' },
+    // { id: 'kanji', label: 'Kanji Quiz' }, // Disabled for now
     { id: 'vocab', label: 'Vocabulary' },
     { id: 'handwriting', label: 'Handwriting' },
     { id: 'wordSearch', label: 'Word Search' },
