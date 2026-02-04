@@ -70,6 +70,7 @@ function App() {
     getKanaWeight,
     getWordWeight,
     purchasePack,
+    awardCoins,
   } = useProgress();
   const [levelUpInfo, setLevelUpInfo] = useState(null);
 
@@ -86,16 +87,10 @@ function App() {
     return result;
   }, [recordAnswer]);
 
-  // Callback for word quiz to record answers
+  // Callback for word quiz to record answers (no level-up modal for words)
   const handleWordAnswerRecorded = useCallback((word, isCorrect) => {
     const result = recordWordAnswer(word, isCorrect);
-    if (result.leveledUp) {
-      setLevelUpInfo({
-        kana: word,
-        newLevel: result.newLevel,
-        coinsEarned: result.coinsEarned,
-      });
-    }
+    // Don't show level-up modal for words - coins awarded at quiz end
     return result;
   }, [recordWordAnswer]);
 
@@ -268,6 +263,7 @@ function App() {
             unlockedPacks={unlockedPacks}
             onWordAnswerRecorded={handleWordAnswerRecorded}
             getWordWeight={getWordWeight}
+            onCoinsAwarded={awardCoins}
           />
         )}
         {currentView === 'koiPond' && (
