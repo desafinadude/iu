@@ -112,8 +112,9 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       });
     }
 
+    // Filter out characters with the same romaji to avoid showing both hiragana and katakana for the same sound
     const wrongAnswers = shuffle(
-      availableChars.filter(h => h.char !== correctAnswer.char)
+      availableChars.filter(h => h.char !== correctAnswer.char && h.romaji !== correctAnswer.romaji)
     ).slice(0, 9);
     const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
 

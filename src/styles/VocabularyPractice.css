@@ -316,6 +316,36 @@
   letter-spacing: 1px;
 }
 
+.vocab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  height: 100%;
+}
+
+.vocab-empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.vocab-empty h3 {
+  font-family: var(--font-comic);
+  font-size: 28px;
+  color: var(--color-navy);
+  margin: 0 0 15px 0;
+  letter-spacing: 1px;
+}
+
+.vocab-empty p {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  max-width: 300px;
+  line-height: 1.5;
+}
+
 /* Font classes for vocab word text */
 .vocab-word-text.noto { font-family: 'Noto Sans JP', sans-serif; }
 .vocab-word-text.maru { font-family: 'Zen Maru Gothic', sans-serif; }

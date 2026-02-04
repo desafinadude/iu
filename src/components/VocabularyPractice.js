@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { vocabularyData } from '../data/vocabularyData';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { getUnlockedWords } from '../data/vocabPacks';
 import { speak } from '../utils/speech';
 import { getRandomElement } from '../utils/helpers';
 import '../styles/VocabularyPractice.css';
@@ -29,22 +29,31 @@ const getWordScriptType = (word) => {
   return 'mixed';
 };
 
-function VocabularyPractice({ settings }) {
+function VocabularyPractice({ settings, unlockedPacks = [] }) {
   const [currentWord, setCurrentWord] = useState(null);
   const [showTranslation, setShowTranslation] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
   const [scriptFilter, setScriptFilter] = useState('both'); // 'both', 'hiragana', 'katakana'
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
-  // Get unique categories from vocabulary data
-  const allCategories = ['all', ...Array.from(new Set(vocabularyData
-    .map(item => item.category)
-    .filter(category => category)
-  )).sort()];
+  // Get words from purchased packs only
+  const availableWords = useMemo(() => getUnlockedWords(unlockedPacks), [unlockedPacks]);
+
+  // Get unique categories from available words
+  const allCategories = useMemo(() => {
+    const categories = new Set(availableWords.map(item => item.category).filter(Boolean));
+    return ['all', ...Array.from(categories).sort()];
+  }, [availableWords]);
 
   const generateWord = useCallback(() => {
-    // Start with all vocabulary
-    let filteredVocab = vocabularyData;
+    // No words available if no packs purchased
+    if (availableWords.length === 0) {
+      setCurrentWord(null);
+      return;
+    }
+
+    // Start with purchased words
+    let filteredVocab = availableWords;
 
     // Filter by script type
     if (scriptFilter !== 'both') {
@@ -66,15 +75,15 @@ function VocabularyPractice({ settings }) {
       );
     }
 
-    // If no words match the filter, fall back to all words
+    // If no words match the filter, fall back to all available words
     if (filteredVocab.length === 0) {
-      filteredVocab = vocabularyData;
+      filteredVocab = availableWords;
     }
 
     const word = getRandomElement(filteredVocab);
     setCurrentWord(word);
     setShowTranslation(false); // Hide translation for new word
-  }, [selectedCategories, scriptFilter]);
+  }, [availableWords, selectedCategories, scriptFilter]);
 
   useEffect(() => {
     generateWord();
@@ -121,6 +130,16 @@ function VocabularyPractice({ settings }) {
       setShowTranslation(true); // Show translation after speaking
     }
   };
+
+  if (availableWords.length === 0) {
+    return (
+      <div className="vocab-empty">
+        <div className="vocab-empty-icon">📚</div>
+        <h3>No Words Yet!</h3>
+        <p>Visit the Vocab Shop to buy word packs and start practicing.</p>
+      </div>
+    );
+  }
 
   if (!currentWord) {
     return <div className="vocab-loading">Loading...</div>;

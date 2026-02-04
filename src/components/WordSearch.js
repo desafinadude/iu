@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
-import { vocabularyData } from '../data/vocabularyData';
+import { getUnlockedWords } from '../data/vocabPacks';
 import { playCorrectSound } from '../utils/soundEffects';
 import { speak } from '../utils/speech';
 import '../styles/WordSearch.css';
@@ -15,7 +15,7 @@ const DIRECTIONS = [
   { dx: 1, dy: 1 },  // diagonal down-right
 ];
 
-function WordSearch({ settings }) {
+function WordSearch({ settings, unlockedPacks = [] }) {
   const [grid, setGrid] = useState([]);
   const [words, setWords] = useState([]);
   const [foundWords, setFoundWords] = useState(new Set());
@@ -28,31 +28,39 @@ function WordSearch({ settings }) {
   const [showingKana, setShowingKana] = useState(new Set());
   const [longPressTimer, setLongPressTimer] = useState(null);
 
-  // Get unique categories from vocabulary data
-  const allCategories = ['all', ...Array.from(new Set(vocabularyData
-    .map(item => item.category)
-    .filter(category => category)
-  )).sort()];
+  // Get words from purchased packs only
+  const availableWords = useMemo(() => getUnlockedWords(unlockedPacks), [unlockedPacks]);
+
+  // Get unique categories from available words
+  const allCategories = useMemo(() => {
+    const categories = new Set(availableWords.map(item => item.category).filter(Boolean));
+    return ['all', ...Array.from(categories).sort()];
+  }, [availableWords]);
 
   // Get filtered word list based on selected categories
   const getFilteredWordList = useCallback(() => {
-    let filteredVocab = vocabularyData;
+    // No words available if no packs purchased
+    if (availableWords.length === 0) {
+      return [];
+    }
+
+    let filteredVocab = availableWords;
     if (!selectedCategories.includes('all') && selectedCategories.length > 0) {
-      filteredVocab = vocabularyData.filter(word => 
+      filteredVocab = availableWords.filter(word =>
         selectedCategories.some(category => word.category === category)
       );
     }
-    
-    // If no words match the filter, fall back to all words
+
+    // If no words match the filter, fall back to all available words
     if (filteredVocab.length === 0) {
-      filteredVocab = vocabularyData;
+      filteredVocab = availableWords;
     }
-    
+
     return filteredVocab.map(item => ({
       word: item.word,
       translation: item.translation
     }));
-  }, [selectedCategories]);
+  }, [availableWords, selectedCategories]);
 
   const getRandomHiragana = useCallback(() => {
     const basicHiragana = hiraganaData.filter(h => h.basic);
@@ -320,6 +328,19 @@ function WordSearch({ settings }) {
   const handleWordClick = (wordObj) => {
     speak(wordObj.word);
   };
+
+  // Show empty state if no words available
+  if (availableWords.length === 0) {
+    return (
+      <div className="word-search">
+        <div className="word-search-empty">
+          <div className="word-search-empty-icon">🔍</div>
+          <h3>No Words Yet!</h3>
+          <p>Visit the Vocab Shop to buy word packs and play Word Search.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="word-search">
