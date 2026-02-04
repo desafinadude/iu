@@ -116,6 +116,28 @@
   border-bottom: none;
 }
 
+/* Filter Sections */
+.filter-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 3px dashed var(--color-border-light);
+}
+
+.filter-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.filter-section h4 {
+  font-family: var(--font-comic);
+  font-size: 16px;
+  color: var(--color-navy);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .vocab-category-selector label {
   display: block;
   font-family: var(--font-comic);
