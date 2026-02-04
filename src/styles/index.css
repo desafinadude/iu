@@ -6,13 +6,16 @@
 :root {
   /* Primary Colors */
   --color-navy: #0A192F;
-  --color-orange: #FF6B35;
+  --color-red: #DC3545;
   --color-teal: #2EC4B6;
   --color-cream: #F8F3E6;
 
   /* Accent Colors */
   --color-pink: #FF4D6D;
   --color-yellow: #FFD166;
+
+  /* Legacy alias - orange is now red (Japan theme) */
+  --color-orange: var(--color-red);
 
   /* Semantic Colors */
   --color-correct: #2EC4B6;
@@ -79,6 +82,40 @@ body {
 
 button {
   font-family: inherit;
+}
+
+/* ==============================================
+   NO SCROLLBAR FOR QUIZ PAGES
+   ============================================== */
+
+.no-scrollbar {
+  overflow: hidden;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Apply to quiz containers */
+.kana-quiz,
+.handwriting-practice {
+  overflow: hidden;
+}
+
+.kana-quiz::-webkit-scrollbar,
+.handwriting-practice::-webkit-scrollbar {
+  display: none;
+}
+
+.kana-quiz,
+.handwriting-practice {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ==============================================
