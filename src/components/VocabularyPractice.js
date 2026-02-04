@@ -4,12 +4,38 @@ import { speak } from '../utils/speech';
 import { getRandomElement } from '../utils/helpers';
 import '../styles/VocabularyPractice.css';
 
+// Helper functions to detect script type
+const isHiragana = (char) => {
+  const code = char.charCodeAt(0);
+  return code >= 0x3041 && code <= 0x3096;
+};
+
+const isKatakana = (char) => {
+  const code = char.charCodeAt(0);
+  return (code >= 0x30A1 && code <= 0x30FC) || char === '・' || char === 'ー';
+};
+
+const getWordScriptType = (word) => {
+  let hasHiragana = false;
+  let hasKatakana = false;
+
+  for (const char of word) {
+    if (isHiragana(char)) hasHiragana = true;
+    if (isKatakana(char)) hasKatakana = true;
+  }
+
+  if (hasHiragana && !hasKatakana) return 'hiragana';
+  if (hasKatakana && !hasHiragana) return 'katakana';
+  return 'mixed';
+};
+
 function VocabularyPractice({ settings }) {
   const [currentWord, setCurrentWord] = useState(null);
   const [showTranslation, setShowTranslation] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
+  const [scriptFilter, setScriptFilter] = useState('both'); // 'both', 'hiragana', 'katakana'
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  
+
   // Get unique categories from vocabulary data
   const allCategories = ['all', ...Array.from(new Set(vocabularyData
     .map(item => item.category)
@@ -17,23 +43,38 @@ function VocabularyPractice({ settings }) {
   )).sort()];
 
   const generateWord = useCallback(() => {
-    // Filter vocabulary by selected categories
+    // Start with all vocabulary
     let filteredVocab = vocabularyData;
+
+    // Filter by script type
+    if (scriptFilter !== 'both') {
+      filteredVocab = filteredVocab.filter(word => {
+        const wordScript = getWordScriptType(word.word);
+        if (scriptFilter === 'hiragana') {
+          return wordScript === 'hiragana';
+        } else if (scriptFilter === 'katakana') {
+          return wordScript === 'katakana' || wordScript === 'mixed';
+        }
+        return true;
+      });
+    }
+
+    // Filter by selected categories
     if (!selectedCategories.includes('all') && selectedCategories.length > 0) {
-      filteredVocab = vocabularyData.filter(word => 
+      filteredVocab = filteredVocab.filter(word =>
         selectedCategories.some(category => word.category === category)
       );
     }
-    
+
     // If no words match the filter, fall back to all words
     if (filteredVocab.length === 0) {
       filteredVocab = vocabularyData;
     }
-    
+
     const word = getRandomElement(filteredVocab);
     setCurrentWord(word);
     setShowTranslation(false); // Hide translation for new word
-  }, [selectedCategories]);
+  }, [selectedCategories, scriptFilter]);
 
   useEffect(() => {
     generateWord();
@@ -66,6 +107,14 @@ function VocabularyPractice({ settings }) {
     return `${selectedCategories.length} Categories`;
   };
 
+  const getScriptDisplayText = () => {
+    switch (scriptFilter) {
+      case 'hiragana': return 'ひらがな';
+      case 'katakana': return 'カタカナ';
+      default: return 'Both';
+    }
+  };
+
   const handleWordClick = () => {
     if (currentWord) {
       speak(currentWord.word);
@@ -83,8 +132,8 @@ function VocabularyPractice({ settings }) {
         <div className="category-modal-overlay" onClick={() => setShowCategoryModal(false)}>
           <div className="category-modal" onClick={(e) => e.stopPropagation()}>
             <div className="category-modal-header">
-              <h3>Select Categories</h3>
-              <button 
+              <h3>Filters</h3>
+              <button
                 className="close-modal-btn"
                 onClick={() => setShowCategoryModal(false)}
               >
@@ -92,21 +141,48 @@ function VocabularyPractice({ settings }) {
               </button>
             </div>
             <div className="category-list">
-              <div 
-                className={`category-list-item ${selectedCategories.includes('all') ? 'selected' : ''}`}
-                onClick={() => handleCategoryChange('all')}
-              >
-                All Categories
-              </div>
-              {allCategories.filter(cat => cat !== 'all').map(category => (
-                <div 
-                  key={category}
-                  className={`category-list-item ${selectedCategories.includes(category) ? 'selected' : ''}`}
-                  onClick={() => handleCategoryChange(category)}
+              {/* Script Type Filter */}
+              <div className="filter-section">
+                <h4>Script Type</h4>
+                <div
+                  className={`category-list-item ${scriptFilter === 'both' ? 'selected' : ''}`}
+                  onClick={() => setScriptFilter('both')}
                 >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                  Both (ひらがな + カタカナ)
                 </div>
-              ))}
+                <div
+                  className={`category-list-item ${scriptFilter === 'hiragana' ? 'selected' : ''}`}
+                  onClick={() => setScriptFilter('hiragana')}
+                >
+                  Hiragana (ひらがな)
+                </div>
+                <div
+                  className={`category-list-item ${scriptFilter === 'katakana' ? 'selected' : ''}`}
+                  onClick={() => setScriptFilter('katakana')}
+                >
+                  Katakana (カタカナ)
+                </div>
+              </div>
+
+              {/* Category Filter */}
+              <div className="filter-section">
+                <h4>Categories</h4>
+                <div
+                  className={`category-list-item ${selectedCategories.includes('all') ? 'selected' : ''}`}
+                  onClick={() => handleCategoryChange('all')}
+                >
+                  All Categories
+                </div>
+                {allCategories.filter(cat => cat !== 'all').map(category => (
+                  <div
+                    key={category}
+                    className={`category-list-item ${selectedCategories.includes(category) ? 'selected' : ''}`}
+                    onClick={() => handleCategoryChange(category)}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -131,10 +207,10 @@ function VocabularyPractice({ settings }) {
         <button className="next-word-button" onClick={generateWord}>
           Next Word
         </button>
-        <button 
+        <button
           className="category-icon-button"
           onClick={() => setShowCategoryModal(true)}
-          title={`Categories: ${getCategoryDisplayText()}`}
+          title={`${getScriptDisplayText()} | ${getCategoryDisplayText()}`}
         >
           ☰
         </button>
