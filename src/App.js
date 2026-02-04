@@ -16,6 +16,8 @@ import Shop from './components/Shop';
 import WordQuiz from './components/WordQuiz';
 import CoinDisplay from './components/CoinDisplay';
 import LevelUpModal from './components/LevelUpModal';
+import KoiPond from './components/KoiPond';
+import FishShop from './components/FishShop';
 import { useProgress } from './hooks/useProgress';
 import './styles/App.css';
 
@@ -231,7 +233,9 @@ function App() {
           />
         )}
         {/* currentView === 'kanji' && <KanjiQuiz settings={settings} /> */}
-        {currentView === 'vocab' && <VocabularyPractice settings={settings} />}
+        {currentView === 'vocab' && (
+          <VocabularyPractice settings={settings} unlockedPacks={unlockedPacks} />
+        )}
         {currentView === 'handwriting' && (
           <HandwritingPractice
             settings={settings}
@@ -239,7 +243,9 @@ function App() {
             getKanaWeight={getKanaWeight}
           />
         )}
-        {currentView === 'wordSearch' && <WordSearch settings={settings} />}
+        {currentView === 'wordSearch' && (
+          <WordSearch settings={settings} unlockedPacks={unlockedPacks} />
+        )}
         {currentView === 'settings' && <Settings settings={settings} onSave={saveSettings} />}
         {currentView === 'resources' && <Resources />}
         {currentView === 'collection' && (
@@ -263,6 +269,19 @@ function App() {
             onWordAnswerRecorded={handleWordAnswerRecorded}
             getWordWeight={getWordWeight}
           />
+        )}
+        {currentView === 'koiPond' && (
+          <KoiPond coins={coins} ownedFish={[]} />
+        )}
+        {currentView === 'fishShop' && (
+          <FishShop coins={coins} ownedFish={[]} />
+        )}
+        {currentView === 'about' && (
+          <div className="about-page">
+            <h2>About KoiKata</h2>
+            <p>A fun way to learn Japanese kana and vocabulary!</p>
+            <p>Version 1.0</p>
+          </div>
         )}
       </div>
 

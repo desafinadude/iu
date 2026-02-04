@@ -109,8 +109,9 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       });
     }
 
+    // Filter out characters with the same romaji to avoid duplicate sounds in options
     const wrongAnswers = shuffle(
-      availableChars.filter(h => h.char !== correctAnswer.char)
+      availableChars.filter(h => h.char !== correctAnswer.char && h.romaji !== correctAnswer.romaji)
     ).slice(0, 9);
     const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
 

@@ -14,6 +14,8 @@ function Menu({ isOpen, onClose, onMenuClick, currentView, onBackToHome }) {
     { id: 'wordSearch', label: 'Word Search' },
     { id: 'shop', label: 'Vocab Shop' },
     { id: 'collection', label: 'My Collection' },
+    { id: 'koiPond', label: 'Koi Pond' },
+    { id: 'fishShop', label: 'Fish Shop' },
     { id: 'resources', label: 'Resources' },
     { id: 'settings', label: 'Settings' },
     { id: 'about', label: 'About' }

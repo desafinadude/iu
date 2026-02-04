@@ -1,0 +1,254 @@
+/* ==============================================
+   FISH SHOP - Retro Comic Book Theme
+   ============================================== */
+
+.fish-shop-page {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.fish-shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.fish-shop-header h2 {
+  font-family: var(--font-comic);
+  font-size: 28px;
+  color: var(--color-navy);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.fish-shop-header .shop-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg-secondary);
+  padding: 8px 16px;
+  border: 3px solid var(--color-navy);
+  border-radius: 20px;
+  box-shadow: 3px 3px 0px var(--color-navy);
+}
+
+.fish-shop-header .coin-icon {
+  font-size: 20px;
+}
+
+.fish-shop-header .coin-total {
+  font-family: var(--font-comic);
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-navy);
+}
+
+.fish-shop-page .purchase-message {
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: var(--font-comic);
+  font-weight: bold;
+  margin-bottom: 15px;
+  animation: slideDown 0.3s ease-out;
+  border: 3px solid var(--color-navy);
+  box-shadow: 3px 3px 0px var(--color-navy);
+}
+
+.fish-shop-page .purchase-message.success {
+  background-color: var(--color-correct-light);
+  color: var(--color-correct-dark);
+}
+
+.fish-shop-page .purchase-message.error {
+  background-color: var(--color-incorrect-light);
+  color: var(--color-incorrect-dark);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fish-shop-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.shop-tab {
+  flex: 1;
+  padding: 12px 20px;
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 10px;
+  font-family: var(--font-comic);
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-navy);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 3px 3px 0px var(--color-navy);
+}
+
+.shop-tab:hover {
+  background: var(--color-yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-navy);
+}
+
+.shop-tab.active {
+  background: var(--color-teal);
+  color: var(--color-cream);
+}
+
+.shop-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.shop-item {
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 12px;
+  padding: 20px 15px;
+  text-align: center;
+  box-shadow: 4px 4px 0px var(--color-navy);
+  transition: all var(--transition-fast);
+}
+
+.shop-item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-navy);
+}
+
+.item-emoji {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.item-name {
+  font-family: var(--font-comic);
+  font-size: 16px;
+  color: var(--color-navy);
+  margin: 0 0 8px 0;
+}
+
+.rarity-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.rarity-badge.common {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+.rarity-badge.uncommon {
+  background: var(--color-teal);
+  color: var(--color-cream);
+}
+
+.rarity-badge.rare {
+  background: var(--color-orange);
+  color: var(--color-cream);
+}
+
+.servings-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: var(--color-yellow);
+  color: var(--color-navy);
+  margin-bottom: 12px;
+}
+
+.shop-item .buy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 15px;
+  background: var(--color-orange);
+  color: var(--color-cream);
+  border: 2px solid var(--color-navy);
+  border-radius: 8px;
+  font-family: var(--font-comic);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.shop-item .buy-btn:hover:not(:disabled) {
+  background: var(--color-pink);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--color-navy);
+}
+
+.shop-item .buy-btn:disabled {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.shop-item .buy-btn .coin-icon {
+  font-size: 14px;
+}
+
+.fish-shop-coming-soon {
+  background: var(--color-bg-secondary);
+  padding: 15px 20px;
+  border: 3px dashed var(--color-border-light);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.fish-shop-coming-soon p {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .fish-shop-page {
+    padding: 15px;
+  }
+
+  .shop-items-grid {
+    gap: 10px;
+  }
+
+  .shop-item {
+    padding: 15px 10px;
+  }
+
+  .item-emoji {
+    font-size: 36px;
+  }
+
+  .item-name {
+    font-size: 14px;
+  }
+}

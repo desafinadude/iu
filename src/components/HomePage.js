@@ -12,7 +12,9 @@ function HomePage({ onActivitySelect }) {
     { id: 'handwriting', label: 'Handwriting' },
     { id: 'wordSearch', label: 'Word Search' },
     { id: 'shop', label: 'Vocab Shop' },
-    { id: 'collection', label: 'My Collection' }
+    { id: 'collection', label: 'My Collection' },
+    { id: 'koiPond', label: 'Koi Pond' },
+    { id: 'fishShop', label: 'Fish Shop' }
   ];
 
   return (

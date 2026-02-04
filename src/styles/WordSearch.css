@@ -303,6 +303,37 @@
   box-shadow: 2px 2px 0px var(--color-navy);
 }
 
+/* Empty state */
+.word-search-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  height: 100%;
+}
+
+.word-search-empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.word-search-empty h3 {
+  font-family: var(--font-comic);
+  font-size: 28px;
+  color: var(--color-navy);
+  margin: 0 0 15px 0;
+  letter-spacing: 1px;
+}
+
+.word-search-empty p {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  max-width: 300px;
+  line-height: 1.5;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .word-search {
