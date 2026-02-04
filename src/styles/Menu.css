@@ -1,3 +1,7 @@
+/* ==============================================
+   MENU - Retro Comic Book Theme
+   ============================================== */
+
 .menu-overlay {
   position: fixed;
   top: 0;
@@ -11,21 +15,23 @@
 }
 
 .menu-overlay.open {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-bg-overlay);
   pointer-events: auto;
 }
 
 .menu-drawer {
   position: fixed;
   top: 0;
-  right: -300px;
-  width: 300px;
+  right: -320px;
+  width: 320px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--color-cream);
   z-index: 999;
   transition: right 0.3s ease;
   display: flex;
   flex-direction: column;
+  border-left: 4px solid var(--color-navy);
+  box-shadow: -6px 0 0 var(--color-orange);
 }
 
 .menu-drawer.open {
@@ -37,65 +43,93 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #eee;
+  background: var(--color-navy);
+  border-bottom: 4px solid var(--color-orange);
 }
 
 .menu-title {
-  font-size: 24px;
+  font-family: var(--font-comic);
+  font-size: 28px;
   font-weight: bold;
-  color: #c94146;
+  color: var(--color-cream);
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 0px var(--color-orange);
 }
 
 .menu-close {
-  background: none;
-  border: none;
-  font-size: 32px;
+  background: var(--color-pink);
+  border: 3px solid var(--color-cream);
+  font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: var(--color-cream);
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0px var(--color-cream);
+}
+
+.menu-close:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px var(--color-cream);
+  background: var(--color-orange);
 }
 
 .menu-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 15px;
+  gap: 8px;
+  overflow-y: auto;
 }
 
 .menu-item {
   width: 100%;
-  padding: 15px 20px;
-  background: none;
-  border: none;
+  padding: 14px 20px;
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 8px;
   text-align: left;
-  font-size: 16px;
-  color: #333;
+  font-family: var(--font-comic);
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--color-navy);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all var(--transition-fast);
+  box-shadow: 3px 3px 0px var(--color-navy);
 }
 
 .menu-item:hover {
-  background-color: #f5f5f5;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-navy);
+  background: var(--color-yellow);
 }
 
 .menu-item.active {
-  background-color: #c94146;
-  color: #fff;
+  background: var(--color-orange);
+  color: var(--color-cream);
+  box-shadow: 3px 3px 0px var(--color-navy);
+}
+
+.menu-item.active:hover {
+  background: var(--color-pink);
 }
 
 .menu-footer {
   padding: 20px;
-  border-top: 1px solid #eee;
+  background: var(--color-navy);
+  border-top: 4px solid var(--color-orange);
   text-align: center;
-  color: #999;
+  color: var(--color-cream);
   font-size: 12px;
 }
 
 .menu-footer p {
   margin: 5px 0;
+  opacity: 0.8;
 }
