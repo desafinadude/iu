@@ -1,3 +1,63 @@
+/* ==============================================
+   RETRO COMIC BOOK THEME - Design Tokens
+   Inspired by 1960s sci-fi comics & manga
+   ============================================== */
+
+:root {
+  /* Primary Colors */
+  --color-navy: #0A192F;
+  --color-orange: #FF6B35;
+  --color-teal: #2EC4B6;
+  --color-cream: #F8F3E6;
+
+  /* Accent Colors */
+  --color-pink: #FF4D6D;
+  --color-yellow: #FFD166;
+
+  /* Semantic Colors */
+  --color-correct: #2EC4B6;
+  --color-correct-dark: #1a8a80;
+  --color-correct-light: #b8f0eb;
+  --color-wrong: #FF4D6D;
+  --color-wrong-dark: #cc3d57;
+  --color-wrong-light: #ffb8c5;
+
+  /* Text Colors */
+  --color-text-primary: #0A192F;
+  --color-text-secondary: #3d4f5f;
+  --color-text-muted: #6b7c8a;
+  --color-text-light: #F8F3E6;
+
+  /* Background Colors */
+  --color-bg-primary: #F8F3E6;
+  --color-bg-secondary: #fff;
+  --color-bg-overlay: rgba(10, 25, 47, 0.85);
+
+  /* Border Colors */
+  --color-border: #0A192F;
+  --color-border-light: #d4cfc4;
+
+  /* Typography */
+  --font-comic: 'Bangers', cursive;
+  --font-body: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Comic Effects */
+  --comic-shadow: 4px 4px 0px #0A192F;
+  --comic-shadow-sm: 2px 2px 0px #0A192F;
+  --comic-shadow-lg: 6px 6px 0px #0A192F;
+  --comic-border: 3px solid #0A192F;
+  --comic-border-thin: 2px solid #0A192F;
+
+  /* Panel Effects */
+  --panel-radius: 8px;
+  --panel-radius-lg: 16px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,12 +65,11 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
 }
 
 #root {
@@ -22,7 +81,256 @@ button {
   font-family: inherit;
 }
 
-/* Japanese font classes */
+/* ==============================================
+   HALFTONE PATTERN BACKGROUNDS
+   ============================================== */
+
+.halftone-bg {
+  background-image:
+    radial-gradient(circle, var(--color-navy) 1px, transparent 1px);
+  background-size: 8px 8px;
+  background-position: 0 0;
+}
+
+.halftone-bg-orange {
+  background-image:
+    radial-gradient(circle, var(--color-orange) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+
+.halftone-bg-teal {
+  background-image:
+    radial-gradient(circle, var(--color-teal) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+
+/* Diagonal halftone for shadows */
+.halftone-shadow {
+  position: relative;
+}
+
+.halftone-shadow::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle, var(--color-navy) 1.5px, transparent 1.5px);
+  background-size: 4px 4px;
+  z-index: -1;
+  border-radius: inherit;
+}
+
+/* ==============================================
+   COMIC PANEL EFFECTS
+   ============================================== */
+
+.comic-panel {
+  background: var(--color-bg-secondary);
+  border: var(--comic-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--comic-shadow);
+  position: relative;
+}
+
+.comic-panel-lg {
+  background: var(--color-bg-secondary);
+  border: var(--comic-border);
+  border-radius: var(--panel-radius-lg);
+  box-shadow: var(--comic-shadow-lg);
+}
+
+/* ==============================================
+   POW/ZAP ACTION EFFECTS
+   ============================================== */
+
+@keyframes pow-burst {
+  0% {
+    transform: scale(0) rotate(-15deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes zap-flash {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3);
+  }
+}
+
+@keyframes comic-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px) rotate(-1deg); }
+  40% { transform: translateX(3px) rotate(1deg); }
+  60% { transform: translateX(-2px) rotate(-0.5deg); }
+  80% { transform: translateX(2px) rotate(0.5deg); }
+}
+
+@keyframes comic-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes starburst {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.1) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1) rotate(360deg); opacity: 1; }
+}
+
+.pow-effect {
+  animation: pow-burst 0.4s ease-out forwards;
+}
+
+.zap-effect {
+  animation: zap-flash 0.3s ease-in-out;
+}
+
+.shake-effect {
+  animation: comic-shake 0.4s ease-in-out;
+}
+
+.bounce-effect {
+  animation: comic-bounce 0.5s ease-in-out;
+}
+
+/* ==============================================
+   SPEECH BUBBLE STYLES
+   ============================================== */
+
+.speech-bubble {
+  position: relative;
+  background: var(--color-bg-secondary);
+  border: var(--comic-border);
+  border-radius: 20px;
+  padding: 15px 20px;
+  box-shadow: var(--comic-shadow-sm);
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid var(--color-bg-secondary);
+  filter: drop-shadow(2px 2px 0 var(--color-navy));
+}
+
+/* ==============================================
+   COMIC BUTTON STYLES
+   ============================================== */
+
+.comic-btn {
+  font-family: var(--font-comic);
+  font-size: 18px;
+  letter-spacing: 1px;
+  padding: 12px 24px;
+  background: var(--color-orange);
+  color: var(--color-text-light);
+  border: var(--comic-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--comic-shadow);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+}
+
+.comic-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-navy);
+}
+
+.comic-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.comic-btn-teal {
+  background: var(--color-teal);
+}
+
+.comic-btn-pink {
+  background: var(--color-pink);
+}
+
+.comic-btn-yellow {
+  background: var(--color-yellow);
+  color: var(--color-text-primary);
+}
+
+.comic-btn-navy {
+  background: var(--color-navy);
+}
+
+/* ==============================================
+   STARBURST/EXPLOSION DECORATION
+   ============================================== */
+
+.starburst {
+  position: relative;
+  display: inline-block;
+}
+
+.starburst::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  background: var(--color-yellow);
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+    50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+  );
+  z-index: -1;
+}
+
+/* ==============================================
+   RETRO SCREEN LINES EFFECT
+   ============================================== */
+
+.screen-lines {
+  position: relative;
+}
+
+.screen-lines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ==============================================
+   JAPANESE FONT CLASSES
+   ============================================== */
+
 .noto {
   font-family: 'Noto Sans JP', sans-serif;
 }
@@ -54,3 +362,25 @@ button {
 .hachi {
   font-family: 'Hachi Maru Pop', cursive;
 }
+
+/* ==============================================
+   UTILITY CLASSES
+   ============================================== */
+
+.text-comic {
+  font-family: var(--font-comic);
+  letter-spacing: 1px;
+}
+
+.text-orange { color: var(--color-orange); }
+.text-teal { color: var(--color-teal); }
+.text-pink { color: var(--color-pink); }
+.text-yellow { color: var(--color-yellow); }
+.text-navy { color: var(--color-navy); }
+
+.bg-orange { background-color: var(--color-orange); }
+.bg-teal { background-color: var(--color-teal); }
+.bg-pink { background-color: var(--color-pink); }
+.bg-yellow { background-color: var(--color-yellow); }
+.bg-navy { background-color: var(--color-navy); }
+.bg-cream { background-color: var(--color-cream); }
