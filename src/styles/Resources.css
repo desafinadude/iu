@@ -1,8 +1,12 @@
+/* ==============================================
+   RESOURCES - Retro Comic Book Theme
+   ============================================== */
+
 .resources {
   max-width: 800px;
   margin: 0 auto;
   padding: 100px 20px 20px 20px;
-  background-color: #f5f0e8;
+  background-color: var(--color-bg-primary);
   min-height: calc(100vh - 60px);
 }
 
@@ -12,40 +16,49 @@
 }
 
 .resources-header h2 {
-  font-size: min(28px, 7vw);
-  color: #333;
+  font-family: var(--font-comic);
+  font-size: min(32px, 7vw);
+  color: var(--color-navy);
   margin-bottom: 10px;
+  text-shadow: 2px 2px 0px var(--color-orange);
+  letter-spacing: 2px;
 }
 
 .resources-header p {
   font-size: min(16px, 4vw);
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .video-section {
-  background-color: transparent;
+  background-color: var(--color-bg-secondary);
+  border: 4px solid var(--color-navy);
   border-radius: 16px;
-  padding: 25px 0;
+  padding: 25px;
   margin-bottom: 25px;
+  box-shadow: 6px 6px 0px var(--color-navy);
 }
 
 .video-section h3 {
+  font-family: var(--font-comic);
   font-size: min(24px, 6vw);
-  color: #333;
+  color: var(--color-navy);
   margin-bottom: 20px;
   text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0px var(--color-orange);
 }
 
 .video-container {
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
+  border: 4px solid var(--color-navy);
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 25px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 4px 4px 0px var(--color-navy);
 }
 
 .video-container iframe {
@@ -62,21 +75,21 @@
     padding: 15px;
     margin-bottom: 15px;
   }
-  
+
   .video-section h3 {
     font-size: 20px;
     margin-bottom: 15px;
   }
-  
+
   .video-container {
-    padding-bottom: 75%; /* Adjust aspect ratio for landscape */
+    padding-bottom: 75%;
     margin-bottom: 15px;
   }
-  
+
   .chapters-section {
     margin-top: 10px;
   }
-  
+
   .chapters-dropdown {
     font-size: 14px;
     padding: 10px 12px;
@@ -84,45 +97,54 @@
 }
 
 .chapters-section h4 {
+  font-family: var(--font-comic);
   font-size: min(20px, 5vw);
-  color: #333;
+  color: var(--color-navy);
   margin-bottom: 15px;
   text-align: center;
+  letter-spacing: 1px;
 }
 
 .chapters-dropdown {
   width: 100%;
-  padding: 12px 16px;
-  background-color: #fff;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
+  padding: 14px 18px;
+  background-color: var(--color-cream);
+  border: 3px solid var(--color-navy);
+  border-radius: 10px;
   font-size: 16px;
-  color: #333;
+  color: var(--color-navy);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   outline: none;
+  box-shadow: 3px 3px 0px var(--color-navy);
 }
 
 .chapters-dropdown:hover {
-  border-color: #c94146;
+  border-color: var(--color-orange);
+  background-color: var(--color-yellow);
 }
 
 .chapters-dropdown:focus {
-  border-color: #c94146;
-  box-shadow: 0 0 0 3px rgba(201, 65, 70, 0.1);
+  border-color: var(--color-orange);
+  box-shadow: 3px 3px 0px var(--color-orange);
 }
 
 .additional-resources {
-  background-color: transparent;
+  background-color: var(--color-bg-secondary);
+  border: 4px solid var(--color-navy);
   border-radius: 16px;
-  padding: 25px 0;
+  padding: 25px;
+  box-shadow: 6px 6px 0px var(--color-navy);
 }
 
 .additional-resources h3 {
+  font-family: var(--font-comic);
   font-size: min(24px, 6vw);
-  color: #333;
+  color: var(--color-navy);
   margin-bottom: 20px;
   text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0px var(--color-orange);
 }
 
 .tips-grid {
@@ -132,26 +154,45 @@
 }
 
 .tip-card {
-  background-color: #fff;
+  background-color: var(--color-cream);
+  border: 3px solid var(--color-navy);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
-  transition: transform 0.2s ease;
+  transition: all var(--transition-fast);
+  box-shadow: 3px 3px 0px var(--color-navy);
+  position: relative;
+}
+
+/* Comic corner decoration */
+.tip-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  background: var(--color-orange);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
 }
 
 .tip-card:hover {
-  transform: translateY(-3px);
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0px var(--color-navy);
+  background-color: var(--color-yellow);
 }
 
 .tip-card h4 {
+  font-family: var(--font-comic);
   font-size: 18px;
-  color: #c94146;
+  color: var(--color-orange);
   margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 
 .tip-card p {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.4;
   margin: 0;
 }
@@ -161,28 +202,34 @@
   .resources {
     padding: 80px 10px 10px 10px;
   }
-  
+
   .video-section,
   .additional-resources {
-    padding: 15px;
+    padding: 18px;
+    box-shadow: 4px 4px 0px var(--color-navy);
   }
-  
+
   .chapters-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .tips-grid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
-  
+
   .chapters-dropdown {
     font-size: 14px;
-    padding: 8px 10px;
+    padding: 10px 14px;
   }
-  
+
   .tip-card {
     padding: 15px;
+  }
+
+  .tip-card::before {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -190,11 +237,12 @@
 @media screen and (max-width: 768px) {
   .video-container {
     border-radius: 8px;
+    border-width: 3px;
+    box-shadow: 3px 3px 0px var(--color-navy);
   }
-  
-  /* Allow iframe to go fullscreen properly */
+
   .video-container iframe {
-    border-radius: 8px;
+    border-radius: 5px;
   }
 }
 
@@ -203,21 +251,21 @@
   .resources {
     padding: 10px;
   }
-  
+
   .resources-header {
     margin-bottom: 15px;
   }
-  
+
   .resources-header h2 {
     font-size: 24px;
     margin-bottom: 5px;
   }
-  
+
   .resources-header p {
     font-size: 14px;
   }
-  
+
   .video-container {
-    padding-bottom: 85%; /* Even more space for very small screens */
+    padding-bottom: 85%;
   }
 }
