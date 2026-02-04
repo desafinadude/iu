@@ -1,0 +1,215 @@
+.collection-page {
+  padding: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 15px;
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px var(--color-navy);
+}
+
+.collection-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-family: var(--font-comic);
+  font-size: 24px;
+  color: var(--color-navy);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.collection-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-yellow);
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 3px solid var(--color-navy);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.collection-coins .coin-icon {
+  font-size: 24px;
+}
+
+.collection-coins .coin-total {
+  font-family: var(--font-comic);
+  font-size: 20px;
+  color: var(--color-navy);
+}
+
+.collection-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px;
+  font-family: var(--font-comic);
+  font-size: 18px;
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-muted);
+}
+
+.tab-button.active {
+  background: var(--color-navy);
+  color: var(--color-cream);
+  box-shadow: 2px 2px 0px var(--color-teal);
+}
+
+.tab-button:hover:not(.active) {
+  background: var(--color-cream);
+}
+
+.collection-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  padding: 8px 14px;
+  font-size: 13px;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-navy);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-secondary);
+}
+
+.filter-button.active {
+  background: var(--color-teal);
+  color: var(--color-cream);
+  border-color: var(--color-teal);
+}
+
+.filter-button:hover:not(.active) {
+  background: var(--color-cream);
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.collection-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+}
+
+.kana-card {
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.kana-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px var(--color-navy);
+}
+
+/* Level-based card styling */
+.kana-card.level-unseen {
+  background: #e8e8e8;
+  border-color: #999;
+  box-shadow: 2px 2px 0px #999;
+}
+
+.kana-card.level-unseen .kana-char {
+  color: #888;
+}
+
+.kana-card.level-learning {
+  background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+  border-color: var(--color-yellow);
+}
+
+.kana-card.level-proficient {
+  background: linear-gradient(135deg, #e6f9f7 0%, #ccf2ee 100%);
+  border-color: var(--color-teal);
+}
+
+.kana-card.level-mastered {
+  background: linear-gradient(135deg, #fff9e6 0%, #ffe066 100%);
+  border-color: #d4a800;
+  box-shadow: 2px 2px 0px #d4a800, 0 0 10px rgba(255, 209, 102, 0.5);
+}
+
+.kana-char {
+  font-size: 32px;
+  color: var(--color-navy);
+  line-height: 1.2;
+}
+
+.kana-romaji {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.kana-stars {
+  font-size: 10px;
+  color: var(--color-yellow);
+  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.3);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.kana-card.level-unseen .kana-stars {
+  color: #ccc;
+  text-shadow: none;
+}
+
+.kana-progress-bar {
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.kana-progress-fill {
+  height: 100%;
+  background: var(--color-teal);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}

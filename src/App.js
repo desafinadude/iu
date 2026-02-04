@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import HomePage from './components/HomePage';
 import Menu from './components/Menu';
@@ -11,6 +11,12 @@ import HandwritingPractice from './components/HandwritingPractice';
 import WordSearch from './components/WordSearch';
 import Settings from './components/Settings';
 import Resources from './components/Resources';
+import Collection from './components/Collection';
+import Shop from './components/Shop';
+import WordQuiz from './components/WordQuiz';
+import CoinDisplay from './components/CoinDisplay';
+import LevelUpModal from './components/LevelUpModal';
+import { useProgress } from './hooks/useProgress';
 import './styles/App.css';
 
 function App() {
@@ -50,6 +56,46 @@ function App() {
     fontStyle: 'noto',
     selectedVoice: 0  // Index of selected Japanese voice
   });
+
+  // Progress tracking
+  const {
+    coins,
+    kanaProgress,
+    wordProgress,
+    unlockedPacks,
+    recordAnswer,
+    recordWordAnswer,
+    getKanaWeight,
+    getWordWeight,
+    purchasePack,
+  } = useProgress();
+  const [levelUpInfo, setLevelUpInfo] = useState(null);
+
+  // Callback for quiz components to record answers
+  const handleAnswerRecorded = useCallback((char, isCorrect) => {
+    const result = recordAnswer(char, isCorrect);
+    if (result.leveledUp) {
+      setLevelUpInfo({
+        kana: char,
+        newLevel: result.newLevel,
+        coinsEarned: result.coinsEarned,
+      });
+    }
+    return result;
+  }, [recordAnswer]);
+
+  // Callback for word quiz to record answers
+  const handleWordAnswerRecorded = useCallback((word, isCorrect) => {
+    const result = recordWordAnswer(word, isCorrect);
+    if (result.leveledUp) {
+      setLevelUpInfo({
+        kana: word,
+        newLevel: result.newLevel,
+        coinsEarned: result.coinsEarned,
+      });
+    }
+    return result;
+  }, [recordWordAnswer]);
 
   useEffect(() => {
     // Load settings from localStorage
@@ -99,7 +145,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'reverseKana', 'kanaMatch', 'vocab', 'handwriting', 'wordSearch'];
+    const quizViews = ['kana', 'reverseKana', 'kanaMatch', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -153,23 +199,81 @@ function App() {
           <div className="title-japanese">こい<span>かた</span></div>
           <div className="title-english">{currentView === 'home' ? 'home' : currentView}</div>
         </div>
-        <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
+        <div className="header-right">
+          <CoinDisplay coins={coins} />
+          <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
+            ☰
+          </button>
+        </div>
       </div>
 
       <div className="app-content">
         {currentView === 'home' && <HomePage onActivitySelect={handleActivitySelect} />}
-        {currentView === 'kana' && <KanaQuiz settings={settings} />}
-        {currentView === 'reverseKana' && <ReverseKanaQuiz settings={settings} />}
-        {currentView === 'kanaMatch' && <KanaMatching settings={settings} />}
+        {currentView === 'kana' && (
+          <KanaQuiz
+            settings={settings}
+            onAnswerRecorded={handleAnswerRecorded}
+            getKanaWeight={getKanaWeight}
+          />
+        )}
+        {currentView === 'reverseKana' && (
+          <ReverseKanaQuiz
+            settings={settings}
+            onAnswerRecorded={handleAnswerRecorded}
+            getKanaWeight={getKanaWeight}
+          />
+        )}
+        {currentView === 'kanaMatch' && (
+          <KanaMatching
+            settings={settings}
+            onAnswerRecorded={handleAnswerRecorded}
+            getKanaWeight={getKanaWeight}
+          />
+        )}
         {/* currentView === 'kanji' && <KanjiQuiz settings={settings} /> */}
         {currentView === 'vocab' && <VocabularyPractice settings={settings} />}
-        {currentView === 'handwriting' && <HandwritingPractice settings={settings} />}
+        {currentView === 'handwriting' && (
+          <HandwritingPractice
+            settings={settings}
+            onAnswerRecorded={handleAnswerRecorded}
+            getKanaWeight={getKanaWeight}
+          />
+        )}
         {currentView === 'wordSearch' && <WordSearch settings={settings} />}
         {currentView === 'settings' && <Settings settings={settings} onSave={saveSettings} />}
         {currentView === 'resources' && <Resources />}
+        {currentView === 'collection' && (
+          <Collection
+            kanaProgress={kanaProgress}
+            wordProgress={wordProgress}
+            coins={coins}
+          />
+        )}
+        {currentView === 'shop' && (
+          <Shop
+            coins={coins}
+            unlockedPacks={unlockedPacks}
+            purchasePack={purchasePack}
+          />
+        )}
+        {currentView === 'wordQuiz' && (
+          <WordQuiz
+            settings={settings}
+            unlockedPacks={unlockedPacks}
+            onWordAnswerRecorded={handleWordAnswerRecorded}
+            getWordWeight={getWordWeight}
+          />
+        )}
       </div>
+
+      {levelUpInfo && (
+        <LevelUpModal
+          kana={levelUpInfo.kana}
+          newLevel={levelUpInfo.newLevel}
+          coinsEarned={levelUpInfo.coinsEarned}
+          onClose={() => setLevelUpInfo(null)}
+        />
+      )}
     </div>
   );
 }
