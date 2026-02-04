@@ -37,15 +37,30 @@
   transition: all var(--transition-fast);
   min-height: 90px;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
   align-items: center;
   justify-content: center;
   font-family: var(--font-comic);
   font-size: 1.4rem;
+  font-weight: bold;
   letter-spacing: 1px;
   color: var(--color-navy);
-  box-shadow: 5px 5px 0px var(--color-navy);
+  box-shadow: 4px 4px 0px var(--color-navy);
   position: relative;
   overflow: hidden;
+  text-transform: uppercase;
+}
+
+.activity-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: drop-shadow(1px 1px 0px rgba(10, 25, 47, 0.2));
+}
+
+.activity-label {
+  font-size: 1.1rem;
+  line-height: 1.2;
 }
 
 /* Comic panel corner decoration */
@@ -61,14 +76,14 @@
 }
 
 .activity-button:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 9px 9px 0px var(--color-navy);
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px var(--color-navy);
   background: var(--color-yellow);
 }
 
 .activity-button:active {
-  transform: translate(2px, 2px);
-  box-shadow: 3px 3px 0px var(--color-navy);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--color-navy);
   background: var(--color-orange);
   color: var(--color-cream);
 }
@@ -99,12 +114,20 @@
     padding: 1.25rem 1.5rem;
     min-height: 70px;
     font-size: 1.2rem;
-    box-shadow: 4px 4px 0px var(--color-navy);
+    box-shadow: 3px 3px 0px var(--color-navy);
+  }
+
+  .activity-emoji {
+    font-size: 2rem;
+  }
+
+  .activity-label {
+    font-size: 1rem;
   }
 
   .activity-button:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 7px 7px 0px var(--color-navy);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--color-navy);
   }
 }
 
@@ -122,7 +145,16 @@
     min-height: 60px;
     font-size: 1.1rem;
     border-width: 3px;
-    box-shadow: 3px 3px 0px var(--color-navy);
+    box-shadow: 2px 2px 0px var(--color-navy);
+    gap: 6px;
+  }
+
+  .activity-emoji {
+    font-size: 1.8rem;
+  }
+
+  .activity-label {
+    font-size: 0.9rem;
   }
 
   .activity-button::before {
@@ -131,7 +163,7 @@
   }
 
   .activity-button:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0px var(--color-navy);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--color-navy);
   }
 }

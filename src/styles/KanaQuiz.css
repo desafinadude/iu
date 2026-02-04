@@ -95,13 +95,13 @@ body:not(.quiz-active) .kana-quiz {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  filter: drop-shadow(3px 3px 0px var(--color-navy));
+  filter: drop-shadow(2px 2px 0px var(--color-navy));
 }
 
 .speaker-button:hover,
 .character-display:hover {
   transform: scale(1.08);
-  filter: drop-shadow(4px 4px 0px var(--color-orange));
+  filter: drop-shadow(3px 3px 0px var(--color-orange));
 }
 
 /* Word Quiz Box - Vocabulary Practice Style */
@@ -127,12 +127,12 @@ body:not(.quiz-active) .kana-quiz {
   min-height: 100px;
   padding: 25px 35px;
   box-sizing: border-box;
-  box-shadow: 5px 5px 0px var(--color-navy);
+  box-shadow: 4px 4px 0px var(--color-navy);
 }
 
 .word-quiz-box:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0px var(--color-navy);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-navy);
   background-color: var(--color-yellow);
 }
 
@@ -170,12 +170,12 @@ body:not(.quiz-active) .kana-quiz {
   justify-content: center;
   width: 100%;
   height: 100%;
-  box-shadow: 3px 3px 0px var(--color-navy);
+  box-shadow: 2px 2px 0px var(--color-navy);
 }
 
 .option-button:hover:not(:disabled) {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px var(--color-navy);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--color-navy);
   background: var(--color-yellow);
 }
 
@@ -192,7 +192,7 @@ body:not(.quiz-active) .kana-quiz {
   background-color: var(--color-correct);
   color: var(--color-cream);
   border-color: var(--color-correct-dark);
-  box-shadow: 3px 3px 0px var(--color-correct-dark);
+  box-shadow: 2px 2px 0px var(--color-correct-dark);
   animation: pow-burst 0.4s ease-out;
 }
 
@@ -201,7 +201,7 @@ body:not(.quiz-active) .kana-quiz {
   background-color: var(--color-wrong);
   color: var(--color-cream);
   border-color: var(--color-wrong-dark);
-  box-shadow: 3px 3px 0px var(--color-wrong-dark);
+  box-shadow: 2px 2px 0px var(--color-wrong-dark);
   animation: comic-shake 0.4s ease-in-out;
 }
 
@@ -221,13 +221,13 @@ body:not(.quiz-active) .kana-quiz {
   transition: all var(--transition-fast);
   margin: 10px;
   box-sizing: border-box;
-  box-shadow: 3px 3px 0px var(--color-navy);
+  box-shadow: 2px 2px 0px var(--color-navy);
   text-transform: uppercase;
 }
 
 .next-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px var(--color-navy);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--color-navy);
   background-color: var(--color-pink);
 }
 
