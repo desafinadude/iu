@@ -10,7 +10,7 @@ import '../styles/KanaQuiz.css';
 const TIMER_DURATION = 10;
 const MAX_LIVES = 3;
 
-function KanaQuiz({ settings }) {
+function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -69,11 +69,15 @@ function KanaQuiz({ settings }) {
     let correctAnswer;
 
     if (availableChars.length >= 10) {
-      // Use weighted selection for larger pools
-      const weightedChars = availableChars.map(char => ({
-        ...char,
-        weight: characterWeights.get(char.char) || 1.0
-      }));
+      // Use weighted selection combining mastery level and session weights
+      const weightedChars = availableChars.map(char => {
+        const masteryWeight = getKanaWeight ? getKanaWeight(char.char) : 1.0;
+        const sessionWeight = characterWeights.get(char.char) || 1.0;
+        return {
+          ...char,
+          weight: masteryWeight * sessionWeight
+        };
+      });
 
       const totalWeight = weightedChars.reduce((sum, char) => sum + char.weight, 0);
       let random = Math.random() * totalWeight;
@@ -92,11 +96,11 @@ function KanaQuiz({ settings }) {
       correctAnswer = availableChars[Math.floor(Math.random() * availableChars.length)];
     }
 
-    // Update weights - reduce weight of selected character, increase others slightly
+    // Update session weights - reduce weight of selected character, increase others slightly
     if (availableChars.length >= 10) {
       setCharacterWeights(prev => {
         const updated = new Map(prev);
-        updated.set(correctAnswer.char, 0.3); // Much less likely to repeat
+        updated.set(correctAnswer.char, 0.3); // Much less likely to repeat in this session
         // Slowly increase weights of other characters
         availableChars.forEach(char => {
           if (char.char !== correctAnswer.char) {
@@ -145,6 +149,12 @@ function KanaQuiz({ settings }) {
       setSelectedAnswer(null);
       setShowResult(true);
       playWrongSound();
+
+      // Record as wrong answer for mastery tracking
+      if (onAnswerRecorded) {
+        onAnswerRecorded(currentQuestion.char, false);
+      }
+
       const newLives = lives - 1;
       setLives(newLives);
       speak(currentQuestion.char);
@@ -152,7 +162,7 @@ function KanaQuiz({ settings }) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentQuestion, lives, gameOver]);
+  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded]);
 
   const handleAnswer = (option) => {
     if (showResult || !currentQuestion || gameOver) return;
@@ -162,6 +172,12 @@ function KanaQuiz({ settings }) {
     setShowResult(true);
 
     const isCorrect = option.char === currentQuestion.char;
+
+    // Record answer for mastery tracking
+    if (onAnswerRecorded) {
+      onAnswerRecorded(currentQuestion.char, isCorrect);
+    }
+
     if (isCorrect) {
       setScore(score + 1);
       playCorrectSound();

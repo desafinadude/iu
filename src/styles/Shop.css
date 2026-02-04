@@ -1,0 +1,237 @@
+.shop-page {
+  padding: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 15px;
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px var(--color-navy);
+}
+
+.shop-title h2 {
+  font-family: var(--font-comic);
+  font-size: 24px;
+  color: var(--color-navy);
+  margin: 0;
+}
+
+.shop-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin: 4px 0 0 0;
+}
+
+.shop-coins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-yellow);
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 3px solid var(--color-navy);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.shop-coins .coin-icon {
+  font-size: 24px;
+}
+
+.shop-coins .coin-total {
+  font-family: var(--font-comic);
+  font-size: 20px;
+  color: var(--color-navy);
+}
+
+.purchase-message {
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+  border: 2px solid;
+}
+
+.purchase-message.success {
+  background: var(--color-correct-light);
+  border-color: var(--color-correct);
+  color: var(--color-correct-dark);
+}
+
+.purchase-message.error {
+  background: var(--color-wrong-light);
+  border-color: var(--color-wrong);
+  color: var(--color-wrong-dark);
+}
+
+.purchase-message.info {
+  background: #e6f2ff;
+  border-color: #4a90d9;
+  color: #2c5282;
+}
+
+.category-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.category-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-navy);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.category-btn.active {
+  background: var(--color-teal);
+  color: var(--color-cream);
+  border-color: var(--color-teal);
+}
+
+.category-btn:hover:not(.active) {
+  background: var(--color-cream);
+}
+
+.packs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 15px;
+}
+
+.pack-card {
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 3px 3px 0px var(--color-navy);
+  transition: all var(--transition-fast);
+}
+
+.pack-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-navy);
+}
+
+.pack-card.owned {
+  background: linear-gradient(135deg, #e6f9f7 0%, #ccf2ee 100%);
+  border-color: var(--color-teal);
+  box-shadow: 3px 3px 0px var(--color-teal);
+}
+
+.pack-card.cant-afford {
+  opacity: 0.7;
+}
+
+.pack-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.pack-name {
+  font-family: var(--font-comic);
+  font-size: 16px;
+  color: var(--color-navy);
+  margin: 0;
+}
+
+.owned-badge {
+  background: var(--color-teal);
+  color: var(--color-cream);
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.pack-words {
+  margin-bottom: 12px;
+}
+
+.word-preview {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 13px;
+}
+
+.word-preview:last-child {
+  border-bottom: none;
+}
+
+.word-preview.more {
+  color: var(--color-text-muted);
+  font-style: italic;
+  justify-content: center;
+}
+
+.word-japanese {
+  color: var(--color-navy);
+  font-weight: 500;
+}
+
+.word-meaning {
+  color: var(--color-text-muted);
+}
+
+.buy-btn {
+  width: 100%;
+  padding: 10px;
+  font-family: var(--font-comic);
+  font-size: 16px;
+  background: var(--color-yellow);
+  color: var(--color-navy);
+  border: 2px solid var(--color-navy);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.buy-btn:hover:not(:disabled) {
+  background: var(--color-orange);
+  color: var(--color-cream);
+  transform: translateY(-2px);
+}
+
+.buy-btn:disabled {
+  cursor: default;
+}
+
+.buy-btn.owned {
+  background: var(--color-teal);
+  color: var(--color-cream);
+  border-color: var(--color-teal);
+}
+
+.buy-btn .coin-icon {
+  font-size: 18px;
+}
+
+.no-packs {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+}

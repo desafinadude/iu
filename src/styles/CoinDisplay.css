@@ -1,0 +1,22 @@
+.coin-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-yellow);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--color-navy);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.coin-icon {
+  font-size: 18px;
+}
+
+.coin-count {
+  font-family: var(--font-comic);
+  font-size: 16px;
+  color: var(--color-navy);
+  min-width: 24px;
+  text-align: center;
+}

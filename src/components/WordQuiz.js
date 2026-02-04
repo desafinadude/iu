@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { hiraganaData } from '../data/hiraganaData';
-import { katakanaData } from '../data/katakanaData';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { getUnlockedWords } from '../data/vocabPacks';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
 import '../styles/KanaQuiz.css';
 
-const TIMER_DURATION = 10;
+const TIMER_DURATION = 12;
 const MAX_LIVES = 3;
 
-function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
+function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -18,24 +17,16 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   const [lives, setLives] = useState(MAX_LIVES);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [characterWeights, setCharacterWeights] = useState(new Map());
+  const [wordWeights, setWordWeights] = useState(new Map());
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const timerRef = useRef(null);
 
-  const getEnabledChars = useCallback(() => {
-    const allChars = [...hiraganaData, ...katakanaData];
-    return allChars.filter(char => {
-      if (hiraganaData.includes(char)) {
-        if (!settings.includeDakutenHiragana && !char.basic) return false;
-        return settings.enabledHiragana.has(char.char);
-      } else {
-        if (!settings.includeDakutenKatakana && !char.basic) return false;
-        return settings.enabledKatakana.has(char.char);
-      }
-    });
-  }, [settings]);
+  // Get unlocked words
+  const availableWords = useMemo(() => {
+    return getUnlockedWords(unlockedPacks);
+  }, [unlockedPacks]);
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -60,67 +51,69 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   }, []);
 
   const generateQuestion = useCallback(() => {
-    const availableChars = getEnabledChars();
-    if (availableChars.length === 0) {
-      alert('Please enable at least one character in settings!');
+    if (availableWords.length < 4) {
       return;
     }
 
-    let correctAnswer;
+    let correctWord;
 
-    if (availableChars.length >= 10) {
-      // Use weighted selection combining mastery level and session weights
-      const weightedChars = availableChars.map(char => {
-        const masteryWeight = getKanaWeight ? getKanaWeight(char.char) : 1.0;
-        const sessionWeight = characterWeights.get(char.char) || 1.0;
+    if (availableWords.length >= 10) {
+      // Use weighted selection
+      const weightedWords = availableWords.map(word => {
+        const masteryWeight = getWordWeight ? getWordWeight(word.word) : 1.0;
+        const sessionWeight = wordWeights.get(word.word) || 1.0;
         return {
-          ...char,
+          ...word,
           weight: masteryWeight * sessionWeight
         };
       });
 
-      const totalWeight = weightedChars.reduce((sum, char) => sum + char.weight, 0);
+      const totalWeight = weightedWords.reduce((sum, word) => sum + word.weight, 0);
       let random = Math.random() * totalWeight;
 
-      correctAnswer = weightedChars.find(char => {
-        random -= char.weight;
+      correctWord = weightedWords.find(word => {
+        random -= word.weight;
         return random <= 0;
       });
 
-      if (!correctAnswer) {
-        correctAnswer = weightedChars[weightedChars.length - 1];
+      if (!correctWord) {
+        correctWord = weightedWords[weightedWords.length - 1];
       }
     } else {
-      correctAnswer = availableChars[Math.floor(Math.random() * availableChars.length)];
+      correctWord = availableWords[Math.floor(Math.random() * availableWords.length)];
     }
 
     // Update session weights
-    if (availableChars.length >= 10) {
-      setCharacterWeights(prev => {
+    if (availableWords.length >= 10) {
+      setWordWeights(prev => {
         const updated = new Map(prev);
-        updated.set(correctAnswer.char, 0.3);
-        availableChars.forEach(char => {
-          if (char.char !== correctAnswer.char) {
-            const current = updated.get(char.char) || 1.0;
-            updated.set(char.char, Math.min(current + 0.1, 1.5));
+        updated.set(correctWord.word, 0.3);
+        availableWords.forEach(word => {
+          if (word.word !== correctWord.word) {
+            const current = updated.get(word.word) || 1.0;
+            updated.set(word.word, Math.min(current + 0.1, 1.5));
           }
         });
         return updated;
       });
     }
 
+    // Generate wrong answers
     const wrongAnswers = shuffle(
-      availableChars.filter(h => h.char !== correctAnswer.char)
-    ).slice(0, 9);
-    const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
+      availableWords.filter(w => w.word !== correctWord.word)
+    ).slice(0, 3);
 
-    setCurrentQuestion(correctAnswer);
+    const allOptions = shuffle([correctWord, ...wrongAnswers]);
+
+    setCurrentQuestion(correctWord);
     setOptions(allOptions);
     setShowResult(false);
     setSelectedAnswer(null);
     startTimer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getEnabledChars, startTimer]);
+
+    // Speak the word
+    speak(correctWord.word);
+  }, [availableWords, wordWeights, startTimer, getWordWeight]);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -128,10 +121,10 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   }, [stopTimer]);
 
   useEffect(() => {
-    if (hasStarted && !gameOver) {
+    if (hasStarted && !gameOver && availableWords.length >= 4) {
       generateQuestion();
     }
-  }, [generateQuestion, gameOver, hasStarted]);
+  }, [generateQuestion, gameOver, hasStarted, availableWords.length]);
 
   const handleStart = () => {
     setHasStarted(true);
@@ -144,19 +137,18 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       setShowResult(true);
       playWrongSound();
 
-      // Record as wrong answer for mastery tracking
-      if (onAnswerRecorded) {
-        onAnswerRecorded(currentQuestion.char, false);
+      if (onWordAnswerRecorded) {
+        onWordAnswerRecorded(currentQuestion.word, false);
       }
 
       const newLives = lives - 1;
       setLives(newLives);
-      speak(currentQuestion.char);
+      speak(currentQuestion.word);
       if (newLives <= 0) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded]);
+  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onWordAnswerRecorded]);
 
   const handleAnswer = (option) => {
     if (showResult || !currentQuestion || gameOver) return;
@@ -165,11 +157,10 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setSelectedAnswer(option);
     setShowResult(true);
 
-    const isCorrect = option.char === currentQuestion.char;
+    const isCorrect = option.word === currentQuestion.word;
 
-    // Record answer for mastery tracking
-    if (onAnswerRecorded) {
-      onAnswerRecorded(currentQuestion.char, isCorrect);
+    if (onWordAnswerRecorded) {
+      onWordAnswerRecorded(currentQuestion.word, isCorrect);
     }
 
     if (isCorrect) {
@@ -184,7 +175,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       }
     }
 
-    speak(currentQuestion.char);
+    speak(currentQuestion.word);
   };
 
   const handleNext = () => {
@@ -198,18 +189,42 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setScore(0);
     setLives(MAX_LIVES);
     setGameOver(false);
-    setCharacterWeights(new Map());
+    setWordWeights(new Map());
     setHasStarted(false);
   };
 
-  const isCorrect = selectedAnswer?.char === currentQuestion?.char;
+  const handleSpeakerClick = () => {
+    if (currentQuestion) {
+      speak(currentQuestion.word);
+    }
+  };
+
+  const isCorrect = selectedAnswer?.word === currentQuestion?.word;
+
+  // Not enough words
+  if (availableWords.length < 4) {
+    return (
+      <div className="kana-quiz">
+        <div className="quiz-instructions">
+          <h2>Word Quiz</h2>
+          <p>You need at least 4 words to play!</p>
+          <p style={{ fontSize: '14px', marginTop: '10px', color: 'var(--color-text-muted)' }}>
+            Visit the Shop to buy vocab packs with your coins.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasStarted) {
     return (
       <div className="kana-quiz">
         <div className="quiz-instructions">
-          <h2>Reverse Kana Quiz</h2>
-          <p>See the kana, select the sound</p>
+          <h2>Word Quiz</h2>
+          <p>See the word, select the English meaning</p>
+          <p style={{ fontSize: '14px', marginTop: '10px', color: 'var(--color-text-muted)' }}>
+            {availableWords.length} words available
+          </p>
           <button className="start-button" onClick={handleStart}>
             START
           </button>
@@ -224,13 +239,12 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
   return (
     <div className="kana-quiz">
-
       {gameOver && (
         <ResultsModal
           score={score}
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
-          quizType="Reverse Kana"
+          quizType="Word"
         />
       )}
 
@@ -249,18 +263,28 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
             </div>
           )}
         </div>
-        <div className={`character-display font-${settings.fontStyle}`}>
-          {currentQuestion?.char}
-        </div>
+        <button
+          className={`speaker-button font-${settings.fontStyle}`}
+          onClick={handleSpeakerClick}
+          title="Click to hear pronunciation"
+          style={{ fontSize: currentQuestion.word.length > 4 ? '32px' : '48px' }}
+        >
+          {currentQuestion.word}
+        </button>
+        {currentQuestion.furigana && currentQuestion.furigana !== currentQuestion.word && (
+          <div className="furigana-hint" style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginTop: '5px' }}>
+            {currentQuestion.furigana}
+          </div>
+        )}
       </div>
 
-      <div className="options-grid">
+      <div className="options-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
         {options.map((option, index) => (
           <button
             key={index}
-            className={`option-button romaji ${
+            className={`option-button ${
               showResult && currentQuestion
-                ? option.char === currentQuestion.char
+                ? option.word === currentQuestion.word
                   ? 'correct'
                   : option === selectedAnswer
                   ? 'wrong'
@@ -269,8 +293,9 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
             }`}
             onClick={() => handleAnswer(option)}
             disabled={showResult || gameOver}
+            style={{ fontSize: '14px', padding: '15px 10px' }}
           >
-            {option.romaji}
+            {option.translation}
           </button>
         ))}
       </div>
@@ -286,4 +311,4 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   );
 }
 
-export default ReverseKanaQuiz;
+export default WordQuiz;

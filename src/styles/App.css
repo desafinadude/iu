@@ -55,6 +55,12 @@
   display: none;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .menu-button {
   background: var(--color-orange);
   border: 3px solid var(--color-cream);

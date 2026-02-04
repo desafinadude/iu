@@ -9,7 +9,7 @@ import '../styles/HandwritingPractice.css';
 const TIMER_DURATION = 10;
 const MAX_LIVES = 3;
 
-function HandwritingPractice({ settings }) {
+function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
   const canvasRef = useRef(null);
   const [currentChar, setCurrentChar] = useState(null);
   const [score, setScore] = useState(0);
@@ -76,20 +76,24 @@ function HandwritingPractice({ settings }) {
     let char;
     
     if (availableChars.length >= 10) {
-      // Use weighted selection for larger pools
-      const weightedChars = availableChars.map(character => ({
-        ...character,
-        weight: characterWeights.get(character.char) || 1.0
-      }));
-      
+      // Use weighted selection combining mastery level and session weights
+      const weightedChars = availableChars.map(character => {
+        const masteryWeight = getKanaWeight ? getKanaWeight(character.char) : 1.0;
+        const sessionWeight = characterWeights.get(character.char) || 1.0;
+        return {
+          ...character,
+          weight: masteryWeight * sessionWeight
+        };
+      });
+
       const totalWeight = weightedChars.reduce((sum, character) => sum + character.weight, 0);
       let random = Math.random() * totalWeight;
-      
+
       char = weightedChars.find(character => {
         random -= character.weight;
         return random <= 0;
       });
-      
+
       // Fallback in case of rounding errors
       if (!char) {
         char = weightedChars[weightedChars.length - 1];
@@ -99,11 +103,11 @@ function HandwritingPractice({ settings }) {
       char = availableChars[Math.floor(Math.random() * availableChars.length)];
     }
 
-    // Update weights - reduce weight of selected character, increase others slightly
+    // Update session weights
     if (availableChars.length >= 10) {
       setCharacterWeights(prev => {
         const updated = new Map(prev);
-        updated.set(char.char, 0.3); // Much less likely to repeat
+        updated.set(char.char, 0.3); // Much less likely to repeat in this session
         // Slowly increase weights of other characters
         availableChars.forEach(character => {
           if (character.char !== char.char) {
@@ -143,6 +147,12 @@ function HandwritingPractice({ settings }) {
       setShowResult(true);
       setShowCharacter(true);
       playWrongSound();
+
+      // Record as wrong answer for mastery tracking
+      if (onAnswerRecorded) {
+        onAnswerRecorded(currentChar.char, false);
+      }
+
       const newLives = lives - 1;
       setLives(newLives);
       speak(currentChar.char);
@@ -150,7 +160,7 @@ function HandwritingPractice({ settings }) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentChar, lives, gameOver]);
+  }, [timeLeft, showResult, currentChar, lives, gameOver, onAnswerRecorded]);
 
   const setupCanvas = () => {
     const canvas = canvasRef.current;
@@ -367,6 +377,11 @@ function HandwritingPractice({ settings }) {
         playCorrectSound();
         setCandidateClass('candidates correct');
         setCandidates(`✅ Correct! ${correctChar} (${currentChar.romaji})`);
+
+        // Record correct answer for mastery tracking
+        if (onAnswerRecorded) {
+          onAnswerRecorded(currentChar.char, true);
+        }
       } else {
         // Wrong - lose a life
         setShowResult(true);
@@ -375,6 +390,12 @@ function HandwritingPractice({ settings }) {
         setLives(newLives);
         setCandidateClass('candidates incorrect');
         setCandidates(`❌ Try again! Looking for: ${correctChar} (${currentChar.romaji})`);
+
+        // Record wrong answer for mastery tracking
+        if (onAnswerRecorded) {
+          onAnswerRecorded(currentChar.char, false);
+        }
+
         if (newLives <= 0) {
           setGameOver(true);
         }
