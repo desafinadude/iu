@@ -9,7 +9,7 @@ import '../styles/KanaQuiz.css';
 const TIMER_DURATION = 12;
 const MAX_LIVES = 3;
 
-function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight }) {
+function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight, onCoinsAwarded }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -245,6 +245,7 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
           quizType="Word"
+          onCoinsAwarded={onCoinsAwarded}
         />
       )}
 
@@ -263,19 +264,22 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
             </div>
           )}
         </div>
-        <button
-          className={`speaker-button font-${settings.fontStyle}`}
-          onClick={handleSpeakerClick}
-          title="Click to hear pronunciation"
-          style={{ fontSize: currentQuestion.word.length > 4 ? '32px' : '48px' }}
-        >
-          {currentQuestion.word}
-        </button>
-        {currentQuestion.furigana && currentQuestion.furigana !== currentQuestion.word && (
-          <div className="furigana-hint" style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginTop: '5px' }}>
-            {currentQuestion.furigana}
-          </div>
-        )}
+        <div className="word-box-container">
+          <button
+            className={`word-quiz-box font-${settings.fontStyle}`}
+            onClick={handleSpeakerClick}
+            title="Click to hear pronunciation"
+          >
+            <div className="word-quiz-text" style={{ fontSize: currentQuestion.word.length > 4 ? '32px' : '48px' }}>
+              {currentQuestion.word}
+            </div>
+          </button>
+          {currentQuestion.furigana && currentQuestion.furigana !== currentQuestion.word && (
+            <div className="furigana-hint" style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginTop: '8px' }}>
+              {currentQuestion.furigana}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="options-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>

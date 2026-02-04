@@ -83,7 +83,7 @@ export function useProgress() {
     return result;
   }, []);
 
-  // Word answer recording
+  // Word answer recording (no coins awarded per answer - coins awarded at quiz end)
   const recordWordAnswer = useCallback((wordKey, isCorrect) => {
     let result = { leveledUp: false, leveledDown: false, newLevel: 0, coinsEarned: 0 };
 
@@ -95,7 +95,7 @@ export function useProgress() {
 
       return {
         ...prev,
-        coins: prev.coins + answerResult.coinsEarned,
+        // Don't add coins here - they're awarded at quiz completion
         wordProgress: {
           ...prev.wordProgress,
           [wordKey]: answerResult.newProgress,
@@ -178,6 +178,13 @@ export function useProgress() {
     return success;
   }, []);
 
+  const awardCoins = useCallback((amount) => {
+    setProgress(prev => ({
+      ...prev,
+      coins: prev.coins + amount,
+    }));
+  }, []);
+
   const resetProgress = useCallback(() => {
     const fresh = initializeProgress(hiraganaData, katakanaData);
     setProgress({
@@ -203,6 +210,7 @@ export function useProgress() {
     purchasePack,
     isPackUnlocked,
     spendCoins,
+    awardCoins,
     resetProgress,
   };
 }
