@@ -13,8 +13,8 @@ function HomePage({ onActivitySelect }) {
     { id: 'wordSearch', label: 'Word Search' },
     { id: 'shop', label: 'Vocab Shop' },
     { id: 'collection', label: 'My Collection' },
-    { id: 'koiPond', label: 'Koi Pond' },
-    { id: 'fishShop', label: 'Fish Shop' }
+    // { id: 'koiPond', label: 'Koi Pond' }, // Hidden for now
+    // { id: 'fishShop', label: 'Fish Shop' } // Hidden for now
   ];
 
   return (
