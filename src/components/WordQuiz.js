@@ -164,7 +164,7 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
     }
 
     if (isCorrect) {
-      setScore(score + 1);
+      setScore(prev => prev + 1);
       playCorrectSound();
     } else {
       const newLives = lives - 1;

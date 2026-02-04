@@ -3,16 +3,16 @@ import '../styles/HomePage.css';
 
 function HomePage({ onActivitySelect }) {
   const activities = [
-    { id: 'kana', label: 'Kana Quiz' },
-    { id: 'reverseKana', label: 'Reverse Kana Quiz' },
-    { id: 'kanaMatch', label: 'Kana Matching' },
-    { id: 'wordQuiz', label: 'Word Quiz' },
+    { id: 'kana', label: 'Kana Quiz', emoji: '📝' },
+    { id: 'reverseKana', label: 'Reverse Kana', emoji: '🔄' },
+    { id: 'kanaMatch', label: 'Kana Match', emoji: '🎯' },
+    { id: 'wordQuiz', label: 'Word Quiz', emoji: '💬' },
     // { id: 'kanji', label: 'Kanji Quiz' }, // Disabled for now
-    { id: 'vocab', label: 'Vocabulary' },
-    { id: 'handwriting', label: 'Handwriting' },
-    { id: 'wordSearch', label: 'Word Search' },
-    { id: 'shop', label: 'Vocab Shop' },
-    { id: 'collection', label: 'My Collection' },
+    { id: 'vocab', label: 'Vocabulary', emoji: '📚' },
+    { id: 'handwriting', label: 'Handwriting', emoji: '✍️' },
+    { id: 'wordSearch', label: 'Word Search', emoji: '🔍' },
+    { id: 'shop', label: 'Vocab Shop', emoji: '🏪' },
+    { id: 'collection', label: 'Collection', emoji: '⭐' },
     // { id: 'koiPond', label: 'Koi Pond' }, // Hidden for now
     // { id: 'fishShop', label: 'Fish Shop' } // Hidden for now
   ];
@@ -26,7 +26,8 @@ function HomePage({ onActivitySelect }) {
             className="activity-button"
             onClick={() => onActivitySelect(activity.id)}
           >
-            {activity.label}
+            <span className="activity-emoji">{activity.emoji}</span>
+            <span className="activity-label">{activity.label}</span>
           </button>
         ))}
       </div>
