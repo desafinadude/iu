@@ -58,6 +58,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
           },
         },
         starEarned: false,
+        newConsecutive: 0,
         quizType,
         coinsEarned: 0,
       };
@@ -78,6 +79,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
           },
         },
         starEarned: true,
+        newConsecutive: STAR_THRESHOLD,
         quizType,
         coinsEarned: COINS_PER_STAR,
       };
@@ -95,6 +97,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
         },
       },
       starEarned: false,
+      newConsecutive,
       quizType,
       coinsEarned: 0,
     };
@@ -115,6 +118,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
     starEarned: false,
     streakLost: hadStreak,
     lostStreak: hadStreak ? quizProgress.consecutiveCorrect : 0,
+    newConsecutive: 0,
     quizType,
     coinsEarned: 0,
   };

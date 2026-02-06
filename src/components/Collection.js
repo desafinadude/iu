@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
-import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail } from '../utils/progressHelpers';
+import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, STAR_THRESHOLD } from '../utils/progressHelpers';
 import '../styles/Collection.css';
 
 function Collection({ kanaProgress, wordProgress = {}, coins }) {
@@ -218,27 +218,36 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
                 <div className="kana-romaji">{kana.romaji}</div>
                 <div className="kana-stars-row">
                   <div className="star-col" title="Kana Quiz">
-                    <span className={`star-icon ${stars.kana ? 'earned' : 'empty'}`}>
+                    <span
+                      className={`star-icon ${stars.kana ? 'earned' : 'empty'}`}
+                      data-progress={stars.kana ? 100 : Math.floor((streaks.kana / STAR_THRESHOLD) * 100)}
+                    >
                       {'\u2605'}
                     </span>
                     <span className="star-count">
-                      {stars.kana ? '\u2713' : streaks.kana}
+                      {stars.kana ? '\u2713' : STAR_THRESHOLD - streaks.kana}
                     </span>
                   </div>
                   <div className="star-col" title="Reverse Quiz">
-                    <span className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`}>
+                    <span
+                      className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`}
+                      data-progress={stars.reverse ? 100 : Math.floor((streaks.reverse / STAR_THRESHOLD) * 100)}
+                    >
                       {'\u2605'}
                     </span>
                     <span className="star-count">
-                      {stars.reverse ? '\u2713' : streaks.reverse}
+                      {stars.reverse ? '\u2713' : STAR_THRESHOLD - streaks.reverse}
                     </span>
                   </div>
                   <div className="star-col" title="Handwriting">
-                    <span className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`}>
+                    <span
+                      className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`}
+                      data-progress={stars.handwriting ? 100 : Math.floor((streaks.handwriting / STAR_THRESHOLD) * 100)}
+                    >
                       {'\u2605'}
                     </span>
                     <span className="star-count">
-                      {stars.handwriting ? '\u2713' : streaks.handwriting}
+                      {stars.handwriting ? '\u2713' : STAR_THRESHOLD - streaks.handwriting}
                     </span>
                   </div>
                 </div>

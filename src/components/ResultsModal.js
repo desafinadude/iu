@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/ResultsModal.css';
 
-function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoinsAwarded }) {
+function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoinsAwarded, roundEvents = [] }) {
   const [coinsAwarded, setCoinsAwarded] = useState(false);
   const accuracy = questionsAnswered > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
+
+  // Extract stars earned and streaks lost from round events
+  const starsEarned = roundEvents.filter(e => e.type === 'star');
+  const streaksLost = roundEvents.filter(e => e.type === 'reset');
 
   const getMessage = () => {
     if (accuracy >= 90) return "Amazing!";
@@ -60,6 +64,33 @@ function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoins
           <div className="coins-earned">
             <span className="coin-icon">&#x1FA99;</span>
             <span className="coins-amount">+{coinsEarned}</span>
+          </div>
+        )}
+
+        {(starsEarned.length > 0 || streaksLost.length > 0) && (
+          <div className="round-summary">
+            {starsEarned.length > 0 && (
+              <div className="summary-section stars-section">
+                <div className="summary-title">⭐ Stars Earned</div>
+                <div className="summary-items">
+                  {starsEarned.map((event, idx) => (
+                    <span key={idx} className="summary-kana">{event.kana}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {streaksLost.length > 0 && (
+              <div className="summary-section streaks-section">
+                <div className="summary-title">🔄 Streaks Lost</div>
+                <div className="summary-items">
+                  {streaksLost.map((event, idx) => (
+                    <span key={idx} className="summary-kana">
+                      {event.kana} <span className="lost-count">({event.lostStreak})</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
