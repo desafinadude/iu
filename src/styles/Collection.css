@@ -190,8 +190,15 @@
 .kana-stars-row {
   display: flex;
   justify-content: center;
-  gap: 3px;
+  gap: 6px;
   margin-top: 4px;
+}
+
+.star-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
 }
 
 .star-icon {
@@ -208,8 +215,24 @@
   color: #ccc;
 }
 
+.star-count {
+  font-size: 9px;
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+.star-icon.earned + .star-count {
+  color: var(--color-teal);
+  font-weight: 600;
+}
+
 .kana-card.stars-none .star-icon.empty {
   color: #bbb;
+}
+
+.kana-card.stars-none .star-count {
+  color: #aaa;
 }
 
 /* Legacy 5-star display for words */

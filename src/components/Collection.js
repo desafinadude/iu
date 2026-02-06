@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
-import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, STAR_THRESHOLD } from '../utils/progressHelpers';
+import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail } from '../utils/progressHelpers';
 import '../styles/Collection.css';
 
 function Collection({ kanaProgress, wordProgress = {}, coins }) {
@@ -77,13 +77,13 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
     return '\u2605'.repeat(level) + '\u2606'.repeat(5 - level);
   };
 
-  const getBestStreak = (progress) => {
-    if (!progress || !progress.kana) return 0;
-    let best = 0;
-    if (!progress.kana.earned) best = Math.max(best, progress.kana.consecutiveCorrect);
-    if (!progress.reverse.earned) best = Math.max(best, progress.reverse.consecutiveCorrect);
-    if (!progress.handwriting.earned) best = Math.max(best, progress.handwriting.consecutiveCorrect);
-    return best;
+  const getStreaks = (progress) => {
+    if (!progress || !progress.kana) return { kana: 0, reverse: 0, handwriting: 0 };
+    return {
+      kana: progress.kana.consecutiveCorrect,
+      reverse: progress.reverse.consecutiveCorrect,
+      handwriting: progress.handwriting.consecutiveCorrect,
+    };
   };
 
   const filteredHiragana = filterKana(hiraganaData);
@@ -208,7 +208,7 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
             const progress = kanaProgress[kana.char];
             const stars = getStarDetail(progress);
             const starCount = getStarCount(progress);
-            const bestStreak = getBestStreak(progress);
+            const streaks = getStreaks(progress);
             return (
               <div
                 key={kana.char}
@@ -217,26 +217,31 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
                 <div className="kana-char">{kana.char}</div>
                 <div className="kana-romaji">{kana.romaji}</div>
                 <div className="kana-stars-row">
-                  <span className={`star-icon ${stars.kana ? 'earned' : 'empty'}`} title="Kana Quiz">
-                    {'\u2605'}
-                  </span>
-                  <span className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`} title="Reverse Quiz">
-                    {'\u2605'}
-                  </span>
-                  <span className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`} title="Handwriting">
-                    {'\u2605'}
-                  </span>
-                </div>
-                {starCount < 3 && bestStreak > 0 && (
-                  <div className="kana-progress-bar">
-                    <div
-                      className="kana-progress-fill"
-                      style={{
-                        width: `${(bestStreak / STAR_THRESHOLD) * 100}%`
-                      }}
-                    />
+                  <div className="star-col" title="Kana Quiz">
+                    <span className={`star-icon ${stars.kana ? 'earned' : 'empty'}`}>
+                      {'\u2605'}
+                    </span>
+                    <span className="star-count">
+                      {stars.kana ? '\u2713' : streaks.kana}
+                    </span>
                   </div>
-                )}
+                  <div className="star-col" title="Reverse Quiz">
+                    <span className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`}>
+                      {'\u2605'}
+                    </span>
+                    <span className="star-count">
+                      {stars.reverse ? '\u2713' : streaks.reverse}
+                    </span>
+                  </div>
+                  <div className="star-col" title="Handwriting">
+                    <span className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`}>
+                      {'\u2605'}
+                    </span>
+                    <span className="star-count">
+                      {stars.handwriting ? '\u2713' : streaks.handwriting}
+                    </span>
+                  </div>
+                </div>
               </div>
             );
           })

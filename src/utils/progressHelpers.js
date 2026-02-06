@@ -101,6 +101,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
   }
 
   // Wrong answer - reset streak
+  const hadStreak = !quizProgress.earned && quizProgress.consecutiveCorrect > 0;
   return {
     newProgress: {
       ...currentProgress,
@@ -112,6 +113,8 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
       },
     },
     starEarned: false,
+    streakLost: hadStreak,
+    lostStreak: hadStreak ? quizProgress.consecutiveCorrect : 0,
     quizType,
     coinsEarned: 0,
   };
