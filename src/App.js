@@ -16,6 +16,7 @@ import Shop from './components/Shop';
 import WordQuiz from './components/WordQuiz';
 import CoinDisplay from './components/CoinDisplay';
 import LevelUpModal from './components/LevelUpModal';
+import StreakLostModal from './components/StreakLostModal';
 import KoiPond from './components/KoiPond';
 import FishShop from './components/FishShop';
 import { useProgress } from './hooks/useProgress';
@@ -73,6 +74,7 @@ function App() {
     awardCoins,
   } = useProgress();
   const [levelUpInfo, setLevelUpInfo] = useState(null);
+  const [streakLostInfo, setStreakLostInfo] = useState(null);
 
   // Callback for quiz components to record answers (now with quizType)
   const handleAnswerRecorded = useCallback((char, isCorrect, quizType) => {
@@ -82,6 +84,12 @@ function App() {
         kana: char,
         quizType: result.quizType,
         coinsEarned: result.coinsEarned,
+      });
+    } else if (result.streakLost) {
+      setStreakLostInfo({
+        kana: char,
+        quizType: result.quizType,
+        lostStreak: result.lostStreak,
       });
     }
     return result;
@@ -285,6 +293,15 @@ function App() {
           quizType={levelUpInfo.quizType}
           coinsEarned={levelUpInfo.coinsEarned}
           onClose={() => setLevelUpInfo(null)}
+        />
+      )}
+
+      {streakLostInfo && (
+        <StreakLostModal
+          kana={streakLostInfo.kana}
+          quizType={streakLostInfo.quizType}
+          lostStreak={streakLostInfo.lostStreak}
+          onClose={() => setStreakLostInfo(null)}
         />
       )}
     </div>
