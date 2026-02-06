@@ -10,7 +10,7 @@ import '../styles/KanaQuiz.css';
 const TIMER_DURATION = 10;
 const MAX_LIVES = 3;
 
-function KanaMatching({ settings, onAnswerRecorded, getKanaWeight }) {
+function KanaMatching({ settings }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -135,12 +135,6 @@ function KanaMatching({ settings, onAnswerRecorded, getKanaWeight }) {
       setShowResult(true);
       playWrongSound();
 
-      // Record as wrong answer for mastery tracking (both kana)
-      if (onAnswerRecorded) {
-        onAnswerRecorded(currentQuestion.char, false);
-        onAnswerRecorded(currentQuestion.correct, false);
-      }
-
       const newLives = lives - 1;
       setLives(newLives);
       speak(currentQuestion.char);
@@ -148,7 +142,7 @@ function KanaMatching({ settings, onAnswerRecorded, getKanaWeight }) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded]);
+  }, [timeLeft, showResult, currentQuestion, lives, gameOver]);
 
   const handleAnswer = (answer) => {
     if (showResult || !currentQuestion || gameOver) return;
@@ -158,12 +152,6 @@ function KanaMatching({ settings, onAnswerRecorded, getKanaWeight }) {
     setShowResult(true);
 
     const isCorrect = answer === currentQuestion.correct;
-
-    // Record answer for mastery tracking (both the question and answer kana)
-    if (onAnswerRecorded) {
-      onAnswerRecorded(currentQuestion.char, isCorrect);
-      onAnswerRecorded(currentQuestion.correct, isCorrect);
-    }
 
     if (isCorrect) {
       setScore(score + 1);

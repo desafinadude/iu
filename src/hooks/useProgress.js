@@ -6,7 +6,9 @@ import {
   processAnswer,
   createDefaultKanaProgress,
   createDefaultWordProgress,
-  getWeightForLevel,
+  processWordAnswer,
+  getWeightForQuizType,
+  getWeightForWordLevel,
   getProgressStats,
   getWordProgressStats,
   VOCAB_PACK_PRICE,
@@ -14,12 +16,35 @@ import {
 
 const STORAGE_KEY = 'koikataProgress';
 
+function needsMigration(parsed) {
+  // Detect old v1 format: kana progress has 'level' field instead of quiz-type sub-objects
+  if (parsed.version === 2) return false;
+  if (!parsed.kanaProgress) return false;
+  const firstChar = Object.values(parsed.kanaProgress)[0];
+  if (!firstChar) return false;
+  // Old format has { level, consecutiveCorrect, ... } directly
+  // New format has { kana: { ... }, reverse: { ... }, handwriting: { ... } }
+  return typeof firstChar.level === 'number' || !firstChar.kana;
+}
+
 function loadProgress() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Ensure all kana have progress entries (handles new kana added later)
+
+      if (needsMigration(parsed)) {
+        // Fresh start: reset kana progress, keep coins and word/pack data
+        const defaultProgress = initializeProgress(hiraganaData, katakanaData);
+        return {
+          ...defaultProgress,
+          coins: parsed.coins || 0,
+          unlockedPacks: parsed.unlockedPacks || [],
+          wordProgress: parsed.wordProgress || {},
+        };
+      }
+
+      // v2 format - merge with defaults to handle newly added kana
       const defaultProgress = initializeProgress(hiraganaData, katakanaData);
       return {
         ...defaultProgress,
@@ -28,7 +53,6 @@ function loadProgress() {
           ...defaultProgress.kanaProgress,
           ...parsed.kanaProgress,
         },
-        // Ensure vocab fields exist
         unlockedPacks: parsed.unlockedPacks || [],
         wordProgress: parsed.wordProgress || {},
       };
@@ -60,13 +84,13 @@ export function useProgress() {
     saveProgress(progress);
   }, [progress]);
 
-  // Kana answer recording
-  const recordAnswer = useCallback((char, isCorrect) => {
-    let result = { leveledUp: false, leveledDown: false, newLevel: 0, coinsEarned: 0 };
+  // Kana answer recording - now requires quizType
+  const recordAnswer = useCallback((char, isCorrect, quizType) => {
+    let result = { starEarned: false, quizType, coinsEarned: 0 };
 
     setProgress(prev => {
       const currentKanaProgress = prev.kanaProgress[char] || createDefaultKanaProgress();
-      const answerResult = processAnswer(currentKanaProgress, isCorrect);
+      const answerResult = processAnswer(currentKanaProgress, quizType, isCorrect);
 
       result = answerResult;
 
@@ -85,17 +109,16 @@ export function useProgress() {
 
   // Word answer recording (no coins awarded per answer - coins awarded at quiz end)
   const recordWordAnswer = useCallback((wordKey, isCorrect) => {
-    let result = { leveledUp: false, leveledDown: false, newLevel: 0, coinsEarned: 0 };
+    let result = { leveledUp: false, leveledDown: false, newLevel: 0 };
 
     setProgress(prev => {
       const currentWordProgress = prev.wordProgress[wordKey] || createDefaultWordProgress();
-      const answerResult = processAnswer(currentWordProgress, isCorrect);
+      const answerResult = processWordAnswer(currentWordProgress, isCorrect);
 
       result = answerResult;
 
       return {
         ...prev,
-        // Don't add coins here - they're awarded at quiz completion
         wordProgress: {
           ...prev.wordProgress,
           [wordKey]: answerResult.newProgress,
@@ -110,9 +133,9 @@ export function useProgress() {
     return progress.kanaProgress[char] || createDefaultKanaProgress();
   }, [progress.kanaProgress]);
 
-  const getKanaWeight = useCallback((char) => {
+  const getKanaWeight = useCallback((char, quizType) => {
     const kanaProgress = progress.kanaProgress[char] || createDefaultKanaProgress();
-    return getWeightForLevel(kanaProgress.level);
+    return getWeightForQuizType(kanaProgress, quizType);
   }, [progress.kanaProgress]);
 
   const getWordProgress = useCallback((wordKey) => {
@@ -121,7 +144,7 @@ export function useProgress() {
 
   const getWordWeight = useCallback((wordKey) => {
     const wordProg = progress.wordProgress[wordKey] || createDefaultWordProgress();
-    return getWeightForLevel(wordProg.level);
+    return getWeightForWordLevel(wordProg.level);
   }, [progress.wordProgress]);
 
   const getStats = useCallback(() => {
@@ -137,11 +160,9 @@ export function useProgress() {
     let success = false;
 
     setProgress(prev => {
-      // Check if already owned
       if (prev.unlockedPacks.includes(packId)) {
         return prev;
       }
-      // Check if enough coins
       if (prev.coins < price) {
         return prev;
       }

@@ -113,7 +113,8 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
 
     // Speak the word
     speak(correctWord.word);
-  }, [availableWords, wordWeights, startTimer, getWordWeight]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableWords, startTimer]);
 
   // Clean up timer on unmount
   useEffect(() => {

@@ -147,7 +147,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
       // Record as wrong answer for mastery tracking
       if (onAnswerRecorded) {
-        onAnswerRecorded(currentQuestion.char, false);
+        onAnswerRecorded(currentQuestion.char, false, 'reverse');
       }
 
       const newLives = lives - 1;
@@ -170,7 +170,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
     // Record answer for mastery tracking
     if (onAnswerRecorded) {
-      onAnswerRecorded(currentQuestion.char, isCorrect);
+      onAnswerRecorded(currentQuestion.char, isCorrect, 'reverse');
     }
 
     if (isCorrect) {

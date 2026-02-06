@@ -74,13 +74,13 @@ function App() {
   } = useProgress();
   const [levelUpInfo, setLevelUpInfo] = useState(null);
 
-  // Callback for quiz components to record answers
-  const handleAnswerRecorded = useCallback((char, isCorrect) => {
-    const result = recordAnswer(char, isCorrect);
-    if (result.leveledUp) {
+  // Callback for quiz components to record answers (now with quizType)
+  const handleAnswerRecorded = useCallback((char, isCorrect, quizType) => {
+    const result = recordAnswer(char, isCorrect, quizType);
+    if (result.starEarned) {
       setLevelUpInfo({
         kana: char,
-        newLevel: result.newLevel,
+        quizType: result.quizType,
         coinsEarned: result.coinsEarned,
       });
     }
@@ -210,21 +210,19 @@ function App() {
           <KanaQuiz
             settings={settings}
             onAnswerRecorded={handleAnswerRecorded}
-            getKanaWeight={getKanaWeight}
+            getKanaWeight={(char) => getKanaWeight(char, 'kana')}
           />
         )}
         {currentView === 'reverseKana' && (
           <ReverseKanaQuiz
             settings={settings}
             onAnswerRecorded={handleAnswerRecorded}
-            getKanaWeight={getKanaWeight}
+            getKanaWeight={(char) => getKanaWeight(char, 'reverse')}
           />
         )}
         {currentView === 'kanaMatch' && (
           <KanaMatching
             settings={settings}
-            onAnswerRecorded={handleAnswerRecorded}
-            getKanaWeight={getKanaWeight}
           />
         )}
         {/* currentView === 'kanji' && <KanjiQuiz settings={settings} /> */}
@@ -235,7 +233,7 @@ function App() {
           <HandwritingPractice
             settings={settings}
             onAnswerRecorded={handleAnswerRecorded}
-            getKanaWeight={getKanaWeight}
+            getKanaWeight={(char) => getKanaWeight(char, 'handwriting')}
           />
         )}
         {currentView === 'wordSearch' && (
@@ -284,7 +282,7 @@ function App() {
       {levelUpInfo && (
         <LevelUpModal
           kana={levelUpInfo.kana}
-          newLevel={levelUpInfo.newLevel}
+          quizType={levelUpInfo.quizType}
           coinsEarned={levelUpInfo.coinsEarned}
           onClose={() => setLevelUpInfo(null)}
         />

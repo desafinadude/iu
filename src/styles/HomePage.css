@@ -102,16 +102,17 @@
 @media (max-width: 768px) {
   .home-page {
     padding: 1rem;
+    overflow-y: auto;
   }
 
   .activities-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     padding-top: 1rem;
   }
 
   .activity-button {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 0.75rem;
     min-height: 70px;
     font-size: 1.2rem;
     box-shadow: 3px 3px 0px var(--color-navy);
@@ -122,7 +123,7 @@
   }
 
   .activity-label {
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
 
   .activity-button:hover {
@@ -137,29 +138,30 @@
   }
 
   .activities-grid {
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
   }
 
   .activity-button {
-    padding: 1rem 1.25rem;
-    min-height: 60px;
-    font-size: 1.1rem;
+    padding: 0.75rem 0.5rem;
+    min-height: 55px;
+    font-size: 1rem;
     border-width: 3px;
     box-shadow: 2px 2px 0px var(--color-navy);
-    gap: 6px;
+    gap: 4px;
   }
 
   .activity-emoji {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
   .activity-label {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
   }
 
   .activity-button::before {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
   .activity-button:hover {
