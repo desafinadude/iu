@@ -34,8 +34,16 @@ const kanaOnlyJlptWords = transformedVocabulary.filter(entry =>
   isOnlyKanaCharacters(entry.word)
 );
 
-// Combine kana-only JLPT words with katakana vocabulary
-export const vocabularyData = [...kanaOnlyJlptWords, ...katakanaVocabulary];
+// Combine kana-only JLPT words with katakana vocabulary, removing duplicates
+const combinedVocabulary = [...kanaOnlyJlptWords, ...katakanaVocabulary];
+const seenWords = new Set();
+export const vocabularyData = combinedVocabulary.filter(entry => {
+  if (seenWords.has(entry.word)) {
+    return false;
+  }
+  seenWords.add(entry.word);
+  return true;
+});
 
 // Export essential kanji list for kanji-specific quizzes  
 export const essentialKanji = jlptN5Data.essentialKanji;

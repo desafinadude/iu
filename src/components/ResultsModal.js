@@ -56,7 +56,7 @@ function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoins
           </div>
         </div>
 
-        {coinsEarned > 0 && (
+        {onCoinsAwarded && coinsEarned > 0 && (
           <div className="coins-earned">
             <span className="coin-icon">&#x1FA99;</span>
             <span className="coins-amount">+{coinsEarned}</span>

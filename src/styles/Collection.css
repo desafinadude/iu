@@ -147,28 +147,28 @@
   box-shadow: 4px 4px 0px var(--color-navy);
 }
 
-/* Level-based card styling */
-.kana-card.level-unseen {
+/* Star-count-based card styling */
+.kana-card.stars-none {
   background: #e8e8e8;
   border-color: #999;
   box-shadow: 2px 2px 0px #999;
 }
 
-.kana-card.level-unseen .kana-char {
+.kana-card.stars-none .kana-char {
   color: #888;
 }
 
-.kana-card.level-learning {
+.kana-card.stars-one {
   background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
   border-color: var(--color-yellow);
 }
 
-.kana-card.level-proficient {
+.kana-card.stars-two {
   background: linear-gradient(135deg, #e6f9f7 0%, #ccf2ee 100%);
   border-color: var(--color-teal);
 }
 
-.kana-card.level-mastered {
+.kana-card.stars-three {
   background: linear-gradient(135deg, #fff9e6 0%, #ffe066 100%);
   border-color: #d4a800;
   box-shadow: 2px 2px 0px #d4a800, 0 0 10px rgba(255, 209, 102, 0.5);
@@ -186,6 +186,33 @@
   margin-top: 2px;
 }
 
+/* 3-star row for kana cards */
+.kana-stars-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.star-icon {
+  font-size: 12px;
+  transition: color 0.3s ease;
+}
+
+.star-icon.earned {
+  color: var(--color-yellow);
+  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.star-icon.empty {
+  color: #ccc;
+}
+
+.kana-card.stars-none .star-icon.empty {
+  color: #bbb;
+}
+
+/* Legacy 5-star display for words */
 .kana-stars {
   font-size: 10px;
   color: var(--color-yellow);
@@ -194,7 +221,7 @@
   letter-spacing: 1px;
 }
 
-.kana-card.level-unseen .kana-stars {
+.kana-card.stars-none .kana-stars {
   color: #ccc;
   text-shadow: none;
 }

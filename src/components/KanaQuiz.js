@@ -153,7 +153,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
       // Record as wrong answer for mastery tracking
       if (onAnswerRecorded) {
-        onAnswerRecorded(currentQuestion.char, false);
+        onAnswerRecorded(currentQuestion.char, false, 'kana');
       }
 
       const newLives = lives - 1;
@@ -176,7 +176,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
     // Record answer for mastery tracking
     if (onAnswerRecorded) {
-      onAnswerRecorded(currentQuestion.char, isCorrect);
+      onAnswerRecorded(currentQuestion.char, isCorrect, 'kana');
     }
 
     if (isCorrect) {

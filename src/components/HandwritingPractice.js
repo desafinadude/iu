@@ -150,7 +150,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
       // Record as wrong answer for mastery tracking
       if (onAnswerRecorded) {
-        onAnswerRecorded(currentChar.char, false);
+        onAnswerRecorded(currentChar.char, false, 'handwriting');
       }
 
       const newLives = lives - 1;
@@ -380,7 +380,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
         // Record correct answer for mastery tracking
         if (onAnswerRecorded) {
-          onAnswerRecorded(currentChar.char, true);
+          onAnswerRecorded(currentChar.char, true, 'handwriting');
         }
       } else {
         // Wrong - lose a life
@@ -393,7 +393,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
         // Record wrong answer for mastery tracking
         if (onAnswerRecorded) {
-          onAnswerRecorded(currentChar.char, false);
+          onAnswerRecorded(currentChar.char, false, 'handwriting');
         }
 
         if (newLives <= 0) {
