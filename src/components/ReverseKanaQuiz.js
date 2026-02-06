@@ -5,6 +5,8 @@ import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
+import StreakFlash, { useStreakFlash } from './StreakFlash';
+import { STAR_THRESHOLD } from '../utils/progressHelpers';
 import '../styles/KanaQuiz.css';
 
 const TIMER_DURATION = 10;
@@ -22,7 +24,9 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [roundEvents, setRoundEvents] = useState([]);
   const timerRef = useRef(null);
+  const { flash, showProgress, showReset } = useStreakFlash();
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -147,7 +151,17 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
       // Record as wrong answer for mastery tracking
       if (onAnswerRecorded) {
-        onAnswerRecorded(currentQuestion.char, false, 'reverse');
+        const result = onAnswerRecorded(currentQuestion.char, false, 'reverse');
+
+        // Show flash and track event
+        if (result.streakLost) {
+          showReset(STAR_THRESHOLD);
+          setRoundEvents(prev => [...prev, {
+            kana: currentQuestion.char,
+            type: 'reset',
+            lostStreak: result.lostStreak
+          }]);
+        }
       }
 
       const newLives = lives - 1;
@@ -157,7 +171,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded]);
+  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded, showReset]);
 
   const handleAnswer = (option) => {
     if (showResult || !currentQuestion || gameOver) return;
@@ -170,7 +184,24 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
     // Record answer for mastery tracking
     if (onAnswerRecorded) {
-      onAnswerRecorded(currentQuestion.char, isCorrect, 'reverse');
+      const result = onAnswerRecorded(currentQuestion.char, isCorrect, 'reverse');
+
+      // Show flash and track events
+      if (result.starEarned) {
+        setRoundEvents(prev => [...prev, {
+          kana: currentQuestion.char,
+          type: 'star'
+        }]);
+      } else if (isCorrect && result.newConsecutive > 0) {
+        showProgress(result.newConsecutive, STAR_THRESHOLD);
+      } else if (result.streakLost) {
+        showReset(STAR_THRESHOLD);
+        setRoundEvents(prev => [...prev, {
+          kana: currentQuestion.char,
+          type: 'reset',
+          lostStreak: result.lostStreak
+        }]);
+      }
     }
 
     if (isCorrect) {
@@ -201,6 +232,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setGameOver(false);
     setCharacterWeights(new Map());
     setHasStarted(false);
+    setRoundEvents([]);
   };
 
   const isCorrect = selectedAnswer?.char === currentQuestion?.char;
@@ -225,6 +257,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
   return (
     <div className="kana-quiz">
+      <StreakFlash flash={flash} />
 
       {gameOver && (
         <ResultsModal
@@ -232,6 +265,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
           quizType="Reverse Kana"
+          roundEvents={roundEvents}
         />
       )}
 

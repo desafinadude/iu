@@ -169,6 +169,66 @@
   }
 }
 
+/* Round Summary Section */
+.round-summary {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-section {
+  padding: 12px 16px;
+  border: 3px solid var(--color-navy);
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.stars-section {
+  background: var(--color-yellow-light, #FFF9E6);
+}
+
+.streaks-section {
+  background: var(--color-pink-light, #FFE6E6);
+}
+
+.summary-title {
+  font-family: var(--font-comic);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--color-navy);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.summary-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.summary-kana {
+  font-family: var(--font-japanese);
+  font-size: 24px;
+  padding: 6px 12px;
+  background: var(--color-cream);
+  border: 2px solid var(--color-navy);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px var(--color-navy);
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lost-count {
+  font-family: var(--font-comic);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
 .play-again-button {
   width: 100%;
   padding: 18px 32px;

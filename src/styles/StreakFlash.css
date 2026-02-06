@@ -1,0 +1,63 @@
+.streak-flash {
+  position: fixed;
+  top: 70px;
+  right: 12px;
+  z-index: 900;
+  pointer-events: none;
+  animation: flashPop 1.2s ease-out forwards;
+}
+
+@keyframes flashPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-10deg);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1.15) rotate(3deg);
+  }
+  30% {
+    transform: scale(1) rotate(0deg);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+}
+
+.streak-flash-burst {
+  padding: 8px 14px;
+  border-radius: 12px;
+  text-align: center;
+  border: 3px solid var(--color-navy);
+  box-shadow: 3px 3px 0px var(--color-navy);
+  min-width: 60px;
+}
+
+.streak-flash.progress .streak-flash-burst {
+  background: var(--color-teal);
+}
+
+.streak-flash.reset .streak-flash-burst {
+  background: var(--color-pink);
+}
+
+.streak-flash-label {
+  font-family: var(--font-comic);
+  font-size: 18px;
+  color: var(--color-cream);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.streak-flash-value {
+  font-family: var(--font-comic);
+  font-size: 14px;
+  color: var(--color-cream);
+  opacity: 0.9;
+  line-height: 1.2;
+}

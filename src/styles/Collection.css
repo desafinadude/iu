@@ -198,41 +198,85 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
 }
 
 .star-icon {
-  font-size: 12px;
-  transition: color 0.3s ease;
+  font-size: 20px;
+  transition: color 0.3s ease, filter 0.3s ease;
 }
 
 .star-icon.earned {
-  color: var(--color-yellow);
+  color: #FFD700;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.4);
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
+}
+
+/* Gradual colorization based on progress */
+.star-icon.empty {
+  color: #666;
+}
+
+.star-icon.empty[data-progress="0"] {
+  color: #999;
+}
+
+.star-icon.empty[data-progress] {
+  /* Gradual transition from grey to yellow based on progress */
+  filter: brightness(1) saturate(0.3);
+}
+
+/* 0-25% progress: mostly grey */
+.star-icon.empty[data-progress="5"],
+.star-icon.empty[data-progress="10"],
+.star-icon.empty[data-progress="15"],
+.star-icon.empty[data-progress="20"] {
+  color: #888;
+}
+
+/* 25-50% progress: light bronze */
+.star-icon.empty[data-progress="25"],
+.star-icon.empty[data-progress="30"],
+.star-icon.empty[data-progress="35"],
+.star-icon.empty[data-progress="40"],
+.star-icon.empty[data-progress="45"] {
+  color: #b8860b;
+  filter: brightness(0.7);
+}
+
+/* 50-75% progress: bronze/gold */
+.star-icon.empty[data-progress="50"],
+.star-icon.empty[data-progress="55"],
+.star-icon.empty[data-progress="60"],
+.star-icon.empty[data-progress="65"],
+.star-icon.empty[data-progress="70"] {
+  color: #DAA520;
+  filter: brightness(0.85);
+}
+
+/* 75-95% progress: bright gold */
+.star-icon.empty[data-progress="75"],
+.star-icon.empty[data-progress="80"],
+.star-icon.empty[data-progress="85"],
+.star-icon.empty[data-progress="90"],
+.star-icon.empty[data-progress="95"] {
+  color: #FFC700;
+  filter: brightness(0.95);
   text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.3);
 }
 
-.star-icon.empty {
-  color: #ccc;
-}
-
 .star-count {
-  font-size: 9px;
-  font-family: var(--font-body);
-  color: var(--color-text-muted);
+  font-size: 14px;
+  font-family: var(--font-comic);
+  color: #333;
+  font-weight: bold;
   line-height: 1;
 }
 
 .star-icon.earned + .star-count {
   color: var(--color-teal);
-  font-weight: 600;
-}
-
-.kana-card.stars-none .star-icon.empty {
-  color: #bbb;
-}
-
-.kana-card.stars-none .star-count {
-  color: #aaa;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 /* Legacy 5-star display for words */

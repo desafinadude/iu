@@ -4,6 +4,8 @@ import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
+import StreakFlash, { useStreakFlash } from './StreakFlash';
+import { STAR_THRESHOLD } from '../utils/progressHelpers';
 import '../styles/HandwritingPractice.css';
 
 const TIMER_DURATION = 10;
@@ -25,7 +27,9 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
   const [lives, setLives] = useState(MAX_LIVES);
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
+  const [roundEvents, setRoundEvents] = useState([]);
   const timerRef = useRef(null);
+  const { flash, showProgress, showReset } = useStreakFlash();
   // eslint-disable-next-line no-unused-vars
   const [candidates, setCandidates] = useState('Draw the character, and I\'ll show you what I recognize!');
   // eslint-disable-next-line no-unused-vars
@@ -150,7 +154,17 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
       // Record as wrong answer for mastery tracking
       if (onAnswerRecorded) {
-        onAnswerRecorded(currentChar.char, false, 'handwriting');
+        const result = onAnswerRecorded(currentChar.char, false, 'handwriting');
+
+        // Show flash and track event
+        if (result.streakLost) {
+          showReset(STAR_THRESHOLD);
+          setRoundEvents(prev => [...prev, {
+            kana: currentChar.char,
+            type: 'reset',
+            lostStreak: result.lostStreak
+          }]);
+        }
       }
 
       const newLives = lives - 1;
@@ -160,7 +174,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentChar, lives, gameOver, onAnswerRecorded]);
+  }, [timeLeft, showResult, currentChar, lives, gameOver, onAnswerRecorded, showReset]);
 
   const setupCanvas = () => {
     const canvas = canvasRef.current;
@@ -380,7 +394,17 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
         // Record correct answer for mastery tracking
         if (onAnswerRecorded) {
-          onAnswerRecorded(currentChar.char, true, 'handwriting');
+          const result = onAnswerRecorded(currentChar.char, true, 'handwriting');
+
+          // Show flash and track events
+          if (result.starEarned) {
+            setRoundEvents(prev => [...prev, {
+              kana: currentChar.char,
+              type: 'star'
+            }]);
+          } else if (result.newConsecutive > 0) {
+            showProgress(result.newConsecutive, STAR_THRESHOLD);
+          }
         }
       } else {
         // Wrong - lose a life
@@ -393,7 +417,17 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
         // Record wrong answer for mastery tracking
         if (onAnswerRecorded) {
-          onAnswerRecorded(currentChar.char, false, 'handwriting');
+          const result = onAnswerRecorded(currentChar.char, false, 'handwriting');
+
+          // Show flash and track event
+          if (result.streakLost) {
+            showReset(STAR_THRESHOLD);
+            setRoundEvents(prev => [...prev, {
+              kana: currentChar.char,
+              type: 'reset',
+              lostStreak: result.lostStreak
+            }]);
+          }
         }
 
         if (newLives <= 0) {
@@ -439,6 +473,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
     setGameOver(false);
     setShowResult(false);
     setShowCharacter(false);
+    setRoundEvents([]);
     generateQuestion();
   };
 
@@ -461,12 +496,15 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
   return (
     <div className="handwriting-practice">
+      <StreakFlash flash={flash} />
+
       {gameOver && (
         <ResultsModal
           score={score}
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
           quizType="Handwriting"
+          roundEvents={roundEvents}
         />
       )}
 
