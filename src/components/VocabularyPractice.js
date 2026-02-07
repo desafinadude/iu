@@ -87,7 +87,8 @@ function VocabularyPractice({ settings, unlockedPacks = [] }) {
 
   useEffect(() => {
     generateWord();
-  }, [generateWord]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableWords, selectedCategories, scriptFilter]);
 
   const handleCategoryChange = (category) => {
     if (category === 'all') {

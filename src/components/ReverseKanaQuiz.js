@@ -120,7 +120,8 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     if (hasStarted && !gameOver) {
       generateQuestion();
     }
-  }, [generateQuestion, gameOver, hasStarted]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver, hasStarted]);
 
   const handleStart = () => {
     setHasStarted(true);
