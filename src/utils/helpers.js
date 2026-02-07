@@ -10,3 +10,14 @@ export const shuffle = (array) => {
 export const getRandomElement = (array) => {
   return array[Math.floor(Math.random() * array.length)];
 };
+
+// Create a deck with 10 copies of each kana, shuffled
+export const createKanaDeck = (enabledChars) => {
+  const deck = [];
+  enabledChars.forEach(char => {
+    for (let i = 0; i < 10; i++) {
+      deck.push(char);
+    }
+  });
+  return shuffle(deck);
+};

@@ -7,6 +7,7 @@ import '../styles/Collection.css';
 function Collection({ kanaProgress, wordProgress = {}, coins }) {
   const [filter, setFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('hiragana');
+  const [sortBy, setSortBy] = useState('default'); // 'default', 'kana-progress', 'reverse-progress', 'handwriting-progress'
 
   const kanaStats = useMemo(() => getProgressStats(kanaProgress), [kanaProgress]);
   const wordStats = useMemo(() => getWordProgressStats(wordProgress), [wordProgress]);
@@ -86,8 +87,28 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
     };
   };
 
-  const filteredHiragana = filterKana(hiraganaData);
-  const filteredKatakana = filterKana(katakanaData);
+  const sortKana = (kanaList) => {
+    if (sortBy === 'default') return kanaList;
+
+    const quizType = sortBy.replace('-progress', ''); // 'kana', 'reverse', or 'handwriting'
+
+    return [...kanaList].sort((a, b) => {
+      const progressA = kanaProgress[a.char]?.[quizType];
+      const progressB = kanaProgress[b.char]?.[quizType];
+
+      // If star is earned, progress is 100%, otherwise calculate percentage
+      const percentA = progressA?.earned ? 100 :
+        ((progressA?.consecutiveCorrect || 0) / STAR_THRESHOLD) * 100;
+      const percentB = progressB?.earned ? 100 :
+        ((progressB?.consecutiveCorrect || 0) / STAR_THRESHOLD) * 100;
+
+      // Sort descending (highest progress first)
+      return percentB - percentA;
+    });
+  };
+
+  const filteredHiragana = sortKana(filterKana(hiraganaData));
+  const filteredKatakana = sortKana(filterKana(katakanaData));
   const filteredWords = filterWords();
 
   const getCurrentData = () => {
@@ -152,6 +173,36 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
           Words
         </button>
       </div>
+
+      {isKanaTab && (
+        <div className="collection-sort">
+          <span className="sort-label">Sort by:</span>
+          <button
+            className={`sort-button ${sortBy === 'default' ? 'active' : ''}`}
+            onClick={() => setSortBy('default')}
+          >
+            Default
+          </button>
+          <button
+            className={`sort-button ${sortBy === 'kana-progress' ? 'active' : ''}`}
+            onClick={() => setSortBy('kana-progress')}
+          >
+            Kana
+          </button>
+          <button
+            className={`sort-button ${sortBy === 'reverse-progress' ? 'active' : ''}`}
+            onClick={() => setSortBy('reverse-progress')}
+          >
+            Reverse
+          </button>
+          <button
+            className={`sort-button ${sortBy === 'handwriting-progress' ? 'active' : ''}`}
+            onClick={() => setSortBy('handwriting-progress')}
+          >
+            Writing
+          </button>
+        </div>
+      )}
 
       <div className="collection-filters">
         <button
@@ -218,34 +269,61 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
                 <div className="kana-romaji">{kana.romaji}</div>
                 <div className="kana-stars-row">
                   <div className="star-col" title="Kana Quiz">
-                    <span
-                      className={`star-icon ${stars.kana ? 'earned' : 'empty'}`}
-                      data-progress={stars.kana ? 100 : Math.floor((streaks.kana / STAR_THRESHOLD) * 100)}
-                    >
-                      {'\u2605'}
-                    </span>
+                    <div className="star-wrapper">
+                      <span
+                        className={`star-icon ${stars.kana ? 'earned' : 'empty'}`}
+                      >
+                        {'\u2605'}
+                      </span>
+                      {!stars.kana && (
+                        <span
+                          className="star-fill"
+                          style={{ height: `${(streaks.kana / STAR_THRESHOLD) * 100}%` }}
+                        >
+                          {'\u2605'}
+                        </span>
+                      )}
+                    </div>
                     <span className="star-count">
                       {stars.kana ? '\u2713' : STAR_THRESHOLD - streaks.kana}
                     </span>
                   </div>
                   <div className="star-col" title="Reverse Quiz">
-                    <span
-                      className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`}
-                      data-progress={stars.reverse ? 100 : Math.floor((streaks.reverse / STAR_THRESHOLD) * 100)}
-                    >
-                      {'\u2605'}
-                    </span>
+                    <div className="star-wrapper">
+                      <span
+                        className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`}
+                      >
+                        {'\u2605'}
+                      </span>
+                      {!stars.reverse && (
+                        <span
+                          className="star-fill"
+                          style={{ height: `${(streaks.reverse / STAR_THRESHOLD) * 100}%` }}
+                        >
+                          {'\u2605'}
+                        </span>
+                      )}
+                    </div>
                     <span className="star-count">
                       {stars.reverse ? '\u2713' : STAR_THRESHOLD - streaks.reverse}
                     </span>
                   </div>
                   <div className="star-col" title="Handwriting">
-                    <span
-                      className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`}
-                      data-progress={stars.handwriting ? 100 : Math.floor((streaks.handwriting / STAR_THRESHOLD) * 100)}
-                    >
-                      {'\u2605'}
-                    </span>
+                    <div className="star-wrapper">
+                      <span
+                        className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`}
+                      >
+                        {'\u2605'}
+                      </span>
+                      {!stars.handwriting && (
+                        <span
+                          className="star-fill"
+                          style={{ height: `${(streaks.handwriting / STAR_THRESHOLD) * 100}%` }}
+                        >
+                          {'\u2605'}
+                        </span>
+                      )}
+                    </div>
                     <span className="star-count">
                       {stars.handwriting ? '\u2713' : STAR_THRESHOLD - streaks.handwriting}
                     </span>
