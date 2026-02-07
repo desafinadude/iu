@@ -143,7 +143,8 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
   useEffect(() => {
     generateQuestion();
     setupCanvas();
-  }, [generateQuestion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle timer running out
   useEffect(() => {

@@ -252,7 +252,8 @@ function KanjiQuiz({ settings }) {
     if (hasStarted && !gameOver) {
       generateQuestion();
     }
-  }, [selectedCategories, selectedGrades, generateQuestion, gameOver, hasStarted]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategories, selectedGrades, gameOver, hasStarted]);
 
   const handleStart = () => {
     setHasStarted(true);

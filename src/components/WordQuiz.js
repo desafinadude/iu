@@ -125,7 +125,8 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
     if (hasStarted && !gameOver && availableWords.length >= 4) {
       generateQuestion();
     }
-  }, [generateQuestion, gameOver, hasStarted, availableWords.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver, hasStarted, availableWords.length]);
 
   const handleStart = () => {
     setHasStarted(true);
