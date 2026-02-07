@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
-import { shuffle } from '../utils/helpers';
+import { shuffle, createKanaDeck } from '../utils/helpers';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
 import StreakFlash, { useStreakFlash } from './StreakFlash';
@@ -20,7 +20,8 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   const [lives, setLives] = useState(MAX_LIVES);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [characterWeights, setCharacterWeights] = useState(new Map());
+  const [questionDeck, setQuestionDeck] = useState([]);
+  const [deckIndex, setDeckIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
@@ -70,48 +71,31 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       return;
     }
 
-    let correctAnswer;
+    // Check if we need to regenerate the deck
+    if (questionDeck.length === 0 || deckIndex >= questionDeck.length) {
+      const newDeck = createKanaDeck(availableChars);
+      setQuestionDeck(newDeck);
+      setDeckIndex(0);
+      // Use the first card from the new deck
+      const correctAnswer = newDeck[0];
 
-    if (availableChars.length >= 10) {
-      // Use weighted selection combining mastery level and session weights
-      const weightedChars = availableChars.map(char => {
-        const masteryWeight = getKanaWeight ? getKanaWeight(char.char) : 1.0;
-        const sessionWeight = characterWeights.get(char.char) || 1.0;
-        return {
-          ...char,
-          weight: masteryWeight * sessionWeight
-        };
-      });
+      // Filter out characters with the same romaji to avoid duplicate sounds in options
+      const wrongAnswers = shuffle(
+        availableChars.filter(h => h.char !== correctAnswer.char && h.romaji !== correctAnswer.romaji)
+      ).slice(0, 9);
+      const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
 
-      const totalWeight = weightedChars.reduce((sum, char) => sum + char.weight, 0);
-      let random = Math.random() * totalWeight;
-
-      correctAnswer = weightedChars.find(char => {
-        random -= char.weight;
-        return random <= 0;
-      });
-
-      if (!correctAnswer) {
-        correctAnswer = weightedChars[weightedChars.length - 1];
-      }
-    } else {
-      correctAnswer = availableChars[Math.floor(Math.random() * availableChars.length)];
+      setCurrentQuestion(correctAnswer);
+      setOptions(allOptions);
+      setShowResult(false);
+      setSelectedAnswer(null);
+      startTimer();
+      return;
     }
 
-    // Update session weights
-    if (availableChars.length >= 10) {
-      setCharacterWeights(prev => {
-        const updated = new Map(prev);
-        updated.set(correctAnswer.char, 0.3);
-        availableChars.forEach(char => {
-          if (char.char !== correctAnswer.char) {
-            const current = updated.get(char.char) || 1.0;
-            updated.set(char.char, Math.min(current + 0.1, 1.5));
-          }
-        });
-        return updated;
-      });
-    }
+    // Draw from the existing deck
+    const correctAnswer = questionDeck[deckIndex];
+    setDeckIndex(deckIndex + 1);
 
     // Filter out characters with the same romaji to avoid duplicate sounds in options
     const wrongAnswers = shuffle(
@@ -125,7 +109,7 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setSelectedAnswer(null);
     startTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getEnabledChars, startTimer]);
+  }, [getEnabledChars, startTimer, questionDeck, deckIndex]);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -230,7 +214,8 @@ function ReverseKanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setScore(0);
     setLives(MAX_LIVES);
     setGameOver(false);
-    setCharacterWeights(new Map());
+    setQuestionDeck([]);
+    setDeckIndex(0);
     setHasStarted(false);
     setRoundEvents([]);
   };

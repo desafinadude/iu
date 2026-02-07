@@ -1,6 +1,6 @@
-// Star system: 20 consecutive correct answers per quiz type to earn a star
-export const STAR_THRESHOLD = 20;
-export const COINS_PER_STAR = 20;
+// Star system: 10 consecutive correct answers per quiz type to earn a star
+export const STAR_THRESHOLD = 10;
+export const COINS_PER_STAR = 5;
 export const QUIZ_TYPES = ['kana', 'reverse', 'handwriting'];
 
 // Selection weights by quiz-type mastery (higher = more likely to appear)
@@ -46,42 +46,46 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
   const quizProgress = currentProgress[quizType] || createDefaultQuizTypeProgress();
 
   if (isCorrect) {
+    const newTotalCorrect = quizProgress.totalCorrect + 1;
+    // Award 1 coin for every 2 correct answers
+    const coinsForCorrect = newTotalCorrect % 2 === 0 ? 1 : 0;
+
     if (quizProgress.earned) {
-      // Already earned this star - just track stats
+      // Already earned this star - just track stats and award coins for correct answers
       return {
         newProgress: {
           ...currentProgress,
           [quizType]: {
             ...quizProgress,
-            totalCorrect: quizProgress.totalCorrect + 1,
+            totalCorrect: newTotalCorrect,
             totalAttempts: quizProgress.totalAttempts + 1,
           },
         },
         starEarned: false,
         newConsecutive: 0,
         quizType,
-        coinsEarned: 0,
+        coinsEarned: coinsForCorrect,
       };
     }
 
     const newConsecutive = quizProgress.consecutiveCorrect + 1;
 
     if (newConsecutive >= STAR_THRESHOLD) {
-      // Star earned!
+      // Star earned! Award bonus coins plus coins for correct answer
       return {
         newProgress: {
           ...currentProgress,
           [quizType]: {
             consecutiveCorrect: 0,
             earned: true,
-            totalCorrect: quizProgress.totalCorrect + 1,
+            totalCorrect: newTotalCorrect,
             totalAttempts: quizProgress.totalAttempts + 1,
           },
         },
         starEarned: true,
         newConsecutive: STAR_THRESHOLD,
         quizType,
-        coinsEarned: COINS_PER_STAR,
+        coinsEarned: COINS_PER_STAR + coinsForCorrect,
       };
     }
 
@@ -92,14 +96,14 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
         [quizType]: {
           ...quizProgress,
           consecutiveCorrect: newConsecutive,
-          totalCorrect: quizProgress.totalCorrect + 1,
+          totalCorrect: newTotalCorrect,
           totalAttempts: quizProgress.totalAttempts + 1,
         },
       },
       starEarned: false,
       newConsecutive,
       quizType,
-      coinsEarned: 0,
+      coinsEarned: coinsForCorrect,
     };
   }
 

@@ -90,6 +90,40 @@
   background: var(--color-cream);
 }
 
+.collection-sort {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sort-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.sort-button {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-navy);
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-secondary);
+}
+
+.sort-button.active {
+  background: var(--color-navy);
+  color: var(--color-cream);
+}
+
+.sort-button:hover:not(.active) {
+  background: var(--color-cream);
+}
+
 .collection-filters {
   display: flex;
   gap: 8px;
@@ -201,9 +235,20 @@
   gap: 2px;
 }
 
+.star-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+
 .star-icon {
   font-size: 20px;
   transition: color 0.3s ease, filter 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 1;
 }
 
 .star-icon.earned {
@@ -212,57 +257,23 @@
   filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
 }
 
-/* Gradual colorization based on progress */
+/* Empty star base color */
 .star-icon.empty {
-  color: #666;
+  color: #ccc;
 }
 
-.star-icon.empty[data-progress="0"] {
-  color: #999;
-}
-
-.star-icon.empty[data-progress] {
-  /* Gradual transition from grey to yellow based on progress */
-  filter: brightness(1) saturate(0.3);
-}
-
-/* 0-25% progress: mostly grey */
-.star-icon.empty[data-progress="5"],
-.star-icon.empty[data-progress="10"],
-.star-icon.empty[data-progress="15"],
-.star-icon.empty[data-progress="20"] {
-  color: #888;
-}
-
-/* 25-50% progress: light bronze */
-.star-icon.empty[data-progress="25"],
-.star-icon.empty[data-progress="30"],
-.star-icon.empty[data-progress="35"],
-.star-icon.empty[data-progress="40"],
-.star-icon.empty[data-progress="45"] {
-  color: #b8860b;
-  filter: brightness(0.7);
-}
-
-/* 50-75% progress: bronze/gold */
-.star-icon.empty[data-progress="50"],
-.star-icon.empty[data-progress="55"],
-.star-icon.empty[data-progress="60"],
-.star-icon.empty[data-progress="65"],
-.star-icon.empty[data-progress="70"] {
-  color: #DAA520;
-  filter: brightness(0.85);
-}
-
-/* 75-95% progress: bright gold */
-.star-icon.empty[data-progress="75"],
-.star-icon.empty[data-progress="80"],
-.star-icon.empty[data-progress="85"],
-.star-icon.empty[data-progress="90"],
-.star-icon.empty[data-progress="95"] {
-  color: #FFC700;
-  filter: brightness(0.95);
+/* Star fill overlay that fills from bottom */
+.star-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 20px;
+  color: #FFD700;
+  overflow: hidden;
+  transition: height 0.3s ease;
+  line-height: 1;
   text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.3);
+  filter: brightness(0.9);
 }
 
 .star-count {
