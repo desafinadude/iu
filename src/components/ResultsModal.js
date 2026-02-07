@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import '../styles/ResultsModal.css';
 
 function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoinsAwarded, roundEvents = [] }) {
