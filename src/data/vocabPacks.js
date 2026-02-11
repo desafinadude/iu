@@ -1,4 +1,5 @@
 import { vocabularyData } from './vocabularyData';
+import jpod101VocabPacks from './jpod101VocabPacks';
 
 // Theme-based vocabulary packs
 // Words are organized by themes like colors, greetings, time, numbers, etc.
@@ -19,8 +20,8 @@ function findWordsByJapanese(japaneseWords) {
   );
 }
 
-// Define theme packs with manually curated words
-export const vocabPacks = [
+// Define theme packs with manually curated words (JLPT-based)
+const jlptBasedPacks = [
   // COLORS
   {
     id: 'pack_colors',
@@ -306,23 +307,29 @@ export const vocabPacks = [
   },
 ].filter(pack => pack.words.length > 0); // Only include packs with words
 
+// Combine all vocab packs: JPod101 packs first, then JLPT packs
+export const allVocabPacks = [...jpod101VocabPacks, ...jlptBasedPacks];
+
+// Export the combined packs as the default
+export const vocabPacks = allVocabPacks;
+
 // Get pack by ID
 export function getPackById(packId) {
-  return vocabPacks.find(pack => pack.id === packId);
+  return allVocabPacks.find(pack => pack.id === packId);
 }
 
 // Get all unique categories
 export function getCategories() {
-  const categories = [...new Set(vocabPacks.map(pack => pack.category))];
+  const categories = [...new Set(allVocabPacks.map(pack => pack.category))];
   return categories.sort();
 }
 
 // Get packs by category
 export function getPacksByCategory(category) {
   if (!category || category === 'all') {
-    return vocabPacks;
+    return allVocabPacks;
   }
-  return vocabPacks.filter(pack => pack.category === category);
+  return allVocabPacks.filter(pack => pack.category === category);
 }
 
 // Get all words from unlocked packs
