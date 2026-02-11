@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/ResultsModal.css';
 
 function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoinsAwarded, roundEvents = [] }) {
   const accuracy = questionsAnswered > 0 ? Math.round((score / questionsAnswered) * 100) : 0;
+  const [coinsAwarded, setCoinsAwarded] = useState(0);
 
   // Extract stars earned and streaks lost from round events
   const starsEarned = roundEvents.filter(e => e.type === 'star');
   const streaksLost = roundEvents.filter(e => e.type === 'reset');
+
+  // Award coins when modal opens (only once)
+  useEffect(() => {
+    if (onCoinsAwarded && score > 0) {
+      // Award 1 coin per correct answer
+      const coins = score;
+      onCoinsAwarded(coins);
+      setCoinsAwarded(coins);
+    }
+  }, []); // Empty dependency array ensures this only runs once when modal opens
 
   const getMessage = () => {
     if (accuracy >= 90) return "Amazing!";
@@ -41,6 +52,13 @@ function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoins
             <div className="stat-label">Accuracy</div>
           </div>
         </div>
+
+        {coinsAwarded > 0 && (
+          <div className="coins-earned">
+            <span className="coin-icon">&#x1FA99;</span>
+            <span className="coins-amount">+{coinsAwarded}</span>
+          </div>
+        )}
 
         {(starsEarned.length > 0 || streaksLost.length > 0) && (
           <div className="round-summary">

@@ -247,7 +247,7 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
         </button>
       </div>
 
-      <div className="collection-grid">
+      <div className={currentData.type === 'kana' ? 'collection-list' : 'collection-grid'}>
         {currentData.data.length === 0 ? (
           <div className="collection-empty">
             {activeTab === 'words' && wordCount === 0
@@ -259,76 +259,18 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
             const progress = kanaProgress[kana.char];
             const stars = getStarDetail(progress);
             const starCount = getStarCount(progress);
-            const streaks = getStreaks(progress);
             return (
               <div
                 key={kana.char}
-                className={`kana-card ${getStarClass(starCount)}`}
+                className={`kana-list-item ${getStarClass(starCount)}`}
               >
-                <div className="kana-char">{kana.char}</div>
-                <div className="kana-romaji">{kana.romaji}</div>
-                <div className="kana-stars-row">
-                  <div className="star-col" title="Kana Quiz">
-                    <div className="star-wrapper">
-                      <span
-                        className={`star-icon ${stars.kana ? 'earned' : 'empty'}`}
-                      >
-                        {'\u2605'}
-                      </span>
-                      {!stars.kana && (
-                        <span
-                          className="star-fill"
-                          style={{ height: `${(streaks.kana / STAR_THRESHOLD) * 100}%` }}
-                        >
-                          {'\u2605'}
-                        </span>
-                      )}
-                    </div>
-                    <span className="star-count">
-                      {stars.kana ? '\u2713' : STAR_THRESHOLD - streaks.kana}
-                    </span>
-                  </div>
-                  <div className="star-col" title="Reverse Quiz">
-                    <div className="star-wrapper">
-                      <span
-                        className={`star-icon ${stars.reverse ? 'earned' : 'empty'}`}
-                      >
-                        {'\u2605'}
-                      </span>
-                      {!stars.reverse && (
-                        <span
-                          className="star-fill"
-                          style={{ height: `${(streaks.reverse / STAR_THRESHOLD) * 100}%` }}
-                        >
-                          {'\u2605'}
-                        </span>
-                      )}
-                    </div>
-                    <span className="star-count">
-                      {stars.reverse ? '\u2713' : STAR_THRESHOLD - streaks.reverse}
-                    </span>
-                  </div>
-                  <div className="star-col" title="Handwriting">
-                    <div className="star-wrapper">
-                      <span
-                        className={`star-icon ${stars.handwriting ? 'earned' : 'empty'}`}
-                      >
-                        {'\u2605'}
-                      </span>
-                      {!stars.handwriting && (
-                        <span
-                          className="star-fill"
-                          style={{ height: `${(streaks.handwriting / STAR_THRESHOLD) * 100}%` }}
-                        >
-                          {'\u2605'}
-                        </span>
-                      )}
-                    </div>
-                    <span className="star-count">
-                      {stars.handwriting ? '\u2713' : STAR_THRESHOLD - streaks.handwriting}
-                    </span>
-                  </div>
-                </div>
+                <span className="kana-list-char">{kana.char}</span>
+                <span className="kana-list-romaji">{kana.romaji}</span>
+                <span className="kana-list-stars">
+                  <span className={stars.kana ? 'earned' : 'empty'}>{'\u2605'}</span>
+                  <span className={stars.reverse ? 'earned' : 'empty'}>{'\u2605'}</span>
+                  <span className={stars.handwriting ? 'earned' : 'empty'}>{'\u2605'}</span>
+                </span>
               </div>
             );
           })
