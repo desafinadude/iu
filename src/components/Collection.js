@@ -78,15 +78,6 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
     return '\u2605'.repeat(level) + '\u2606'.repeat(5 - level);
   };
 
-  const getStreaks = (progress) => {
-    if (!progress || !progress.kana) return { kana: 0, reverse: 0, handwriting: 0 };
-    return {
-      kana: progress.kana.consecutiveCorrect,
-      reverse: progress.reverse.consecutiveCorrect,
-      handwriting: progress.handwriting.consecutiveCorrect,
-    };
-  };
-
   const sortKana = (kanaList) => {
     if (sortBy === 'default') return kanaList;
 
