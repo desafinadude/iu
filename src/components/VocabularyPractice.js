@@ -31,7 +31,7 @@ const getWordScriptType = (word) => {
 
 function VocabularyPractice({ settings, unlockedPacks = [] }) {
   const [currentWord, setCurrentWord] = useState(null);
-  const [showTranslation, setShowTranslation] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
   const [scriptFilter, setScriptFilter] = useState('both'); // 'both', 'hiragana', 'katakana'
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -82,7 +82,7 @@ function VocabularyPractice({ settings, unlockedPacks = [] }) {
 
     const word = getRandomElement(filteredVocab);
     setCurrentWord(word);
-    setShowTranslation(false); // Hide translation for new word
+    setIsFlipped(false); // Reset to front of card for new word
   }, [availableWords, selectedCategories, scriptFilter]);
 
   useEffect(() => {
@@ -125,11 +125,11 @@ function VocabularyPractice({ settings, unlockedPacks = [] }) {
     }
   };
 
-  const handleWordClick = () => {
-    if (currentWord) {
+  const handleCardClick = () => {
+    if (!isFlipped && currentWord) {
       speak(currentWord.word);
-      setShowTranslation(true); // Show translation after speaking
     }
+    setIsFlipped(!isFlipped);
   };
 
   if (availableWords.length === 0) {
@@ -209,18 +209,31 @@ function VocabularyPractice({ settings, unlockedPacks = [] }) {
       )}
 
       <div className="vocab-main-area">
-        <button
-          className="vocab-word-button"
-          onClick={handleWordClick}
-        >
-          <div className={`vocab-word-text font-${settings.fontStyle}`}>{currentWord.word}</div>
-        </button>
-      </div>
-
-      <div className="vocab-translation-area">
-        {showTranslation && (
-          <div className="vocab-translation-text">{currentWord.translation}</div>
-        )}
+        <div className={`flashcard ${isFlipped ? 'flipped' : ''}`} onClick={handleCardClick}>
+          <div className="flashcard-inner">
+            <div className="flashcard-front">
+              <div className={`vocab-word-text font-${settings.fontStyle}`}>
+                {currentWord.word}
+              </div>
+              <div className="flip-hint">Click to flip</div>
+            </div>
+            <div className="flashcard-back">
+              <div className="vocab-translation-text">{currentWord.translation}</div>
+              {currentWord.romaji && (
+                <div className="vocab-romaji-text">{currentWord.romaji}</div>
+              )}
+              {currentWord.example && (
+                <div className="vocab-example-text">
+                  <div className="example-label">Example:</div>
+                  <div className="example-jp">{currentWord.example}</div>
+                  {currentWord.exampleEN && (
+                    <div className="example-en">{currentWord.exampleEN}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="vocab-controls">
