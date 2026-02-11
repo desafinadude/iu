@@ -5,60 +5,13 @@ import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, ST
 import '../styles/Collection.css';
 
 function Collection({ kanaProgress, wordProgress = {}, coins }) {
-  const [filter, setFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('hiragana');
-  const [sortBy, setSortBy] = useState('default'); // 'default', 'kana-progress', 'reverse-progress', 'handwriting-progress'
 
   const kanaStats = useMemo(() => getProgressStats(kanaProgress), [kanaProgress]);
   const wordStats = useMemo(() => getWordProgressStats(wordProgress), [wordProgress]);
 
   const totalMastered = kanaStats.mastered + wordStats.mastered;
   const totalInProgress = kanaStats.inProgress + wordStats.learning + wordStats.proficient;
-
-  const filterKana = (kanaList) => {
-    return kanaList.filter(kana => {
-      const progress = kanaProgress[kana.char];
-      const stars = getStarDetail(progress);
-      const starCount = getStarCount(progress);
-
-      switch (filter) {
-        case 'no-stars':
-          return starCount === 0;
-        case 'missing-kana':
-          return !stars.kana;
-        case 'missing-reverse':
-          return !stars.reverse;
-        case 'missing-handwriting':
-          return !stars.handwriting;
-        case 'mastered':
-          return starCount === 3;
-        default:
-          return true;
-      }
-    });
-  };
-
-  const filterWords = () => {
-    const words = Object.entries(wordProgress).map(([word, progress]) => ({
-      word,
-      ...progress
-    }));
-
-    return words.filter(item => {
-      switch (filter) {
-        case 'no-stars':
-          return item.level === 0;
-        case 'mastered':
-          return item.level === 5;
-        case 'missing-kana':
-        case 'missing-reverse':
-        case 'missing-handwriting':
-          return true; // Quiz-type filters don't apply to words
-        default:
-          return true;
-      }
-    });
-  };
 
   const getStarClass = (starCount) => {
     if (starCount === 0) return 'stars-none';
@@ -78,47 +31,27 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
     return '\u2605'.repeat(level) + '\u2606'.repeat(5 - level);
   };
 
-  const sortKana = (kanaList) => {
-    if (sortBy === 'default') return kanaList;
-
-    const quizType = sortBy.replace('-progress', ''); // 'kana', 'reverse', or 'handwriting'
-
-    return [...kanaList].sort((a, b) => {
-      const progressA = kanaProgress[a.char]?.[quizType];
-      const progressB = kanaProgress[b.char]?.[quizType];
-
-      // If star is earned, progress is 100%, otherwise calculate percentage
-      const percentA = progressA?.earned ? 100 :
-        ((progressA?.consecutiveCorrect || 0) / STAR_THRESHOLD) * 100;
-      const percentB = progressB?.earned ? 100 :
-        ((progressB?.consecutiveCorrect || 0) / STAR_THRESHOLD) * 100;
-
-      // Sort descending (highest progress first)
-      return percentB - percentA;
-    });
+  const getConsecutive = (charProgress, quizType) => {
+    if (!charProgress || !charProgress[quizType]) return 0;
+    if (charProgress[quizType].earned) return STAR_THRESHOLD;
+    return charProgress[quizType].consecutiveCorrect || 0;
   };
-
-  const filteredHiragana = sortKana(filterKana(hiraganaData));
-  const filteredKatakana = sortKana(filterKana(katakanaData));
-  const filteredWords = filterWords();
 
   const getCurrentData = () => {
     switch (activeTab) {
       case 'hiragana':
-        return { type: 'kana', data: filteredHiragana };
+        return { type: 'kana', data: hiraganaData };
       case 'katakana':
-        return { type: 'kana', data: filteredKatakana };
+        return { type: 'kana', data: katakanaData };
       case 'words':
-        return { type: 'words', data: filteredWords };
+        return { type: 'words', data: Object.entries(wordProgress).map(([word, progress]) => ({ word, ...progress })) };
       default:
-        return { type: 'kana', data: filteredHiragana };
+        return { type: 'kana', data: hiraganaData };
     }
   };
 
   const currentData = getCurrentData();
   const wordCount = Object.keys(wordProgress).length;
-
-  const isKanaTab = activeTab === 'hiragana' || activeTab === 'katakana';
 
   return (
     <div className="collection-page">
@@ -161,80 +94,7 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
           className={`tab-button ${activeTab === 'words' ? 'active' : ''}`}
           onClick={() => setActiveTab('words')}
         >
-          Words
-        </button>
-      </div>
-
-      {isKanaTab && (
-        <div className="collection-sort">
-          <span className="sort-label">Sort by:</span>
-          <button
-            className={`sort-button ${sortBy === 'default' ? 'active' : ''}`}
-            onClick={() => setSortBy('default')}
-          >
-            Default
-          </button>
-          <button
-            className={`sort-button ${sortBy === 'kana-progress' ? 'active' : ''}`}
-            onClick={() => setSortBy('kana-progress')}
-          >
-            Kana
-          </button>
-          <button
-            className={`sort-button ${sortBy === 'reverse-progress' ? 'active' : ''}`}
-            onClick={() => setSortBy('reverse-progress')}
-          >
-            Reverse
-          </button>
-          <button
-            className={`sort-button ${sortBy === 'handwriting-progress' ? 'active' : ''}`}
-            onClick={() => setSortBy('handwriting-progress')}
-          >
-            Writing
-          </button>
-        </div>
-      )}
-
-      <div className="collection-filters">
-        <button
-          className={`filter-button ${filter === 'all' ? 'active' : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </button>
-        <button
-          className={`filter-button ${filter === 'no-stars' ? 'active' : ''}`}
-          onClick={() => setFilter('no-stars')}
-        >
-          No Stars
-        </button>
-        {isKanaTab && (
-          <>
-            <button
-              className={`filter-button ${filter === 'missing-kana' ? 'active' : ''}`}
-              onClick={() => setFilter('missing-kana')}
-            >
-              Needs Kana
-            </button>
-            <button
-              className={`filter-button ${filter === 'missing-reverse' ? 'active' : ''}`}
-              onClick={() => setFilter('missing-reverse')}
-            >
-              Needs Reverse
-            </button>
-            <button
-              className={`filter-button ${filter === 'missing-handwriting' ? 'active' : ''}`}
-              onClick={() => setFilter('missing-handwriting')}
-            >
-              Needs Writing
-            </button>
-          </>
-        )}
-        <button
-          className={`filter-button ${filter === 'mastered' ? 'active' : ''}`}
-          onClick={() => setFilter('mastered')}
-        >
-          Mastered
+          Vocab
         </button>
       </div>
 
@@ -243,7 +103,7 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
           <div className="collection-empty">
             {activeTab === 'words' && wordCount === 0
               ? 'No words yet! Buy vocab packs from the Shop.'
-              : 'Nothing matches this filter'}
+              : 'Nothing here yet'}
           </div>
         ) : currentData.type === 'kana' ? (
           currentData.data.map(kana => {
@@ -258,9 +118,18 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
                 <span className="kana-list-char">{kana.char}</span>
                 <span className="kana-list-romaji">{kana.romaji}</span>
                 <span className="kana-list-stars">
-                  <span className={stars.kana ? 'earned' : 'empty'}>{'\u2605'}</span>
-                  <span className={stars.reverse ? 'earned' : 'empty'}>{'\u2605'}</span>
-                  <span className={stars.handwriting ? 'earned' : 'empty'}>{'\u2605'}</span>
+                  <span className="star-with-count">
+                    <span className={stars.kana ? 'earned' : 'empty'}>{'\u2605'}</span>
+                    <span className="star-progress-num">{getConsecutive(progress, 'kana')}/{STAR_THRESHOLD}</span>
+                  </span>
+                  <span className="star-with-count">
+                    <span className={stars.reverse ? 'earned' : 'empty'}>{'\u2605'}</span>
+                    <span className="star-progress-num">{getConsecutive(progress, 'reverse')}/{STAR_THRESHOLD}</span>
+                  </span>
+                  <span className="star-with-count">
+                    <span className={stars.handwriting ? 'earned' : 'empty'}>{'\u2605'}</span>
+                    <span className="star-progress-num">{getConsecutive(progress, 'handwriting')}/{STAR_THRESHOLD}</span>
+                  </span>
                 </span>
               </div>
             );
