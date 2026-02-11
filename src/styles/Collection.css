@@ -90,68 +90,6 @@
   background: var(--color-cream);
 }
 
-.collection-sort {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.sort-label {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  font-weight: 600;
-}
-
-.sort-button {
-  padding: 6px 12px;
-  font-size: 12px;
-  background: var(--color-bg-secondary);
-  border: 2px solid var(--color-navy);
-  border-radius: 15px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  color: var(--color-text-secondary);
-}
-
-.sort-button.active {
-  background: var(--color-navy);
-  color: var(--color-cream);
-}
-
-.sort-button:hover:not(.active) {
-  background: var(--color-cream);
-}
-
-.collection-filters {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-}
-
-.filter-button {
-  padding: 8px 14px;
-  font-size: 13px;
-  background: var(--color-bg-secondary);
-  border: 2px solid var(--color-navy);
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  color: var(--color-text-secondary);
-}
-
-.filter-button.active {
-  background: var(--color-teal);
-  color: var(--color-cream);
-  border-color: var(--color-teal);
-}
-
-.filter-button:hover:not(.active) {
-  background: var(--color-cream);
-}
-
 .collection-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -215,7 +153,7 @@
 
 .kana-list-stars {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   font-size: 20px;
 }
 
@@ -226,6 +164,25 @@
 
 .kana-list-stars .empty {
   color: #ddd;
+}
+
+.star-with-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.star-progress-num {
+  font-size: 10px;
+  font-family: var(--font-comic);
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+.star-with-count .earned + .star-progress-num {
+  color: #d4a800;
+  font-weight: bold;
 }
 
 .collection-empty {
@@ -290,77 +247,7 @@
   margin-top: 2px;
 }
 
-/* 3-star row for kana cards */
-.kana-stars-row {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.star-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.star-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-}
-
-.star-icon {
-  font-size: 20px;
-  transition: color 0.3s ease, filter 0.3s ease;
-  position: absolute;
-  top: 0;
-  left: 0;
-  line-height: 1;
-}
-
-.star-icon.earned {
-  color: #FFD700;
-  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.4);
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
-}
-
-/* Empty star base color */
-.star-icon.empty {
-  color: #ccc;
-}
-
-/* Star fill overlay that fills from bottom */
-.star-fill {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  font-size: 20px;
-  color: #FFD700;
-  overflow: hidden;
-  transition: height 0.3s ease;
-  line-height: 1;
-  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.3);
-  filter: brightness(0.9);
-}
-
-.star-count {
-  font-size: 14px;
-  font-family: var(--font-comic);
-  color: #333;
-  font-weight: bold;
-  line-height: 1;
-}
-
-.star-icon.earned + .star-count {
-  color: var(--color-teal);
-  font-weight: 700;
-  font-size: 16px;
-}
-
-/* Legacy 5-star display for words */
+/* 5-star display for words */
 .kana-stars {
   font-size: 10px;
   color: var(--color-yellow);
