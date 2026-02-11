@@ -464,7 +464,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
   const getScriptType = () => {
     if (!currentChar) return '';
-    return hiraganaData.includes(currentChar) ? 'Hiragana' : 'Katakana';
+    return hiraganaData.some(h => h.char === currentChar.char) ? 'Hiragana' : 'Katakana';
   };
 
   const handleNext = () => {
