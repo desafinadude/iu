@@ -17,6 +17,7 @@ function ResultsModal({ score, questionsAnswered, onPlayAgain, quizType, onCoins
       onCoinsAwarded(coins);
       setCoinsAwarded(coins);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array ensures this only runs once when modal opens
 
   const getMessage = () => {
