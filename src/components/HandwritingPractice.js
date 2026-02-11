@@ -462,6 +462,11 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
     setCandidateClass('candidates');
   };
 
+  const getScriptType = () => {
+    if (!currentChar) return '';
+    return hiraganaData.includes(currentChar) ? 'Hiragana' : 'Katakana';
+  };
+
   const handleNext = () => {
     setQuestionNumber(questionNumber + 1);
     generateQuestion();
@@ -526,6 +531,9 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
         </div>
         <div className="accuracy-display" style={{backgroundColor: getAccuracyColor()}}>
           {getCorrectPercentage()}%
+        </div>
+        <div style={{fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold'}}>
+          {getScriptType()}
         </div>
         <button
           className={`speaker-button font-${settings.fontStyle}`}
