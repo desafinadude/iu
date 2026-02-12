@@ -3,8 +3,10 @@ import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { getUnlockedWords } from '../data/vocabPacks';
 import { speak } from '../utils/speech';
-import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, STAR_THRESHOLD } from '../utils/progressHelpers';
+import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, getStarThreshold } from '../utils/progressHelpers';
 import '../styles/Collection.css';
+
+const VOCAB_STAR_THRESHOLD = 10;
 
 function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = [] }) {
   const [activeTab, setActiveTab] = useState('hiragana');
@@ -28,24 +30,33 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
     if (starCount === 0) return 'stars-none';
     if (starCount === 1) return 'stars-one';
     if (starCount === 2) return 'stars-two';
-    return 'stars-three';
+    if (starCount === 3) return 'stars-three';
+    return 'stars-four';
   };
 
-  const getLevelClass = (level) => {
-    if (level === 0) return 'stars-none';
-    if (level <= 2) return 'stars-one';
-    if (level <= 4) return 'stars-two';
+  const getVocabStarClass = (totalCorrect) => {
+    if (totalCorrect === 0) return 'stars-none';
+    if (totalCorrect < VOCAB_STAR_THRESHOLD) return 'stars-one';
     return 'stars-three';
-  };
-
-  const getLevelStars = (level) => {
-    return '\u2605'.repeat(level) + '\u2606'.repeat(5 - level);
   };
 
   const getCorrectCount = (charProgress, quizType) => {
     if (!charProgress || !charProgress[quizType]) return 0;
-    if (charProgress[quizType].earned) return STAR_THRESHOLD;
+    const threshold = getStarThreshold(quizType);
+    if (charProgress[quizType].earned) return threshold;
     return charProgress[quizType].totalCorrect || 0;
+  };
+
+  const getThresholdForType = (quizType) => {
+    return getStarThreshold(quizType);
+  };
+
+  // Build vocab list data from all unlocked words, merged with progress
+  const getVocabData = () => {
+    return allWords.map(w => {
+      const progress = wordProgress[w.word] || { level: 0, consecutiveCorrect: 0, totalCorrect: 0, totalAttempts: 0 };
+      return { ...w, ...progress };
+    });
   };
 
   const getCurrentData = () => {
@@ -55,7 +66,7 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
       case 'katakana':
         return { type: 'kana', data: katakanaData };
       case 'words':
-        return { type: 'words', data: Object.entries(wordProgress).map(([word, progress]) => ({ word, ...progress })) };
+        return { type: 'words', data: getVocabData() };
       default:
         return { type: 'kana', data: hiraganaData };
     }
@@ -80,7 +91,6 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
   };
 
   const currentData = getCurrentData();
-  const wordCount = Object.keys(wordProgress).length;
 
   return (
     <div className="collection-page">
@@ -126,7 +136,7 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
             <span className="stat-label">Learning</span>
           </div>
           <div className="stat-item">
-            <span className="stat-value">{wordCount}</span>
+            <span className="stat-value">{allWords.length}</span>
             <span className="stat-label">Words</span>
           </div>
         </div>
@@ -158,10 +168,10 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
         </button>
       </div>
 
-      <div className={currentData.type === 'kana' ? 'collection-list' : 'collection-grid'}>
+      <div className="collection-list">
         {currentData.data.length === 0 ? (
           <div className="collection-empty">
-            {activeTab === 'words' && wordCount === 0
+            {activeTab === 'words'
               ? 'No words yet! Buy vocab packs from the Shop.'
               : 'Nothing here yet'}
           </div>
@@ -180,52 +190,50 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
                 <span className="kana-list-stars">
                   <span className="star-with-count">
                     <span className={stars.kana ? 'earned' : 'empty'}>{'\u2605'}</span>
-                    <span className="star-progress-num">{getCorrectCount(progress, 'kana')}/{STAR_THRESHOLD}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'kana')}/{getThresholdForType('kana')}</span>
                   </span>
                   <span className="star-with-count">
                     <span className={stars.reverse ? 'earned' : 'empty'}>{'\u2605'}</span>
-                    <span className="star-progress-num">{getCorrectCount(progress, 'reverse')}/{STAR_THRESHOLD}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'reverse')}/{getThresholdForType('reverse')}</span>
                   </span>
                   <span className="star-with-count">
                     <span className={stars.handwriting ? 'earned' : 'empty'}>{'\u2605'}</span>
-                    <span className="star-progress-num">{getCorrectCount(progress, 'handwriting')}/{STAR_THRESHOLD}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'handwriting')}/{getThresholdForType('handwriting')}</span>
+                  </span>
+                  <span className="star-with-count">
+                    <span className={stars.matching ? 'earned' : 'empty'}>{'\u2605'}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'matching')}/{getThresholdForType('matching')}</span>
                   </span>
                 </span>
               </div>
             );
           })
         ) : (
-          currentData.data.map(item => (
-            <div
-              key={item.word}
-              className={`kana-card word-card ${getLevelClass(item.level)} clickable`}
-              onClick={() => handleWordClick(item.word)}
-            >
-              <div className="kana-char" style={{ fontSize: item.word.length > 3 ? '20px' : '28px' }}>
-                {item.word}
+          currentData.data.map(item => {
+            const totalCorrect = item.totalCorrect || 0;
+            const isEarned = totalCorrect >= VOCAB_STAR_THRESHOLD;
+            const displayCount = Math.min(totalCorrect, VOCAB_STAR_THRESHOLD);
+            return (
+              <div
+                key={item.word}
+                className={`kana-list-item vocab-list-item ${getVocabStarClass(totalCorrect)} clickable`}
+                onClick={() => handleWordClick(item.word)}
+              >
+                <span className="kana-list-char vocab-char">{item.word}</span>
+                <span className="kana-list-romaji vocab-translation">{item.translation}</span>
+                <span className="kana-list-stars">
+                  <span className="star-with-count">
+                    <span className={isEarned ? 'earned' : 'empty'}>{'\u2605'}</span>
+                    <span className="star-progress-num">{displayCount}/{VOCAB_STAR_THRESHOLD}</span>
+                  </span>
+                </span>
               </div>
-              <div className="kana-stars">{getLevelStars(item.level)}</div>
-              {item.level > 0 && item.level < 5 && (
-                <div className="kana-progress-bar">
-                  <div
-                    className="kana-progress-fill"
-                    style={{
-                      width: `${(item.consecutiveCorrect / getRequiredForLevel(item.level)) * 100}%`
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
   );
-}
-
-function getRequiredForLevel(level) {
-  const thresholds = { 0: 2, 1: 3, 2: 4, 3: 5, 4: 6 };
-  return thresholds[level] || 2;
 }
 
 export default Collection;
