@@ -31,10 +31,10 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
     return '\u2605'.repeat(level) + '\u2606'.repeat(5 - level);
   };
 
-  const getConsecutive = (charProgress, quizType) => {
+  const getCorrectCount = (charProgress, quizType) => {
     if (!charProgress || !charProgress[quizType]) return 0;
     if (charProgress[quizType].earned) return STAR_THRESHOLD;
-    return charProgress[quizType].consecutiveCorrect || 0;
+    return charProgress[quizType].totalCorrect || 0;
   };
 
   const getCurrentData = () => {
@@ -120,15 +120,15 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
                 <span className="kana-list-stars">
                   <span className="star-with-count">
                     <span className={stars.kana ? 'earned' : 'empty'}>{'\u2605'}</span>
-                    <span className="star-progress-num">{getConsecutive(progress, 'kana')}/{STAR_THRESHOLD}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'kana')}/{STAR_THRESHOLD}</span>
                   </span>
                   <span className="star-with-count">
                     <span className={stars.reverse ? 'earned' : 'empty'}>{'\u2605'}</span>
-                    <span className="star-progress-num">{getConsecutive(progress, 'reverse')}/{STAR_THRESHOLD}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'reverse')}/{STAR_THRESHOLD}</span>
                   </span>
                   <span className="star-with-count">
                     <span className={stars.handwriting ? 'earned' : 'empty'}>{'\u2605'}</span>
-                    <span className="star-progress-num">{getConsecutive(progress, 'handwriting')}/{STAR_THRESHOLD}</span>
+                    <span className="star-progress-num">{getCorrectCount(progress, 'handwriting')}/{STAR_THRESHOLD}</span>
                   </span>
                 </span>
               </div>
