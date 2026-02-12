@@ -280,6 +280,27 @@
   font-weight: bold;
 }
 
+.vocab-example-text.tappable {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 12px;
+  transition: all var(--transition-fast);
+}
+
+.vocab-example-text.tappable:hover {
+  background: var(--color-orange);
+}
+
+.vocab-example-text.tappable:hover .example-jp,
+.vocab-example-text.tappable:hover .example-en,
+.vocab-example-text.tappable:hover .example-label {
+  color: var(--color-cream);
+}
+
+.vocab-example-text.tappable:active {
+  transform: scale(0.97);
+}
+
 .example-jp {
   font-size: 16px;
   color: var(--color-navy);

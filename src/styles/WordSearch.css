@@ -212,6 +212,52 @@
   animation: pow-burst 0.4s ease-out;
 }
 
+/* Found word sentence */
+.found-word-sentence {
+  margin-top: 16px;
+  padding: 12px 20px;
+  background: var(--color-yellow);
+  border: 3px solid var(--color-navy);
+  border-radius: 10px;
+  box-shadow: 3px 3px 0px var(--color-navy);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  max-width: 500px;
+  width: 100%;
+  animation: pow-burst 0.3s ease-out;
+}
+
+.found-word-sentence:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-navy);
+  background: var(--color-orange);
+}
+
+.found-word-sentence:hover .sentence-jp,
+.found-word-sentence:hover .sentence-en {
+  color: var(--color-cream);
+}
+
+.found-word-sentence:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--color-navy);
+}
+
+.sentence-jp {
+  font-size: 18px;
+  color: var(--color-navy);
+  font-weight: bold;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.sentence-en {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
 /* Completion message - Comic celebration */
 .puzzle-complete {
   position: fixed;
@@ -380,6 +426,19 @@
   .new-puzzle-btn {
     padding: 10px 25px;
     font-size: 14px;
+  }
+
+  .found-word-sentence {
+    padding: 10px 16px;
+    margin-top: 12px;
+  }
+
+  .sentence-jp {
+    font-size: 16px;
+  }
+
+  .sentence-en {
+    font-size: 13px;
   }
 }
 
