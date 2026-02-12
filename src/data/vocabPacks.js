@@ -1,5 +1,6 @@
 import { vocabularyData } from './vocabularyData';
 import jpod101VocabPacks from './jpod101VocabPacks';
+import essentialPhrasesData from './essentialPhrases';
 
 // Theme-based vocabulary packs
 // Words are organized by themes like colors, greetings, time, numbers, etc.
@@ -20,7 +21,66 @@ function findWordsByJapanese(japaneseWords) {
   );
 }
 
-// Define theme packs with manually curated words (JLPT-based)
+// Helper function to filter essential phrases by category
+function getEssentialPhrases(category) {
+  return essentialPhrasesData.filter(phrase => phrase.category === category);
+}
+
+// Calculate price based on pack size
+function calculatePrice(wordCount) {
+  if (wordCount < 10) return 10;  // Minimum price
+  if (wordCount < 15) return 10;
+  if (wordCount < 20) return 15;
+  if (wordCount < 25) return 20;
+  return 25;
+}
+
+// ============================================
+// ESSENTIAL PHRASE PACKS (UNLOCKED BY DEFAULT)
+// ============================================
+const essentialPacks = [
+  {
+    id: 'essential_survival',
+    name: 'Essential Phrases 1',
+    category: 'survival',
+    words: getEssentialPhrases('survival'),
+    price: 0, // Free - unlocked by default
+    unlocked: true,
+  },
+  {
+    id: 'essential_greetings',
+    name: 'Greetings & Politeness',
+    category: 'greetings',
+    words: getEssentialPhrases('greetings'),
+    price: 0, // Free - unlocked by default
+    unlocked: true,
+  },
+  {
+    id: 'essential_restaurant',
+    name: 'Restaurant & Food',
+    category: 'restaurant',
+    words: getEssentialPhrases('restaurant'),
+    price: calculatePrice(getEssentialPhrases('restaurant').length),
+  },
+  {
+    id: 'essential_travel',
+    name: 'Navigation & Travel',
+    category: 'travel',
+    words: getEssentialPhrases('travel'),
+    price: calculatePrice(getEssentialPhrases('travel').length),
+  },
+  {
+    id: 'essential_shopping',
+    name: 'Shopping',
+    category: 'shopping',
+    words: getEssentialPhrases('shopping'),
+    price: calculatePrice(getEssentialPhrases('shopping').length),
+  },
+];
+
+// ============================================
+// JLPT-BASED THEME PACKS
+// ============================================
 const jlptBasedPacks = [
   // COLORS
   {
@@ -29,26 +89,9 @@ const jlptBasedPacks = [
     category: 'basics',
     words: findWordsByTranslations([
       'red', 'blue', 'white', 'black', 'yellow',
-      'green', 'brown', 'color', 'pink'
+      'green', 'brown', 'color', 'pink', 'purple', 'orange'
     ]),
     price: 15,
-  },
-
-  // GREETINGS & BASIC EXPRESSIONS
-  {
-    id: 'pack_greetings',
-    name: 'Greetings',
-    category: 'basics',
-    words: findWordsByJapanese([
-      'おはよう', 'こんにちは', 'こんばんは', 'おやすみ', 'さようなら',
-      'ありがとう', 'すみません', 'ごめんなさい', 'はい', 'いいえ'
-    ]).concat(findWordsByTranslations([
-      'hello', 'good morning', 'good night', 'goodbye', 'thank you',
-      'excuse me', 'sorry', 'yes', 'no', 'please'
-    ])).filter((word, index, self) =>
-      index === self.findIndex(w => w.word === word.word)
-    ).slice(0, 10),
-    price: 10,
   },
 
   // NUMBERS 1-10
@@ -57,9 +100,9 @@ const jlptBasedPacks = [
     name: 'Numbers 1-10',
     category: 'numbers',
     words: findWordsByJapanese([
-      'いち', 'に', 'さん', 'し', 'よん', 'ご', 'ろく', 'なな', 'しち', 'はち', 'きゅう', 'く', 'じゅう'
+      'いち', 'に', 'さん', 'し', 'よん', 'ご', 'ろく', 'なな', 'しち', 'はち', 'きゅう', 'く', 'じゅう', 'れい'
     ]).concat(findWordsByTranslations([
-      'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'
+      'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'zero'
     ])).filter((word, index, self) =>
       index === self.findIndex(w => w.word === word.word)
     ).slice(0, 12),
@@ -69,25 +112,13 @@ const jlptBasedPacks = [
   // TIME EXPRESSIONS
   {
     id: 'pack_time',
-    name: 'Time',
+    name: 'Time Expressions',
     category: 'time',
     words: findWordsByTranslations([
       'morning', 'afternoon', 'evening', 'night', 'today', 'yesterday',
       'tomorrow', 'now', 'when', 'time', 'hour', 'minute', 'day after tomorrow'
     ]).slice(0, 12),
     price: 15,
-  },
-
-  // DAYS & MONTHS
-  {
-    id: 'pack_days_months',
-    name: 'Days & Months',
-    category: 'time',
-    words: findWordsByTranslations([
-      'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
-      'january', 'february', 'march', 'april', 'may', 'june', 'month', 'week', 'year'
-    ]).slice(0, 15),
-    price: 20,
   },
 
   // FAMILY
@@ -97,7 +128,8 @@ const jlptBasedPacks = [
     category: 'people',
     words: findWordsByTranslations([
       'mother', 'father', 'sister', 'brother', 'family',
-      'grandfather', 'grandmother', 'child', 'children', 'parent'
+      'grandfather', 'grandmother', 'child', 'children', 'parent',
+      'husband', 'wife', 'son', 'daughter'
     ]).slice(0, 12),
     price: 15,
   },
@@ -109,33 +141,33 @@ const jlptBasedPacks = [
     category: 'food',
     words: findWordsByTranslations([
       'rice', 'bread', 'water', 'tea', 'coffee', 'milk',
-      'egg', 'meat', 'fish', 'vegetable', 'fruit'
+      'egg', 'meat', 'fish', 'vegetable', 'fruit', 'food', 'meal'
     ]).slice(0, 12),
     price: 15,
   },
 
-  // FOOD - MEALS
+  // FOOD - MEALS & EATING
   {
     id: 'pack_meals',
     name: 'Meals & Eating',
     category: 'food',
     words: findWordsByTranslations([
       'breakfast', 'lunch', 'dinner', 'meal', 'to eat', 'to drink',
-      'delicious', 'tasty', 'restaurant', 'food', 'cuisine'
+      'delicious', 'tasty', 'restaurant', 'hungry', 'thirsty'
     ]).slice(0, 12),
     price: 15,
   },
 
-  // DRINKS & SNACKS
+  // DRINKS
   {
-    id: 'pack_drinks_snacks',
-    name: 'Drinks & Snacks',
+    id: 'pack_drinks',
+    name: 'Drinks',
     category: 'food',
     words: findWordsByJapanese([
-      'みず', 'おちゃ', 'コーヒー', 'ぎゅうにゅう', 'ジュース', 'ビール', 'さけ'
+      'みず', 'おちゃ', 'コーヒー', 'ぎゅうにゅう', 'ジュース', 'ビール', 'さけ', 'ワイン'
     ]).concat(findWordsByTranslations([
-      'water', 'tea', 'coffee', 'milk', 'juice', 'beer', 'sake',
-      'cake', 'candy', 'butter', 'soup', 'curry'
+      'water', 'tea', 'coffee', 'milk', 'juice', 'beer', 'sake', 'wine',
+      'drink', 'beverage', 'soda'
     ])).filter((word, index, self) =>
       index === self.findIndex(w => w.word === word.word)
     ).slice(0, 12),
@@ -149,7 +181,7 @@ const jlptBasedPacks = [
     category: 'body',
     words: findWordsByTranslations([
       'head', 'face', 'eye', 'ear', 'mouth', 'nose', 'hand',
-      'foot', 'leg', 'arm', 'body', 'hair'
+      'foot', 'leg', 'arm', 'body', 'hair', 'finger', 'stomach', 'back'
     ]).slice(0, 12),
     price: 15,
   },
@@ -161,7 +193,7 @@ const jlptBasedPacks = [
     category: 'places',
     words: findWordsByTranslations([
       'house', 'home', 'school', 'station', 'restaurant',
-      'shop', 'store', 'hospital', 'bank', 'post office', 'library'
+      'shop', 'store', 'hospital', 'bank', 'post office', 'library', 'park'
     ]).slice(0, 12),
     price: 15,
   },
@@ -173,7 +205,7 @@ const jlptBasedPacks = [
     category: 'learning',
     words: findWordsByTranslations([
       'school', 'teacher', 'student', 'class', 'study', 'test',
-      'book', 'pen', 'pencil', 'notebook', 'desk', 'paper'
+      'book', 'pen', 'pencil', 'notebook', 'desk', 'paper', 'learn'
     ]).slice(0, 12),
     price: 15,
   },
@@ -185,8 +217,8 @@ const jlptBasedPacks = [
     category: 'nature',
     words: findWordsByTranslations([
       'weather', 'rain', 'snow', 'cloud', 'sun', 'wind',
-      'hot', 'cold', 'warm', 'cool', 'sunny', 'cloudy'
-    ]).slice(0, 10),
+      'hot', 'cold', 'warm', 'cool', 'sunny', 'cloudy', 'temperature'
+    ]).slice(0, 12),
     price: 15,
   },
 
@@ -196,9 +228,11 @@ const jlptBasedPacks = [
     name: 'Seasons',
     category: 'nature',
     words: findWordsByTranslations([
-      'spring', 'summer', 'autumn', 'fall', 'winter', 'season'
-    ]),
-    price: 10,
+      'spring', 'summer', 'autumn', 'fall', 'winter', 'season',
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ]).slice(0, 12),
+    price: 15,
   },
 
   // TRANSPORTATION
@@ -208,7 +242,7 @@ const jlptBasedPacks = [
     category: 'travel',
     words: findWordsByTranslations([
       'car', 'bus', 'train', 'bicycle', 'airplane', 'station',
-      'taxi', 'motorcycle', 'to go', 'to come', 'to ride'
+      'taxi', 'motorcycle', 'to go', 'to come', 'to ride', 'ticket'
     ]).slice(0, 12),
     price: 15,
   },
@@ -220,8 +254,8 @@ const jlptBasedPacks = [
     category: 'items',
     words: findWordsByTranslations([
       'shirt', 'pants', 'dress', 'shoes', 'hat', 'coat',
-      'jacket', 'clothes', 'to wear', 'socks'
-    ]).slice(0, 10),
+      'jacket', 'clothes', 'to wear', 'socks', 'skirt', 'bag'
+    ]).slice(0, 12),
     price: 15,
   },
 
@@ -240,12 +274,13 @@ const jlptBasedPacks = [
   // ADJECTIVES - DESCRIPTIONS
   {
     id: 'pack_adjectives',
-    name: 'Adjectives',
+    name: 'Common Adjectives',
     category: 'descriptors',
     words: findWordsByTranslations([
       'big', 'small', 'new', 'old', 'good', 'bad',
-      'beautiful', 'pretty', 'ugly', 'tall', 'short', 'long'
-    ]).slice(0, 12),
+      'beautiful', 'pretty', 'ugly', 'tall', 'short', 'long',
+      'cheap', 'expensive', 'easy', 'difficult'
+    ]).slice(0, 15),
     price: 15,
   },
 
@@ -256,8 +291,9 @@ const jlptBasedPacks = [
     category: 'actions',
     words: findWordsByTranslations([
       'to go', 'to come', 'to eat', 'to drink', 'to see', 'to do',
-      'to make', 'to buy', 'to sell', 'to read', 'to write', 'to speak'
-    ]).slice(0, 12),
+      'to make', 'to buy', 'to sell', 'to read', 'to write', 'to speak',
+      'to use', 'to take'
+    ]).slice(0, 15),
     price: 15,
   },
 
@@ -268,7 +304,7 @@ const jlptBasedPacks = [
     category: 'basics',
     words: findWordsByTranslations([
       'left', 'right', 'front', 'back', 'inside', 'outside',
-      'top', 'bottom', 'above', 'below', 'near', 'far'
+      'top', 'bottom', 'above', 'below', 'near', 'far', 'straight'
     ]).slice(0, 12),
     price: 15,
   },
@@ -305,13 +341,35 @@ const jlptBasedPacks = [
     ).slice(24, 36),
     price: 15,
   },
-].filter(pack => pack.words.length > 0); // Only include packs with words
+];
 
-// Combine all vocab packs: JPod101 packs first, then JLPT packs
-export const allVocabPacks = [...jpod101VocabPacks, ...jlptBasedPacks];
+// Filter out JPod101 packs with less than 10 words and adjust pricing
+const filteredJPod101Packs = jpod101VocabPacks
+  .filter(pack => pack.words.length >= 10)
+  .map(pack => ({
+    ...pack,
+    price: calculatePrice(pack.words.length)
+  }));
+
+// Filter JLPT packs to ensure they have at least 10 words
+const filteredJLPTPacks = jlptBasedPacks.filter(pack => pack.words.length >= 10);
+
+// Combine all vocab packs: Essential packs first, then JLPT packs, then JPod101 packs
+export const allVocabPacks = [
+  ...essentialPacks,
+  ...filteredJLPTPacks,
+  ...filteredJPod101Packs
+];
 
 // Export the combined packs as the default
 export const vocabPacks = allVocabPacks;
+
+// Get default unlocked pack IDs (the free essential packs)
+export function getDefaultUnlockedPacks() {
+  return essentialPacks
+    .filter(pack => pack.unlocked === true)
+    .map(pack => pack.id);
+}
 
 // Get pack by ID
 export function getPackById(packId) {
