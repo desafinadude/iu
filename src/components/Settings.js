@@ -4,10 +4,13 @@ import { katakanaData } from '../data/katakanaData';
 import { getAvailableJapaneseVoices, setJapaneseVoice } from '../utils/speech';
 import '../styles/Settings.css';
 
-function Settings({ settings, onSave }) {
+function Settings({ settings, onSave, onExportProgress, onImportProgress, coins, unlockedPacksCount }) {
   const [localSettings, setLocalSettings] = useState(settings);
   const [saveIndicator, setSaveIndicator] = useState('');
   const [availableVoices, setAvailableVoices] = useState([]);
+  const [importMessage, setImportMessage] = useState('');
+  const [importStatus, setImportStatus] = useState(''); // 'success', 'error', or ''
+  const fileInputRef = useRef(null);
   const isFirstRender = useRef(true);
 
   // Auto-save whenever settings change (except on first render)
@@ -126,6 +129,43 @@ function Settings({ settings, onSave }) {
     setLocalSettings({ ...localSettings, enabledKatakana: new Set() });
   };
 
+  const handleExport = () => {
+    onExportProgress();
+    setSaveIndicator('Progress exported successfully ✓');
+    setTimeout(() => setSaveIndicator(''), 3000);
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const result = await onImportProgress(file);
+      setImportStatus('success');
+      setImportMessage(`Progress restored successfully! (exported ${new Date(result.exportDate).toLocaleString()})`);
+      setTimeout(() => {
+        setImportMessage('');
+        setImportStatus('');
+      }, 5000);
+    } catch (error) {
+      setImportStatus('error');
+      setImportMessage(error.message || 'Failed to import progress');
+      setTimeout(() => {
+        setImportMessage('');
+        setImportStatus('');
+      }, 5000);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const renderKanaTable = (grid, isHiragana) => {
     const enabledSet = isHiragana ? localSettings.enabledHiragana : localSettings.enabledKatakana;
 
@@ -168,7 +208,47 @@ function Settings({ settings, onSave }) {
           {saveIndicator}
         </div>
       )}
-     
+
+      {importMessage && (
+        <div className={`import-message ${importStatus}`}>
+          {importMessage}
+        </div>
+      )}
+
+      {/* Progress Management Section */}
+      <div className="settings-section">
+        <h3>Progress Management</h3>
+        <div className="progress-info">
+          <div className="progress-stat">
+            <span className="stat-label">Coins:</span>
+            <span className="stat-value">{coins}</span>
+          </div>
+          <div className="progress-stat">
+            <span className="stat-label">Unlocked Packs:</span>
+            <span className="stat-value">{unlockedPacksCount}</span>
+          </div>
+        </div>
+        <div className="progress-controls">
+          <button className="export-btn" onClick={handleExport}>
+            📥 Export Progress
+          </button>
+          <button className="import-btn" onClick={handleImportClick}>
+            📤 Import Progress
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </div>
+        <div className="progress-help">
+          <p><strong>Export:</strong> Save your progress to a JSON file for backup.</p>
+          <p><strong>Import:</strong> Restore progress from a previously exported file.</p>
+          <p className="warning-text">⚠️ Importing will replace your current progress. Export first to be safe!</p>
+        </div>
+      </div>
 
       {/* <div className="settings-section">
         <h3>Handwriting Recognition Strictness</h3>

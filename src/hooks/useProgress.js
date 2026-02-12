@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
+import { getDefaultUnlockedPacks } from '../data/vocabPacks';
 import {
   initializeProgress,
   processAnswer,
@@ -28,6 +29,8 @@ function needsMigration(parsed) {
 }
 
 function loadProgress() {
+  const defaultUnlockedPacks = getDefaultUnlockedPacks();
+
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -36,16 +39,20 @@ function loadProgress() {
       if (needsMigration(parsed)) {
         // Fresh start: reset kana progress, keep coins and word/pack data
         const defaultProgress = initializeProgress(hiraganaData, katakanaData);
+        // Merge existing unlocked packs with default ones (no duplicates)
+        const unlockedPacks = [...new Set([...defaultUnlockedPacks, ...(parsed.unlockedPacks || [])])];
         return {
           ...defaultProgress,
           coins: parsed.coins || 0,
-          unlockedPacks: parsed.unlockedPacks || [],
+          unlockedPacks,
           wordProgress: parsed.wordProgress || {},
         };
       }
 
       // v2 format - merge with defaults to handle newly added kana
       const defaultProgress = initializeProgress(hiraganaData, katakanaData);
+      // Merge existing unlocked packs with default ones (no duplicates)
+      const unlockedPacks = [...new Set([...defaultUnlockedPacks, ...(parsed.unlockedPacks || [])])];
       return {
         ...defaultProgress,
         ...parsed,
@@ -53,7 +60,7 @@ function loadProgress() {
           ...defaultProgress.kanaProgress,
           ...parsed.kanaProgress,
         },
-        unlockedPacks: parsed.unlockedPacks || [],
+        unlockedPacks,
         wordProgress: parsed.wordProgress || {},
       };
     }
@@ -63,7 +70,7 @@ function loadProgress() {
   const base = initializeProgress(hiraganaData, katakanaData);
   return {
     ...base,
-    unlockedPacks: [],
+    unlockedPacks: defaultUnlockedPacks,
     wordProgress: {},
   };
 }
@@ -210,8 +217,90 @@ export function useProgress() {
     const fresh = initializeProgress(hiraganaData, katakanaData);
     setProgress({
       ...fresh,
-      unlockedPacks: [],
+      unlockedPacks: getDefaultUnlockedPacks(),
       wordProgress: {},
+    });
+  }, []);
+
+  // Export progress as JSON file
+  const exportProgress = useCallback(() => {
+    const exportData = {
+      version: 2, // Format version for future migrations
+      exportDate: new Date().toISOString(),
+      appVersion: '1.0.0', // Could be from package.json
+      data: {
+        coins: progress.coins,
+        unlockedPacks: progress.unlockedPacks,
+        kanaProgress: progress.kanaProgress,
+        wordProgress: progress.wordProgress,
+      }
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `koikata-progress-${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [progress]);
+
+  // Import progress from JSON file
+  const importProgress = useCallback((file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+
+          // Validate the import
+          if (!imported.version || !imported.data) {
+            reject(new Error('Invalid progress file format'));
+            return;
+          }
+
+          // Version-specific migration logic
+          let importedData = imported.data;
+          if (imported.version === 1) {
+            // Handle v1 format if needed in the future
+            importedData = migrateV1ToV2(importedData);
+          }
+
+          // Merge with default unlocked packs (ensure new starter packs are unlocked)
+          const defaultUnlockedPacks = getDefaultUnlockedPacks();
+          const mergedUnlockedPacks = [...new Set([
+            ...defaultUnlockedPacks,
+            ...(importedData.unlockedPacks || [])
+          ])];
+
+          // Set the imported progress
+          setProgress({
+            version: 2,
+            coins: importedData.coins || 0,
+            unlockedPacks: mergedUnlockedPacks,
+            kanaProgress: importedData.kanaProgress || {},
+            wordProgress: importedData.wordProgress || {},
+          });
+
+          resolve({
+            success: true,
+            exportDate: imported.exportDate,
+            version: imported.version
+          });
+        } catch (error) {
+          reject(new Error('Failed to parse progress file: ' + error.message));
+        }
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+
+      reader.readAsText(file);
     });
   }, []);
 
@@ -233,5 +322,13 @@ export function useProgress() {
     spendCoins,
     awardCoins,
     resetProgress,
+    exportProgress,
+    importProgress,
   };
+}
+
+// Helper function for future v1 to v2 migration
+function migrateV1ToV2(v1Data) {
+  // Currently no v1 format, but this is here for future use
+  return v1Data;
 }

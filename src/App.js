@@ -72,6 +72,8 @@ function App() {
     getWordWeight,
     purchasePack,
     awardCoins,
+    exportProgress,
+    importProgress,
   } = useProgress();
   const [levelUpInfo, setLevelUpInfo] = useState(null);
   const [streakLostInfo, setStreakLostInfo] = useState(null);
@@ -247,7 +249,16 @@ function App() {
         {currentView === 'wordSearch' && (
           <WordSearch settings={settings} unlockedPacks={unlockedPacks} />
         )}
-        {currentView === 'settings' && <Settings settings={settings} onSave={saveSettings} />}
+        {currentView === 'settings' && (
+          <Settings
+            settings={settings}
+            onSave={saveSettings}
+            onExportProgress={exportProgress}
+            onImportProgress={importProgress}
+            coins={coins}
+            unlockedPacksCount={unlockedPacks.length}
+          />
+        )}
         {currentView === 'resources' && <Resources />}
         {currentView === 'collection' && (
           <Collection
