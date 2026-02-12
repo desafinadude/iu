@@ -12,12 +12,22 @@ export const getRandomElement = (array) => {
 };
 
 // Create a deck with 10 copies of each kana, shuffled
-export const createKanaDeck = (enabledChars) => {
+// If lastChar is provided, ensures the first card isn't the same character
+export const createKanaDeck = (enabledChars, lastChar = null) => {
   const deck = [];
   enabledChars.forEach(char => {
     for (let i = 0; i < 10; i++) {
       deck.push(char);
     }
   });
-  return shuffle(deck);
+  let shuffled = shuffle(deck);
+  // Avoid the same character appearing consecutively at deck boundaries
+  if (lastChar && shuffled.length > 1 && shuffled[0].char === lastChar.char) {
+    // Find the first card that's different and swap it to the front
+    const swapIdx = shuffled.findIndex(c => c.char !== lastChar.char);
+    if (swapIdx > 0) {
+      [shuffled[0], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[0]];
+    }
+  }
+  return shuffled;
 };

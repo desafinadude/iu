@@ -132,6 +132,13 @@ function VocabularyPractice({ settings, unlockedPacks = [] }) {
     setIsFlipped(!isFlipped);
   };
 
+  const handleExampleClick = (e) => {
+    e.stopPropagation();
+    if (currentWord && currentWord.example) {
+      speak(currentWord.example);
+    }
+  };
+
   if (availableWords.length === 0) {
     return (
       <div className="vocab-empty">
@@ -223,8 +230,8 @@ function VocabularyPractice({ settings, unlockedPacks = [] }) {
                 <div className="vocab-romaji-text">{currentWord.romaji}</div>
               )}
               {currentWord.example && (
-                <div className="vocab-example-text">
-                  <div className="example-label">Example:</div>
+                <div className="vocab-example-text tappable" onClick={handleExampleClick}>
+                  <div className="example-label">Example (tap to hear):</div>
                   <div className="example-jp">{currentWord.example}</div>
                   {currentWord.exampleEN && (
                     <div className="example-en">{currentWord.exampleEN}</div>
