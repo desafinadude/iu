@@ -10,6 +10,7 @@ const TIMER_DURATION = 12;
 const MAX_LIVES = 3;
 
 function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight, onCoinsAwarded }) {
+  const [reverseMode, setReverseMode] = useState(true); // default: reverse (show English, pick Japanese)
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -111,10 +112,12 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
     setSelectedAnswer(null);
     startTimer();
 
-    // Speak the word
-    speak(correctWord.word);
+    // Speak the word (only in normal mode, not reverse)
+    if (!reverseMode) {
+      speak(correctWord.word);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [availableWords, startTimer]);
+  }, [availableWords, startTimer, reverseMode]);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -223,10 +226,18 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
       <div className="kana-quiz">
         <div className="quiz-instructions">
           <h2>Word Quiz</h2>
-          <p>See the word, select the English meaning</p>
+          <p>{reverseMode ? 'See the English, select the Japanese' : 'See the word, select the English meaning'}</p>
           <p style={{ fontSize: '14px', marginTop: '10px', color: 'var(--color-text-muted)' }}>
             {availableWords.length} words available
           </p>
+          <label className="reverse-toggle">
+            <input
+              type="checkbox"
+              checked={reverseMode}
+              onChange={(e) => setReverseMode(e.target.checked)}
+            />
+            <span className="reverse-toggle-label">Reverse Mode</span>
+          </label>
           <button className="start-button" onClick={handleStart}>
             START
           </button>
@@ -246,7 +257,7 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
           score={score}
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
-          quizType="Word"
+          quizType={reverseMode ? 'Reverse Word' : 'Word'}
           onCoinsAwarded={onCoinsAwarded}
         />
       )}
@@ -254,8 +265,9 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
       <div className="quiz-question">
         <div className="timer-lives-row">
           <div className="question-number">{questionNumber + 1}</div>
+          {reverseMode && <div className="mode-badge">REVERSE</div>}
           <div className="lives-display">
-            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
+            {'\u2764\uFE0F'.repeat(lives)}{'\uD83D\uDDA4'.repeat(MAX_LIVES - lives)}
           </div>
           {!showResult && (
             <div className="quiz-timer-bar">
@@ -266,22 +278,35 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
             </div>
           )}
         </div>
-        <div className="word-box-container">
-          <button
-            className={`word-quiz-box font-${settings.fontStyle}`}
-            onClick={handleSpeakerClick}
-            title="Click to hear pronunciation"
-          >
-            <div className="word-quiz-text" style={{ fontSize: currentQuestion.word.length > 4 ? '32px' : '48px' }}>
-              {currentQuestion.word}
+
+        {reverseMode ? (
+          /* Reverse mode: show English translation */
+          <div className="word-box-container">
+            <div className="word-quiz-box reverse-word-box">
+              <div className="word-quiz-text" style={{ fontSize: currentQuestion.translation.length > 15 ? '20px' : '28px' }}>
+                {currentQuestion.translation}
+              </div>
             </div>
-          </button>
-          {currentQuestion.furigana && currentQuestion.furigana !== currentQuestion.word && (
-            <div className="furigana-hint" style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginTop: '8px' }}>
-              {currentQuestion.furigana}
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          /* Normal mode: show Japanese word */
+          <div className="word-box-container">
+            <button
+              className={`word-quiz-box font-${settings.fontStyle}`}
+              onClick={handleSpeakerClick}
+              title="Click to hear pronunciation"
+            >
+              <div className="word-quiz-text" style={{ fontSize: currentQuestion.word.length > 4 ? '32px' : '48px' }}>
+                {currentQuestion.word}
+              </div>
+            </button>
+            {currentQuestion.furigana && currentQuestion.furigana !== currentQuestion.word && (
+              <div className="furigana-hint" style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginTop: '8px' }}>
+                {currentQuestion.furigana}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="options-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
@@ -296,12 +321,12 @@ function WordQuiz({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight
                   ? 'wrong'
                   : ''
                 : ''
-            }`}
+            }${reverseMode ? ` font-${settings.fontStyle}` : ''}`}
             onClick={() => handleAnswer(option)}
             disabled={showResult || gameOver}
             style={{ fontSize: '14px', padding: '15px 10px' }}
           >
-            {option.translation}
+            {reverseMode ? option.word : option.translation}
           </button>
         ))}
       </div>

@@ -689,3 +689,161 @@ body:not(.quiz-active) .kana-quiz {
     padding: 10px 14px;
   }
 }
+
+/* ==============================================
+   MODE SELECTOR - Kana Quiz Mode Selection
+   ============================================== */
+
+.mode-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 1rem;
+}
+
+.mode-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 12px;
+  background: var(--color-bg-secondary);
+  border: 3px solid var(--color-navy);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 3px 3px 0px var(--color-navy);
+  text-align: center;
+}
+
+.mode-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-navy);
+  background: var(--color-yellow);
+}
+
+.mode-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--color-navy);
+}
+
+.mode-label {
+  font-family: var(--font-comic);
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-navy);
+  letter-spacing: 1px;
+}
+
+.mode-desc {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* Mode badge shown in mixed mode during quiz */
+.mode-badge {
+  font-family: var(--font-comic);
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--color-cream);
+  background: var(--color-teal);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid var(--color-navy);
+}
+
+/* Back to modes button */
+.back-to-modes-button {
+  margin-top: 12px;
+  padding: 10px 24px;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 2px solid var(--color-text-muted);
+  border-radius: 8px;
+  font-family: var(--font-comic);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  letter-spacing: 1px;
+}
+
+.back-to-modes-button:hover {
+  color: var(--color-navy);
+  border-color: var(--color-navy);
+  background: var(--color-cream);
+}
+
+/* Question prompt for match mode */
+.question-prompt {
+  font-family: var(--font-comic);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  letter-spacing: 1px;
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Reverse mode toggle checkbox */
+.reverse-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  padding: 10px 20px;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-navy);
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.reverse-toggle:hover {
+  background: var(--color-yellow);
+}
+
+.reverse-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-orange);
+  cursor: pointer;
+}
+
+.reverse-toggle-label {
+  font-family: var(--font-comic);
+  font-size: 16px;
+  color: var(--color-navy);
+  letter-spacing: 1px;
+}
+
+/* Reverse word box (for word quiz reverse mode) */
+.reverse-word-box {
+  cursor: default;
+}
+
+@media (max-width: 480px) {
+  .mode-selector {
+    gap: 8px;
+    max-width: 300px;
+  }
+
+  .mode-button {
+    padding: 14px 8px;
+  }
+
+  .mode-label {
+    font-size: 16px;
+  }
+
+  .mode-desc {
+    font-size: 10px;
+  }
+}

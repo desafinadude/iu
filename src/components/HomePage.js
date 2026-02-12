@@ -4,8 +4,6 @@ import '../styles/HomePage.css';
 function HomePage({ onActivitySelect }) {
   const activities = [
     { id: 'kana', label: 'Kana Quiz', emoji: '📝' },
-    { id: 'reverseKana', label: 'Reverse Kana', emoji: '🔄' },
-    { id: 'kanaMatch', label: 'Kana Match', emoji: '🎯' },
     { id: 'wordQuiz', label: 'Word Quiz', emoji: '💬' },
     // { id: 'kanji', label: 'Kanji Quiz' }, // Disabled for now
     { id: 'vocab', label: 'Vocabulary', emoji: '📚' },
