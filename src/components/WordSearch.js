@@ -27,6 +27,7 @@ function WordSearch({ settings, unlockedPacks = [] }) {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showingKana, setShowingKana] = useState(new Set());
   const [longPressTimer, setLongPressTimer] = useState(null);
+  const [lastFoundWord, setLastFoundWord] = useState(null);
 
   // Get words from purchased packs only
   const availableWords = useMemo(() => getUnlockedWords(unlockedPacks), [unlockedPacks]);
@@ -58,7 +59,9 @@ function WordSearch({ settings, unlockedPacks = [] }) {
 
     return filteredVocab.map(item => ({
       word: item.word,
-      translation: item.translation
+      translation: item.translation,
+      example: item.example || null,
+      exampleEN: item.exampleEN || null
     }));
   }, [availableWords, selectedCategories]);
 
@@ -156,6 +159,7 @@ function WordSearch({ settings, unlockedPacks = [] }) {
     setFoundWords(new Set());
     setSelectedCells([]);
     setPuzzleComplete(false);
+    setLastFoundWord(null);
   }, [canPlaceWord, placeWord, getRandomHiragana, getFilteredWordList]);
 
   useEffect(() => {
@@ -267,6 +271,7 @@ function WordSearch({ settings, unlockedPacks = [] }) {
           const newFound = new Set(foundWords);
           newFound.add(wordObj.word);
           setFoundWords(newFound);
+          setLastFoundWord(wordObj);
           playCorrectSound();
 
           // Check if puzzle is complete
@@ -327,6 +332,12 @@ function WordSearch({ settings, unlockedPacks = [] }) {
 
   const handleWordClick = (wordObj) => {
     speak(wordObj.word);
+  };
+
+  const handleSentenceClick = () => {
+    if (lastFoundWord && lastFoundWord.example) {
+      speak(lastFoundWord.example);
+    }
   };
 
   // Show empty state if no words available
@@ -422,6 +433,15 @@ function WordSearch({ settings, unlockedPacks = [] }) {
           </div>
         ))}
       </div>
+
+      {lastFoundWord && lastFoundWord.example && !puzzleComplete && (
+        <div className="found-word-sentence" onClick={handleSentenceClick}>
+          <div className="sentence-jp">{lastFoundWord.example}</div>
+          {lastFoundWord.exampleEN && (
+            <div className="sentence-en">{lastFoundWord.exampleEN}</div>
+          )}
+        </div>
+      )}
 
       {puzzleComplete && (
         <div className="puzzle-complete">

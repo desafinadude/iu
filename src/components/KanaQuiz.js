@@ -73,9 +73,9 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
     // Check if we need to regenerate the deck
     if (questionDeck.length === 0 || deckIndex >= questionDeck.length) {
-      const newDeck = createKanaDeck(availableChars);
+      const newDeck = createKanaDeck(availableChars, currentQuestion);
       setQuestionDeck(newDeck);
-      setDeckIndex(0);
+      setDeckIndex(1);
       // Use the first card from the new deck
       const correctAnswer = newDeck[0];
 
