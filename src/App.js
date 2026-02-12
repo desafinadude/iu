@@ -3,8 +3,6 @@ import LoadingScreen from './components/LoadingScreen';
 import HomePage from './components/HomePage';
 import Menu from './components/Menu';
 import KanaQuiz from './components/KanaQuiz';
-import ReverseKanaQuiz from './components/ReverseKanaQuiz';
-import KanaMatching from './components/KanaMatching';
 // import KanjiQuiz from './components/KanjiQuiz'; // Disabled for now
 import VocabularyPractice from './components/VocabularyPractice';
 import HandwritingPractice from './components/HandwritingPractice';
@@ -24,7 +22,7 @@ import './styles/App.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('home'); // home, kana, reverseKana, kanaMatch, vocab, handwriting, wordSearch, settings, resources
+  const [currentView, setCurrentView] = useState('home'); // home, kana, vocab, handwriting, wordSearch, wordQuiz, settings, resources
   const [menuOpen, setMenuOpen] = useState(false);
   const [settings, setSettings] = useState({
     enabledHiragana: new Set([
@@ -152,7 +150,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'reverseKana', 'kanaMatch', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz'];
+    const quizViews = ['kana', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -220,19 +218,7 @@ function App() {
           <KanaQuiz
             settings={settings}
             onAnswerRecorded={handleAnswerRecorded}
-            getKanaWeight={(char) => getKanaWeight(char, 'kana')}
-          />
-        )}
-        {currentView === 'reverseKana' && (
-          <ReverseKanaQuiz
-            settings={settings}
-            onAnswerRecorded={handleAnswerRecorded}
-            getKanaWeight={(char) => getKanaWeight(char, 'reverse')}
-          />
-        )}
-        {currentView === 'kanaMatch' && (
-          <KanaMatching
-            settings={settings}
+            getKanaWeight={getKanaWeight}
           />
         )}
         {/* currentView === 'kanji' && <KanjiQuiz settings={settings} /> */}
@@ -265,6 +251,7 @@ function App() {
             kanaProgress={kanaProgress}
             wordProgress={wordProgress}
             coins={coins}
+            unlockedPacks={unlockedPacks}
           />
         )}
         {currentView === 'shop' && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
@@ -12,7 +12,15 @@ import '../styles/KanaQuiz.css';
 const TIMER_DURATION = 10;
 const MAX_LIVES = 3;
 
+const MODES = [
+  { id: 'kana', label: 'Kana', desc: 'Listen & select the kana' },
+  { id: 'reverse', label: 'Reverse', desc: 'See kana, select the sound' },
+  { id: 'match', label: 'Match', desc: 'Match hiragana & katakana' },
+  { id: 'mixed', label: 'Mixed', desc: 'All modes shuffled together' },
+];
+
 function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
+  const [quizMode, setQuizMode] = useState(null); // null = mode selection screen
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [options, setOptions] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -26,8 +34,25 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
   const [gameOver, setGameOver] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [roundEvents, setRoundEvents] = useState([]);
+  // For mixed mode: track which sub-mode the current question is
+  const [currentSubMode, setCurrentSubMode] = useState(null);
+  // For match mode: track question type (hiragana or katakana)
+  const [matchQuestionType, setMatchQuestionType] = useState('hiragana');
   const timerRef = useRef(null);
   const { flash, showProgress, showReset } = useStreakFlash();
+
+  // Create mapping between hiragana and katakana for match mode
+  const kanaMapping = useMemo(() => {
+    const mapping = {};
+    hiraganaData.forEach((hira, index) => {
+      const kata = katakanaData[index];
+      if (hira && kata && hira.romaji === kata.romaji) {
+        mapping[hira.char] = kata.char;
+        mapping[kata.char] = hira.char;
+      }
+    });
+    return mapping;
+  }, []);
 
   const getEnabledChars = useCallback(() => {
     const allChars = [...hiraganaData, ...katakanaData];
@@ -64,56 +89,120 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     }
   }, []);
 
+  // Pick which sub-mode to use for mixed mode
+  const pickMixedSubMode = useCallback(() => {
+    const subModes = ['kana', 'reverse', 'match'];
+    return subModes[Math.floor(Math.random() * subModes.length)];
+  }, []);
+
+  // Generate a match-mode question
+  const generateMatchQuestion = useCallback(() => {
+    const enabledHiragana = Array.from(settings.enabledHiragana);
+    const enabledKatakana = Array.from(settings.enabledKatakana);
+
+    const validHiragana = enabledHiragana.filter(char => kanaMapping[char]);
+    const validKatakana = enabledKatakana.filter(char => kanaMapping[char]);
+
+    if (validHiragana.length < 4 || validKatakana.length < 4) {
+      return null; // Not enough chars for match mode
+    }
+
+    const types = ['hiragana', 'katakana'];
+    const qType = types[Math.floor(Math.random() * types.length)];
+    setMatchQuestionType(qType);
+
+    let questionChar, availableChars, correctAnswer;
+
+    if (qType === 'hiragana') {
+      availableChars = validHiragana;
+      questionChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+      correctAnswer = kanaMapping[questionChar];
+      availableChars = validKatakana;
+    } else {
+      availableChars = validKatakana;
+      questionChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+      correctAnswer = kanaMapping[questionChar];
+      availableChars = validHiragana;
+    }
+
+    const wrongAnswers = shuffle(
+      availableChars.filter(char => char !== correctAnswer)
+    ).slice(0, 9);
+
+    const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
+
+    return {
+      question: { char: questionChar, correct: correctAnswer, type: qType, isMatch: true },
+      options: allOptions,
+    };
+  }, [settings.enabledHiragana, settings.enabledKatakana, kanaMapping]);
+
   const generateQuestion = useCallback(() => {
+    const activeMode = quizMode === 'mixed' ? pickMixedSubMode() : quizMode;
+    setCurrentSubMode(activeMode);
+
+    if (activeMode === 'match') {
+      const matchData = generateMatchQuestion();
+      if (!matchData) {
+        alert('Please enable at least 4 characters for both hiragana and katakana in settings!');
+        return;
+      }
+      setCurrentQuestion(matchData.question);
+      setOptions(matchData.options);
+      setShowResult(false);
+      setSelectedAnswer(null);
+      startTimer();
+      return;
+    }
+
+    // kana or reverse mode
     const availableChars = getEnabledChars();
     if (availableChars.length === 0) {
       alert('Please enable at least one character in settings!');
       return;
     }
 
-    // Check if we need to regenerate the deck
     if (questionDeck.length === 0 || deckIndex >= questionDeck.length) {
       const newDeck = createKanaDeck(availableChars, currentQuestion);
       setQuestionDeck(newDeck);
       setDeckIndex(1);
-      // Use the first card from the new deck
       const correctAnswer = newDeck[0];
 
-      // Filter out characters with the same romaji to avoid showing both hiragana and katakana for the same sound
       const wrongAnswers = shuffle(
         availableChars.filter(h => h.char !== correctAnswer.char && h.romaji !== correctAnswer.romaji)
       ).slice(0, 9);
       const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
 
-      setCurrentQuestion(correctAnswer);
+      setCurrentQuestion({ ...correctAnswer, isMatch: false });
       setOptions(allOptions);
       setShowResult(false);
       setSelectedAnswer(null);
       startTimer();
-      speak(correctAnswer.char);
+      if (activeMode === 'kana') {
+        speak(correctAnswer.char);
+      }
       return;
     }
 
-    // Draw from the existing deck
     const correctAnswer = questionDeck[deckIndex];
     setDeckIndex(deckIndex + 1);
 
-    // Filter out characters with the same romaji to avoid showing both hiragana and katakana for the same sound
     const wrongAnswers = shuffle(
       availableChars.filter(h => h.char !== correctAnswer.char && h.romaji !== correctAnswer.romaji)
     ).slice(0, 9);
     const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
 
-    setCurrentQuestion(correctAnswer);
+    setCurrentQuestion({ ...correctAnswer, isMatch: false });
     setOptions(allOptions);
     setShowResult(false);
     setSelectedAnswer(null);
     startTimer();
 
-    // Speak the character automatically
-    speak(correctAnswer.char);
+    if (activeMode === 'kana') {
+      speak(correctAnswer.char);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getEnabledChars, startTimer, questionDeck, deckIndex]);
+  }, [getEnabledChars, startTimer, questionDeck, deckIndex, quizMode, pickMixedSubMode, generateMatchQuestion]);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -138,11 +227,11 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       setShowResult(true);
       playWrongSound();
 
-      // Record as wrong answer for mastery tracking
-      if (onAnswerRecorded) {
-        const result = onAnswerRecorded(currentQuestion.char, false, 'kana');
+      // Record as wrong answer for mastery tracking (not for match mode)
+      if (onAnswerRecorded && currentSubMode !== 'match') {
+        const quizType = currentSubMode === 'reverse' ? 'reverse' : 'kana';
+        const result = onAnswerRecorded(currentQuestion.char, false, quizType);
 
-        // Show flash and track event
         if (result.streakLost) {
           showReset(STAR_THRESHOLD);
           setRoundEvents(prev => [...prev, {
@@ -155,12 +244,12 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
 
       const newLives = lives - 1;
       setLives(newLives);
-      speak(currentQuestion.char);
+      if (currentQuestion.char) speak(currentQuestion.char);
       if (newLives <= 0) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded, showReset]);
+  }, [timeLeft, showResult, currentQuestion, lives, gameOver, onAnswerRecorded, showReset, currentSubMode]);
 
   const handleAnswer = (option) => {
     if (showResult || !currentQuestion || gameOver) return;
@@ -169,13 +258,20 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setSelectedAnswer(option);
     setShowResult(true);
 
-    const isCorrect = option.char === currentQuestion.char;
+    const isMatch = currentQuestion.isMatch;
+    let isCorrect;
 
-    // Record answer for mastery tracking
-    if (onAnswerRecorded) {
-      const result = onAnswerRecorded(currentQuestion.char, isCorrect, 'kana');
+    if (isMatch) {
+      isCorrect = option === currentQuestion.correct;
+    } else {
+      isCorrect = option.char === currentQuestion.char;
+    }
 
-      // Show flash and track events
+    // Record answer for mastery tracking (not for match mode)
+    if (onAnswerRecorded && currentSubMode !== 'match') {
+      const quizType = currentSubMode === 'reverse' ? 'reverse' : 'kana';
+      const result = onAnswerRecorded(currentQuestion.char, isCorrect, quizType);
+
       if (result.starEarned) {
         setRoundEvents(prev => [...prev, {
           kana: currentQuestion.char,
@@ -205,8 +301,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       }
     }
 
-    // Speak the correct pronunciation
-    speak(currentQuestion.char);
+    if (currentQuestion.char) speak(currentQuestion.char);
   };
 
   const handleNext = () => {
@@ -226,7 +321,23 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     setRoundEvents([]);
   };
 
-  const isCorrect = selectedAnswer?.char === currentQuestion?.char;
+  const handleBackToModes = () => {
+    stopTimer();
+    setQuizMode(null);
+    setHasStarted(false);
+    setGameOver(false);
+    setQuestionNumber(0);
+    setScore(0);
+    setLives(MAX_LIVES);
+    setQuestionDeck([]);
+    setDeckIndex(0);
+    setRoundEvents([]);
+    setCurrentQuestion(null);
+  };
+
+  const isCorrect = currentQuestion?.isMatch
+    ? selectedAnswer === currentQuestion?.correct
+    : selectedAnswer?.char === currentQuestion?.char;
 
   const handleSpeakerClick = () => {
     if (currentQuestion) {
@@ -234,14 +345,48 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     }
   };
 
-  if (!hasStarted) {
+  // Mode selection screen
+  if (!quizMode) {
     return (
       <div className="kana-quiz">
         <div className="quiz-instructions">
           <h2>Kana Quiz</h2>
-          <p>Listen and select the correct kana</p>
+          <p>Choose your mode</p>
+          <div className="mode-selector">
+            {MODES.map(mode => (
+              <button
+                key={mode.id}
+                className="mode-button"
+                onClick={() => setQuizMode(mode.id)}
+              >
+                <span className="mode-label">{mode.label}</span>
+                <span className="mode-desc">{mode.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Start screen (after mode selected)
+  if (!hasStarted) {
+    const modeInfo = MODES.find(m => m.id === quizMode);
+    return (
+      <div className="kana-quiz">
+        <div className="quiz-instructions">
+          <h2>{modeInfo.label} Mode</h2>
+          <p>{modeInfo.desc}</p>
+          {quizMode === 'mixed' && (
+            <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginTop: '-10px' }}>
+              Points count by type: kana & reverse track mastery, match is just for fun
+            </p>
+          )}
           <button className="start-button" onClick={handleStart}>
             START
+          </button>
+          <button className="back-to-modes-button" onClick={handleBackToModes}>
+            Back
           </button>
         </div>
       </div>
@@ -252,6 +397,20 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
     return <div className="quiz-loading">Loading...</div>;
   }
 
+  // Determine what to show based on current sub-mode
+  const isMatchQuestion = currentQuestion.isMatch;
+  const isReverseQuestion = currentSubMode === 'reverse' && !isMatchQuestion;
+  const isKanaQuestion = currentSubMode === 'kana' && !isMatchQuestion;
+
+  const getModeLabel = () => {
+    if (quizMode !== 'mixed') return null;
+    if (isMatchQuestion) return 'MATCH';
+    if (isReverseQuestion) return 'REVERSE';
+    return 'KANA';
+  };
+
+  const modeLabel = getModeLabel();
+
   return (
     <div className="kana-quiz">
       <StreakFlash flash={flash} />
@@ -261,7 +420,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
           score={score}
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
-          quizType="Kana"
+          quizType={quizMode === 'mixed' ? 'Mixed Kana' : MODES.find(m => m.id === quizMode)?.label + ' Kana'}
           roundEvents={roundEvents}
         />
       )}
@@ -269,8 +428,9 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       <div className="quiz-question">
         <div className="timer-lives-row">
           <div className="question-number">{questionNumber + 1}</div>
+          {modeLabel && <div className="mode-badge">{modeLabel}</div>}
           <div className="lives-display">
-            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
+            {'\u2764\uFE0F'.repeat(lives)}{'\uD83D\uDDA4'.repeat(MAX_LIVES - lives)}
           </div>
           {!showResult && (
             <div className="quiz-timer-bar">
@@ -281,34 +441,101 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
             </div>
           )}
         </div>
-        <button
-          className={`speaker-button font-${settings.fontStyle}`}
-          onClick={handleSpeakerClick}
-          title="Click to hear pronunciation"
-        >
-          {currentQuestion.romaji}
-        </button>
+
+        {/* Kana mode: show romaji in speech bubble */}
+        {isKanaQuestion && (
+          <button
+            className={`speaker-button font-${settings.fontStyle}`}
+            onClick={handleSpeakerClick}
+            title="Click to hear pronunciation"
+          >
+            {currentQuestion.romaji}
+          </button>
+        )}
+
+        {/* Reverse mode: show character */}
+        {isReverseQuestion && (
+          <div className={`character-display font-${settings.fontStyle}`}>
+            {currentQuestion.char}
+          </div>
+        )}
+
+        {/* Match mode: show character + prompt */}
+        {isMatchQuestion && (
+          <>
+            <button
+              className={`speaker-button font-${settings.fontStyle}`}
+              onClick={handleSpeakerClick}
+              title="Click to hear pronunciation"
+            >
+              {currentQuestion.char}
+            </button>
+            <div className="question-prompt">
+              {matchQuestionType === 'hiragana' ? 'in Katakana' : 'in Hiragana'}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="options-grid">
-        {options.map((option, index) => (
-          <button
-            key={index}
-            className={`option-button ${
-              showResult && currentQuestion
-                ? option.char === currentQuestion.char
-                  ? 'correct'
-                  : option === selectedAnswer
-                  ? 'wrong'
+        {isMatchQuestion ? (
+          options.map((option, index) => (
+            <button
+              key={index}
+              className={`option-button ${
+                showResult && currentQuestion
+                  ? option === currentQuestion.correct
+                    ? 'correct'
+                    : option === selectedAnswer
+                    ? 'wrong'
+                    : ''
                   : ''
-                : ''
-            } font-${settings.fontStyle}`}
-            onClick={() => handleAnswer(option)}
-            disabled={showResult || gameOver}
-          >
-            {option.char}
-          </button>
-        ))}
+              } font-${settings.fontStyle}`}
+              onClick={() => handleAnswer(option)}
+              disabled={showResult || gameOver}
+            >
+              {option}
+            </button>
+          ))
+        ) : isReverseQuestion ? (
+          options.map((option, index) => (
+            <button
+              key={index}
+              className={`option-button romaji ${
+                showResult && currentQuestion
+                  ? option.char === currentQuestion.char
+                    ? 'correct'
+                    : option === selectedAnswer
+                    ? 'wrong'
+                    : ''
+                  : ''
+              }`}
+              onClick={() => handleAnswer(option)}
+              disabled={showResult || gameOver}
+            >
+              {option.romaji}
+            </button>
+          ))
+        ) : (
+          options.map((option, index) => (
+            <button
+              key={index}
+              className={`option-button ${
+                showResult && currentQuestion
+                  ? option.char === currentQuestion.char
+                    ? 'correct'
+                    : option === selectedAnswer
+                    ? 'wrong'
+                    : ''
+                  : ''
+              } font-${settings.fontStyle}`}
+              onClick={() => handleAnswer(option)}
+              disabled={showResult || gameOver}
+            >
+              {option.char}
+            </button>
+          ))
+        )}
       </div>
 
       <div className="button-area">
