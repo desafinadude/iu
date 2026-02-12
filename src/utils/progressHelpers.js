@@ -1,7 +1,8 @@
 // Star system: 10 consecutive correct answers per quiz type to earn a star
 export const STAR_THRESHOLD = 10;
+export const MATCHING_STAR_THRESHOLD = 5; // Matching only needs 5 (seen 10 times with matching kana)
 export const COINS_PER_STAR = 5;
-export const QUIZ_TYPES = ['kana', 'reverse', 'handwriting'];
+export const QUIZ_TYPES = ['kana', 'reverse', 'handwriting', 'matching'];
 
 // Selection weights by quiz-type mastery (higher = more likely to appear)
 const WEIGHTS = {
@@ -25,6 +26,7 @@ export function createDefaultKanaProgress() {
     kana: createDefaultQuizTypeProgress(),
     reverse: createDefaultQuizTypeProgress(),
     handwriting: createDefaultQuizTypeProgress(),
+    matching: createDefaultQuizTypeProgress(),
   };
 }
 
@@ -44,6 +46,7 @@ export function initializeProgress(hiraganaData, katakanaData) {
 
 export function processAnswer(currentProgress, quizType, isCorrect) {
   const quizProgress = currentProgress[quizType] || createDefaultQuizTypeProgress();
+  const threshold = quizType === 'matching' ? MATCHING_STAR_THRESHOLD : STAR_THRESHOLD;
 
   if (isCorrect) {
     const newTotalCorrect = quizProgress.totalCorrect + 1;
@@ -70,7 +73,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
 
     const newConsecutive = quizProgress.consecutiveCorrect + 1;
 
-    if (newConsecutive >= STAR_THRESHOLD) {
+    if (newConsecutive >= threshold) {
       // Star earned! Award bonus coins plus coins for correct answer
       return {
         newProgress: {
@@ -83,7 +86,7 @@ export function processAnswer(currentProgress, quizType, isCorrect) {
           },
         },
         starEarned: true,
-        newConsecutive: STAR_THRESHOLD,
+        newConsecutive: threshold,
         quizType,
         coinsEarned: COINS_PER_STAR + coinsForCorrect,
       };
@@ -135,12 +138,13 @@ export function getStarCount(charProgress) {
 
 export function getStarDetail(charProgress) {
   if (!charProgress || !charProgress.kana) {
-    return { kana: false, reverse: false, handwriting: false };
+    return { kana: false, reverse: false, handwriting: false, matching: false };
   }
   return {
     kana: charProgress.kana?.earned || false,
     reverse: charProgress.reverse?.earned || false,
     handwriting: charProgress.handwriting?.earned || false,
+    matching: charProgress.matching?.earned || false,
   };
 }
 
@@ -172,7 +176,7 @@ export function getProgressStats(kanaProgress) {
       } else {
         stats.noStars++;
       }
-    } else if (stars === 3) {
+    } else if (stars === QUIZ_TYPES.length) {
       stats.mastered++;
     } else {
       stats.inProgress++;
@@ -281,6 +285,10 @@ export function getWordProgressStats(wordProgress) {
   });
 
   return stats;
+}
+
+export function getStarThreshold(quizType) {
+  return quizType === 'matching' ? MATCHING_STAR_THRESHOLD : STAR_THRESHOLD;
 }
 
 // Vocab pack pricing

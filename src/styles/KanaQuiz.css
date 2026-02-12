@@ -187,6 +187,16 @@ body:not(.quiz-active) .kana-quiz {
   font-size: min(18px, 4vw);
 }
 
+/* Katakana character color differentiation */
+.option-button.katakana-char {
+  background-color: #f0eaff;
+  border-color: #8b7bb5;
+}
+
+.option-button.katakana-char:hover:not(:disabled) {
+  background: #e0d4ff;
+}
+
 /* Correct answer - POW effect */
 .option-button.correct {
   background-color: var(--color-correct);

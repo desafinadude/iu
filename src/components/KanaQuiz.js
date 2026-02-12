@@ -6,11 +6,13 @@ import { shuffle, createKanaDeck } from '../utils/helpers';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
 import StreakFlash, { useStreakFlash } from './StreakFlash';
-import { STAR_THRESHOLD } from '../utils/progressHelpers';
+import { STAR_THRESHOLD, MATCHING_STAR_THRESHOLD } from '../utils/progressHelpers';
 import '../styles/KanaQuiz.css';
 
 const TIMER_DURATION = 10;
 const MAX_LIVES = 3;
+
+const isKatakanaChar = (char) => /^[\u30A0-\u30FF]+$/.test(char);
 
 const MODES = [
   { id: 'kana', label: 'Kana', desc: 'Listen & select the kana' },
@@ -227,13 +229,14 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       setShowResult(true);
       playWrongSound();
 
-      // Record as wrong answer for mastery tracking (not for match mode)
-      if (onAnswerRecorded && currentSubMode !== 'match') {
-        const quizType = currentSubMode === 'reverse' ? 'reverse' : 'kana';
+      // Record as wrong answer for mastery tracking
+      if (onAnswerRecorded) {
+        const quizType = currentSubMode === 'match' ? 'matching' : currentSubMode === 'reverse' ? 'reverse' : 'kana';
+        const threshold = quizType === 'matching' ? MATCHING_STAR_THRESHOLD : STAR_THRESHOLD;
         const result = onAnswerRecorded(currentQuestion.char, false, quizType);
 
         if (result.streakLost) {
-          showReset(STAR_THRESHOLD);
+          showReset(threshold);
           setRoundEvents(prev => [...prev, {
             kana: currentQuestion.char,
             type: 'reset',
@@ -267,9 +270,10 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
       isCorrect = option.char === currentQuestion.char;
     }
 
-    // Record answer for mastery tracking (not for match mode)
-    if (onAnswerRecorded && currentSubMode !== 'match') {
-      const quizType = currentSubMode === 'reverse' ? 'reverse' : 'kana';
+    // Record answer for mastery tracking
+    if (onAnswerRecorded) {
+      const quizType = currentSubMode === 'match' ? 'matching' : currentSubMode === 'reverse' ? 'reverse' : 'kana';
+      const threshold = quizType === 'matching' ? MATCHING_STAR_THRESHOLD : STAR_THRESHOLD;
       const result = onAnswerRecorded(currentQuestion.char, isCorrect, quizType);
 
       if (result.starEarned) {
@@ -278,9 +282,9 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
           type: 'star'
         }]);
       } else if (isCorrect && result.newConsecutive > 0) {
-        showProgress(result.newConsecutive, STAR_THRESHOLD);
+        showProgress(result.newConsecutive, threshold);
       } else if (result.streakLost) {
-        showReset(STAR_THRESHOLD);
+        showReset(threshold);
         setRoundEvents(prev => [...prev, {
           kana: currentQuestion.char,
           type: 'reset',
@@ -379,7 +383,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
           <p>{modeInfo.desc}</p>
           {quizMode === 'mixed' && (
             <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', marginTop: '-10px' }}>
-              Points count by type: kana & reverse track mastery, match is just for fun
+              All modes track mastery: kana, reverse, handwriting & matching
             </p>
           )}
           <button className="start-button" onClick={handleStart}>
@@ -482,7 +486,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
           options.map((option, index) => (
             <button
               key={index}
-              className={`option-button ${
+              className={`option-button ${isKatakanaChar(option) ? 'katakana-char' : 'hiragana-char'} ${
                 showResult && currentQuestion
                   ? option === currentQuestion.correct
                     ? 'correct'
@@ -520,7 +524,7 @@ function KanaQuiz({ settings, onAnswerRecorded, getKanaWeight }) {
           options.map((option, index) => (
             <button
               key={index}
-              className={`option-button ${
+              className={`option-button ${isKatakanaChar(option.char) ? 'katakana-char' : ''} ${
                 showResult && currentQuestion
                   ? option.char === currentQuestion.char
                     ? 'correct'

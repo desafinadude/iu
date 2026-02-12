@@ -90,12 +90,6 @@
   background: var(--color-cream);
 }
 
-.collection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 10px;
-}
-
 .collection-list {
   display: flex;
   flex-direction: column;
@@ -137,6 +131,12 @@
   border-color: #d4a800;
 }
 
+.kana-list-item.stars-four {
+  background: linear-gradient(90deg, #fff0e6 0%, #ffd700 100%);
+  border-color: #b8860b;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
 .kana-list-char {
   font-size: 28px;
   color: var(--color-navy);
@@ -153,8 +153,8 @@
 
 .kana-list-stars {
   display: flex;
-  gap: 12px;
-  font-size: 20px;
+  gap: 8px;
+  font-size: 18px;
 }
 
 .kana-list-stars .earned {
@@ -174,7 +174,7 @@
 }
 
 .star-progress-num {
-  font-size: 10px;
+  font-size: 13px;
   font-family: var(--font-comic);
   color: var(--color-text-muted);
   line-height: 1;
@@ -185,105 +185,33 @@
   font-weight: bold;
 }
 
+/* Vocab list item styles */
+.vocab-list-item {
+  cursor: pointer;
+}
+
+.vocab-list-item:active {
+  transform: translateX(2px);
+}
+
+.vocab-char {
+  font-size: 22px;
+  min-width: 80px;
+}
+
+.vocab-translation {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .collection-empty {
-  grid-column: 1 / -1;
   text-align: center;
   padding: 40px;
   color: var(--color-text-muted);
   font-size: 16px;
-}
-
-.kana-card {
-  background: var(--color-bg-secondary);
-  border: 3px solid var(--color-navy);
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  transition: all var(--transition-fast);
-  box-shadow: 2px 2px 0px var(--color-navy);
-}
-
-.kana-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0px var(--color-navy);
-}
-
-/* Star-count-based card styling */
-.kana-card.stars-none {
-  background: #e8e8e8;
-  border-color: #999;
-  box-shadow: 2px 2px 0px #999;
-}
-
-.kana-card.stars-none .kana-char {
-  color: #888;
-}
-
-.kana-card.stars-one {
-  background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
-  border-color: var(--color-yellow);
-}
-
-.kana-card.stars-two {
-  background: linear-gradient(135deg, #e6f9f7 0%, #ccf2ee 100%);
-  border-color: var(--color-teal);
-}
-
-.kana-card.stars-three {
-  background: linear-gradient(135deg, #fff9e6 0%, #ffe066 100%);
-  border-color: #d4a800;
-  box-shadow: 2px 2px 0px #d4a800, 0 0 10px rgba(255, 209, 102, 0.5);
-}
-
-.kana-char {
-  font-size: 32px;
-  color: var(--color-navy);
-  line-height: 1.2;
-}
-
-.kana-romaji {
-  font-size: 12px;
-  color: var(--color-text-muted);
-  margin-top: 2px;
-}
-
-/* 5-star display for words */
-.kana-stars {
-  font-size: 10px;
-  color: var(--color-yellow);
-  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.3);
-  margin-top: 4px;
-  letter-spacing: 1px;
-}
-
-.kana-card.stars-none .kana-stars {
-  color: #ccc;
-  text-shadow: none;
-}
-
-.kana-progress-bar {
-  height: 4px;
-  background: #ddd;
-  border-radius: 2px;
-  margin-top: 6px;
-  overflow: hidden;
-}
-
-.kana-progress-fill {
-  height: 100%;
-  background: var(--color-teal);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-/* Clickable word cards */
-.kana-card.clickable {
-  cursor: pointer;
-}
-
-.kana-card.clickable:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--color-navy);
 }
 
 /* ==============================================
@@ -428,6 +356,29 @@
 }
 
 @media (max-width: 480px) {
+  .kana-list-stars {
+    gap: 5px;
+    font-size: 16px;
+  }
+
+  .star-progress-num {
+    font-size: 11px;
+  }
+
+  .kana-list-item {
+    padding: 10px 12px;
+  }
+
+  .kana-list-char {
+    font-size: 24px;
+    min-width: 40px;
+  }
+
+  .vocab-char {
+    font-size: 18px;
+    min-width: 60px;
+  }
+
   .word-detail-card {
     padding: 24px 20px;
   }
