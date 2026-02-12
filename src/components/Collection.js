@@ -1,14 +1,25 @@
 import React, { useState, useMemo } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
+import { getUnlockedWords } from '../data/vocabPacks';
+import { speak } from '../utils/speech';
 import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, STAR_THRESHOLD } from '../utils/progressHelpers';
 import '../styles/Collection.css';
 
-function Collection({ kanaProgress, wordProgress = {}, coins }) {
+function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = [] }) {
   const [activeTab, setActiveTab] = useState('hiragana');
+  const [selectedWord, setSelectedWord] = useState(null);
 
   const kanaStats = useMemo(() => getProgressStats(kanaProgress), [kanaProgress]);
   const wordStats = useMemo(() => getWordProgressStats(wordProgress), [wordProgress]);
+
+  // Get full word data from unlocked packs
+  const allWords = useMemo(() => getUnlockedWords(unlockedPacks), [unlockedPacks]);
+  const wordLookup = useMemo(() => {
+    const map = {};
+    allWords.forEach(w => { map[w.word] = w; });
+    return map;
+  }, [allWords]);
 
   const totalMastered = kanaStats.mastered + wordStats.mastered;
   const totalInProgress = kanaStats.inProgress + wordStats.learning + wordStats.proficient;
@@ -50,11 +61,60 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
     }
   };
 
+  const handleWordClick = (wordKey) => {
+    const fullWord = wordLookup[wordKey];
+    if (fullWord) {
+      setSelectedWord(fullWord);
+    }
+  };
+
+  const handleCardClose = () => {
+    setSelectedWord(null);
+  };
+
+  const handleExampleClick = (e) => {
+    e.stopPropagation();
+    if (selectedWord && selectedWord.example) {
+      speak(selectedWord.example);
+    }
+  };
+
   const currentData = getCurrentData();
   const wordCount = Object.keys(wordProgress).length;
 
   return (
     <div className="collection-page">
+      {/* Word detail card modal */}
+      {selectedWord && (
+        <div className="word-detail-overlay" onClick={handleCardClose}>
+          <div className="word-detail-card" onClick={(e) => e.stopPropagation()}>
+            <button className="word-detail-close" onClick={handleCardClose}>
+              &times;
+            </button>
+            <div
+              className="word-detail-word"
+              onClick={() => speak(selectedWord.word)}
+              title="Tap to hear"
+            >
+              {selectedWord.word}
+            </div>
+            <div className="word-detail-translation">{selectedWord.translation}</div>
+            {selectedWord.romaji && (
+              <div className="word-detail-romaji">{selectedWord.romaji}</div>
+            )}
+            {selectedWord.example && (
+              <div className="word-detail-example" onClick={handleExampleClick}>
+                <div className="example-label">Example (tap to hear):</div>
+                <div className="example-jp">{selectedWord.example}</div>
+                {selectedWord.exampleEN && (
+                  <div className="example-en">{selectedWord.exampleEN}</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="collection-header">
         <div className="collection-stats">
           <div className="stat-item">
@@ -138,7 +198,8 @@ function Collection({ kanaProgress, wordProgress = {}, coins }) {
           currentData.data.map(item => (
             <div
               key={item.word}
-              className={`kana-card word-card ${getLevelClass(item.level)}`}
+              className={`kana-card word-card ${getLevelClass(item.level)} clickable`}
+              onClick={() => handleWordClick(item.word)}
             >
               <div className="kana-char" style={{ fontSize: item.word.length > 3 ? '20px' : '28px' }}>
                 {item.word}
