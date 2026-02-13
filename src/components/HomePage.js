@@ -9,6 +9,7 @@ function HomePage({ onActivitySelect }) {
     { id: 'vocab', label: 'Vocabulary', emoji: '📚' },
     { id: 'handwriting', label: 'Handwriting', emoji: '✍️' },
     { id: 'wordSearch', label: 'Word Search', emoji: '🔍' },
+    { id: 'letterTile', label: 'Letter Tiles', emoji: '🔤' },
     { id: 'shop', label: 'Vocab Shop', emoji: '🏪' },
     { id: 'collection', label: 'Collection', emoji: '⭐' },
     // { id: 'koiPond', label: 'Koi Pond' }, // Hidden for now
