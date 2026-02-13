@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { getUnlockedWords } from '../data/vocabPacks';
+import { getPackById } from '../data/vocabPacks';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import { speak } from '../utils/speech';
@@ -8,7 +8,7 @@ import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
 import '../styles/LetterTile.css';
 
-const TIMER_DURATION = 20;
+const TIMER_DURATION = 40;
 const MAX_LIVES = 3;
 const NUM_DISTRACTORS = 3;
 
@@ -28,10 +28,33 @@ function getDistractors(wordChars, count) {
   return shuffle(candidates).slice(0, count);
 }
 
+// Build word list with pack context attached
+function getWordsWithContext(unlockedPackIds) {
+  const words = [];
+  const seenWords = new Set();
+
+  unlockedPackIds.forEach(packId => {
+    const pack = getPackById(packId);
+    if (pack) {
+      pack.words.forEach(word => {
+        if (!seenWords.has(word.word)) {
+          seenWords.add(word.word);
+          words.push({
+            ...word,
+            packName: pack.name,
+          });
+        }
+      });
+    }
+  });
+
+  return words;
+}
+
 function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight, onCoinsAwarded }) {
   const [currentWord, setCurrentWord] = useState(null);
-  const [slots, setSlots] = useState([]);        // placed chars: { char, tileId } or null
-  const [pool, setPool] = useState([]);           // available tiles: { char, id, used }
+  const [slots, setSlots] = useState([]);
+  const [pool, setPool] = useState([]);
   const [questionNumber, setQuestionNumber] = useState(0);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(MAX_LIVES);
@@ -41,12 +64,11 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [wordWeights, setWordWeights] = useState(new Map());
-  const [hintUsed, setHintUsed] = useState(false);
+  const [hintLevel, setHintLevel] = useState(0); // 0 = no hint, 1 = show english, 2 = spoken japanese
   const timerRef = useRef(null);
 
-  // Get unlocked words, filter to those with 2+ kana chars
   const availableWords = useMemo(() => {
-    const words = getUnlockedWords(unlockedPacks);
+    const words = getWordsWithContext(unlockedPacks);
     return words.filter(w => {
       const chars = [...w.word];
       return chars.length >= 2 && chars.length <= 8;
@@ -100,7 +122,6 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
       correctWord = availableWords[Math.floor(Math.random() * availableWords.length)];
     }
 
-    // Update session weights
     if (availableWords.length >= 6) {
       setWordWeights(prev => {
         const updated = new Map(prev);
@@ -128,17 +149,15 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
     setPool(allTiles);
     setShowResult(false);
     setIsCorrect(false);
-    setHintUsed(false);
+    setHintLevel(0);
     startTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableWords, startTimer]);
 
-  // Clean up timer on unmount
   useEffect(() => {
     return () => stopTimer();
   }, [stopTimer]);
 
-  // Start first question
   useEffect(() => {
     if (hasStarted && !gameOver && availableWords.length >= 2) {
       generateQuestion();
@@ -146,12 +165,11 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameOver, hasStarted, availableWords.length]);
 
-  // Check answer when all slots are filled
+  // Check answer when all slots filled
   useEffect(() => {
     if (!currentWord || showResult || gameOver) return;
     if (slots.some(s => s === null)) return;
 
-    // All slots filled — check answer
     stopTimer();
     const attempt = slots.map(s => s.char).join('');
     const correct = attempt === currentWord.word;
@@ -174,12 +192,11 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
       if (newLives <= 0) {
         setGameOver(true);
       }
-      // Speak correct word so they can hear it
       setTimeout(() => speak(currentWord.word), 500);
     }
   }, [slots, currentWord, showResult, gameOver, lives, stopTimer, onWordAnswerRecorded]);
 
-  // Handle timer running out
+  // Timer ran out
   useEffect(() => {
     if (timeLeft === 0 && !showResult && currentWord && !gameOver) {
       setShowResult(true);
@@ -202,7 +219,6 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
   const handleTileTap = (tile) => {
     if (showResult || gameOver || tile.used) return;
 
-    // Find next empty slot
     const emptyIdx = slots.findIndex(s => s === null);
     if (emptyIdx === -1) return;
 
@@ -220,7 +236,6 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
     const slot = slots[slotIdx];
     if (!slot) return;
 
-    // Return tile to pool
     setPool(prev => prev.map(t =>
       t.id === slot.tileId ? { ...t, used: false } : t
     ));
@@ -231,28 +246,16 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
   };
 
   const handleHint = () => {
-    if (showResult || gameOver || !currentWord || hintUsed) return;
+    if (showResult || gameOver || !currentWord) return;
 
-    // Find first empty slot and place the correct character
-    const wordChars = [...currentWord.word];
-    const emptyIdx = slots.findIndex(s => s === null);
-    if (emptyIdx === -1) return;
-
-    const correctChar = wordChars[emptyIdx];
-
-    // Find matching unused tile in pool
-    const matchingTile = pool.find(t => t.char === correctChar && !t.used);
-    if (!matchingTile) return;
-
-    const newSlots = [...slots];
-    newSlots[emptyIdx] = { char: matchingTile.char, tileId: matchingTile.id };
-    setSlots(newSlots);
-
-    setPool(prev => prev.map(t =>
-      t.id === matchingTile.id ? { ...t, used: true } : t
-    ));
-
-    setHintUsed(true);
+    if (hintLevel === 0) {
+      // First hint: show english translation
+      setHintLevel(1);
+    } else if (hintLevel === 1) {
+      // Second hint: speak the japanese word
+      speak(currentWord.word);
+      setHintLevel(2);
+    }
   };
 
   const handleNext = () => {
@@ -298,7 +301,7 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
       <div className="kana-quiz">
         <div className="quiz-instructions">
           <h2>Letter Tiles</h2>
-          <p>See the meaning, spell the word by tapping the right tiles!</p>
+          <p>See the context, spell the word by tapping the right tiles!</p>
           <p style={{ fontSize: '14px', marginTop: '10px', color: 'var(--color-text-muted)' }}>
             {availableWords.length} words available
           </p>
@@ -317,7 +320,7 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
   const wordChars = [...currentWord.word];
 
   return (
-    <div className="kana-quiz letter-tile-game">
+    <div className="letter-tile-game">
       {gameOver && (
         <ResultsModal
           score={score}
@@ -328,34 +331,45 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
         />
       )}
 
-      {/* Top section: clue + slots */}
-      <div className="quiz-question letter-tile-question">
-        <div className="timer-lives-row">
-          <div className="question-number">{questionNumber + 1}</div>
-          <div className="lives-display">
-            {'\u2764\uFE0F'.repeat(lives)}{'\uD83D\uDDA4'.repeat(MAX_LIVES - lives)}
-          </div>
-          {!showResult && (
-            <div className="quiz-timer-bar">
-              <div
-                className={`quiz-timer-fill ${timeLeft <= 3 ? 'urgent' : ''}`}
-                style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
-              />
-            </div>
-          )}
+      {/* Top: status bar */}
+      <div className="lt-status-bar">
+        <div className="question-number">{questionNumber + 1}</div>
+        <div className="lives-display">
+          {'\u2764\uFE0F'.repeat(lives)}{'\uD83D\uDDA4'.repeat(MAX_LIVES - lives)}
         </div>
-
-        {/* Clue: English meaning */}
-        <div className="lt-clue">
-          <div className="lt-clue-text" style={{ fontSize: currentWord.translation.length > 20 ? '18px' : '24px' }}>
-            {currentWord.translation}
+        {!showResult && (
+          <div className="quiz-timer-bar">
+            <div
+              className={`quiz-timer-fill ${timeLeft <= 5 ? 'urgent' : ''}`}
+              style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
+            />
           </div>
-          {currentWord.romaji && (
-            <div className="lt-romaji-hint">{currentWord.romaji}</div>
-          )}
-        </div>
+        )}
+      </div>
 
-        {/* Slots */}
+      {/* Context clue: pack name / category */}
+      <div className="lt-context">
+        <span className="lt-context-label">{currentWord.packName || currentWord.category || 'Vocabulary'}</span>
+      </div>
+
+      {/* Scattered tiles area (top half) */}
+      <div className="lt-scatter-area">
+        <div className="lt-pool">
+          {pool.map((tile) => (
+            <button
+              key={tile.id}
+              className={`lt-tile font-${settings.fontStyle} ${tile.used ? 'used' : ''}`}
+              onClick={() => handleTileTap(tile)}
+              disabled={tile.used || showResult || gameOver}
+            >
+              {tile.char}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Slots area (middle/lower) */}
+      <div className="lt-answer-area">
         <div className="lt-slots">
           {slots.map((slot, idx) => (
             <button
@@ -379,44 +393,35 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
           ))}
         </div>
 
-        {/* Show correct answer when wrong */}
-        {showResult && !isCorrect && (
-          <div className={`lt-correct-answer font-${settings.fontStyle}`}>
-            <button className="lt-speaker-btn" onClick={handleSpeakerClick} title="Hear pronunciation">
+        {/* Hint area */}
+        {!showResult && (
+          <div className="lt-hint-area">
+            {hintLevel >= 1 && (
+              <div className="lt-hint-english">{currentWord.translation}</div>
+            )}
+            <button
+              className={`lt-hint-btn ${hintLevel >= 2 ? 'used' : ''}`}
+              onClick={handleHint}
+              disabled={hintLevel >= 2 || showResult || gameOver}
+            >
+              {hintLevel === 0 ? 'Hint' : hintLevel === 1 ? 'Hear it' : 'Hints used'}
+            </button>
+          </div>
+        )}
+
+        {/* Result feedback */}
+        {showResult && (
+          <div className="lt-result-row">
+            <button className={`lt-answer-word font-${settings.fontStyle}`} onClick={handleSpeakerClick} title="Hear pronunciation">
               {currentWord.word}
             </button>
+            <span className="lt-answer-meaning">{currentWord.translation}</span>
           </div>
         )}
       </div>
 
-      {/* Middle section: tile pool */}
-      <div className="lt-pool-area">
-        {!showResult && (
-          <button
-            className={`lt-hint-btn ${hintUsed ? 'used' : ''}`}
-            onClick={handleHint}
-            disabled={hintUsed || showResult || gameOver}
-            title="Reveal one letter"
-          >
-            {hintUsed ? 'Hint used' : 'Hint'}
-          </button>
-        )}
-        <div className="lt-pool">
-          {pool.map((tile) => (
-            <button
-              key={tile.id}
-              className={`lt-tile font-${settings.fontStyle} ${tile.used ? 'used' : ''}`}
-              onClick={() => handleTileTap(tile)}
-              disabled={tile.used || showResult || gameOver}
-            >
-              {tile.char}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom section: next button */}
-      <div className="button-area">
+      {/* Bottom: next button */}
+      <div className="lt-bottom">
         {showResult && !gameOver && (
           <button className={`next-button ${isCorrect ? 'correct' : 'wrong'}`} onClick={handleNext}>
             Next Word
