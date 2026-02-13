@@ -10,6 +10,7 @@ function Menu({ isOpen, onClose, onMenuClick, currentView, onBackToHome }) {
     { id: 'vocab', label: 'Vocabulary' },
     { id: 'handwriting', label: 'Handwriting' },
     { id: 'wordSearch', label: 'Word Search' },
+    { id: 'letterTile', label: 'Letter Tiles' },
     { id: 'shop', label: 'Vocab Shop' },
     { id: 'collection', label: 'My Collection' },
     { id: 'resources', label: 'Resources' },
