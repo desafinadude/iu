@@ -12,6 +12,7 @@ import Resources from './components/Resources';
 import Collection from './components/Collection';
 import Shop from './components/Shop';
 import WordQuiz from './components/WordQuiz';
+import LetterTile from './components/LetterTile';
 import CoinDisplay from './components/CoinDisplay';
 import LevelUpModal from './components/LevelUpModal';
 import StreakLostModal from './components/StreakLostModal';
@@ -22,7 +23,7 @@ import './styles/App.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('home'); // home, kana, vocab, handwriting, wordSearch, wordQuiz, settings, resources
+  const [currentView, setCurrentView] = useState('home'); // home, kana, vocab, handwriting, wordSearch, wordQuiz, letterTile, settings, resources
   const [menuOpen, setMenuOpen] = useState(false);
   const [settings, setSettings] = useState({
     enabledHiragana: new Set([
@@ -150,7 +151,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz'];
+    const quizViews = ['kana', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz', 'letterTile'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -263,6 +264,15 @@ function App() {
         )}
         {currentView === 'wordQuiz' && (
           <WordQuiz
+            settings={settings}
+            unlockedPacks={unlockedPacks}
+            onWordAnswerRecorded={handleWordAnswerRecorded}
+            getWordWeight={getWordWeight}
+            onCoinsAwarded={awardCoins}
+          />
+        )}
+        {currentView === 'letterTile' && (
+          <LetterTile
             settings={settings}
             unlockedPacks={unlockedPacks}
             onWordAnswerRecorded={handleWordAnswerRecorded}
