@@ -12,6 +12,28 @@ const TIMER_DURATION = 40;
 const MAX_LIVES = 3;
 const NUM_DISTRACTORS = 3;
 
+// Friendly display labels for pack categories
+const CATEGORY_LABELS = {
+  survival: 'Survival',
+  greetings: 'Greeting',
+  restaurant: 'Dining',
+  travel: 'Travel',
+  shopping: 'Shopping',
+  basics: 'Basics',
+  numbers: 'Numbers',
+  time: 'Time',
+  people: 'Family',
+  food: 'Food',
+  body: 'Body',
+  places: 'Places',
+  learning: 'School',
+  nature: 'Nature',
+  items: 'Things',
+  descriptors: 'Describing',
+  actions: 'Action',
+  katakana: 'Katakana',
+};
+
 // Check if a character is katakana
 const isKatakana = (char) => /[\u30A1-\u30FC]/.test(char);
 
@@ -41,7 +63,7 @@ function getWordsWithContext(unlockedPackIds) {
           seenWords.add(word.word);
           words.push({
             ...word,
-            packName: pack.name,
+            packCategory: pack.category,
           });
         }
       });
@@ -49,6 +71,14 @@ function getWordsWithContext(unlockedPackIds) {
   });
 
   return words;
+}
+
+// Get the display label for a word's category
+function getCategoryLabel(word) {
+  // Use the word's own category first (essential phrases have specific ones)
+  // then fall back to the pack category
+  const cat = word.category || word.packCategory;
+  return CATEGORY_LABELS[cat] || cat || 'Vocabulary';
 }
 
 function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeight, onCoinsAwarded }) {
@@ -347,9 +377,9 @@ function LetterTile({ settings, unlockedPacks, onWordAnswerRecorded, getWordWeig
         )}
       </div>
 
-      {/* Context clue: pack name / category */}
+      {/* Context clue: category */}
       <div className="lt-context">
-        <span className="lt-context-label">{currentWord.packName || currentWord.category || 'Vocabulary'}</span>
+        <span className="lt-context-label">{getCategoryLabel(currentWord)}</span>
       </div>
 
       {/* Scattered tiles area (top half) */}
