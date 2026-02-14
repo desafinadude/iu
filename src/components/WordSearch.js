@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { getUnlockedWords } from '../data/vocabPacks';
 import { playCorrectSound } from '../utils/soundEffects';
@@ -7,6 +7,7 @@ import '../styles/WordSearch.css';
 
 const GRID_SIZE = 8;
 const WORDS_PER_PUZZLE = 5;
+const TIMER_DURATION = 180; // 3 minutes in seconds
 
 // Directions: right, down, diagonal down-right
 const DIRECTIONS = [
@@ -28,6 +29,9 @@ function WordSearch({ settings, unlockedPacks = [] }) {
   const [showingKana, setShowingKana] = useState(new Set());
   const [longPressTimer, setLongPressTimer] = useState(null);
   const [lastFoundWord, setLastFoundWord] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  const [timerExpired, setTimerExpired] = useState(false);
+  const timerRef = useRef(null);
 
   // Get words from purchased packs only
   const availableWords = useMemo(() => getUnlockedWords(unlockedPacks), [unlockedPacks]);
@@ -64,6 +68,37 @@ function WordSearch({ settings, unlockedPacks = [] }) {
       exampleEN: item.exampleEN || null
     }));
   }, [availableWords, selectedCategories]);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(TIMER_DURATION);
+    setTimerExpired(false);
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+          setTimerExpired(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
 
   const getRandomHiragana = useCallback(() => {
     const basicHiragana = hiraganaData.filter(h => h.basic);
@@ -160,7 +195,9 @@ function WordSearch({ settings, unlockedPacks = [] }) {
     setSelectedCells([]);
     setPuzzleComplete(false);
     setLastFoundWord(null);
-  }, [canPlaceWord, placeWord, getRandomHiragana, getFilteredWordList]);
+    setTimerExpired(false);
+    startTimer();
+  }, [canPlaceWord, placeWord, getRandomHiragana, getFilteredWordList, startTimer]);
 
   useEffect(() => {
     generatePuzzle();
@@ -211,6 +248,7 @@ function WordSearch({ settings, unlockedPacks = [] }) {
   };
 
   const handleCellMouseDown = (row, col) => {
+    if (timerExpired || puzzleComplete) return;
     setIsSelecting(true);
     setSelectedCells([{ row, col }]);
   };
@@ -277,6 +315,7 @@ function WordSearch({ settings, unlockedPacks = [] }) {
           // Check if puzzle is complete
           if (newFound.size === words.length) {
             setPuzzleComplete(true);
+            stopTimer();
           }
           break;
         }
@@ -353,6 +392,12 @@ function WordSearch({ settings, unlockedPacks = [] }) {
     );
   }
 
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="word-search">
       {showCategoryModal && (
@@ -384,6 +429,35 @@ function WordSearch({ settings, unlockedPacks = [] }) {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      <div className="ws-timer-container">
+        <div className="ws-timer-bar">
+          <div
+            className={`ws-timer-fill ${timeLeft <= 30 ? 'urgent' : ''}`}
+            style={{ width: `${(timeLeft / TIMER_DURATION) * 100}%` }}
+          />
+        </div>
+        <span className={`ws-timer-text ${timeLeft <= 30 ? 'urgent' : ''}`}>{formatTime(timeLeft)}</span>
+      </div>
+
+      {timerExpired && !puzzleComplete && (
+        <div className="puzzle-complete">
+          <h3>Time's Up!</h3>
+          <p>You found {foundWords.size} of {words.length} words.</p>
+          <div className="puzzle-controls">
+            <button className="new-puzzle-btn" onClick={generatePuzzle}>
+              Try Again
+            </button>
+            <button
+              className="category-icon-button"
+              onClick={() => setShowCategoryModal(true)}
+              title={`Categories: ${getCategoryDisplayText()}`}
+            >
+              ☰
+            </button>
           </div>
         </div>
       )}
