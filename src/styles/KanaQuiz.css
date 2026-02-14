@@ -190,7 +190,7 @@ body:not(.quiz-active) .kana-quiz {
 /* Katakana character color differentiation */
 .option-button.katakana-char {
   background-color: #f0f0f0;
-  border-color: #b0b0b0;
+  border-color: #000000;
 }
 
 .option-button.katakana-char:hover:not(:disabled) {
