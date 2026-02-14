@@ -112,6 +112,55 @@
   border-bottom: none;
 }
 
+/* Timer bar */
+.ws-timer-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 16px;
+}
+
+.ws-timer-bar {
+  flex: 1;
+  height: 14px;
+  background: var(--color-cream);
+  border: 2px solid var(--color-navy);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.ws-timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-teal), var(--color-orange));
+  border-radius: 5px;
+  transition: width 1s linear;
+}
+
+.ws-timer-fill.urgent {
+  background: linear-gradient(90deg, var(--color-pink), var(--color-wrong));
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+.ws-timer-text {
+  font-family: var(--font-comic);
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-navy);
+  min-width: 45px;
+  text-align: center;
+}
+
+.ws-timer-text.urgent {
+  color: var(--color-wrong);
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
 /* Word list - Comic style tags */
 .word-list {
   display: flex;
