@@ -189,12 +189,12 @@ body:not(.quiz-active) .kana-quiz {
 
 /* Katakana character color differentiation */
 .option-button.katakana-char {
-  background-color: #f0eaff;
-  border-color: #8b7bb5;
+  background-color: #f0f0f0;
+  border-color: #b0b0b0;
 }
 
 .option-button.katakana-char:hover:not(:disabled) {
-  background: #e0d4ff;
+  background: #e8e8e8;
 }
 
 /* Correct answer - POW effect */

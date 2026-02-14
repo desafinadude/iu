@@ -171,18 +171,37 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  min-width: 32px;
 }
 
-.star-progress-num {
-  font-size: 13px;
+.progress-pct {
+  font-size: 15px;
   font-family: var(--font-comic);
+  font-weight: bold;
   color: var(--color-text-muted);
   line-height: 1;
 }
 
-.star-with-count .earned + .star-progress-num {
-  color: #d4a800;
-  font-weight: bold;
+.kana-list-item.stars-one .progress-pct {
+  color: #b8860b;
+}
+
+/* Clickable learning stat */
+.stat-clickable {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.stat-clickable:hover {
+  background: var(--color-yellow);
+}
+
+.stat-clickable.stat-active {
+  background: var(--color-yellow);
+  border: 2px solid var(--color-navy);
+  box-shadow: 1px 1px 0px var(--color-navy);
 }
 
 /* Vocab list item styles */
@@ -361,8 +380,12 @@
     font-size: 16px;
   }
 
-  .star-progress-num {
-    font-size: 11px;
+  .progress-pct {
+    font-size: 13px;
+  }
+
+  .star-with-count {
+    min-width: 28px;
   }
 
   .kana-list-item {
