@@ -3,7 +3,7 @@ import LoadingScreen from './components/LoadingScreen';
 import HomePage from './components/HomePage';
 import Menu from './components/Menu';
 import KanaQuiz from './components/KanaQuiz';
-// import KanjiQuiz from './components/KanjiQuiz'; // Disabled for now
+import KanjiQuiz from './components/KanjiQuiz';
 import VocabularyPractice from './components/VocabularyPractice';
 import HandwritingPractice from './components/HandwritingPractice';
 import WordSearch from './components/WordSearch';
@@ -63,11 +63,14 @@ function App() {
   const {
     coins,
     kanaProgress,
+    kanjiProgress,
     wordProgress,
     unlockedPacks,
     recordAnswer,
+    recordKanjiAnswer,
     recordWordAnswer,
     getKanaWeight,
+    getKanjiWeight,
     getWordWeight,
     purchasePack,
     awardCoins,
@@ -95,6 +98,25 @@ function App() {
     }
     return result;
   }, [recordAnswer]);
+
+  // Callback for kanji quiz answers
+  const handleKanjiAnswerRecorded = useCallback((char, isCorrect, quizType) => {
+    const result = recordKanjiAnswer(char, isCorrect, quizType);
+    if (result.starEarned) {
+      setLevelUpInfo({
+        kana: char,
+        quizType: result.quizType,
+        coinsEarned: result.coinsEarned,
+      });
+    } else if (result.streakLost) {
+      setStreakLostInfo({
+        kana: char,
+        quizType: result.quizType,
+        lostStreak: result.lostStreak,
+      });
+    }
+    return result;
+  }, [recordKanjiAnswer]);
 
   // Callback for word quiz to record answers (no level-up modal for words)
   const handleWordAnswerRecorded = useCallback((word, isCorrect) => {
@@ -151,7 +173,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz', 'letterTile'];
+    const quizViews = ['kana', 'kanji', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz', 'letterTile'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -222,7 +244,12 @@ function App() {
             getKanaWeight={getKanaWeight}
           />
         )}
-        {/* currentView === 'kanji' && <KanjiQuiz settings={settings} /> */}
+        {currentView === 'kanji' && (
+          <KanjiQuiz
+            onAnswerRecorded={handleKanjiAnswerRecorded}
+            getKanjiWeight={getKanjiWeight}
+          />
+        )}
         {currentView === 'vocab' && (
           <VocabularyPractice settings={settings} unlockedPacks={unlockedPacks} />
         )}
@@ -231,6 +258,8 @@ function App() {
             settings={settings}
             onAnswerRecorded={handleAnswerRecorded}
             getKanaWeight={(char) => getKanaWeight(char, 'handwriting')}
+            onKanjiAnswerRecorded={handleKanjiAnswerRecorded}
+            getKanjiWeight={(char, qt) => getKanjiWeight(char, qt || 'handwriting')}
           />
         )}
         {currentView === 'wordSearch' && (
@@ -250,6 +279,7 @@ function App() {
         {currentView === 'collection' && (
           <Collection
             kanaProgress={kanaProgress}
+            kanjiProgress={kanjiProgress}
             wordProgress={wordProgress}
             coins={coins}
             unlockedPacks={unlockedPacks}

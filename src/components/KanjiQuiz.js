@@ -1,234 +1,190 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { kanjiData } from '../data/kanjiData';
+import { kanjiData, kanjiWithKunyomi } from '../data/kanjiData';
 import { speak } from '../utils/speech';
 import { shuffle } from '../utils/helpers';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
+import StreakFlash, { useStreakFlash } from './StreakFlash';
+import { STAR_THRESHOLD } from '../utils/progressHelpers';
 import '../styles/KanaQuiz.css';
 
-const TIMER_DURATION = 10;
+const TIMER_DURATION = 12;
 const MAX_LIVES = 3;
+const NUM_OPTIONS = 4;
 
-function KanjiQuiz({ settings }) {
-  const [currentQuestion, setCurrentQuestion] = useState(null);
+const MODES = [
+  { id: 'meaning', label: 'Meaning', desc: 'See kanji → pick the meaning' },
+  { id: 'reverse', label: 'Reverse', desc: 'See meaning → pick the kanji' },
+  { id: 'onyomi', label: 'On-yomi', desc: 'See kanji → pick the on-reading' },
+  { id: 'kunyomi', label: 'Kun-yomi', desc: 'See kanji → pick the kun-reading' },
+  { id: 'mixed', label: 'Mixed', desc: 'All modes shuffled together' },
+];
+
+function pickWeightedKanji(deck, getWeight) {
+  const weighted = deck.map(k => ({ ...k, w: getWeight ? getWeight(k.char) : 1 }));
+  const total = weighted.reduce((s, k) => s + k.w, 0);
+  let r = Math.random() * total;
+  for (const k of weighted) {
+    r -= k.w;
+    if (r <= 0) return k;
+  }
+  return weighted[weighted.length - 1];
+}
+
+function buildOptions(correct, pool, field, count = NUM_OPTIONS) {
+  const others = shuffle(pool.filter(k => k[field] !== correct[field])).slice(0, count - 1);
+  return shuffle([correct, ...others]);
+}
+
+function KanjiQuiz({ onAnswerRecorded, getKanjiWeight }) {
+  const [quizMode, setQuizMode] = useState(null);
+  const [currentSubMode, setCurrentSubMode] = useState(null);
+  const [currentKanji, setCurrentKanji] = useState(null);
   const [options, setOptions] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showResult, setShowResult] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(0);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(MAX_LIVES);
-  const [showResult, setShowResult] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [characterWeights, setCharacterWeights] = useState(new Map());
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [gameOver, setGameOver] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [roundEvents, setRoundEvents] = useState([]);
   const timerRef = useRef(null);
-  const characterWeightsRef = useRef(characterWeights);
-  characterWeightsRef.current = characterWeights;
-  const [selectedCategories, setSelectedCategories] = useState(['all']);
-  const [selectedGrades, setSelectedGrades] = useState(['all']);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const { flash, showProgress, showReset } = useStreakFlash();
 
-  // Get unique categories and grades from kanji data
-  const allCategories = ['all', ...Array.from(new Set(kanjiData.map(item => item.category))).sort()];
-  const allGrades = ['all', ...Array.from(new Set(kanjiData.map(item => item.grade))).sort()];
+  const getActiveDeck = useCallback((mode) => {
+    if (mode === 'kunyomi') return kanjiWithKunyomi;
+    return kanjiData;
+  }, []);
+
+  const pickSubMode = useCallback(() => {
+    const subs = ['meaning', 'reverse', 'onyomi', 'kunyomi'];
+    return subs[Math.floor(Math.random() * subs.length)];
+  }, []);
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     setTimeLeft(TIMER_DURATION);
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-          return 0;
-        }
+        if (prev <= 1) { clearInterval(timerRef.current); timerRef.current = null; return 0; }
         return prev - 1;
       });
     }, 1000);
   }, []);
 
   const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
   }, []);
 
-  const getFilteredKanji = useCallback(() => {
-    let filtered = kanjiData;
+  const generateQuestion = useCallback((mode) => {
+    const activeMode = mode || quizMode;
+    const sub = activeMode === 'mixed' ? pickSubMode() : activeMode;
+    setCurrentSubMode(sub);
 
-    // Filter by categories
-    if (!selectedCategories.includes('all') && selectedCategories.length > 0) {
-      filtered = filtered.filter(kanji =>
-        selectedCategories.includes(kanji.category)
-      );
+    const deck = getActiveDeck(sub);
+    if (deck.length < NUM_OPTIONS) return;
+
+    const correct = pickWeightedKanji(deck, getKanjiWeight ? (char) => getKanjiWeight(char, sub) : null);
+
+    let opts;
+    if (sub === 'meaning') {
+      opts = buildOptions(correct, deck, 'meanings[0]' /* dummy, we build manually */);
+      // build meaning options manually
+      const wrongKanji = shuffle(deck.filter(k => k.char !== correct.char)).slice(0, NUM_OPTIONS - 1);
+      opts = shuffle([correct, ...wrongKanji]);
+    } else if (sub === 'reverse') {
+      const wrongKanji = shuffle(deck.filter(k => k.char !== correct.char)).slice(0, NUM_OPTIONS - 1);
+      opts = shuffle([correct, ...wrongKanji]);
+    } else if (sub === 'onyomi') {
+      const wrongKanji = shuffle(deck.filter(k => k.onyomi !== correct.onyomi)).slice(0, NUM_OPTIONS - 1);
+      opts = shuffle([correct, ...wrongKanji]);
+    } else { // kunyomi
+      const wrongKanji = shuffle(deck.filter(k => k.char !== correct.char && k.kunyomi)).slice(0, NUM_OPTIONS - 1);
+      opts = shuffle([correct, ...wrongKanji]);
     }
 
-    // Filter by grades
-    if (!selectedGrades.includes('all') && selectedGrades.length > 0) {
-      filtered = filtered.filter(kanji =>
-        selectedGrades.includes(kanji.grade)
-      );
-    }
-
-    return filtered.length > 0 ? filtered : kanjiData;
-  }, [selectedCategories, selectedGrades]);
-
-  const generateQuestion = useCallback(() => {
-    const availableKanji = getFilteredKanji();
-    if (availableKanji.length === 0) {
-      alert('Please select at least one category or grade!');
-      return;
-    }
-
-    let correctAnswer;
-
-    if (availableKanji.length >= 10) {
-      // Use weighted selection for larger pools
-      const weights = characterWeightsRef.current;
-      const weightedKanji = availableKanji.map(kanji => ({
-        ...kanji,
-        weight: weights.get(kanji.kanji) || 1.0
-      }));
-
-      const totalWeight = weightedKanji.reduce((sum, kanji) => sum + kanji.weight, 0);
-      let random = Math.random() * totalWeight;
-
-      for (const kanji of weightedKanji) {
-        random -= kanji.weight;
-        if (random <= 0) {
-          correctAnswer = kanji;
-          break;
-        }
-      }
-    } else {
-      // Random selection for smaller pools
-      correctAnswer = availableKanji[Math.floor(Math.random() * availableKanji.length)];
-    }
-
-    if (!correctAnswer) {
-      correctAnswer = availableKanji[0];
-    }
-
-    // Generate wrong answers from the same filtered pool
-    const wrongAnswers = shuffle(
-      availableKanji.filter(k => k.kanji !== correctAnswer.kanji)
-    ).slice(0, 3);
-
-    // If we don't have enough wrong answers from filtered pool, add from all kanji
-    while (wrongAnswers.length < 3) {
-      const randomKanji = kanjiData[Math.floor(Math.random() * kanjiData.length)];
-      if (randomKanji.kanji !== correctAnswer.kanji &&
-          !wrongAnswers.some(w => w.kanji === randomKanji.kanji)) {
-        wrongAnswers.push(randomKanji);
-      }
-    }
-
-    const allOptions = shuffle([correctAnswer, ...wrongAnswers]);
-
-    setCurrentQuestion(correctAnswer);
-    setOptions(allOptions);
+    setCurrentKanji(correct);
+    setOptions(opts);
     setSelectedAnswer(null);
     setShowResult(false);
     startTimer();
 
-    // Speak the kanji reading automatically
-    speak(correctAnswer.reading);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getFilteredKanji, startTimer]);
+    // Speak kanji for meaning/onyomi/kunyomi modes
+    if (sub !== 'reverse') {
+      speak(correct.char);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizMode, pickSubMode, getActiveDeck, startTimer, getKanjiWeight]);
 
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => stopTimer();
-  }, [stopTimer]);
+  useEffect(() => { return () => stopTimer(); }, [stopTimer]);
 
-  // Handle timer running out
   useEffect(() => {
-    if (timeLeft === 0 && !showResult && currentQuestion && !gameOver) {
-      setSelectedAnswer(null);
+    if (hasStarted && !gameOver && quizMode) {
+      generateQuestion(quizMode);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasStarted, gameOver]);
+
+  // Timer expiry
+  useEffect(() => {
+    if (timeLeft === 0 && !showResult && currentKanji && !gameOver) {
       setShowResult(true);
       playWrongSound();
+      speak(currentKanji.char);
+
+      if (onAnswerRecorded) {
+        const result = onAnswerRecorded(currentKanji.char, false, currentSubMode);
+        if (result.streakLost) {
+          showReset(STAR_THRESHOLD);
+          setRoundEvents(prev => [...prev, { kana: currentKanji.char, type: 'reset', lostStreak: result.lostStreak }]);
+        }
+      }
+
       const newLives = lives - 1;
       setLives(newLives);
-      if (newLives <= 0) {
-        setGameOver(true);
+      if (newLives <= 0) setGameOver(true);
+    }
+  }, [timeLeft, showResult, currentKanji, lives, gameOver, onAnswerRecorded, currentSubMode, showReset]);
+
+  const handleAnswer = (option) => {
+    if (showResult || !currentKanji || gameOver) return;
+    stopTimer();
+    setSelectedAnswer(option);
+    setShowResult(true);
+
+    const isCorrect = option.char === currentKanji.char;
+
+    if (onAnswerRecorded) {
+      const result = onAnswerRecorded(currentKanji.char, isCorrect, currentSubMode);
+      if (result.starEarned) {
+        setRoundEvents(prev => [...prev, { kana: currentKanji.char, type: 'star' }]);
+      } else if (isCorrect && result.newConsecutive > 0) {
+        showProgress(result.newConsecutive, STAR_THRESHOLD);
+      } else if (result.streakLost) {
+        showReset(STAR_THRESHOLD);
+        setRoundEvents(prev => [...prev, { kana: currentKanji.char, type: 'reset', lostStreak: result.lostStreak }]);
       }
     }
-  }, [timeLeft, showResult, currentQuestion, lives, gameOver]);
-
-  const handleAnswer = (selectedKanji) => {
-    if (selectedAnswer || gameOver) return;
-
-    stopTimer();
-    setSelectedAnswer(selectedKanji);
-
-    const isCorrect = selectedKanji.kanji === currentQuestion.kanji;
-
-    // Update character weights
-    setCharacterWeights(prev => {
-      const newWeights = new Map(prev);
-      const currentWeight = newWeights.get(currentQuestion.kanji) || 1.0;
-
-      if (isCorrect) {
-        // Reduce weight for correct answers (less likely to appear again soon)
-        newWeights.set(currentQuestion.kanji, Math.max(0.1, currentWeight * 0.7));
-      } else {
-        // Increase weight for incorrect answers (more likely to appear again)
-        newWeights.set(currentQuestion.kanji, Math.min(3.0, currentWeight * 1.5));
-      }
-
-      return newWeights;
-    });
 
     if (isCorrect) {
-      setScore(score + 1);
+      setScore(s => s + 1);
       playCorrectSound();
     } else {
       const newLives = lives - 1;
       setLives(newLives);
       playWrongSound();
-      if (newLives <= 0) {
-        setGameOver(true);
-      }
+      if (newLives <= 0) setGameOver(true);
     }
 
-    setShowResult(true);
+    speak(currentKanji.char);
   };
 
   const handleNext = () => {
     if (gameOver) return;
-    setQuestionNumber(questionNumber + 1);
-    generateQuestion();
-  };
-
-  const handleCategoryChange = (category) => {
-    if (category === 'all') {
-      setSelectedCategories(['all']);
-    } else {
-      setSelectedCategories(prev => {
-        const newSelection = prev.filter(cat => cat !== 'all');
-        if (newSelection.includes(category)) {
-          return newSelection.filter(cat => cat !== category);
-        } else {
-          return [...newSelection, category];
-        }
-      });
-    }
-  };
-
-  const handleGradeChange = (grade) => {
-    if (grade === 'all') {
-      setSelectedGrades(['all']);
-    } else {
-      setSelectedGrades(prev => {
-        const newSelection = prev.filter(g => g !== 'all');
-        if (newSelection.includes(grade)) {
-          return newSelection.filter(g => g !== grade);
-        } else {
-          return [...newSelection, grade];
-        }
-      });
-    }
+    setQuestionNumber(n => n + 1);
+    generateQuestion(quizMode);
   };
 
   const handlePlayAgain = () => {
@@ -236,120 +192,128 @@ function KanjiQuiz({ settings }) {
     setScore(0);
     setLives(MAX_LIVES);
     setGameOver(false);
-    setShowResult(false);
-    setSelectedAnswer(null);
-    setCharacterWeights(new Map());
     setHasStarted(false);
+    setRoundEvents([]);
   };
 
-  const handleKanjiClick = () => {
-    if (currentQuestion) {
-      speak(currentQuestion.reading);
-    }
+  const handleBackToModes = () => {
+    stopTimer();
+    setQuizMode(null);
+    setHasStarted(false);
+    setGameOver(false);
+    setQuestionNumber(0);
+    setScore(0);
+    setLives(MAX_LIVES);
+    setRoundEvents([]);
+    setCurrentKanji(null);
   };
 
-  useEffect(() => {
-    if (hasStarted && !gameOver) {
-      generateQuestion();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategories, selectedGrades, gameOver, hasStarted]);
+  const isCorrect = selectedAnswer?.char === currentKanji?.char;
 
-  const handleStart = () => {
-    setHasStarted(true);
-  };
-
-  const isCorrect = selectedAnswer && selectedAnswer.kanji === currentQuestion?.kanji;
-
-  if (!hasStarted) {
+  // ── Mode selection screen ───────────────────────────────────────────────────
+  if (!quizMode) {
     return (
       <div className="kana-quiz">
         <div className="quiz-instructions">
           <h2>Kanji Quiz</h2>
-          <p>See the kanji, select the meaning</p>
-          <button className="start-button" onClick={handleStart}>
-            START
-          </button>
+          <p>Choose your mode</p>
+          <div className="mode-selector">
+            {MODES.map(mode => (
+              <button
+                key={mode.id}
+                className="mode-button"
+                onClick={() => setQuizMode(mode.id)}
+              >
+                <span className="mode-label">{mode.label}</span>
+                <span className="mode-desc">{mode.desc}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
-  if (!currentQuestion) {
-    return <div className="quiz-loading">Loading...</div>;
+  // ── Start screen ────────────────────────────────────────────────────────────
+  if (!hasStarted) {
+    const modeInfo = MODES.find(m => m.id === quizMode);
+    return (
+      <div className="kana-quiz">
+        <div className="quiz-instructions">
+          <h2>{modeInfo.label} Mode</h2>
+          <p>{modeInfo.desc}</p>
+          <button className="start-button" onClick={() => setHasStarted(true)}>START</button>
+          <button className="back-to-modes-button" onClick={handleBackToModes}>Back</button>
+        </div>
+      </div>
+    );
   }
+
+  if (!currentKanji) return <div className="quiz-loading">Loading...</div>;
+
+  const getModeLabel = () => {
+    if (quizMode !== 'mixed') return null;
+    const labels = { meaning: 'MEANING', reverse: 'REVERSE', onyomi: 'ON-YOMI', kunyomi: 'KUN-YOMI' };
+    return labels[currentSubMode] || null;
+  };
+  const modeLabel = getModeLabel();
+
+  // What to show in the question area
+  const renderQuestion = () => {
+    if (currentSubMode === 'reverse') {
+      // Show English meaning, pick kanji
+      return (
+        <div className="character-display" style={{ fontSize: 'min(24px, 5vw)', padding: '12px 20px' }}>
+          {currentKanji.meanings[0]}
+        </div>
+      );
+    }
+    // Show kanji character (meaning / onyomi / kunyomi modes)
+    return (
+      <button className="speaker-button" onClick={() => speak(currentKanji.char)} title="Tap to hear">
+        {currentKanji.char}
+      </button>
+    );
+  };
+
+  // What label to show in each option button
+  const getOptionLabel = (option) => {
+    if (currentSubMode === 'meaning') return option.meanings[0];
+    if (currentSubMode === 'reverse') return option.char;
+    if (currentSubMode === 'onyomi') return option.onyomi;
+    if (currentSubMode === 'kunyomi') return option.kunyomi;
+    return option.char;
+  };
+
+  // Prompt text shown below the question
+  const getPrompt = () => {
+    if (currentSubMode === 'meaning') return 'Pick the meaning';
+    if (currentSubMode === 'reverse') return 'Pick the kanji';
+    if (currentSubMode === 'onyomi') return 'Pick the on-yomi';
+    if (currentSubMode === 'kunyomi') return 'Pick the kun-yomi';
+    return '';
+  };
 
   return (
     <div className="kana-quiz">
+      <StreakFlash flash={flash} />
 
       {gameOver && (
         <ResultsModal
           score={score}
           questionsAnswered={questionNumber + 1}
           onPlayAgain={handlePlayAgain}
-          quizType="Kanji"
+          quizType={quizMode === 'mixed' ? 'Mixed Kanji' : MODES.find(m => m.id === quizMode)?.label + ' Kanji'}
+          roundEvents={roundEvents}
         />
-      )}
-
-      {showCategoryModal && (
-        <div className="category-modal-overlay" onClick={() => setShowCategoryModal(false)}>
-          <div className="category-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="category-modal-header">
-              <h3>Filter Kanji</h3>
-              <button
-                className="close-modal-btn"
-                onClick={() => setShowCategoryModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="category-list">
-              <div className="filter-section">
-                <h4>Categories:</h4>
-                <div
-                  className={`category-list-item ${selectedCategories.includes('all') ? 'selected' : ''}`}
-                  onClick={() => handleCategoryChange('all')}
-                >
-                  All Categories
-                </div>
-                {allCategories.filter(cat => cat !== 'all').map(category => (
-                  <div
-                    key={category}
-                    className={`category-list-item ${selectedCategories.includes(category) ? 'selected' : ''}`}
-                    onClick={() => handleCategoryChange(category)}
-                  >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </div>
-                ))}
-              </div>
-              <div className="filter-section">
-                <h4>Grade Level:</h4>
-                <div
-                  className={`category-list-item ${selectedGrades.includes('all') ? 'selected' : ''}`}
-                  onClick={() => handleGradeChange('all')}
-                >
-                  All Grades
-                </div>
-                {allGrades.filter(grade => grade !== 'all').map(grade => (
-                  <div
-                    key={grade}
-                    className={`category-list-item ${selectedGrades.includes(grade) ? 'selected' : ''}`}
-                    onClick={() => handleGradeChange(grade)}
-                  >
-                    Grade {grade}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
       )}
 
       <div className="quiz-question">
         <div className="timer-lives-row">
           <div className="question-number">{questionNumber + 1}</div>
+          {modeLabel && <div className="mode-badge">{modeLabel}</div>}
           <div className="lives-display">
-            {'❤️'.repeat(lives)}{'🖤'.repeat(MAX_LIVES - lives)}
+            {'\u2764\uFE0F'.repeat(lives)}{'\uD83D\uDDA4'.repeat(MAX_LIVES - lives)}
           </div>
           {!showResult && (
             <div className="quiz-timer-bar">
@@ -360,53 +324,52 @@ function KanjiQuiz({ settings }) {
             </div>
           )}
         </div>
-        <button
-          className={`speaker-button font-${settings?.fontStyle || 'noto'}`}
-          onClick={handleKanjiClick}
-          title="Click to hear pronunciation"
-        >
-          <div className="kanji-with-reading">
-            <div className="kanji-char">{currentQuestion.kanji}</div>
-            <div className="reading-hint">{currentQuestion.reading}</div>
+
+        {renderQuestion()}
+
+        {!showResult && (
+          <div className="question-prompt" style={{ position: 'static', transform: 'none', marginTop: '4px', fontSize: '12px' }}>
+            {getPrompt()}
           </div>
-        </button>
+        )}
+
+        {showResult && (
+          <div className="kanji-with-reading" style={{ marginTop: '6px', fontSize: '13px', color: 'var(--color-text-muted)' }}>
+            <div><strong>{currentKanji.char}</strong> — {currentKanji.meanings[0]}</div>
+            <div>音: {currentKanji.onyomi}{currentKanji.kunyomi ? `　訓: ${currentKanji.kunyomi}` : ''}</div>
+          </div>
+        )}
       </div>
 
-      <div className="options-grid">
-        {options.map((option, index) => (
-          <button
-            key={index}
-            className={`option-button ${
-              showResult && currentQuestion
-                ? option.kanji === currentQuestion.kanji
-                  ? 'correct'
-                  : option === selectedAnswer
-                  ? 'wrong'
-                  : ''
-                : ''
-            }`}
-            onClick={() => handleAnswer(option)}
-            disabled={showResult || gameOver}
-          >
-            {option.meaning}
-          </button>
-        ))}
+      <div className="options-grid" style={{ gridTemplateRows: 'repeat(2, 1fr)', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+        {options.map((option, index) => {
+          const isSelected = selectedAnswer?.char === option.char;
+          const isCorrectOpt = option.char === currentKanji.char;
+          let cls = 'option-button';
+          if (showResult) {
+            if (isCorrectOpt) cls += ' correct';
+            else if (isSelected) cls += ' wrong';
+          }
+          const label = getOptionLabel(option);
+          const isKanjiLabel = currentSubMode === 'reverse';
+          return (
+            <button
+              key={index}
+              className={`${cls}${isKanjiLabel ? '' : ' romaji'}`}
+              style={isKanjiLabel ? { fontSize: 'min(40px, 9vw)' } : { fontSize: 'min(16px, 3.5vw)', lineHeight: 1.2 }}
+              onClick={() => handleAnswer(option)}
+              disabled={showResult || gameOver}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       <div className="button-area">
         {showResult && !gameOver && (
           <button className={`next-button ${isCorrect ? 'correct' : 'wrong'}`} onClick={handleNext}>
             Next Question
-          </button>
-        )}
-
-        {!showResult && !gameOver && (
-          <button
-            className="category-icon-button"
-            onClick={() => setShowCategoryModal(true)}
-            title="Filter kanji by category and grade"
-          >
-            ☰
           </button>
         )}
       </div>
