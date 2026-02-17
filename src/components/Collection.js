@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
+import { kanjiData } from '../data/kanjiData';
 import { getUnlockedWords } from '../data/vocabPacks';
 import { speak } from '../utils/speech';
-import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, getStarThreshold, QUIZ_TYPES, MAX_WORD_LEVEL } from '../utils/progressHelpers';
+import { getProgressStats, getWordProgressStats, getStarCount, getStarDetail, getStarThreshold, QUIZ_TYPES, KANJI_QUIZ_TYPES, MAX_WORD_LEVEL, STAR_THRESHOLD, getKanjiStarCount, getKanjiStarDetail } from '../utils/progressHelpers';
 import '../styles/Collection.css';
 
-function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = [] }) {
+function Collection({ kanaProgress, kanjiProgress = {}, wordProgress = {}, coins, unlockedPacks = [] }) {
   const [activeTab, setActiveTab] = useState('hiragana');
   const [selectedWord, setSelectedWord] = useState(null);
   const [showLearningOnly, setShowLearningOnly] = useState(false);
@@ -22,13 +23,21 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
     return map;
   }, [allWords]);
 
-  const totalMastered = kanaStats.mastered + wordStats.mastered;
-  const totalInProgress = kanaStats.inProgress + wordStats.learning + wordStats.proficient;
+  const kanjiMastered = useMemo(() => Object.values(kanjiProgress).filter(p => getKanjiStarCount(p) === KANJI_QUIZ_TYPES.length).length, [kanjiProgress]);
+  const kanjiInProgress = useMemo(() => Object.values(kanjiProgress).filter(p => { const s = getKanjiStarCount(p); return s > 0 && s < KANJI_QUIZ_TYPES.length; }).length, [kanjiProgress]);
+
+  const totalMastered = kanaStats.mastered + wordStats.mastered + kanjiMastered;
+  const totalInProgress = kanaStats.inProgress + wordStats.learning + wordStats.proficient + kanjiInProgress;
 
   // Check if a kana has been attempted in any quiz type
   const isKanaAttempted = (progress) => {
     if (!progress) return false;
     return QUIZ_TYPES.some(qt => progress[qt]?.totalAttempts > 0);
+  };
+
+  const isKanjiAttempted = (progress) => {
+    if (!progress) return false;
+    return KANJI_QUIZ_TYPES.some(qt => progress[qt]?.totalAttempts > 0);
   };
 
   // Get background class based on progress state
@@ -38,6 +47,14 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
     if (starCount === QUIZ_TYPES.length) return 'stars-four'; // all mastered
     if (isKanaAttempted(progress)) return 'stars-one'; // learning (yellow)
     return 'stars-none'; // unseen
+  };
+
+  const getKanjiItemClass = (progress) => {
+    if (!progress) return 'stars-none';
+    const starCount = getKanjiStarCount(progress);
+    if (starCount === KANJI_QUIZ_TYPES.length) return 'stars-four';
+    if (isKanjiAttempted(progress)) return 'stars-one';
+    return 'stars-none';
   };
 
   const getVocabItemClass = (wordProg) => {
@@ -76,6 +93,8 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
         return { type: 'kana', data: hiraganaData };
       case 'katakana':
         return { type: 'kana', data: katakanaData };
+      case 'kanji':
+        return { type: 'kanji', data: kanjiData };
       case 'words':
         return { type: 'words', data: getVocabData() };
       default:
@@ -116,12 +135,16 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
         const progress = kanaProgress[kana.char];
         return isKanaAttempted(progress);
       });
+    } else if (currentData.type === 'kanji') {
+      return currentData.data.filter(k => {
+        return isKanjiAttempted(kanjiProgress[k.char]);
+      });
     } else {
       return currentData.data.filter(item => {
         return item.totalAttempts > 0;
       });
     }
-  }, [currentData.data, currentData.type, showLearningOnly, kanaProgress]);
+  }, [currentData.data, currentData.type, showLearningOnly, kanaProgress, kanjiProgress]);
 
   return (
     <div className="collection-page">
@@ -195,6 +218,12 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
           Katakana
         </button>
         <button
+          className={`tab-button ${activeTab === 'kanji' ? 'active' : ''}`}
+          onClick={() => setActiveTab('kanji')}
+        >
+          Kanji
+        </button>
+        <button
           className={`tab-button ${activeTab === 'words' ? 'active' : ''}`}
           onClick={() => setActiveTab('words')}
         >
@@ -227,6 +256,39 @@ function Collection({ kanaProgress, wordProgress = {}, coins, unlockedPacks = []
                     const count = getConsecutiveCount(progress, qt);
                     const threshold = getStarThreshold(qt);
                     const pct = formatPercent(count, threshold);
+                    const isEarned = stars[qt];
+                    return (
+                      <span key={qt} className="star-with-count">
+                        {isEarned ? (
+                          <span className="earned">{'\u2605'}</span>
+                        ) : (
+                          <span className="progress-pct">{pct}%</span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </span>
+              </div>
+            );
+          })
+        ) : currentData.type === 'kanji' ? (
+          filteredData.map(k => {
+            const progress = kanjiProgress[k.char];
+            const stars = getKanjiStarDetail(progress);
+            return (
+              <div
+                key={k.char}
+                className={`kana-list-item ${getKanjiItemClass(progress)}`}
+                onClick={() => speak(k.char)}
+                title={`${k.onyomi}${k.kunyomi ? ' / ' + k.kunyomi : ''}`}
+              >
+                <span className="kana-list-char">{k.char}</span>
+                <span className="kana-list-romaji" style={{ fontSize: '12px' }}>{k.meanings[0]}</span>
+                <span className="kana-list-stars">
+                  {KANJI_QUIZ_TYPES.map(qt => {
+                    const qp = progress?.[qt];
+                    const count = qp?.earned ? STAR_THRESHOLD : (qp?.consecutiveCorrect || 0);
+                    const pct = formatPercent(count, STAR_THRESHOLD);
                     const isEarned = stars[qt];
                     return (
                       <span key={qt} className="star-with-count">

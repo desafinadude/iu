@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
+import kanjiData from '../data/kanjiData';
 import { getDefaultUnlockedPacks } from '../data/vocabPacks';
 import {
   initializeProgress,
   processAnswer,
   createDefaultKanaProgress,
+  createDefaultKanjiProgress,
   createDefaultWordProgress,
   processWordAnswer,
   getWeightForQuizType,
@@ -28,8 +30,17 @@ function needsMigration(parsed) {
   return typeof firstChar.level === 'number' || !firstChar.kana;
 }
 
+function initializeKanjiProgress() {
+  const kanjiProgress = {};
+  kanjiData.forEach(k => {
+    kanjiProgress[k.char] = createDefaultKanjiProgress();
+  });
+  return kanjiProgress;
+}
+
 function loadProgress() {
   const defaultUnlockedPacks = getDefaultUnlockedPacks();
+  const defaultKanjiProgress = initializeKanjiProgress();
 
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -46,10 +57,11 @@ function loadProgress() {
           coins: parsed.coins || 0,
           unlockedPacks,
           wordProgress: parsed.wordProgress || {},
+          kanjiProgress: defaultKanjiProgress,
         };
       }
 
-      // v2 format - merge with defaults to handle newly added kana
+      // v2 format - merge with defaults to handle newly added kana/kanji
       const defaultProgress = initializeProgress(hiraganaData, katakanaData);
       // Merge existing unlocked packs with default ones (no duplicates)
       const unlockedPacks = [...new Set([...defaultUnlockedPacks, ...(parsed.unlockedPacks || [])])];
@@ -59,6 +71,10 @@ function loadProgress() {
         kanaProgress: {
           ...defaultProgress.kanaProgress,
           ...parsed.kanaProgress,
+        },
+        kanjiProgress: {
+          ...defaultKanjiProgress,
+          ...(parsed.kanjiProgress || {}),
         },
         unlockedPacks,
         wordProgress: parsed.wordProgress || {},
@@ -72,6 +88,7 @@ function loadProgress() {
     ...base,
     unlockedPacks: defaultUnlockedPacks,
     wordProgress: {},
+    kanjiProgress: defaultKanjiProgress,
   };
 }
 
@@ -113,6 +130,34 @@ export function useProgress() {
 
     return result;
   }, []);
+
+  // Kanji answer recording
+  const recordKanjiAnswer = useCallback((char, isCorrect, quizType) => {
+    let result = { starEarned: false, quizType, coinsEarned: 0 };
+
+    setProgress(prev => {
+      const currentKanjiProgress = (prev.kanjiProgress || {})[char] || createDefaultKanjiProgress();
+      const answerResult = processAnswer(currentKanjiProgress, quizType, isCorrect);
+
+      result = answerResult;
+
+      return {
+        ...prev,
+        coins: prev.coins + answerResult.coinsEarned,
+        kanjiProgress: {
+          ...(prev.kanjiProgress || {}),
+          [char]: answerResult.newProgress,
+        },
+      };
+    });
+
+    return result;
+  }, []);
+
+  const getKanjiWeight = useCallback((char, quizType) => {
+    const kp = (progress.kanjiProgress || {})[char] || createDefaultKanjiProgress();
+    return getWeightForQuizType(kp, quizType);
+  }, [progress.kanjiProgress]);
 
   // Word answer recording (no coins awarded per answer - coins awarded at quiz end)
   const recordWordAnswer = useCallback((wordKey, isCorrect) => {
@@ -307,12 +352,15 @@ export function useProgress() {
   return {
     coins: progress.coins,
     kanaProgress: progress.kanaProgress,
+    kanjiProgress: progress.kanjiProgress || {},
     wordProgress: progress.wordProgress,
     unlockedPacks: progress.unlockedPacks,
     recordAnswer,
+    recordKanjiAnswer,
     recordWordAnswer,
     getKanaProgress,
     getKanaWeight,
+    getKanjiWeight,
     getWordProgress,
     getWordWeight,
     getStats,
