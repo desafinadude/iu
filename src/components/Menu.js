@@ -5,8 +5,8 @@ function Menu({ isOpen, onClose, onMenuClick, currentView, onBackToHome }) {
   const menuItems = [
     { id: 'home', label: 'Home', action: onBackToHome },
     { id: 'kana', label: 'Kana Quiz' },
+    { id: 'kanji', label: 'Kanji Quiz' },
     { id: 'wordQuiz', label: 'Word Quiz' },
-    // { id: 'kanji', label: 'Kanji Quiz' }, // Disabled for now
     { id: 'vocab', label: 'Vocabulary' },
     { id: 'handwriting', label: 'Handwriting' },
     { id: 'wordSearch', label: 'Word Search' },
