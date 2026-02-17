@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
+import { kanjiData } from '../data/kanjiData';
 import { speak } from '../utils/speech';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import ResultsModal from './ResultsModal';
@@ -11,7 +12,13 @@ import '../styles/HandwritingPractice.css';
 const TIMER_DURATION = 10;
 const MAX_LIVES = 3;
 
-function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
+const SCRIPT_MODES = [
+  { id: 'kana', label: 'Kana', desc: 'Hiragana & Katakana' },
+  { id: 'kanji', label: 'Kanji', desc: 'JLPT N5 Kanji' },
+];
+
+function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight, onKanjiAnswerRecorded, getKanjiWeight }) {
+  const [scriptMode, setScriptMode] = useState(null); // null = script selection screen
   const canvasRef = useRef(null);
   const [currentChar, setCurrentChar] = useState(null);
   const [score, setScore] = useState(0);
@@ -36,6 +43,10 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
   const [candidateClass, setCandidateClass] = useState('candidates');
 
   const getEnabledChars = useCallback(() => {
+    if (scriptMode === 'kanji') {
+      // All 112 N5 kanji — map to same shape as kana { char, romaji/label }
+      return kanjiData.map(k => ({ char: k.char, romaji: k.meanings[0], isKanji: true, kanjiData: k }));
+    }
     const allChars = [...hiraganaData, ...katakanaData];
     return allChars.filter(char => {
       if (hiraganaData.includes(char)) {
@@ -46,7 +57,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
         return settings.enabledKatakana.has(char.char);
       }
     });
-  }, [settings]);
+  }, [settings, scriptMode]);
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -78,11 +89,16 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
     }
 
     let char;
-    
+
     if (availableChars.length >= 10) {
       // Use weighted selection combining mastery level and session weights
       const weightedChars = availableChars.map(character => {
-        const masteryWeight = getKanaWeight ? getKanaWeight(character.char) : 1.0;
+        let masteryWeight = 1.0;
+        if (scriptMode === 'kanji' && getKanjiWeight) {
+          masteryWeight = getKanjiWeight(character.char, 'handwriting');
+        } else if (getKanaWeight) {
+          masteryWeight = getKanaWeight(character.char);
+        }
         const sessionWeight = characterWeights.get(character.char) || 1.0;
         return {
           ...character,
@@ -154,8 +170,9 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
       playWrongSound();
 
       // Record as wrong answer for mastery tracking
-      if (onAnswerRecorded) {
-        const result = onAnswerRecorded(currentChar.char, false, 'handwriting');
+      const recorder = (scriptMode === 'kanji' && onKanjiAnswerRecorded) ? onKanjiAnswerRecorded : onAnswerRecorded;
+      if (recorder) {
+        const result = recorder(currentChar.char, false, 'handwriting');
 
         // Show flash and track event
         if (result.streakLost) {
@@ -175,7 +192,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
         setGameOver(true);
       }
     }
-  }, [timeLeft, showResult, currentChar, lives, gameOver, onAnswerRecorded, showReset]);
+  }, [timeLeft, showResult, currentChar, lives, gameOver, onAnswerRecorded, onKanjiAnswerRecorded, scriptMode, showReset]);
 
   const setupCanvas = () => {
     const canvas = canvasRef.current;
@@ -394,8 +411,9 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
         setCandidates(`✅ Correct! ${correctChar} (${currentChar.romaji})`);
 
         // Record correct answer for mastery tracking
-        if (onAnswerRecorded) {
-          const result = onAnswerRecorded(currentChar.char, true, 'handwriting');
+        const recorderCorrect = (scriptMode === 'kanji' && onKanjiAnswerRecorded) ? onKanjiAnswerRecorded : onAnswerRecorded;
+        if (recorderCorrect) {
+          const result = recorderCorrect(currentChar.char, true, 'handwriting');
 
           // Show flash and track events
           if (result.starEarned) {
@@ -417,8 +435,9 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
         setCandidates(`❌ Try again! Looking for: ${correctChar} (${currentChar.romaji})`);
 
         // Record wrong answer for mastery tracking
-        if (onAnswerRecorded) {
-          const result = onAnswerRecorded(currentChar.char, false, 'handwriting');
+        const recorderWrong = (scriptMode === 'kanji' && onKanjiAnswerRecorded) ? onKanjiAnswerRecorded : onAnswerRecorded;
+        if (recorderWrong) {
+          const result = recorderWrong(currentChar.char, false, 'handwriting');
 
           // Show flash and track event
           if (result.streakLost) {
@@ -464,6 +483,7 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
 
   const getScriptType = () => {
     if (!currentChar) return '';
+    if (scriptMode === 'kanji') return 'Kanji';
     return hiraganaData.some(h => h.char === currentChar.char) ? 'Hiragana' : 'Katakana';
   };
 
@@ -495,6 +515,30 @@ function HandwritingPractice({ settings, onAnswerRecorded, getKanaWeight }) {
     if (percentage === 100) return '#C8E9E7'; // Quiz green for correct
     return '#EAA3A4'; // Quiz red for incorrect
   };
+
+  // Script mode selection screen
+  if (!scriptMode) {
+    return (
+      <div className="kana-quiz">
+        <div className="quiz-instructions">
+          <h2>Handwriting</h2>
+          <p>Choose what to practice</p>
+          <div className="mode-selector">
+            {SCRIPT_MODES.map(mode => (
+              <button
+                key={mode.id}
+                className="mode-button"
+                onClick={() => setScriptMode(mode.id)}
+              >
+                <span className="mode-label">{mode.label}</span>
+                <span className="mode-desc">{mode.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentChar) {
     return <div className="handwriting-loading">Loading...</div>;

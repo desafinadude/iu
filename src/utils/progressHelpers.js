@@ -4,6 +4,9 @@ export const MATCHING_STAR_THRESHOLD = 5; // Matching only needs 5 (seen 10 time
 export const COINS_PER_STAR = 5;
 export const QUIZ_TYPES = ['kana', 'reverse', 'handwriting', 'matching'];
 
+// Kanji quiz types
+export const KANJI_QUIZ_TYPES = ['meaning', 'reverse', 'onyomi', 'kunyomi'];
+
 // Selection weights by quiz-type mastery (higher = more likely to appear)
 const WEIGHTS = {
   earned: 0.3,      // Already mastered for this quiz type - rare
@@ -27,6 +30,15 @@ export function createDefaultKanaProgress() {
     reverse: createDefaultQuizTypeProgress(),
     handwriting: createDefaultQuizTypeProgress(),
     matching: createDefaultQuizTypeProgress(),
+  };
+}
+
+export function createDefaultKanjiProgress() {
+  return {
+    meaning: createDefaultQuizTypeProgress(),
+    reverse: createDefaultQuizTypeProgress(),
+    onyomi: createDefaultQuizTypeProgress(),
+    kunyomi: createDefaultQuizTypeProgress(),
   };
 }
 
@@ -293,3 +305,39 @@ export function getStarThreshold(quizType) {
 
 // Vocab pack pricing
 export const VOCAB_PACK_PRICE = 15; // coins per pack of 5 words
+
+// ── Kanji progress helpers ────────────────────────────────────────────────────
+
+export function getKanjiStarCount(kanjiProgress) {
+  if (!kanjiProgress || !kanjiProgress.meaning) return 0;
+  return KANJI_QUIZ_TYPES.filter(qt => kanjiProgress[qt]?.earned).length;
+}
+
+export function getKanjiStarDetail(kanjiProgress) {
+  if (!kanjiProgress || !kanjiProgress.meaning) {
+    return { meaning: false, reverse: false, onyomi: false, kunyomi: false };
+  }
+  return {
+    meaning: kanjiProgress.meaning?.earned || false,
+    reverse: kanjiProgress.reverse?.earned || false,
+    onyomi: kanjiProgress.onyomi?.earned || false,
+    kunyomi: kanjiProgress.kunyomi?.earned || false,
+  };
+}
+
+export function getKanjiProgressStats(kanjiProgress) {
+  const stats = { total: 0, noStars: 0, inProgress: 0, mastered: 0 };
+  Object.values(kanjiProgress).forEach(progress => {
+    stats.total++;
+    const stars = getKanjiStarCount(progress);
+    if (stars === 0) {
+      const hasAttempts = KANJI_QUIZ_TYPES.some(qt => progress[qt]?.totalAttempts > 0);
+      hasAttempts ? stats.inProgress++ : stats.noStars++;
+    } else if (stars === KANJI_QUIZ_TYPES.length) {
+      stats.mastered++;
+    } else {
+      stats.inProgress++;
+    }
+  });
+  return stats;
+}
