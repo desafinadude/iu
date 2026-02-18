@@ -2,23 +2,33 @@ const synth = window.speechSynthesis;
 let japaneseVoice = null;
 let availableJapaneseVoices = [];
 
-// Initialize voice
-if (synth) {
-  synth.onvoiceschanged = () => {
-    const voices = synth.getVoices();
-    availableJapaneseVoices = voices.filter(voice => voice.lang.startsWith('ja'));
-    japaneseVoice = availableJapaneseVoices[0] || null;
-    
-    if (availableJapaneseVoices.length > 0) {
-      console.log('Available Japanese voices:');
-      availableJapaneseVoices.forEach((voice, index) => {
-        console.log(`${index}: ${voice.name} (${voice.lang}) - ${voice.localService ? 'Local' : 'Remote'}`);
-      });
-      console.log('Selected Japanese voice:', japaneseVoice.name);
-    } else {
-      console.log('No Japanese voices available');
+function loadVoices() {
+  const voices = synth.getVoices();
+  if (voices.length === 0) return;
+
+  availableJapaneseVoices = voices.filter(voice => voice.lang.startsWith('ja'));
+
+  if (availableJapaneseVoices.length > 0) {
+    // Keep existing selection if still valid, otherwise default to first
+    const currentIndex = availableJapaneseVoices.indexOf(japaneseVoice);
+    if (currentIndex === -1) {
+      japaneseVoice = availableJapaneseVoices[0];
     }
-  };
+    console.log('Available Japanese voices:');
+    availableJapaneseVoices.forEach((voice, index) => {
+      console.log(`${index}: ${voice.name} (${voice.lang}) - ${voice.localService ? 'Local' : 'Remote'}`);
+    });
+    console.log('Selected Japanese voice:', japaneseVoice.name);
+  } else {
+    console.log('No Japanese voices available');
+  }
+}
+
+if (synth) {
+  // Try immediately (works in Firefox/Safari where voices are synchronously available)
+  loadVoices();
+  // Also listen for the async event (needed for Chrome)
+  synth.onvoiceschanged = loadVoices;
 }
 
 // Get all available Japanese voices
@@ -44,7 +54,13 @@ export const getCurrentVoice = () => {
 export const speak = (text) => {
   if (!synth) return;
 
+  // Try to load voices if not yet available
+  if (!japaneseVoice) {
+    loadVoices();
+  }
+
   synth.cancel();
+
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ja-JP';
 
@@ -56,5 +72,6 @@ export const speak = (text) => {
   utterance.pitch = 1;
   utterance.volume = 1;
 
-  synth.speak(utterance);
+  // Small delay after cancel() to avoid a Chrome bug where speech is silently dropped
+  setTimeout(() => synth.speak(utterance), 50);
 };
