@@ -228,7 +228,6 @@ function App() {
           <div className="title-english">{currentView === 'home' ? 'home' : currentView}</div>
         </div>
         <div className="header-right">
-          <CoinDisplay coins={coins} />
           <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)}>
             ☰
           </button>
@@ -283,13 +282,6 @@ function App() {
             wordProgress={wordProgress}
             coins={coins}
             unlockedPacks={unlockedPacks}
-          />
-        )}
-        {currentView === 'shop' && (
-          <Shop
-            coins={coins}
-            unlockedPacks={unlockedPacks}
-            purchasePack={purchasePack}
           />
         )}
         {currentView === 'wordQuiz' && (

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { hiraganaData } from '../data/hiraganaData';
 import { katakanaData } from '../data/katakanaData';
 import kanjiData from '../data/kanjiData';
-import { getDefaultUnlockedPacks } from '../data/vocabPacks';
+import { getDefaultUnlockedPacks, allVocabPacks } from '../data/vocabPacks';
 import {
   initializeProgress,
   processAnswer,
@@ -230,9 +230,9 @@ export function useProgress() {
     return success;
   }, []);
 
-  const isPackUnlocked = useCallback((packId) => {
-    return progress.unlockedPacks.includes(packId);
-  }, [progress.unlockedPacks]);
+  const isPackUnlocked = useCallback((_packId) => {
+    return true; // All packs are always unlocked
+  }, []);
 
   const spendCoins = useCallback((amount) => {
     let success = false;
@@ -349,12 +349,15 @@ export function useProgress() {
     });
   }, []);
 
+  // All packs are always unlocked
+  const allPackIds = allVocabPacks.map(p => p.id);
+
   return {
     coins: progress.coins,
     kanaProgress: progress.kanaProgress,
     kanjiProgress: progress.kanjiProgress || {},
     wordProgress: progress.wordProgress,
-    unlockedPacks: progress.unlockedPacks,
+    unlockedPacks: allPackIds,
     recordAnswer,
     recordKanjiAnswer,
     recordWordAnswer,
