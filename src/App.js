@@ -10,10 +10,8 @@ import WordSearch from './components/WordSearch';
 import Settings from './components/Settings';
 import Resources from './components/Resources';
 import Collection from './components/Collection';
-import Shop from './components/Shop';
 import WordQuiz from './components/WordQuiz';
 import LetterTile from './components/LetterTile';
-import CoinDisplay from './components/CoinDisplay';
 import LevelUpModal from './components/LevelUpModal';
 import StreakLostModal from './components/StreakLostModal';
 import KoiPond from './components/KoiPond';
@@ -72,7 +70,6 @@ function App() {
     getKanaWeight,
     getKanjiWeight,
     getWordWeight,
-    purchasePack,
     awardCoins,
     exportProgress,
     importProgress,
