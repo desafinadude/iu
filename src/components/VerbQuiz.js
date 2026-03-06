@@ -8,6 +8,7 @@ import {
   TE_FORMS,
   TYPE_COLORS,
 } from '../data/verbData';
+import { speak } from '../utils/speech';
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects';
 import '../styles/VerbQuiz.css';
 
@@ -45,7 +46,6 @@ function getVerbsByType(typeFilter, allVerbs) {
   return allVerbs.filter(v => v.type === typeFilter);
 }
 
-// Build 4 multiple-choice options for a given verb + form (all kanji answers)
 function buildMultipleChoiceOptions(correctVerb, formId, filteredVerbs) {
   const correct = correctVerb.forms[formId].kanji;
   const pool = filteredVerbs
@@ -56,7 +56,7 @@ function buildMultipleChoiceOptions(correctVerb, formId, filteredVerbs) {
   return shuffleArray([correct, ...wrong]);
 }
 
-// ── sub-components ───────────────────────────────────────────────────────────
+// ── shared micro-components ───────────────────────────────────────────────────
 
 function TypeTag({ type }) {
   const colors = TYPE_COLORS[type] || {};
@@ -70,15 +70,24 @@ function TypeTag({ type }) {
   );
 }
 
+// Tappable verb header — speaks the verb on tap
+function VerbHeader({ verb }) {
+  return (
+    <div className="verb-card-top">
+      <TypeTag type={verb.type} />
+      <button className="verb-dict-form-btn" onClick={() => speak(verb.verb)} title="Tap to hear">
+        {verb.verb}
+      </button>
+      <div className="verb-hiragana">{verb.hiragana}</div>
+      <div className="verb-meaning">{verb.meaning}</div>
+    </div>
+  );
+}
+
 function VerbCard({ verb, formId, formLabel }) {
   return (
     <div className="verb-card">
-      <div className="verb-card-top">
-        <TypeTag type={verb.type} />
-        <div className="verb-dict-form">{verb.verb}</div>
-        <div className="verb-hiragana">{verb.hiragana}</div>
-        <div className="verb-meaning">{verb.meaning}</div>
-      </div>
+      <VerbHeader verb={verb} />
       {formLabel && (
         <div className="verb-card-prompt">
           <span className="verb-prompt-label">What is the</span>
@@ -100,6 +109,17 @@ function AnswerReveal({ verb, formId }) {
   );
 }
 
+function ProgressBar({ done, total }) {
+  return (
+    <>
+      <div className="verb-progress-bar-wrap">
+        <div className="verb-progress-bar-fill" style={{ width: `${(done / total) * 100}%` }} />
+      </div>
+      <div className="verb-progress-text">{done} / {total}</div>
+    </>
+  );
+}
+
 // ── Config Screen ─────────────────────────────────────────────────────────────
 
 function ConfigScreen({ onStart }) {
@@ -108,13 +128,14 @@ function ConfigScreen({ onStart }) {
   const [formFilter, setFormFilter] = useState('all');
 
   const MODES = [
-    { id: 'flashcard', label: 'Flashcard', desc: 'Flip to see all forms' },
-    { id: 'challenge', label: 'Challenge', desc: 'Recall & self-rate' },
-    { id: 'multipleChoice', label: 'Multiple Choice', desc: 'Pick the correct form' },
+    { id: 'study',          label: 'Study',    desc: 'Browse verbs in order' },
+    { id: 'flashcard',      label: 'Flashcard', desc: 'Flip & self-rate' },
+    { id: 'challenge',      label: 'Challenge', desc: 'Recall & self-rate' },
+    { id: 'multipleChoice', label: 'Choice',    desc: 'Pick the right form' },
   ];
 
   const TYPE_FILTERS = [
-    { id: 'all', label: 'All types' },
+    { id: 'all', label: 'All' },
     { id: 'ichidan', label: 'Ichidan' },
     { id: 'godan', label: 'Godan' },
     { id: 'irregular', label: 'Irregular' },
@@ -165,20 +186,22 @@ function ConfigScreen({ onStart }) {
         </div>
       </div>
 
-      <div className="verb-config-section">
-        <div className="verb-config-section-label">Forms to drill</div>
-        <div className="verb-filter-row">
-          {FORM_FILTERS.map(f => (
-            <button
-              key={f.id}
-              className={`verb-filter-btn ${formFilter === f.id ? 'active' : ''}`}
-              onClick={() => setFormFilter(f.id)}
-            >
-              {f.label}
-            </button>
-          ))}
+      {quizMode !== 'study' && (
+        <div className="verb-config-section">
+          <div className="verb-config-section-label">Forms to drill</div>
+          <div className="verb-filter-row">
+            {FORM_FILTERS.map(f => (
+              <button
+                key={f.id}
+                className={`verb-filter-btn ${formFilter === f.id ? 'active' : ''}`}
+                onClick={() => setFormFilter(f.id)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="verb-config-summary">
         {verbCount} verb{verbCount !== 1 ? 's' : ''} selected
@@ -191,6 +214,172 @@ function ConfigScreen({ onStart }) {
       >
         START
       </button>
+    </div>
+  );
+}
+
+// ── Study Mode ─────────────────────────────────────────────────────────────────
+
+function StudyMode({ verbs, onBack }) {
+  // Phase: 'pick' = verb list picker, 'study' = card browser
+  const [phase, setPhase] = useState('pick');
+  const [selected, setSelected] = useState(() => new Set(verbs.map((_, i) => i)));
+  const [cardIndex, setCardIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+
+  // Derive the ordered list of selected verbs
+  const studyList = useMemo(
+    () => verbs.filter((_, i) => selected.has(i)),
+    [verbs, selected]
+  );
+
+  const toggleVerb = (i) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(i)) { next.delete(i); } else { next.add(i); }
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selected.size === verbs.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(verbs.map((_, i) => i)));
+    }
+  };
+
+  const startStudy = () => {
+    setCardIndex(0);
+    setFlipped(false);
+    setPhase('study');
+    if (studyList[0]) speak(studyList[0].verb);
+  };
+
+  const goTo = (idx) => {
+    setFlipped(false);
+    setCardIndex(idx);
+    setTimeout(() => {
+      if (studyList[idx]) speak(studyList[idx].verb);
+    }, 50);
+  };
+
+  // ── Pick screen ──
+  if (phase === 'pick') {
+    return (
+      <div className="verb-study-pick">
+        <div className="verb-study-pick-header">
+          <h3 className="verb-study-pick-title">Select verbs to study</h3>
+          <button className="verb-filter-btn active" onClick={toggleAll}>
+            {selected.size === verbs.length ? 'Deselect all' : 'Select all'}
+          </button>
+        </div>
+
+        <div className="verb-study-list">
+          {verbs.map((verb, i) => {
+            const colors = TYPE_COLORS[verb.type] || {};
+            const isSelected = selected.has(i);
+            return (
+              <button
+                key={i}
+                className={`verb-study-list-item ${isSelected ? 'selected' : ''}`}
+                style={isSelected ? { borderColor: colors.border, backgroundColor: colors.bg } : {}}
+                onClick={() => toggleVerb(i)}
+              >
+                <span className="verb-study-item-verb">{verb.verb}</span>
+                <span className="verb-study-item-reading">{verb.hiragana}</span>
+                <span className="verb-study-item-meaning">{verb.meaning}</span>
+                <span
+                  className="verb-study-item-type"
+                  style={{ color: colors.text }}
+                >{colors.label}</span>
+                <span className="verb-study-item-check">{isSelected ? '✓' : ''}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="verb-study-pick-footer">
+          <div className="verb-config-summary">{selected.size} verb{selected.size !== 1 ? 's' : ''} selected</div>
+          <div className="verb-study-pick-actions">
+            <button className="back-to-modes-button" onClick={onBack}>Back</button>
+            <button
+              className="verb-start-btn"
+              onClick={startStudy}
+              disabled={selected.size === 0}
+            >
+              Study
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Study card screen ──
+  if (studyList.length === 0) return null;
+  const verb = studyList[cardIndex];
+
+  return (
+    <div className="verb-quiz-screen">
+      <div className="verb-study-nav-header">
+        <button className="verb-study-back-btn" onClick={() => setPhase('pick')}>
+          ← List
+        </button>
+        <div className="verb-progress-text">{cardIndex + 1} / {studyList.length}</div>
+      </div>
+
+      {/* Flip card */}
+      <div className="vq-fc-container">
+        <div
+          className={`vq-fc ${flipped ? 'flipped' : ''}`}
+          onClick={() => setFlipped(f => !f)}
+        >
+          <div className="vq-fc-inner">
+            <div className="vq-fc-front">
+              <TypeTag type={verb.type} />
+              <button
+                className="verb-dict-form-btn large"
+                onClick={(e) => { e.stopPropagation(); speak(verb.verb); }}
+                title="Tap to hear"
+              >
+                {verb.verb}
+              </button>
+              <div className="verb-hiragana">{verb.hiragana}</div>
+              <div className="verb-meaning">{verb.meaning}</div>
+              <div className="flip-hint">Tap to see forms</div>
+            </div>
+            <div className="vq-fc-back">
+              <div className="verb-forms-grid">
+                {ALL_FORM_IDS.map(fid => (
+                  <div key={fid} className="verb-form-row">
+                    <span className="verb-form-row-label">{FORM_LABELS[fid]}</span>
+                    <span className="verb-form-row-kanji">{verb.forms[fid].kanji}</span>
+                    <span className="verb-form-row-romaji">{verb.forms[fid].romaji}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="verb-study-nav-buttons">
+        <button
+          className="verb-nav-btn"
+          onClick={() => goTo(cardIndex - 1)}
+          disabled={cardIndex === 0}
+        >
+          ← Prev
+        </button>
+        <button
+          className="verb-nav-btn"
+          onClick={() => goTo(cardIndex + 1)}
+          disabled={cardIndex === studyList.length - 1}
+        >
+          Next →
+        </button>
+      </div>
     </div>
   );
 }
@@ -213,11 +402,7 @@ function FlashcardMode({ deck, verbs, onResult, onFinish, progress }) {
     if (isAnimating) return;
     setIsAnimating(true);
     onResult(correct);
-    if (correct) {
-      playCorrectSound();
-    } else {
-      playWrongSound();
-    }
+    if (correct) { playCorrectSound(); } else { playWrongSound(); }
     setTimeout(() => {
       if (cardIndex + 1 >= deck.length) {
         onFinish();
@@ -231,42 +416,43 @@ function FlashcardMode({ deck, verbs, onResult, onFinish, progress }) {
 
   return (
     <div className="verb-quiz-screen">
-      <div className="verb-progress-bar-wrap">
-        <div className="verb-progress-bar-fill" style={{ width: `${(progress.done / progress.total) * 100}%` }} />
-      </div>
-      <div className="verb-progress-text">{progress.done} / {progress.total}</div>
+      <ProgressBar done={progress.done} total={progress.total} />
 
-      <div className={`verb-flashcard ${flipped ? 'flipped' : ''}`} onClick={handleFlip}>
-        <div className="verb-flashcard-front">
-          <TypeTag type={verb.type} />
-          <div className="verb-dict-form">{verb.verb}</div>
-          <div className="verb-hiragana">{verb.hiragana}</div>
-          <div className="verb-meaning">{verb.meaning}</div>
-          {!flipped && <div className="verb-tap-hint">Tap to reveal all forms</div>}
-        </div>
-        {flipped && (
-          <div className="verb-flashcard-back">
-            <div className="verb-forms-grid">
-              {ALL_FORM_IDS.map(fid => (
-                <div key={fid} className="verb-form-row">
-                  <span className="verb-form-row-label">{FORM_LABELS[fid]}</span>
-                  <span className="verb-form-row-kanji">{verb.forms[fid].kanji}</span>
-                  <span className="verb-form-row-romaji">{verb.forms[fid].romaji}</span>
-                </div>
-              ))}
+      <div className="vq-fc-container">
+        <div className={`vq-fc ${flipped ? 'flipped' : ''}`} onClick={handleFlip}>
+          <div className="vq-fc-inner">
+            <div className="vq-fc-front">
+              <TypeTag type={verb.type} />
+              <button
+                className="verb-dict-form-btn large"
+                onClick={(e) => { e.stopPropagation(); speak(verb.verb); }}
+                title="Tap to hear"
+              >
+                {verb.verb}
+              </button>
+              <div className="verb-hiragana">{verb.hiragana}</div>
+              <div className="verb-meaning">{verb.meaning}</div>
+              {!flipped && <div className="flip-hint">Tap to see all forms</div>}
+            </div>
+            <div className="vq-fc-back">
+              <div className="verb-forms-grid">
+                {ALL_FORM_IDS.map(fid => (
+                  <div key={fid} className="verb-form-row">
+                    <span className="verb-form-row-label">{FORM_LABELS[fid]}</span>
+                    <span className="verb-form-row-kanji">{verb.forms[fid].kanji}</span>
+                    <span className="verb-form-row-romaji">{verb.forms[fid].romaji}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {flipped && (
         <div className="verb-rate-buttons">
-          <button className="verb-rate-btn wrong" onClick={() => handleRate(false)}>
-            ✗ Again
-          </button>
-          <button className="verb-rate-btn correct" onClick={() => handleRate(true)}>
-            ✓ Got it
-          </button>
+          <button className="verb-rate-btn wrong" onClick={() => handleRate(false)}>✗ Again</button>
+          <button className="verb-rate-btn correct" onClick={() => handleRate(true)}>✓ Got it</button>
         </div>
       )}
     </div>
@@ -275,7 +461,7 @@ function FlashcardMode({ deck, verbs, onResult, onFinish, progress }) {
 
 // ── Challenge Mode ─────────────────────────────────────────────────────────────
 
-function ChallengeMode({ initialDeck, verbs, onFinish, progress: initialProgress }) {
+function ChallengeMode({ initialDeck, verbs, onFinish }) {
   const [queue, setQueue] = useState(initialDeck);
   const [cardIndex, setCardIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -287,23 +473,22 @@ function ChallengeMode({ initialDeck, verbs, onFinish, progress: initialProgress
   const verb = verbs[card.verbIndex];
   const formLabel = FORM_LABELS[card.formId];
 
-  const handleReveal = () => setRevealed(true);
+  const handleReveal = () => {
+    setRevealed(true);
+    speak(verb.forms[card.formId].kanji);
+  };
 
   const handleRate = (correct) => {
     if (isAnimating) return;
     setIsAnimating(true);
-    if (correct) {
-      playCorrectSound();
-    } else {
-      playWrongSound();
-    }
+    if (correct) { playCorrectSound(); } else { playWrongSound(); }
 
-    setResults(r => ({ correct: r.correct + (correct ? 1 : 0), total: r.total + 1 }));
+    const newResults = { correct: results.correct + (correct ? 1 : 0), total: results.total + 1 };
+    setResults(newResults);
     const nextDone = done + 1;
     setDone(nextDone);
 
     if (!correct) {
-      // Reinsert the card ~5 positions later
       const newQueue = [...queue];
       const insertAt = Math.min(cardIndex + 1 + Math.floor(Math.random() * 4 + 2), newQueue.length);
       newQueue.splice(insertAt, 0, { ...card });
@@ -316,7 +501,7 @@ function ChallengeMode({ initialDeck, verbs, onFinish, progress: initialProgress
     } else {
       setTimeout(() => {
         if (cardIndex + 1 >= queue.length) {
-          onFinish(results.correct + (correct ? 1 : 0), results.total + 1, nextDone);
+          onFinish(newResults.correct, newResults.total);
         } else {
           setCardIndex(i => i + 1);
           setRevealed(false);
@@ -326,32 +511,25 @@ function ChallengeMode({ initialDeck, verbs, onFinish, progress: initialProgress
     }
   };
 
-  const totalInDeck = initialProgress.total;
-  const progressPct = Math.min((done / totalInDeck) * 100, 100);
+  const progressPct = Math.min((done / initialDeck.length) * 100, 100);
 
   return (
     <div className="verb-quiz-screen">
       <div className="verb-progress-bar-wrap">
         <div className="verb-progress-bar-fill" style={{ width: `${progressPct}%` }} />
       </div>
-      <div className="verb-progress-text">{done} / {totalInDeck}</div>
+      <div className="verb-progress-text">{done} / {initialDeck.length}</div>
 
       <VerbCard verb={verb} formId={card.formId} formLabel={formLabel} />
 
       {!revealed ? (
-        <button className="verb-reveal-btn" onClick={handleReveal}>
-          Reveal
-        </button>
+        <button className="verb-reveal-btn" onClick={handleReveal}>Reveal</button>
       ) : (
         <>
           <AnswerReveal verb={verb} formId={card.formId} />
           <div className="verb-rate-buttons">
-            <button className="verb-rate-btn wrong" onClick={() => handleRate(false)}>
-              ✗ Try again
-            </button>
-            <button className="verb-rate-btn correct" onClick={() => handleRate(true)}>
-              ✓ Got it
-            </button>
+            <button className="verb-rate-btn wrong" onClick={() => handleRate(false)}>✗ Try again</button>
+            <button className="verb-rate-btn correct" onClick={() => handleRate(true)}>✓ Got it</button>
           </div>
         </>
       )}
@@ -381,11 +559,8 @@ function MultipleChoiceMode({ deck, verbs, filteredVerbs, onResult, onFinish, pr
     if (selected || isAnimating) return;
     setSelected(option);
     const correct = option === correctKanji;
-    if (correct) {
-      playCorrectSound();
-    } else {
-      playWrongSound();
-    }
+    if (correct) { playCorrectSound(); } else { playWrongSound(); }
+    speak(correctKanji);
     onResult(correct);
     setIsAnimating(true);
     setTimeout(() => {
@@ -401,10 +576,7 @@ function MultipleChoiceMode({ deck, verbs, filteredVerbs, onResult, onFinish, pr
 
   return (
     <div className="verb-quiz-screen">
-      <div className="verb-progress-bar-wrap">
-        <div className="verb-progress-bar-fill" style={{ width: `${(progress.done / progress.total) * 100}%` }} />
-      </div>
-      <div className="verb-progress-text">{progress.done} / {progress.total}</div>
+      <ProgressBar done={progress.done} total={progress.total} />
 
       <VerbCard verb={verb} formId={card.formId} formLabel={formLabel} />
 
@@ -425,9 +597,7 @@ function MultipleChoiceMode({ deck, verbs, filteredVerbs, onResult, onFinish, pr
       </div>
 
       {selected && (
-        <div className="verb-mc-romaji">
-          {verb.forms[card.formId].romaji}
-        </div>
+        <div className="verb-mc-romaji">{verb.forms[card.formId].romaji}</div>
       )}
     </div>
   );
@@ -458,7 +628,6 @@ function VerbQuiz() {
   const [deck, setDeck] = useState([]);
   const [filteredVerbs, setFilteredVerbs] = useState([]);
   const [sessionResults, setSessionResults] = useState({ correct: 0, total: 0 });
-  // For flashcard/multipleChoice simple tracking
   const [mcResults, setMcResults] = useState({ correct: 0, total: 0 });
 
   const handleStart = useCallback(({ quizMode, typeFilter, formFilter }) => {
@@ -478,18 +647,8 @@ function VerbQuiz() {
     setPhase('summary');
   }, [mcResults]);
 
-  const handleChallengeFinish = useCallback((correct, total) => {
-    setSessionResults({ correct, total });
-    setPhase('summary');
-  }, []);
-
-  const handlePlayAgain = () => {
-    handleStart(config);
-  };
-
-  const handleBack = () => {
-    setPhase('config');
-  };
+  const handlePlayAgain = () => handleStart(config);
+  const handleBack = () => setPhase('config');
 
   if (phase === 'config') {
     return <ConfigScreen onStart={handleStart} />;
@@ -509,6 +668,10 @@ function VerbQuiz() {
   const { quizMode, verbs } = config;
   const progress = { done: mcResults.total, total: deck.length };
 
+  if (quizMode === 'study') {
+    return <StudyMode verbs={verbs} onBack={handleBack} />;
+  }
+
   if (quizMode === 'flashcard') {
     return (
       <FlashcardMode
@@ -526,8 +689,7 @@ function VerbQuiz() {
       <ChallengeMode
         initialDeck={deck}
         verbs={verbs}
-        onFinish={handleChallengeFinish}
-        progress={{ total: deck.length }}
+        onFinish={handleFinish}
       />
     );
   }
