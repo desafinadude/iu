@@ -16,12 +16,13 @@ import LevelUpModal from './components/LevelUpModal';
 import StreakLostModal from './components/StreakLostModal';
 import KoiPond from './components/KoiPond';
 import FishShop from './components/FishShop';
+import VerbQuiz from './components/VerbQuiz';
 import { useProgress } from './hooks/useProgress';
 import './styles/App.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('home'); // home, kana, vocab, handwriting, wordSearch, wordQuiz, letterTile, settings, resources
+  const [currentView, setCurrentView] = useState('home'); // home, kana, vocab, handwriting, wordSearch, wordQuiz, letterTile, verbQuiz, settings, resources
   const [menuOpen, setMenuOpen] = useState(false);
   const [settings, setSettings] = useState({
     enabledHiragana: new Set([
@@ -170,7 +171,7 @@ function App() {
 
   // Add/remove quiz-active class based on current view
   useEffect(() => {
-    const quizViews = ['kana', 'kanji', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz', 'letterTile'];
+    const quizViews = ['kana', 'kanji', 'vocab', 'handwriting', 'wordSearch', 'wordQuiz', 'letterTile', 'verbQuiz'];
     if (quizViews.includes(currentView)) {
       document.body.classList.add('quiz-active');
     } else {
@@ -299,6 +300,7 @@ function App() {
             onCoinsAwarded={awardCoins}
           />
         )}
+        {currentView === 'verbQuiz' && <VerbQuiz />}
         {currentView === 'koiPond' && (
           <KoiPond coins={coins} ownedFish={[]} />
         )}
