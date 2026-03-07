@@ -1,0 +1,113 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  border: 3px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease, color 100ms ease;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* Sizes */
+.btn--sm { font-size: 14px; padding: 8px 16px;  min-height: 40px; }
+.btn--md { font-size: 17px; padding: 12px 24px; min-height: 48px; }
+.btn--lg { font-size: 19px; padding: 14px 32px; min-height: 56px; }
+
+.btn--full { width: 100%; }
+
+/* Primary */
+.btn--primary {
+  background: var(--color-surface);
+  color: var(--color-fg);
+  box-shadow: var(--shadow-md);
+}
+
+@media (hover: hover) {
+  .btn--primary:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+    transform: translateX(2px) translateY(2px);
+  }
+}
+
+.btn--primary:active:not(:disabled) {
+  box-shadow: none;
+  transform: translateX(5px) translateY(5px);
+}
+
+/* Secondary */
+.btn--secondary {
+  background: var(--color-muted);
+  color: var(--color-fg);
+  box-shadow: var(--shadow-md);
+}
+
+@media (hover: hover) {
+  .btn--secondary:hover:not(:disabled) {
+    background: var(--color-accent-blue);
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+    transform: translateX(2px) translateY(2px);
+  }
+}
+
+.btn--secondary:active:not(:disabled) {
+  box-shadow: none;
+  transform: translateX(5px) translateY(5px);
+}
+
+/* Ghost */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-fg);
+  border-style: dashed;
+  border-width: 2px;
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .btn--ghost:hover:not(:disabled) {
+    background: var(--color-muted);
+  }
+}
+
+.btn--ghost:active:not(:disabled) {
+  background: var(--color-muted);
+}
+
+/* Disabled */
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Loading dots */
+.btn__dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.btn__dots span {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn__dots span {
+    animation: bounce-dot 1.2s ease-in-out infinite both;
+  }
+  .btn__dots span:nth-child(1) { animation-delay: 0ms; }
+  .btn__dots span:nth-child(2) { animation-delay: 160ms; }
+  .btn__dots span:nth-child(3) { animation-delay: 320ms; }
+}

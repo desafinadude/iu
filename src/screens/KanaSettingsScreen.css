@@ -1,0 +1,211 @@
+.kana-settings {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg) var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* ─── Section ────────────────────────────────────────────────────── */
+.kana-settings__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.kana-settings__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kana-settings__section-title {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg);
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kana-settings__section-mark {
+  font-size: 18px;
+  opacity: 0.8;
+  font-family: var(--font-japanese);
+}
+
+.kana-settings__hint {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.45;
+}
+
+.kana-settings__shortcuts {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.kana-settings__link {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ─── Script toggle ──────────────────────────────────────────────── */
+.kana-settings__script-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.kana-settings__script-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 14px var(--space-md);
+  background: var(--color-surface);
+  border: 3px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: background 100ms, color 100ms, transform 100ms, box-shadow 100ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kana-settings__script-btn--active {
+  background: var(--color-fg);
+  color: #fff;
+  box-shadow: none;
+  transform: translateX(3px) translateY(3px);
+}
+
+.kana-settings__script-kana {
+  font-family: var(--font-japanese);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.kana-settings__script-label {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* ─── Kana table ─────────────────────────────────────────────────── */
+.kana-table {
+  border: 3px solid var(--color-fg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: var(--color-surface);
+}
+
+.kana-table__header-row {
+  display: grid;
+  grid-template-columns: 32px repeat(5, 1fr);
+  background: var(--color-fg);
+  color: #fff;
+}
+
+.kana-table__col-header {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 6px 2px;
+  opacity: 0.8;
+}
+
+.kana-table__row {
+  display: grid;
+  grid-template-columns: 32px repeat(5, 1fr);
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  border: none;
+  border-top: 2px dashed var(--color-muted);
+  cursor: pointer;
+  transition: background 100ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kana-table__row:first-of-type {
+  border-top: none;
+}
+
+.kana-table__row--active {
+  background: var(--color-postit);
+}
+
+.kana-table__row-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-fg);
+  opacity: 0.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-right: 2px solid var(--color-muted);
+}
+
+.kana-table__cell {
+  font-family: var(--font-japanese);
+  font-size: clamp(20px, 4vw, 28px);
+  line-height: 1;
+  text-align: center;
+  padding: 12px 4px;
+  color: var(--color-fg);
+}
+
+.kana-table__cell--empty {
+  opacity: 0;
+}
+
+/* ─── Pill toggle ────────────────────────────────────────────────── */
+.kana-settings__pill-toggle {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  min-height: 32px;
+  background: var(--color-muted);
+  color: var(--color-fg);
+  border: 2px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 100ms, color 100ms;
+}
+
+.kana-settings__pill-toggle--on {
+  background: var(--color-fg);
+  color: #fff;
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────── */
+.kana-settings__footer {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.35;
+  text-align: center;
+}

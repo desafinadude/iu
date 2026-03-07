@@ -1,0 +1,66 @@
+.home {
+  width: 100%;
+  padding: var(--space-lg);
+}
+
+.home__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.home__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: var(--color-surface);
+  border: 3px solid var(--color-fg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl) var(--space-md);
+  overflow: hidden;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+  -webkit-tap-highlight-color: transparent;
+  aspect-ratio: 1;
+}
+
+.home__card:active {
+  transform: translateX(3px) translateY(3px);
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .home__card:hover {
+    transform: translateX(2px) translateY(2px);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.home__card-halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.home__card-kana {
+  font-family: var(--font-japanese);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--color-fg);
+  user-select: none;
+}
+
+.home__card-label {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg);
+  text-align: center;
+  line-height: 1.2;
+}
