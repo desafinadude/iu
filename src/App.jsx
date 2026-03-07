@@ -4,6 +4,7 @@ import HomeScreen from './screens/HomeScreen'
 import KanaQuizScreen from './screens/KanaQuizScreen'
 import KanaSettingsScreen from './screens/KanaSettingsScreen'
 import ProgressScreen from './screens/ProgressScreen'
+import WordSearchScreen from './screens/WordSearchScreen'
 
 function Screens() {
   const { screen, params } = useNav()
@@ -15,6 +16,8 @@ function Screens() {
       return <KanaSettingsScreen />
     case 'progress':
       return <ProgressScreen />
+    case 'word_search':
+      return <WordSearchScreen />
     case 'home':
     default:
       return <HomeScreen />

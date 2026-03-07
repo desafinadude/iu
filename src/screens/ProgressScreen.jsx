@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { ALL_CHARS, GOJUON_ROWS, DAKUTEN_ROWS, HANDAKUTEN_ROWS } from '../data/kana.js'
 import { MASTERY_MAX } from '../hooks/useQuiz.js'
+import { VOCAB_LIST } from '../data/vocabData.js'
+import { speak } from '../utils/speech.js'
 import './ProgressScreen.css'
 
-const MODES = [
+const TABS = [
   { id: 'kana_to_romaji', label: 'Kana → Romaji' },
   { id: 'romaji_to_kana', label: 'Romaji → Kana' },
   { id: 'kana_match',     label: 'Kana → Kana'   },
+  { id: 'vocab',          label: 'Vocab'          },
 ]
 
 function readMastery(mode) {
@@ -70,51 +73,95 @@ function KanaCard({ card }) {
   )
 }
 
+function readSeenVocab() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem('koikata_vocab_seen_v1')) ?? [])
+  } catch {
+    return new Set()
+  }
+}
+
 export default function ProgressScreen() {
-  const [activeMode, setActiveMode] = useState('kana_to_romaji')
-  const mastery = readMastery(activeMode)
-  const cards = getCards(activeMode, mastery)
+  const [activeTab, setActiveTab] = useState('kana_to_romaji')
+  const [seenVocab, setSeenVocab] = useState(readSeenVocab)
+
+  const isVocab = activeTab === 'vocab'
+  const mastery = isVocab ? {} : readMastery(activeTab)
+  const cards   = isVocab ? [] : getCards(activeTab, mastery)
+
+  const handleVocabTap = useCallback((item) => {
+    speak(item.kana)
+    setSeenVocab(prev => {
+      if (prev.has(item.kana)) return prev
+      const next = new Set(prev)
+      next.add(item.kana)
+      localStorage.setItem('koikata_vocab_seen_v1', JSON.stringify([...next]))
+      return next
+    })
+  }, [])
 
   const masteredCount = cards.filter(c => c.mastery >= MASTERY_MAX).length
   const touchedCount  = cards.filter(c => c.mastery > 0).length
 
   return (
     <div className="progress-screen">
-      {/* Mode tabs */}
+      {/* Tabs */}
       <div className="progress-screen__tabs">
-        {MODES.map(m => (
+        {TABS.map(t => (
           <button
-            key={m.id}
-            className={`progress-screen__tab ${activeMode === m.id ? 'progress-screen__tab--active' : ''}`}
-            onClick={() => setActiveMode(m.id)}
-            aria-pressed={activeMode === m.id}
+            key={t.id}
+            className={`progress-screen__tab ${activeTab === t.id ? 'progress-screen__tab--active' : ''}`}
+            onClick={() => setActiveTab(t.id)}
+            aria-pressed={activeTab === t.id}
           >
-            {m.label}
+            {t.label}
           </button>
         ))}
       </div>
 
-      {/* Summary */}
-      <div className="progress-screen__summary">
-        <span className="progress-screen__stat">
-          <strong>{masteredCount}</strong> mastered
-        </span>
-        <span className="progress-screen__stat-sep">·</span>
-        <span className="progress-screen__stat">
-          <strong>{touchedCount - masteredCount}</strong> in progress
-        </span>
-        <span className="progress-screen__stat-sep">·</span>
-        <span className="progress-screen__stat">
-          <strong>{cards.length - touchedCount}</strong> not started
-        </span>
-      </div>
+      {isVocab ? (
+        /* ── Vocab list ── */
+        <div className="progress-screen__vocab">
+          {VOCAB_LIST.map((item, i) => (
+            <button
+              key={i}
+              className={`vocab-row${seenVocab.has(item.kana) ? '' : ' vocab-row--unseen'}`}
+              onClick={() => handleVocabTap(item)}
+              aria-label={`${item.meaning} — tap to hear`}
+            >
+              <span className="vocab-row__japanese">{item.word}</span>
+              {item.word !== item.kana && (
+                <span className="vocab-row__kana">{item.kana}</span>
+              )}
+              <span className="vocab-row__meaning">{item.meaning}</span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Summary */}
+          <div className="progress-screen__summary">
+            <span className="progress-screen__stat">
+              <strong>{masteredCount}</strong> mastered
+            </span>
+            <span className="progress-screen__stat-sep">·</span>
+            <span className="progress-screen__stat">
+              <strong>{touchedCount - masteredCount}</strong> in progress
+            </span>
+            <span className="progress-screen__stat-sep">·</span>
+            <span className="progress-screen__stat">
+              <strong>{cards.length - touchedCount}</strong> not started
+            </span>
+          </div>
 
-      {/* Grid */}
-      <div className="progress-screen__grid">
-        {cards.map(card => (
-          <KanaCard key={card.key} card={card} />
-        ))}
-      </div>
+          {/* Grid */}
+          <div className="progress-screen__grid">
+            {cards.map(card => (
+              <KanaCard key={card.key} card={card} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
