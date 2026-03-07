@@ -9,17 +9,18 @@
 /* ─── Tabs ───────────────────────────────────────────────────────── */
 .progress-screen__tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-xs);
-  padding: var(--space-md) var(--space-md) 0;
+  padding: var(--space-md) var(--space-md) var(--space-md);
   flex-shrink: 0;
 }
 
 .progress-screen__tab {
-  flex: 1;
-  padding: var(--space-sm) var(--space-xs);
+  padding: var(--space-sm) var(--space-sm);
   font-family: var(--font-body);
   font-size: 15px;
   font-weight: 700;
+  white-space: nowrap;
   color: var(--color-fg);
   opacity: 0.45;
   border: 2px solid transparent;
@@ -172,4 +173,63 @@
 
 .progress-card--mastered .progress-card__dot--filled {
   opacity: 1;
+}
+
+/* ─── Vocab list ─────────────────────────────────────────────────── */
+.progress-screen__vocab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md) var(--space-2xl);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.vocab-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-md);
+  background: var(--color-surface);
+  border: 2px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  width: 100%;
+  transition: transform 80ms ease, box-shadow 80ms ease, opacity 200ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vocab-row--unseen {
+  opacity: 0.35;
+}
+
+.vocab-row:active {
+  transform: translateX(2px) translateY(2px);
+  box-shadow: none;
+}
+
+.vocab-row__japanese {
+  font-family: var(--font-japanese);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-fg);
+  flex-shrink: 0;
+  min-width: 56px;
+}
+
+.vocab-row__kana {
+  font-family: var(--font-japanese);
+  font-size: 14px;
+  color: var(--color-fg);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.vocab-row__meaning {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-fg);
+  opacity: 0.65;
+  margin-left: auto;
 }
