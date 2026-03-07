@@ -1,0 +1,128 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────── */
+.shell__header {
+  flex-shrink: 0;
+  background: var(--color-header);
+  border-bottom: 3px solid var(--color-fg);
+  padding-top: env(safe-area-inset-top);
+  z-index: 10;
+}
+
+.shell__header-inner {
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  padding: 0 var(--space-md);
+  gap: var(--space-sm);
+}
+
+.shell__koi {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.shell__title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  flex: 1;
+  text-align: center;
+}
+
+.shell__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #ffffff;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  transition: background 100ms;
+}
+
+@media (hover: hover) {
+  .shell__back:hover {
+    background: rgba(255,255,255,0.15);
+  }
+}
+
+.shell__header-end {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+/* ─── Main content ───────────────────────────────────────────────── */
+.shell__content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Bottom nav ─────────────────────────────────────────────────── */
+.shell__bottom-nav {
+  flex-shrink: 0;
+  display: flex;
+  background: var(--color-surface);
+  border-top: 3px solid var(--color-fg);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 10;
+}
+
+.shell__nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: var(--bottom-nav-height);
+  color: var(--color-fg);
+  opacity: 0.45;
+  position: relative;
+  transition: opacity 100ms;
+}
+
+.shell__nav-btn--active {
+  opacity: 1;
+}
+
+.shell__nav-btn--active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--color-accent);
+}
+
+.shell__nav-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (hover: hover) {
+  .shell__nav-btn:hover {
+    opacity: 0.75;
+  }
+  .shell__nav-btn--active:hover {
+    opacity: 1;
+  }
+}

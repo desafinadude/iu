@@ -1,0 +1,22 @@
+import { useNav } from '../context/NavContext'
+import './HomeScreen.css'
+
+export default function HomeScreen() {
+  const { navigate } = useNav()
+
+  return (
+    <div className="home">
+      <div className="home__grid">
+        <button
+          className="home__card"
+          onClick={() => navigate('kana_quiz')}
+          aria-label="Start Kana Quiz"
+        >
+          <div className="home__card-halftone" aria-hidden="true" />
+          <span className="home__card-kana" aria-hidden="true">あ</span>
+          <span className="home__card-label">Kana Quiz</span>
+        </button>
+      </div>
+    </div>
+  )
+}
