@@ -1,37 +1,11 @@
-// Word list: nouns and greetings (no conjugating forms)
-// kana  — hiragana reading (used for speech)
-// display — characters that appear in the grid (kana or kanji)
-// meaning — English clue shown to the player
-export const WORD_LIST = [
-  { kana: 'さくら',     display: 'さくら',     meaning: 'cherry blossom' },
-  { kana: 'さかな',     display: 'さかな',     meaning: 'fish'           },
-  { kana: 'かばん',     display: 'かばん',     meaning: 'bag'            },
-  { kana: 'きもの',     display: '着物',       meaning: 'kimono'         },
-  { kana: 'まつり',     display: 'まつり',     meaning: 'festival'       },
-  { kana: 'でんわ',     display: '電話',       meaning: 'telephone'      },
-  { kana: 'おちゃ',     display: 'おちゃ',     meaning: 'tea'            },
-  { kana: 'ごはん',     display: 'ごはん',     meaning: 'rice / meal'    },
-  { kana: 'にほん',     display: '日本',       meaning: 'Japan'          },
-  { kana: 'こども',     display: '子供',       meaning: 'child'          },
-  { kana: 'くるま',     display: 'くるま',     meaning: 'car'            },
-  { kana: 'みかん',     display: 'みかん',     meaning: 'tangerine'      },
-  { kana: 'はなび',     display: '花火',       meaning: 'fireworks'      },
-  { kana: 'おかし',     display: 'おかし',     meaning: 'snack'          },
-  { kana: 'なまえ',     display: '名前',       meaning: 'name'           },
-  { kana: 'てがみ',     display: '手紙',       meaning: 'letter'         },
-  { kana: 'みんな',     display: 'みんな',     meaning: 'everyone'       },
-  { kana: 'おはよう',   display: 'おはよう',   meaning: 'good morning'   },
-  { kana: 'ともだち',   display: 'ともだち',   meaning: 'friend'         },
-  { kana: 'でんしゃ',   display: '電車',       meaning: 'train'          },
-  { kana: 'にほんご',   display: 'にほんご',   meaning: 'Japanese'       },
-  { kana: 'ひらがな',   display: 'ひらがな',   meaning: 'hiragana'       },
-  { kana: 'かたかな',   display: 'かたかな',   meaning: 'katakana'       },
-  { kana: 'こんにちは', display: 'こんにちは', meaning: 'hello'          },
-  { kana: 'ありがとう', display: 'ありがとう', meaning: 'thank you'      },
-  { kana: 'さようなら', display: 'さようなら', meaning: 'goodbye'        },
-  { kana: 'おかあさん', display: 'おかあさん', meaning: 'mother'         },
-  { kana: 'おとうさん', display: 'おとうさん', meaning: 'father'         },
-]
+// Word list derived from the shared VOCAB_LIST (nouns, greetings — no verb forms)
+// Only hiragana-only readings, length 2–7 chars (fits the 8×8 grid).
+// display is the kana reading so the grid stays a pure hiragana puzzle.
+import { VOCAB_LIST } from './vocabData'
+
+export const WORD_LIST = VOCAB_LIST
+  .filter(v => v.word.length >= 2 && v.word.length <= 7)
+  .map(v => ({ kana: v.kana, display: v.word, meaning: v.meaning }))
 
 // ─── Grid constants ───────────────────────────────────────────────
 const SIZE = 8
@@ -44,8 +18,8 @@ const DIRS = [
   [1, -1],  // diagonal ↙
 ]
 
-// Filler pool: basic hiragana (no small kana to avoid confusion)
-const FILLER = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'.split('')
+// Filler pool: basic hiragana + katakana (no small kana to avoid confusion)
+const FILLER = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('')
 
 // ─── Helpers ──────────────────────────────────────────────────────
 function shuffle(arr) {

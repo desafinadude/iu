@@ -11,8 +11,8 @@ export default defineConfig({
         name: 'KoiKata',
         short_name: 'KoiKata',
         description: 'Japanese Learning App',
-        theme_color: '#1a1a2e',
-        background_color: '#1a1a2e',
+        theme_color: '#8B1A1A',
+        background_color: '#f2ece0',
         display: 'standalone',
         icons: [
           {

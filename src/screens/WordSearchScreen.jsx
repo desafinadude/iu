@@ -4,8 +4,8 @@ import { playCorrectSound } from '../utils/soundEffects'
 import { speak } from '../utils/speech'
 import './WordSearchScreen.css'
 
-const WORD_COUNT = 5
-const TIMER_MAX  = 180 // 3 minutes
+const WORD_COUNT = 7
+const TIMER_MAX  = 120 // 2 minutes
 
 // ─── Selection helpers ────────────────────────────────────────────
 
