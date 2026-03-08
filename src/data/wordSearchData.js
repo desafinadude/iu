@@ -107,6 +107,33 @@ export const WORD_LIST_DEDUPED = WORD_LIST.filter(w => {
   return true
 })
 
+// Separate pools for weighted sampling
+const _vocabPool = VOCAB_LIST
+  .filter(v => v.word.length >= 2 && v.word.length <= 7)
+  .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning }))
+
+const _verbPool = expandConjugations(VERB_LIST)
+  .filter(f => f.display.length >= 2 && f.display.length <= 7)
+
+const _adjPool = expandConjugations(ADJ_LIST)
+  .filter(f => f.display.length >= 2 && f.display.length <= 7)
+
+// Weighted selection: ~60% nouns/vocab, ~25% verbs, ~15% adjectives
+// For wordCount=7: 4 vocab, 2 verbs, 1 adj
+function weightedSelection(wordCount) {
+  const nVerb = Math.max(1, Math.round(wordCount * 0.25))
+  const nAdj  = Math.max(1, Math.round(wordCount * 0.15))
+  const nVocab = wordCount - nVerb - nAdj
+
+  const pick = (pool, n) => shuffle([...pool]).slice(0, n)
+
+  return [
+    ...pick(_vocabPool, nVocab),
+    ...pick(_verbPool,  nVerb),
+    ...pick(_adjPool,   nAdj),
+  ]
+}
+
 // ─── Grid constants ────────────────────────────────────────────────────────
 const SIZE = 8
 
@@ -154,8 +181,7 @@ function getCells(row, col, dir, length) {
 
 // ─── Puzzle builder ────────────────────────────────────────────────────────
 function tryBuild(wordCount) {
-  // Use deduplicated list so clues are unambiguous
-  const selected = shuffle(WORD_LIST_DEDUPED).slice(0, wordCount)
+  const selected = weightedSelection(wordCount)
   const grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(null))
   const placements = []
 
