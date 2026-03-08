@@ -157,9 +157,9 @@
 }
 
 .ws-chip--found {
-  opacity: 0.35;
-  text-decoration: line-through;
-  text-decoration-thickness: 2px;
+  background: var(--color-postit);
+  border-color: var(--color-fg);
+  color: var(--color-fg);
 }
 
 /* ─── Example sentence — floats over grid bottom ────────────── */
@@ -273,8 +273,8 @@
 
 .ws-result__word-header {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-sm);
+  flex-direction: column;
+  gap: 1px;
 }
 
 .ws-result__word-jp {
