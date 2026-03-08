@@ -17,7 +17,6 @@ function getSelectedCells(start, current) {
   const dc  = current.col - start.col
   const len = Math.max(Math.abs(dr), Math.abs(dc))
 
-  // Snap to the nearest of 8 directions
   const stepR = Math.round(dr / len)
   const stepC = Math.round(dc / len)
 
@@ -38,6 +37,50 @@ function TimerBar({ timeLeft }) {
         className={`ws-timer-fill ${urgent ? 'ws-timer-fill--urgent' : ''}`}
         style={{ width: `${pct}%` }}
       />
+    </div>
+  )
+}
+
+function WordDetailModal({ word, onClose }) {
+  return (
+    <div className="ws-overlay" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="ws-detail" onClick={e => e.stopPropagation()}>
+
+        <div className="ws-detail__word">
+          <span className="ws-detail__jp">{word.display}</span>
+          <span className="ws-detail__kana">{word.kana}</span>
+          <span className="ws-detail__meaning">{word.meaning}</span>
+        </div>
+
+        {word.example && (
+          <button className="ws-detail__sentence" onClick={() => speak(word.example.kana)}>
+            <p className="ws-detail__s-jp">{word.example.jp}</p>
+            <p className="ws-detail__s-kana">{word.example.kana}</p>
+            <p className="ws-detail__s-en">{word.example.en}</p>
+            <span className="ws-detail__s-hint">tap to hear</span>
+          </button>
+        )}
+
+        {word.related?.length > 0 && (
+          <div className="ws-detail__related">
+            {word.related.map((s, i) => (
+              <button
+                key={i}
+                className={`ws-detail__rel ws-detail__rel--${s.sign === '+' ? 'pos' : 'neg'}`}
+                onClick={() => speak(s.kana)}
+              >
+                <span className="ws-detail__sign">{s.sign === '+' ? '＋' : '－'}</span>
+                <div className="ws-detail__rel-text">
+                  <p className="ws-detail__rel-jp">{s.jp}</p>
+                  <p className="ws-detail__rel-en">{s.en}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <button className="ws-detail__close" onClick={onClose}>close</button>
+      </div>
     </div>
   )
 }
@@ -86,12 +129,15 @@ export default function WordSearchScreen() {
   const [puzzle,          setPuzzle]          = useState(() => buildPuzzle(WORD_COUNT))
   const [dragStart,       setDragStart]       = useState(null)
   const [dragCurrent,     setDragCurrent]     = useState(null)
-  const [found,           setFound]           = useState([])   // word indices
+  const [found,           setFound]           = useState([])
   const [timeLeft,        setTimeLeft]        = useState(TIMER_MAX)
-  const [status,          setStatus]          = useState('playing') // 'playing' | 'complete' | 'timeout'
-  const [exampleSentence, setExampleSentence] = useState(null) // { jp, kana, en } | null
-  const gridRef     = useRef(null)
-  const longPressRef = useRef(null)
+  const [status,          setStatus]          = useState('playing')
+  const [exampleSentence, setExampleSentence] = useState(null)
+  const [detailWord,      setDetailWord]      = useState(null)
+
+  const gridRef        = useRef(null)
+  const longPressRef   = useRef(null)
+  const didLongPress   = useRef(false)
 
   // Timer countdown
   useEffect(() => {
@@ -108,7 +154,6 @@ export default function WordSearchScreen() {
     }
   }, [found, puzzle.placements.length])
 
-  // Compute highlighted cell sets
   const selectedCells = getSelectedCells(dragStart, dragCurrent)
   const selectedSet   = new Set(selectedCells.map(({ row, col }) => `${row},${col}`))
 
@@ -117,7 +162,6 @@ export default function WordSearchScreen() {
     puzzle.placements[i].cells.forEach(({ row, col }) => foundCells.add(`${row},${col}`))
   })
 
-  // Pointer interaction helpers
   function getCellFromPointer(e) {
     const el = gridRef.current
     if (!el) return null
@@ -150,22 +194,23 @@ export default function WordSearchScreen() {
         !found.includes(i) && p.word.display === text
       )
       if (idx !== -1) {
+        const word = puzzle.placements[idx].word
         playCorrectSound()
-        speak(puzzle.placements[idx].word.kana)
+        // Speak the example sentence, falling back to the word itself
+        speak(word.example?.kana ?? word.kana)
         setFound(prev => [...prev, idx])
-        if (puzzle.placements[idx].word.example) {
-          setExampleSentence(puzzle.placements[idx].word.example)
-        }
+        if (word.example) setExampleSentence(word.example)
       }
     }
     setDragStart(null)
     setDragCurrent(null)
   }
 
-  // Long-press on word chips to reveal example sentence
+  // Long-press on chip to preview example; regular tap differs by found state
   function handleChipPointerDown(word) {
+    didLongPress.current = false
     longPressRef.current = setTimeout(() => {
-      longPressRef.current = null
+      didLongPress.current = true
       if (word.example) setExampleSentence(word.example)
     }, 500)
   }
@@ -173,6 +218,15 @@ export default function WordSearchScreen() {
   function handleChipPointerUp() {
     clearTimeout(longPressRef.current)
     longPressRef.current = null
+  }
+
+  function handleChipClick(word, isFound) {
+    if (didLongPress.current) { didLongPress.current = false; return }
+    if (isFound) {
+      setDetailWord(word)
+    } else {
+      speak(word.kana)
+    }
   }
 
   function handleNewGame() {
@@ -183,6 +237,7 @@ export default function WordSearchScreen() {
     setDragStart(null)
     setDragCurrent(null)
     setExampleSentence(null)
+    setDetailWord(null)
   }
 
   const formatTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
@@ -190,7 +245,6 @@ export default function WordSearchScreen() {
   return (
     <div className="word-search">
 
-      {/* Top: timer + score — always pinned at top */}
       <div className="ws-top">
         <TimerBar timeLeft={timeLeft} />
         <div className="ws-status">
@@ -201,10 +255,10 @@ export default function WordSearchScreen() {
         </div>
       </div>
 
-      {/* Body: chips + grid — vertically centered in remaining space */}
       <div className="ws-body">
 
-        {/* Word chips — tap to hear, long press to see example */}
+        {/* Word chips — unfound: tap to hear / long-press for example
+                        found (yellow): tap to open detail modal         */}
         <div className="ws-words" aria-label="Words to find">
           {puzzle.words.map((word, i) => {
             const isFound = found.includes(i)
@@ -212,17 +266,14 @@ export default function WordSearchScreen() {
               <button
                 key={i}
                 className={`ws-chip${isFound ? ' ws-chip--found' : ''}`}
-                onClick={() => speak(word.kana)}
+                onClick={() => handleChipClick(word, isFound)}
                 onPointerDown={() => handleChipPointerDown(word)}
                 onPointerUp={handleChipPointerUp}
                 onPointerLeave={handleChipPointerUp}
                 onPointerCancel={handleChipPointerUp}
-                aria-label={`${word.meaning}${isFound ? ', found' : ', tap to hear'}`}
+                aria-label={`${word.meaning}${isFound ? ', found — tap for details' : ', tap to hear'}`}
               >
                 {word.meaning}
-                {word.register && (
-                  <span className="ws-chip__register"> ({word.register})</span>
-                )}
               </button>
             )
           })}
@@ -258,13 +309,18 @@ export default function WordSearchScreen() {
 
       </div>
 
-      {/* Example sentence — floats over the grid bottom when active */}
-      {exampleSentence && (
+      {/* Floating example — shows on find or long-press; tap to dismiss */}
+      {exampleSentence && !detailWord && status === 'playing' && (
         <div className="ws-example" onClick={() => setExampleSentence(null)}>
           <p className="ws-example__jp">{exampleSentence.jp}</p>
           <p className="ws-example__kana">{exampleSentence.kana}</p>
           <p className="ws-example__en">{exampleSentence.en}</p>
         </div>
+      )}
+
+      {/* Word detail modal — tap found chip to open */}
+      {detailWord && (
+        <WordDetailModal word={detailWord} onClose={() => setDetailWord(null)} />
       )}
 
       {status !== 'playing' && (

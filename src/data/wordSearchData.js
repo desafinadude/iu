@@ -112,8 +112,8 @@ export const WORD_LIST_DEDUPED = WORD_LIST.filter(w => {
 // unbalanced learning. Those will be covered by dedicated conjugation puzzles.
 const _puzzlePool = [
   ...VOCAB_LIST
-    .filter(v => v.word.length >= 2 && v.word.length <= 7)
-    .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example })),
+    .filter(v => v.type === 'noun' && v.word.length >= 2 && v.word.length <= 7)
+    .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example, related: v.related })),
   ..._NUMBER_WORDS,
 ]
 
