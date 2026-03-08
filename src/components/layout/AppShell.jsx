@@ -25,6 +25,7 @@ export default function AppShell({ children }) {
   return (
     <div className="shell">
       <header className="shell__header">
+        <div className="shell__inner">
         <div className="shell__header-inner">
           {!isRoot && canGoBack ? (
             <button className="shell__back" onClick={goBack} aria-label="Go back">
@@ -36,13 +37,17 @@ export default function AppShell({ children }) {
           <h1 className="shell__title">{title}</h1>
           <div className="shell__header-end" />
         </div>
+        </div>
       </header>
 
       <main className="shell__content">
-        {children}
+        <div className="shell__inner" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {children}
+        </div>
       </main>
 
       <nav className="shell__bottom-nav" aria-label="Main navigation">
+        <div className="shell__inner" style={{ display: 'flex', width: '100%' }}>
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const active = screen === id || (!ROOT_SCREENS.has(screen) && id === 'home' && screen !== 'progress' && screen !== 'settings')
           return (
@@ -58,6 +63,7 @@ export default function AppShell({ children }) {
             </button>
           )
         })}
+        </div>
       </nav>
     </div>
   )

@@ -6,6 +6,12 @@
   z-index: 1;
 }
 
+.shell__inner {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
 /* ─── Header ─────────────────────────────────────────────────────── */
 .shell__header {
   flex-shrink: 0;
