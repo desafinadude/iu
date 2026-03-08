@@ -5,7 +5,7 @@ import { speak } from '../utils/speech'
 import './WordSearchScreen.css'
 
 const WORD_COUNT = 7
-const TIMER_MAX  = 120 // 2 minutes
+const TIMER_MAX  = 180 // 3 minutes
 
 // ─── Selection helpers ────────────────────────────────────────────
 
@@ -42,7 +42,7 @@ function TimerBar({ timeLeft }) {
   )
 }
 
-function ResultOverlay({ status, foundCount, totalCount, onPlayAgain }) {
+function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain }) {
   const complete = status === 'complete'
   return (
     <div className="ws-overlay" role="dialog" aria-modal="true">
@@ -54,6 +54,24 @@ function ResultOverlay({ status, foundCount, totalCount, onPlayAgain }) {
             ? 'All words found'
             : `${foundCount} of ${totalCount} words found`}
         </p>
+
+        <div className="ws-result__words">
+          {placements.map((p, i) => (
+            <div key={i} className="ws-result__word-item">
+              <div className="ws-result__word-header">
+                <span className="ws-result__word-jp">{p.word.display}</span>
+                <span className="ws-result__word-meaning">{p.word.meaning}</span>
+              </div>
+              {p.word.example && (
+                <div className="ws-result__word-example">
+                  <p className="ws-result__example-jp">{p.word.example.jp}</p>
+                  <p className="ws-result__example-en">{p.word.example.en}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
         <button className="ws-result__btn" onClick={onPlayAgain}>
           Play Again
         </button>
@@ -65,13 +83,15 @@ function ResultOverlay({ status, foundCount, totalCount, onPlayAgain }) {
 // ─── Main screen ──────────────────────────────────────────────────
 
 export default function WordSearchScreen() {
-  const [puzzle,      setPuzzle]      = useState(() => buildPuzzle(WORD_COUNT))
-  const [dragStart,   setDragStart]   = useState(null)
-  const [dragCurrent, setDragCurrent] = useState(null)
-  const [found,       setFound]       = useState([])   // word indices
-  const [timeLeft,    setTimeLeft]    = useState(TIMER_MAX)
-  const [status,      setStatus]      = useState('playing') // 'playing' | 'complete' | 'timeout'
-  const gridRef = useRef(null)
+  const [puzzle,          setPuzzle]          = useState(() => buildPuzzle(WORD_COUNT))
+  const [dragStart,       setDragStart]       = useState(null)
+  const [dragCurrent,     setDragCurrent]     = useState(null)
+  const [found,           setFound]           = useState([])   // word indices
+  const [timeLeft,        setTimeLeft]        = useState(TIMER_MAX)
+  const [status,          setStatus]          = useState('playing') // 'playing' | 'complete' | 'timeout'
+  const [exampleSentence, setExampleSentence] = useState(null) // { jp, kana, en } | null
+  const gridRef     = useRef(null)
+  const longPressRef = useRef(null)
 
   // Timer countdown
   useEffect(() => {
@@ -133,10 +153,26 @@ export default function WordSearchScreen() {
         playCorrectSound()
         speak(puzzle.placements[idx].word.kana)
         setFound(prev => [...prev, idx])
+        if (puzzle.placements[idx].word.example) {
+          setExampleSentence(puzzle.placements[idx].word.example)
+        }
       }
     }
     setDragStart(null)
     setDragCurrent(null)
+  }
+
+  // Long-press on word chips to reveal example sentence
+  function handleChipPointerDown(word) {
+    longPressRef.current = setTimeout(() => {
+      longPressRef.current = null
+      if (word.example) setExampleSentence(word.example)
+    }, 500)
+  }
+
+  function handleChipPointerUp() {
+    clearTimeout(longPressRef.current)
+    longPressRef.current = null
   }
 
   function handleNewGame() {
@@ -146,6 +182,7 @@ export default function WordSearchScreen() {
     setStatus('playing')
     setDragStart(null)
     setDragCurrent(null)
+    setExampleSentence(null)
   }
 
   const formatTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
@@ -167,7 +204,7 @@ export default function WordSearchScreen() {
       {/* Body: chips + grid — vertically centered in remaining space */}
       <div className="ws-body">
 
-        {/* Word chips — tap to hear the word */}
+        {/* Word chips — tap to hear, long press to see example */}
         <div className="ws-words" aria-label="Words to find">
           {puzzle.words.map((word, i) => {
             const isFound = found.includes(i)
@@ -176,9 +213,16 @@ export default function WordSearchScreen() {
                 key={i}
                 className={`ws-chip${isFound ? ' ws-chip--found' : ''}`}
                 onClick={() => speak(word.kana)}
+                onPointerDown={() => handleChipPointerDown(word)}
+                onPointerUp={handleChipPointerUp}
+                onPointerLeave={handleChipPointerUp}
+                onPointerCancel={handleChipPointerUp}
                 aria-label={`${word.meaning}${isFound ? ', found' : ', tap to hear'}`}
               >
                 {word.meaning}
+                {word.register && (
+                  <span className="ws-chip__register"> ({word.register})</span>
+                )}
               </button>
             )
           })}
@@ -214,11 +258,21 @@ export default function WordSearchScreen() {
 
       </div>
 
+      {/* Example sentence — floats over the grid bottom when active */}
+      {exampleSentence && (
+        <div className="ws-example" onClick={() => setExampleSentence(null)}>
+          <p className="ws-example__jp">{exampleSentence.jp}</p>
+          <p className="ws-example__kana">{exampleSentence.kana}</p>
+          <p className="ws-example__en">{exampleSentence.en}</p>
+        </div>
+      )}
+
       {status !== 'playing' && (
         <ResultOverlay
           status={status}
           foundCount={found.length}
           totalCount={puzzle.words.length}
+          placements={puzzle.placements}
           onPlayAgain={handleNewGame}
         />
       )}

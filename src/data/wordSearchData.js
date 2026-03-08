@@ -72,7 +72,7 @@ function expandConjugations(list) {
         display: form.word,
         kana:    form.kana,
         meaning: form.meaning,
-        // Tag with register for future filtering if needed
+        example: entry.example,
         register,
         source:  entry.dict,
       }))
@@ -110,7 +110,7 @@ export const WORD_LIST_DEDUPED = WORD_LIST.filter(w => {
 // Separate pools for weighted sampling
 const _vocabPool = VOCAB_LIST
   .filter(v => v.word.length >= 2 && v.word.length <= 7)
-  .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning }))
+  .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example }))
 
 const _verbPool = expandConjugations(VERB_LIST)
   .filter(f => f.display.length >= 2 && f.display.length <= 7)

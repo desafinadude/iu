@@ -150,10 +150,61 @@
   box-shadow: none;
 }
 
+.ws-chip__register {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
 .ws-chip--found {
   opacity: 0.35;
   text-decoration: line-through;
   text-decoration-thickness: 2px;
+}
+
+/* ─── Example sentence — floats over grid bottom ────────────── */
+.ws-example {
+  position: absolute;
+  bottom: calc(var(--bottom-nav-height, 60px) + var(--space-md));
+  left: var(--space-md);
+  right: var(--space-md);
+  background: var(--color-surface);
+  border: 2px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-sm) var(--space-md);
+  z-index: 5;
+  animation: ws-example-in 0.18s ease;
+  cursor: pointer;
+}
+
+@keyframes ws-example-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ws-example__jp {
+  font-family: var(--font-japanese);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-fg);
+  margin: 0 0 2px;
+}
+
+.ws-example__kana {
+  font-family: var(--font-japanese);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.6;
+  margin: 0 0 2px;
+}
+
+.ws-example__en {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-fg);
+  opacity: 0.75;
+  margin: 0;
 }
 
 /* ─── Result overlay ─────────────────────────────────────────── */
@@ -178,6 +229,9 @@
   box-shadow: var(--shadow-lg);
   padding: var(--space-xl) var(--space-2xl);
   text-align: center;
+  max-height: 82vh;
+  overflow-y: auto;
+  width: min(380px, 90vw);
 }
 
 .ws-result__icon {
@@ -196,6 +250,64 @@
   font-size: 16px;
   color: var(--color-fg);
   opacity: 0.65;
+}
+
+/* ─── Result word list ───────────────────────────────────────── */
+.ws-result__words {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  text-align: left;
+}
+
+.ws-result__word-item {
+  border-top: 1px solid var(--color-muted);
+  padding-top: var(--space-sm);
+}
+
+.ws-result__word-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ws-result__word-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.ws-result__word-jp {
+  font-family: var(--font-japanese);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-fg);
+}
+
+.ws-result__word-meaning {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-fg);
+  opacity: 0.65;
+}
+
+.ws-result__word-example {
+  margin-top: 3px;
+}
+
+.ws-result__example-jp {
+  font-family: var(--font-japanese);
+  font-size: 14px;
+  color: var(--color-fg);
+  margin: 0;
+}
+
+.ws-result__example-en {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.6;
+  margin: 0;
 }
 
 .ws-result__btn {
