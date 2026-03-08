@@ -107,31 +107,18 @@ export const WORD_LIST_DEDUPED = WORD_LIST.filter(w => {
   return true
 })
 
-// Separate pools for weighted sampling
-const _vocabPool = VOCAB_LIST
-  .filter(v => v.word.length >= 2 && v.word.length <= 7)
-  .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example }))
+// Word search uses only nouns and immutable words (no verb/adj conjugations).
+// Verbs and adjectives change form — seeing one tense without the others is
+// unbalanced learning. Those will be covered by dedicated conjugation puzzles.
+const _puzzlePool = [
+  ...VOCAB_LIST
+    .filter(v => v.word.length >= 2 && v.word.length <= 7)
+    .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example })),
+  ..._NUMBER_WORDS,
+]
 
-const _verbPool = expandConjugations(VERB_LIST)
-  .filter(f => f.display.length >= 2 && f.display.length <= 7)
-
-const _adjPool = expandConjugations(ADJ_LIST)
-  .filter(f => f.display.length >= 2 && f.display.length <= 7)
-
-// Weighted selection: ~60% nouns/vocab, ~25% verbs, ~15% adjectives
-// For wordCount=7: 4 vocab, 2 verbs, 1 adj
 function weightedSelection(wordCount) {
-  const nVerb = Math.max(1, Math.round(wordCount * 0.25))
-  const nAdj  = Math.max(1, Math.round(wordCount * 0.15))
-  const nVocab = wordCount - nVerb - nAdj
-
-  const pick = (pool, n) => shuffle([...pool]).slice(0, n)
-
-  return [
-    ...pick(_vocabPool, nVocab),
-    ...pick(_verbPool,  nVerb),
-    ...pick(_adjPool,   nAdj),
-  ]
+  return shuffle([..._puzzlePool]).slice(0, wordCount)
 }
 
 // ─── Grid constants ────────────────────────────────────────────────────────
