@@ -69,6 +69,23 @@
   opacity: 0.6;
 }
 
+/* ─── Hearts ─────────────────────────────────────────────────── */
+.ws-hearts {
+  display: flex;
+  gap: 3px;
+}
+
+.ws-heart {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--color-accent);
+  transition: color 200ms ease, transform 200ms ease;
+}
+
+.ws-heart--lost {
+  color: var(--color-muted);
+}
+
 /* ─── Grid ───────────────────────────────────────────────────── */
 .ws-grid {
   --grid-size: 8;

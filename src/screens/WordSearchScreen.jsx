@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { buildPuzzle } from '../data/wordSearchData'
-import { playCorrectSound } from '../utils/soundEffects'
+import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import { speak } from '../utils/speech'
 import { kanaToRomaji } from '../utils/kanaToRomaji'
 import './WordSearchScreen.css'
@@ -40,6 +40,18 @@ function getSelectedCells(start, current) {
 
 // ─── Components ───────────────────────────────────────────────────
 
+function Hearts({ lives }) {
+  return (
+    <div className="ws-hearts" aria-label={`${lives} hearts remaining`}>
+      {Array.from({ length: 3 }, (_, i) => (
+        <span key={i} className={`ws-heart${i < lives ? '' : ' ws-heart--lost'}`}>
+          {i < lives ? '♥' : '♡'}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function TimerBar({ timeLeft }) {
   const pct = (timeLeft / TIMER_MAX) * 100
   const urgent = timeLeft < 30
@@ -55,16 +67,16 @@ function TimerBar({ timeLeft }) {
 
 function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain }) {
   const complete = status === 'complete'
+  const failed   = status === 'failed'
+  const icon  = complete ? '★' : failed ? '♡' : '⏰'
+  const title = complete ? 'Complete!' : failed ? 'Out of Hearts!' : "Time's Up!"
+  const sub   = complete ? 'All words found' : `${foundCount} of ${totalCount} words found`
   return (
     <div className="ws-overlay" role="dialog" aria-modal="true">
       <div className="ws-result">
-        <span className="ws-result__icon" aria-hidden="true">{complete ? '★' : '⏰'}</span>
-        <h2 className="ws-result__title">{complete ? 'Complete!' : "Time's Up!"}</h2>
-        <p className="ws-result__sub">
-          {complete
-            ? 'All words found'
-            : `${foundCount} of ${totalCount} words found`}
-        </p>
+        <span className="ws-result__icon" aria-hidden="true">{icon}</span>
+        <h2 className="ws-result__title">{title}</h2>
+        <p className="ws-result__sub">{sub}</p>
 
         <div className="ws-result__words">
           {placements.map((p, i) => {
@@ -107,6 +119,7 @@ export default function WordSearchScreen() {
   const [dragStart,   setDragStart]   = useState(null)
   const [dragCurrent, setDragCurrent] = useState(null)
   const [found,       setFound]       = useState([])
+  const [lives,       setLives]       = useState(3)
   const [timeLeft,    setTimeLeft]    = useState(TIMER_MAX)
   const [status,      setStatus]      = useState('playing')
   const gridRef = useRef(null)
@@ -170,9 +183,23 @@ export default function WordSearchScreen() {
         !found.includes(i) && p.word.display === text
       )
       if (idx !== -1) {
+        // Correct word found
         playCorrectSound()
         speak(puzzle.placements[idx].word.kana)
         setFound(prev => [...prev, idx])
+      } else {
+        // Only penalise if it's not a re-selection of an already-found word
+        const alreadyFound = puzzle.placements.some((p, i) =>
+          found.includes(i) && p.word.display === text
+        )
+        if (!alreadyFound) {
+          playWrongSound()
+          setLives(prev => {
+            const next = prev - 1
+            if (next <= 0) setStatus('failed')
+            return next
+          })
+        }
       }
     }
     setDragStart(null)
@@ -182,6 +209,7 @@ export default function WordSearchScreen() {
   function handleNewGame() {
     setPuzzle(buildPuzzle(WORD_COUNT))
     setFound([])
+    setLives(3)
     setTimeLeft(TIMER_MAX)
     setStatus('playing')
     setDragStart(null)
@@ -197,6 +225,7 @@ export default function WordSearchScreen() {
         <TimerBar timeLeft={timeLeft} />
         <div className="ws-status">
           <span className="ws-status__time">{formatTime(timeLeft)}</span>
+          <Hearts lives={lives} />
           <span className="ws-status__count">
             {found.length}/{puzzle.words.length} found
           </span>
