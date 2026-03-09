@@ -120,7 +120,7 @@ function ThemePicker({ onSelect }) {
   return (
     <div className="ws-theme-picker">
       <p className="ws-theme-subtitle">Choose a theme</p>
-      <div className="ws-theme-grid">
+      <div className="ws-theme-list">
         {THEMES.map(t => {
           const Icon = LucideIcons[t.iconName]
           return (
@@ -129,9 +129,14 @@ function ThemePicker({ onSelect }) {
               className="ws-theme-card"
               onClick={() => onSelect(t.id)}
             >
-              {Icon && <Icon className="ws-theme-icon" size={32} strokeWidth={1.5} aria-hidden="true" />}
-              <span className="ws-theme-kana">{t.kana}</span>
-              <span className="ws-theme-label">{t.label}</span>
+              <div className="ws-theme-card__halftone" aria-hidden="true" />
+              <span className="ws-theme-icon">
+                {Icon && <Icon size={32} strokeWidth={1.5} aria-hidden="true" />}
+              </span>
+              <div className="ws-theme-card__body">
+                <span className="ws-theme-label">{t.label}</span>
+                <span className="ws-theme-kana">{t.kana}</span>
+              </div>
             </button>
           )
         })}

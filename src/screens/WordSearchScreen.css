@@ -372,8 +372,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  padding: var(--space-lg) var(--space-md);
+  padding: var(--space-lg);
   height: 100%;
+  overflow-y: auto;
 }
 
 .ws-theme-subtitle {
@@ -384,42 +385,34 @@
   letter-spacing: 0.08em;
   color: var(--color-fg);
   opacity: 0.5;
-  text-align: center;
 }
 
-.ws-theme-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
-  flex: 1;
-}
-
-@media (min-width: 480px) {
-  .ws-theme-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+.ws-theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
 .ws-theme-card {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  gap: var(--space-md);
+  width: 100%;
+  text-align: left;
   background: var(--color-surface);
   border: 3px solid var(--color-fg);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  padding: var(--space-md) var(--space-sm);
+  padding: var(--space-lg);
   overflow: hidden;
   transition: transform 100ms ease, box-shadow 100ms ease;
   -webkit-tap-highlight-color: transparent;
-  aspect-ratio: 1;
 }
 
 .ws-theme-card:active {
-  transform: translateX(3px) translateY(3px);
+  transform: translateX(5px) translateY(5px);
   box-shadow: none;
 }
 
@@ -430,26 +423,44 @@
   }
 }
 
-.ws-theme-icon {
-  display: block;
-  color: var(--color-fg);
-  flex-shrink: 0;
-  margin-bottom: 4px;
+.ws-theme-card__halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  opacity: 0.05;
+  pointer-events: none;
 }
 
-.ws-theme-kana {
-  font-family: var(--font-japanese);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-japan-red);
-  line-height: 1;
+.ws-theme-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fg);
+  flex-shrink: 0;
+  width: 52px;
+}
+
+.ws-theme-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .ws-theme-label {
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--color-fg);
-  text-align: center;
-  line-height: 1.2;
+  line-height: 1.1;
+}
+
+.ws-theme-kana {
+  font-family: var(--font-japanese);
+  font-size: 15px;
+  color: var(--color-japan-red);
+  opacity: 0.85;
+  line-height: 1;
 }

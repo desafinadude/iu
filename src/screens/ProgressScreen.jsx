@@ -1,7 +1,13 @@
 import { useState, useCallback } from 'react'
-import { ALL_CHARS, GOJUON_ROWS, DAKUTEN_ROWS, HANDAKUTEN_ROWS } from '../data/kana.js'
+import { GOJUON_ROWS, DAKUTEN_ROWS, HANDAKUTEN_ROWS } from '../data/kana.js'
 import { MASTERY_MAX } from '../hooks/useQuiz.js'
 import { VOCAB_LIST } from '../data/vocabData.js'
+import {
+  WRITING_SETS,
+  getCharsForSet,
+  WRITING_MASTERY_MAX,
+  loadWritingMastery,
+} from '../data/writingData.js'
 import { speak } from '../utils/speech.js'
 import './ProgressScreen.css'
 
@@ -10,6 +16,7 @@ const TABS = [
   { id: 'romaji_to_kana', label: 'Romaji → Kana' },
   { id: 'kana_match',     label: 'Kana → Kana'   },
   { id: 'vocab',          label: 'Vocab'          },
+  { id: 'writing',        label: 'Writing'        },
 ]
 
 function readMastery(mode) {
@@ -73,6 +80,29 @@ function KanaCard({ card }) {
   )
 }
 
+function WritingCard({ char, mastery }) {
+  const streak   = mastery[char.char] ?? 0
+  const mastered = streak >= WRITING_MASTERY_MAX
+  return (
+    <div className={`progress-card ${mastered ? 'progress-card--mastered' : ''} ${streak === 0 ? 'progress-card--untouched' : ''}`}>
+      {mastered && <span className="progress-card__star" aria-label="Mastered">★</span>}
+      <span className="progress-card__kana">{char.char}</span>
+      <span className="progress-card__romaji">{char.reading}</span>
+      {char.meaning && (
+        <span className="progress-card__romaji" style={{ opacity: 0.4, fontSize: 12 }}>{char.meaning}</span>
+      )}
+      <div className="progress-card__mastery" aria-label={`Mastery: ${streak} of ${WRITING_MASTERY_MAX}`}>
+        <span className="progress-card__mastery-label">{streak}/{WRITING_MASTERY_MAX}</span>
+        <div className="progress-card__dots">
+          {Array.from({ length: WRITING_MASTERY_MAX }, (_, i) => (
+            <span key={i} className={`progress-card__dot ${i < streak ? 'progress-card__dot--filled' : ''}`} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function readSeenVocab() {
   try {
     return new Set(JSON.parse(localStorage.getItem('koikata_vocab_seen_v1')) ?? [])
@@ -85,9 +115,15 @@ export default function ProgressScreen() {
   const [activeTab, setActiveTab] = useState('kana_to_romaji')
   const [seenVocab, setSeenVocab] = useState(readSeenVocab)
 
-  const isVocab = activeTab === 'vocab'
-  const mastery = isVocab ? {} : readMastery(activeTab)
-  const cards   = isVocab ? [] : getCards(activeTab, mastery)
+  const isVocab   = activeTab === 'vocab'
+  const isWriting = activeTab === 'writing'
+  const mastery   = (isVocab || isWriting) ? {} : readMastery(activeTab)
+  const cards     = (isVocab || isWriting) ? [] : getCards(activeTab, mastery)
+
+  const writingMastery = isWriting ? loadWritingMastery() : null
+  const writingSets    = isWriting
+    ? WRITING_SETS.map(s => ({ ...s, chars: getCharsForSet(s.id) }))
+    : []
 
   const handleVocabTap = useCallback((item) => {
     speak(item.kana)
@@ -119,7 +155,28 @@ export default function ProgressScreen() {
         ))}
       </div>
 
-      {isVocab ? (
+      {isWriting ? (
+        /* ── Writing mastery ── */
+        <div className="progress-screen__writing">
+          {writingSets.map(s => {
+            const mastered = s.chars.filter(c => (writingMastery[c.char] ?? 0) >= WRITING_MASTERY_MAX).length
+            return (
+              <div key={s.id} className="progress-writing-section">
+                <div className="progress-writing-header">
+                  <span className="progress-writing-label">{s.label}</span>
+                  <span className="progress-writing-kana">{s.kana}</span>
+                  <span className="progress-writing-count">{mastered}/{s.chars.length}</span>
+                </div>
+                <div className="progress-screen__grid">
+                  {s.chars.map(c => (
+                    <WritingCard key={c.char} char={c} mastery={writingMastery} />
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      ) : isVocab ? (
         /* ── Vocab list ── */
         <div className="progress-screen__vocab">
           {VOCAB_LIST.map((item, i) => (

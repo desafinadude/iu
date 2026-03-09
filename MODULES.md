@@ -47,3 +47,16 @@ A fun, interactive word search game that reinforces kana recognition and reading
 - New puzzle generated on each play with 5 randomly selected words.
 
 
+### 3. Kana/Kanji writing practice module (planned)
+
+A future module that will allow users to practice writing kana and basic kanji characters using mouse or touch input. The module will provide stroke order guidance, feedback on accuracy, and a library of characters to practice based on the user's progress. This will further reinforce character recognition and help users develop their writing skills in Japanese.
+
+For this module use Hanzi Writer (https://hanzijs.com/) for stroke order data and rendering. The UI will include a canvas for drawing, buttons to select characters, and feedback indicators for stroke accuracy. Try to find the data for kana characters as well. Read up on the Hanzi writer quiz mode and make a module that lets users practice writing characters in a quiz format, similar to the kana quiz but with drawing input instead of multiple choice.
+
+Make full use of the space available in the UI to provide a comfortable drawing area and clear feedback. Have a trace mode and a no trace mode for different levels of challenge. Store writing practice progress and mastery in localStorage, similar to the kana quiz module.
+
+Keep the 3 hearts and timer mechanics consistent with the kana quiz for a cohesive user experience across modules.
+
+Work this into the collection scoring as well. We need to get it 10 times in a row to master it and any wrong answer resets the streak. This will be a great way to reinforce learning and help users develop their writing skills in a fun and interactive way.
+
+Ok...Off you go. Make sure to plan out the UI and user flow carefully, and consider how to provide helpful feedback to users as they practice writing characters. This will be a key part of making the module engaging and effective for learning.
