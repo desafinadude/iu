@@ -144,7 +144,7 @@
   color: var(--color-fg);
 }
 
-/* ─── Word chips (top, English only, tap to hear) ────────────── */
+/* ─── Word chips (tap to hear) ───────────────────────────────── */
 .ws-words {
   display: flex;
   flex-wrap: wrap;
@@ -153,7 +153,10 @@
 }
 
 .ws-chip {
-  padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
   background: var(--color-surface);
   border: 2px solid var(--color-fg);
   border-radius: var(--radius-sm);
@@ -164,6 +167,14 @@
   color: var(--color-fg);
   transition: opacity 200ms ease, transform 80ms ease, box-shadow 80ms ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+.ws-chip__script {
+  font-family: var(--font-japanese);
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.4;
+  line-height: 1;
 }
 
 .ws-chip:active {

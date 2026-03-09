@@ -24,37 +24,52 @@ export const THEMES = [
 ]
 
 // Word search uses only nouns — theme comes directly from the vocab entry.
-// Single-kanji words use kana as display so they fit in the grid.
-// Deduplicate by display form to avoid collisions (e.g. 花/鼻 both → はな).
+// Always use the original word form (kanji where applicable, kana for katakana words).
+// Single-kanji words (length 1) are allowed — finding one cell is still a challenge.
+// script: 'kanji' if the display contains kanji, 'kana' otherwise — used as chip hint.
+const KANJI_RE = /[\u4e00-\u9faf\u3400-\u4dbf]/
 const _seenDisplay = new Set()
 const _nounPool = VOCAB_LIST
-  .filter(v => v.type === 'noun')
-  .map(v => {
-    const display = (v.word.length >= 2 && v.word.length <= 7) ? v.word : v.kana
-    return { display, kana: v.kana, meaning: v.meaning, example: v.example, theme: v.theme }
-  })
+  .filter(v => v.type === 'noun' && v.word.length <= 7)
+  .map(v => ({
+    display:   v.word,
+    kana:      v.kana,
+    meaning:   v.meaning,
+    example:   v.example,
+    theme:     v.theme,
+    hasKanji:  KANJI_RE.test(v.word),
+    script:    KANJI_RE.test(v.word) ? 'kanji' : 'kana',
+  }))
   .filter(w => {
-    if (w.display.length < 2 || w.display.length > 7) return false
     if (_seenDisplay.has(w.display)) return false
     _seenDisplay.add(w.display)
     return true
   })
+
+// For kanji words, randomly show kana instead ~40% of the time,
+// reinforcing the kanji↔kana association. Chip hint updates to match.
+function randomiseScript(word) {
+  if (word.script !== 'kanji') return word
+  if (Math.random() < 0.4 && word.kana.length <= 7) {
+    return { ...word, display: word.kana, script: 'kana' } // hasKanji stays true
+  }
+  return word
+}
 
 // theme: null = random (include one number); string = themed nouns only
 function weightedSelection(wordCount, theme = null) {
   if (theme) {
     const themed  = shuffle(_nounPool.filter(w => w.theme === theme))
     const surplus = shuffle(_nounPool.filter(w => w.theme !== theme))
-    // Use themed words first; pad with random nouns if the pool is too small
     const pool = themed.length >= wordCount
       ? themed
       : [...themed, ...surplus.slice(0, wordCount - themed.length + 3)]
-    return shuffle(pool).slice(0, wordCount)
+    return shuffle(pool).slice(0, wordCount).map(randomiseScript)
   }
   // Random: one number + nouns
   const nouns  = shuffle([..._nounPool])
   const number = _NUMBER_WORDS[Math.floor(Math.random() * _NUMBER_WORDS.length)]
-  return shuffle([number, ...nouns.slice(0, wordCount - 1)])
+  return shuffle([number, ...nouns.slice(0, wordCount - 1)]).map(randomiseScript)
 }
 
 // ─── Grid constants ────────────────────────────────────────────────────────
@@ -67,7 +82,8 @@ const DIRS = [
   [1, -1],  // diagonal ↙
 ]
 
-const FILLER = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('')
+const KANA_FILLER  = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('')
+const KANJI_FILLER = '人山川木火水土金日月年時間大小中上下左右前後長新古高安白黒赤青半本今外内東西南北気手目口足耳心空海地星雲雨風雪花草石'.split('')
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 function shuffle(arr) {
@@ -127,11 +143,20 @@ function tryBuild(wordCount, theme) {
     }
   }
 
-  // Fill remaining cells
+  // Fill remaining cells — mix kana + kanji, excluding chars from all forms of answers
+  // (display may be kana e.g. やま, but the kanji 山 should also be excluded as filler)
+  const placedChars = new Set(placements.flatMap(p => [
+    ...[...p.word.display],
+    ...[...p.word.kana],
+  ]))
+  const fillerPool  = [
+    ...KANA_FILLER,
+    ...KANJI_FILLER.filter(c => !placedChars.has(c)),
+  ]
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       if (grid[r][c] === null) {
-        grid[r][c] = FILLER[Math.floor(Math.random() * FILLER.length)]
+        grid[r][c] = fillerPool[Math.floor(Math.random() * fillerPool.length)]
       }
     }
   }

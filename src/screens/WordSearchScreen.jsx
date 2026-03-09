@@ -299,6 +299,11 @@ export default function WordSearchScreen() {
                 aria-label={`${word.meaning}, tap to hear`}
               >
                 {word.meaning}
+                {word.hasKanji && (
+                  <span className="ws-chip__script">
+                    {word.script === 'kanji' ? '漢' : 'か'}
+                  </span>
+                )}
               </button>
             )
           })}
