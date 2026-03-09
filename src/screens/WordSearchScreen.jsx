@@ -224,12 +224,10 @@ export default function WordSearchScreen() {
       <div className="ws-top">
         <div className="ws-hud">
           <Hearts lives={lives} />
-          <div className="ws-hud__right">
-            <span className="ws-hud__time">{formatTime(timeLeft)}</span>
-            <span className="ws-hud__count">{found.length}/{puzzle.words.length}</span>
-          </div>
+          <span className="ws-hud__count">{found.length}/{puzzle.words.length}</span>
         </div>
         <TimerBar timeLeft={timeLeft} />
+        <span className="ws-hud__time">{formatTime(timeLeft)}</span>
       </div>
 
       <div className="ws-body">

@@ -35,13 +35,7 @@
   flex-shrink: 0;
 }
 
-.ws-hud__right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.ws-hud__time {
+.ws-hud__count {
   font-family: var(--font-display);
   font-size: 32px;
   font-weight: 700;
@@ -49,12 +43,13 @@
   color: var(--color-fg);
 }
 
-.ws-hud__count {
+.ws-hud__time {
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-fg);
-  opacity: 0.55;
+  opacity: 0.45;
+  text-align: right;
 }
 
 /* ─── Hearts — matches quiz-play__lives / quiz-play__heart ───── */
