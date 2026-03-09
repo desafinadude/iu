@@ -9,18 +9,18 @@ const _NUMBER_WORDS = generateNumberWords()
 
 // ─── Theme definitions ────────────────────────────────────────────────────────
 export const THEMES = [
-  { id: 'animal',    label: 'Animals',      kana: '動物',    icon: '🐾' },
-  { id: 'transport', label: 'Transport',    kana: '交通',    icon: '🚂' },
-  { id: 'places',    label: 'Places',       kana: '場所',    icon: '🏙️' },
-  { id: 'clothing',  label: 'Clothing',     kana: '服',      icon: '👗' },
-  { id: 'people',    label: 'People',       kana: '人',      icon: '👥' },
-  { id: 'food',      label: 'Food & Drink', kana: '食べ物',  icon: '🍱' },
-  { id: 'home',      label: 'Home',         kana: '家',      icon: '🏠' },
-  { id: 'body',      label: 'Body',         kana: '体',      icon: '💪' },
-  { id: 'nature',    label: 'Nature',       kana: '自然',    icon: '🌿' },
-  { id: 'calendar',  label: 'Calendar',     kana: '暦',      icon: '📅' },
-  { id: 'time',      label: 'Time',         kana: '時間',    icon: '⏰' },
-  { id: null,        label: 'Random',       kana: 'ランダム', icon: '🎲' },
+  { id: 'animal',    label: 'Animals',      kana: '動物',    iconName: 'PawPrint'       },
+  { id: 'transport', label: 'Transport',    kana: '交通',    iconName: 'Train'          },
+  { id: 'places',    label: 'Places',       kana: '場所',    iconName: 'MapPin'         },
+  { id: 'clothing',  label: 'Clothing',     kana: '服',      iconName: 'Shirt'          },
+  { id: 'people',    label: 'People',       kana: '人',      iconName: 'Users'          },
+  { id: 'food',      label: 'Food & Drink', kana: '食べ物',  iconName: 'Utensils'       },
+  { id: 'home',      label: 'Home',         kana: '家',      iconName: 'House'          },
+  { id: 'body',      label: 'Body',         kana: '体',      iconName: 'PersonStanding' },
+  { id: 'nature',    label: 'Nature',       kana: '自然',    iconName: 'Leaf'           },
+  { id: 'calendar',  label: 'Calendar',     kana: '暦',      iconName: 'CalendarDays'   },
+  { id: 'time',      label: 'Time',         kana: '時間',    iconName: 'Clock'          },
+  { id: null,        label: 'Random',       kana: 'ランダム', iconName: 'Shuffle'        },
 ]
 
 // Word search uses only nouns — theme comes directly from the vocab entry.

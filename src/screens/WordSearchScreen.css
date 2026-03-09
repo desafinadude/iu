@@ -420,8 +420,9 @@
 }
 
 .ws-theme-icon {
-  font-size: 32px;
-  line-height: 1;
+  display: block;
+  color: var(--color-fg);
+  flex-shrink: 0;
 }
 
 .ws-theme-kana {

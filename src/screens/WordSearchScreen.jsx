@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import * as LucideIcons from 'lucide-react'
 import { buildPuzzle, THEMES } from '../data/wordSearchData'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import { speak } from '../utils/speech'
@@ -120,17 +121,20 @@ function ThemePicker({ onSelect }) {
     <div className="ws-theme-picker">
       <p className="ws-theme-subtitle">Choose a theme</p>
       <div className="ws-theme-grid">
-        {THEMES.map(t => (
-          <button
-            key={t.id ?? 'random'}
-            className="ws-theme-card"
-            onClick={() => onSelect(t.id)}
-          >
-            <span className="ws-theme-icon" aria-hidden="true">{t.icon}</span>
-            <span className="ws-theme-kana">{t.kana}</span>
-            <span className="ws-theme-label">{t.label}</span>
-          </button>
-        ))}
+        {THEMES.map(t => {
+          const Icon = LucideIcons[t.iconName]
+          return (
+            <button
+              key={t.id ?? 'random'}
+              className="ws-theme-card"
+              onClick={() => onSelect(t.id)}
+            >
+              {Icon && <Icon className="ws-theme-icon" size={32} strokeWidth={1.5} aria-hidden="true" />}
+              <span className="ws-theme-kana">{t.kana}</span>
+              <span className="ws-theme-label">{t.label}</span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
