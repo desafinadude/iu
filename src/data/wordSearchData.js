@@ -110,15 +110,15 @@ export const WORD_LIST_DEDUPED = WORD_LIST.filter(w => {
 // Word search uses only nouns and immutable words (no verb/adj conjugations).
 // Verbs and adjectives change form — seeing one tense without the others is
 // unbalanced learning. Those will be covered by dedicated conjugation puzzles.
-const _puzzlePool = [
-  ...VOCAB_LIST
-    .filter(v => v.type === 'noun' && v.word.length >= 2 && v.word.length <= 7)
-    .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example, related: v.related })),
-  ..._NUMBER_WORDS,
-]
+const _nounPool = VOCAB_LIST
+  .filter(v => v.type === 'noun' && v.word.length >= 2 && v.word.length <= 7)
+  .map(v => ({ display: v.word, kana: v.kana, meaning: v.meaning, example: v.example, related: v.related }))
 
+// At most 1 number per puzzle — numbers are filler, not the learning focus
 function weightedSelection(wordCount) {
-  return shuffle([..._puzzlePool]).slice(0, wordCount)
+  const nouns   = shuffle([..._nounPool])
+  const number  = _NUMBER_WORDS[Math.floor(Math.random() * _NUMBER_WORDS.length)]
+  return shuffle([number, ...nouns.slice(0, wordCount - 1)])
 }
 
 // ─── Grid constants ────────────────────────────────────────────────────────

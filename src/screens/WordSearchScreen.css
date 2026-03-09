@@ -150,218 +150,11 @@
   box-shadow: none;
 }
 
-.ws-chip__register {
-  font-size: 11px;
-  font-weight: 400;
-  opacity: 0.55;
-}
-
+/* Chip color comes from inline style; found = pressed-in look */
 .ws-chip--found {
-  background: var(--color-postit);
-  border-color: var(--color-fg);
-  color: var(--color-fg);
-}
-
-/* ─── Example sentence — floats over grid bottom ────────────── */
-.ws-example {
-  position: absolute;
-  bottom: calc(var(--bottom-nav-height, 60px) + var(--space-md));
-  left: var(--space-md);
-  right: var(--space-md);
-  background: var(--color-surface);
-  border: 2px solid var(--color-fg);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-sm) var(--space-md);
-  z-index: 5;
-  animation: ws-example-in 0.18s ease;
-  cursor: pointer;
-}
-
-@keyframes ws-example-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.ws-example__jp {
-  font-family: var(--font-japanese);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-fg);
-  margin: 0 0 2px;
-}
-
-.ws-example__kana {
-  font-family: var(--font-japanese);
-  font-size: 13px;
-  color: var(--color-fg);
-  opacity: 0.6;
-  margin: 0 0 2px;
-}
-
-.ws-example__en {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--color-fg);
-  opacity: 0.75;
-  margin: 0;
-}
-
-/* ─── Word detail modal ──────────────────────────────────────── */
-.ws-detail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-md);
-  background: var(--color-surface);
-  border: 3px solid var(--color-fg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-xl) var(--space-xl);
-  width: min(360px, 92vw);
-  max-height: 82vh;
-  overflow-y: auto;
-}
-
-.ws-detail__word {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  text-align: center;
-}
-
-.ws-detail__jp {
-  font-family: var(--font-japanese);
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--color-fg);
-  line-height: 1.1;
-}
-
-.ws-detail__kana {
-  font-family: var(--font-japanese);
-  font-size: 14px;
-  color: var(--color-fg);
-  opacity: 0.55;
-}
-
-.ws-detail__meaning {
-  font-family: var(--font-body);
-  font-size: 17px;
-  color: var(--color-fg);
-  opacity: 0.8;
-}
-
-.ws-detail__sentence {
-  width: 100%;
-  background: var(--color-bg);
-  border: 2px solid var(--color-muted);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-sm) var(--space-md);
-  text-align: left;
-  position: relative;
-}
-
-.ws-detail__s-jp {
-  font-family: var(--font-japanese);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-fg);
-  margin: 0 0 2px;
-}
-
-.ws-detail__s-kana {
-  font-family: var(--font-japanese);
-  font-size: 12px;
-  color: var(--color-fg);
-  opacity: 0.55;
-  margin: 0 0 2px;
-}
-
-.ws-detail__s-en {
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--color-fg);
-  opacity: 0.7;
-  margin: 0;
-}
-
-.ws-detail__s-hint {
-  display: block;
-  font-family: var(--font-body);
-  font-size: 11px;
-  color: var(--color-fg);
-  opacity: 0.4;
-  margin-top: 4px;
-}
-
-.ws-detail__related {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  width: 100%;
-}
-
-.ws-detail__rel {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-sm);
-  width: 100%;
-  text-align: left;
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  border: 2px solid transparent;
-  transition: opacity 80ms ease;
-}
-
-.ws-detail__rel:active { opacity: 0.7; }
-
-.ws-detail__rel--pos {
-  border-color: #2a7a2a;
-  background: #f0faf0;
-}
-
-.ws-detail__rel--neg {
-  border-color: var(--color-accent);
-  background: #fff5f5;
-}
-
-.ws-detail__sign {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  flex-shrink: 0;
-  line-height: 1.2;
-}
-
-.ws-detail__rel--pos .ws-detail__sign { color: #2a7a2a; }
-.ws-detail__rel--neg .ws-detail__sign { color: var(--color-accent); }
-
-.ws-detail__rel-text { flex: 1; }
-
-.ws-detail__rel-jp {
-  font-family: var(--font-japanese);
-  font-size: 15px;
-  color: var(--color-fg);
-  margin: 0 0 1px;
-}
-
-.ws-detail__rel-en {
-  font-family: var(--font-body);
-  font-size: 12px;
-  color: var(--color-fg);
-  opacity: 0.6;
-  margin: 0;
-}
-
-.ws-detail__close {
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--color-fg);
-  opacity: 0.45;
-  margin-top: var(--space-xs);
+  box-shadow: none;
+  transform: translateX(2px) translateY(2px);
+  opacity: 0.65;
 }
 
 /* ─── Result overlay ─────────────────────────────────────────── */
@@ -418,53 +211,87 @@
   text-align: left;
 }
 
+/* Background color set via inline style (rainbow pastel) */
 .ws-result__word-item {
-  border-top: 1px solid var(--color-muted);
-  padding-top: var(--space-sm);
-}
-
-.ws-result__word-item:first-child {
-  border-top: none;
-  padding-top: 0;
+  border: 2px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-sm) var(--space-md);
 }
 
 .ws-result__word-header {
   display: flex;
   flex-direction: column;
   gap: 1px;
+  margin-bottom: var(--space-xs);
 }
 
 .ws-result__word-jp {
   font-family: var(--font-japanese);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--color-fg);
+}
+
+.ws-result__word-kana {
+  font-family: var(--font-japanese);
+  font-size: 12px;
+  color: var(--color-fg);
+  opacity: 0.55;
 }
 
 .ws-result__word-meaning {
   font-family: var(--font-body);
   font-size: 14px;
   color: var(--color-fg);
-  opacity: 0.65;
+  opacity: 0.7;
 }
 
-.ws-result__word-example {
-  margin-top: 3px;
+/* Tappable example sentence — tap to hear */
+.ws-result__example {
+  width: 100%;
+  text-align: left;
+  background: rgba(255,255,255,0.55);
+  border: 1.5px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  transition: opacity 80ms ease;
 }
+
+.ws-result__example:active { opacity: 0.7; }
 
 .ws-result__example-jp {
   font-family: var(--font-japanese);
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--color-fg);
-  margin: 0;
+  margin: 0 0 1px;
+}
+
+.ws-result__example-romaji {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-fg);
+  opacity: 0.6;
+  margin: 0 0 1px;
+  font-style: italic;
 }
 
 .ws-result__example-en {
   font-family: var(--font-body);
   font-size: 13px;
   color: var(--color-fg);
-  opacity: 0.6;
+  opacity: 0.75;
   margin: 0;
+}
+
+.ws-result__example-hint {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-fg);
+  opacity: 0.4;
+  margin-top: 3px;
 }
 
 .ws-result__btn {
