@@ -215,7 +215,7 @@ export default function WordSearchScreen() {
   function finalizeSelection() {
     if (!dragStart) return
     const cells = getSelectedCells(dragStart, dragCurrent)
-    if (cells.length >= 2) {
+    if (cells.length >= 1) {
       const text = cells.map(({ row, col }) => puzzle.grid[row][col]).join('')
       const idx  = puzzle.placements.findIndex((p, i) =>
         !found.includes(i) && p.word.display === text
@@ -304,10 +304,8 @@ export default function WordSearchScreen() {
                 aria-label={`${word.meaning}, tap to hear`}
               >
                 {word.meaning}
-                {word.hasKanji && (
-                  <span className="ws-chip__script">
-                    {word.script === 'kanji' ? '漢' : 'か'}
-                  </span>
+                {word.script === 'kana' && word.hasKanji && (
+                  <span className="ws-chip__script">か</span>
                 )}
               </button>
             )
