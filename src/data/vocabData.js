@@ -153,6 +153,25 @@ export const VOCAB_LIST = [
       { sign: '-', jp: '来年は旅行しないかもしれません。', kana: 'らいねんはりょこうしないかもしれません。', en: "I might not travel next year." },
     ] },
 
+  // ── Seasons ────────────────────────────────────────────────────────────
+  { word: '春',     kana: 'はる',     meaning: 'spring',                 type: 'noun',   example: { jp: '春は暖かいです。',           kana: 'はるはあたたかいです。',     en: 'Spring is warm.' } },
+  { word: '夏',     kana: 'なつ',     meaning: 'summer',                 type: 'noun',   example: { jp: '夏は暑いです。',             kana: 'なつはあついです。',         en: 'Summer is hot.' } },
+  { word: '冬',     kana: 'ふゆ',     meaning: 'winter',                 type: 'noun',   example: { jp: '冬は寒いです。',             kana: 'ふゆはさむいです。',         en: 'Winter is cold.' } },
+
+  // ── Months ─────────────────────────────────────────────────────────────
+  { word: '一月',   kana: 'いちがつ', meaning: 'January',                type: 'noun',   example: { jp: '一月は寒いです。',           kana: 'いちがつはさむいです。',     en: 'January is cold.' } },
+  { word: '二月',   kana: 'にがつ',   meaning: 'February',               type: 'noun',   example: { jp: '二月に雪が降ります。',       kana: 'にがつにゆきがふります。',   en: 'It snows in February.' } },
+  { word: '三月',   kana: 'さんがつ', meaning: 'March',                  type: 'noun',   example: { jp: '三月に桜が咲きます。',       kana: 'さんがつにさくらがさきます。', en: 'Cherry blossoms bloom in March.' } },
+  { word: '四月',   kana: 'しがつ',   meaning: 'April',                  type: 'noun',   example: { jp: '四月に学校が始まります。',   kana: 'しがつにがっこうがはじまります。', en: 'School starts in April.' } },
+  { word: '五月',   kana: 'ごがつ',   meaning: 'May',                    type: 'noun',   example: { jp: '五月は気持ちいいです。',     kana: 'ごがつはきもちいいです。',   en: 'May is pleasant.' } },
+  { word: '六月',   kana: 'ろくがつ', meaning: 'June',                   type: 'noun',   example: { jp: '六月は雨が多いです。',       kana: 'ろくがつはあめがおおいです。', en: 'There is a lot of rain in June.' } },
+  { word: '七月',   kana: 'しちがつ', meaning: 'July',                   type: 'noun',   example: { jp: '七月は暑いです。',           kana: 'しちがつはあついです。',     en: 'July is hot.' } },
+  { word: '八月',   kana: 'はちがつ', meaning: 'August',                 type: 'noun',   example: { jp: '八月に海へ行きます。',       kana: 'はちがつにうみへいきます。', en: 'I go to the sea in August.' } },
+  { word: '九月',   kana: 'くがつ',   meaning: 'September',              type: 'noun',   example: { jp: '九月から秋になります。',     kana: 'くがつからあきになります。', en: 'Autumn starts from September.' } },
+  { word: '十月',   kana: 'じゅうがつ', meaning: 'October',              type: 'noun',   example: { jp: '十月は涼しいです。',         kana: 'じゅうがつはすずしいです。', en: 'October is cool.' } },
+  { word: '十一月', kana: 'じゅういちがつ', meaning: 'November',         type: 'noun',   example: { jp: '十一月に紅葉が見られます。', kana: 'じゅういちがつにこうようがみられます。', en: 'You can see autumn leaves in November.' } },
+  { word: '十二月', kana: 'じゅうにがつ', meaning: 'December',           type: 'noun',   example: { jp: '十二月はクリスマスがあります。', kana: 'じゅうにがつはクリスマスがあります。', en: 'There is Christmas in December.' } },
+
   // ── Frequency / manner adverbs ──────────────────────────────────────────
   { word: 'いつも',   kana: 'いつも',   meaning: 'always',                 type: 'adverb', example: { jp: 'いつも元気です。',         kana: 'いつもげんきです。',         en: 'Always cheerful.' } },
   { word: 'よく',     kana: 'よく',     meaning: 'often',                  type: 'adverb', example: { jp: 'よく図書館へ行きます。',   kana: 'よくとしょかんへいきます。', en: 'I often go to the library.' } },

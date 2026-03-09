@@ -8,7 +8,7 @@
   padding: var(--space-lg) var(--space-md) var(--space-md);
 }
 
-/* Timer + status — pinned at top */
+/* Timer + HUD — pinned at top */
 .ws-top {
   flex-shrink: 0;
   display: flex;
@@ -27,11 +27,59 @@
   overflow: hidden;
 }
 
-/* ─── Timer bar ──────────────────────────────────────────────── */
+/* ─── HUD row — matches kana quiz layout ─────────────────────── */
+.ws-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ws-hud__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ws-hud__time {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-fg);
+}
+
+.ws-hud__count {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-fg);
+  opacity: 0.55;
+}
+
+/* ─── Hearts — matches quiz-play__lives / quiz-play__heart ───── */
+.ws-hearts {
+  display: flex;
+  gap: 6px;
+}
+
+.ws-heart {
+  font-size: 24px;
+  color: var(--color-accent);
+  line-height: 1;
+  transition: opacity 200ms;
+}
+
+.ws-heart--lost {
+  opacity: 0.18;
+}
+
+/* ─── Timer bar — matches quiz-play__timer-track ─────────────── */
 .ws-timer-bar {
-  height: 6px;
+  height: 8px;
   background: var(--color-muted);
-  border-radius: 3px;
+  border: 2px solid var(--color-fg);
+  border-radius: 99px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -39,51 +87,12 @@
 .ws-timer-fill {
   height: 100%;
   background: var(--color-fg);
-  border-radius: 3px;
-  transition: width 1s linear, background 0.5s ease;
+  border-radius: 99px;
+  transition: width 1s linear, background 200ms;
 }
 
 .ws-timer-fill--urgent {
   background: var(--color-accent);
-}
-
-/* ─── Status row ─────────────────────────────────────────────── */
-.ws-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.ws-status__time {
-  font-family: var(--font-body);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-fg);
-}
-
-.ws-status__count {
-  font-family: var(--font-body);
-  font-size: 15px;
-  color: var(--color-fg);
-  opacity: 0.6;
-}
-
-/* ─── Hearts ─────────────────────────────────────────────────── */
-.ws-hearts {
-  display: flex;
-  gap: 3px;
-}
-
-.ws-heart {
-  font-size: 20px;
-  line-height: 1;
-  color: var(--color-accent);
-  transition: color 200ms ease, transform 200ms ease;
-}
-
-.ws-heart--lost {
-  color: var(--color-muted);
 }
 
 /* ─── Grid ───────────────────────────────────────────────────── */
