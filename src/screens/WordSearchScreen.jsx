@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { buildPuzzle } from '../data/wordSearchData'
+import { buildPuzzle, THEMES } from '../data/wordSearchData'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import { speak } from '../utils/speech'
 import { kanaToRomaji } from '../utils/kanaToRomaji'
@@ -65,7 +65,7 @@ function TimerBar({ timeLeft }) {
   )
 }
 
-function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain }) {
+function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain, onNewTheme }) {
   const complete = status === 'complete'
   const failed   = status === 'failed'
   const icon  = complete ? '★' : failed ? '♡' : '⏰'
@@ -104,9 +104,33 @@ function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain
           })}
         </div>
 
-        <button className="ws-result__btn" onClick={onPlayAgain}>
-          Play Again
-        </button>
+        <div className="ws-result__actions">
+          <button className="ws-result__btn" onClick={onPlayAgain}>Play Again</button>
+          <button className="ws-result__btn ws-result__btn--secondary" onClick={onNewTheme}>New Theme</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Theme picker ──────────────────────────────────────────────────
+
+function ThemePicker({ onSelect }) {
+  return (
+    <div className="ws-theme-picker">
+      <p className="ws-theme-subtitle">Choose a theme</p>
+      <div className="ws-theme-grid">
+        {THEMES.map(t => (
+          <button
+            key={t.id ?? 'random'}
+            className="ws-theme-card"
+            onClick={() => onSelect(t.id)}
+          >
+            <span className="ws-theme-icon" aria-hidden="true">{t.icon}</span>
+            <span className="ws-theme-kana">{t.kana}</span>
+            <span className="ws-theme-label">{t.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   )
@@ -115,7 +139,9 @@ function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain
 // ─── Main screen ──────────────────────────────────────────────────
 
 export default function WordSearchScreen() {
-  const [puzzle,      setPuzzle]      = useState(() => buildPuzzle(WORD_COUNT))
+  const [phase,       setPhase]       = useState('pick')   // 'pick' | 'play'
+  const [theme,       setTheme]       = useState(null)
+  const [puzzle,      setPuzzle]      = useState(null)
   const [dragStart,   setDragStart]   = useState(null)
   const [dragCurrent, setDragCurrent] = useState(null)
   const [found,       setFound]       = useState([])
@@ -124,32 +150,35 @@ export default function WordSearchScreen() {
   const [status,      setStatus]      = useState('playing')
   const gridRef = useRef(null)
 
-  // Timer countdown
+  // Timer countdown (only while puzzle is active)
   useEffect(() => {
-    if (status !== 'playing') return
+    if (phase !== 'play' || status !== 'playing') return
     if (timeLeft <= 0) { setStatus('timeout'); return }
     const id = setTimeout(() => setTimeLeft(t => t - 1), 1000)
     return () => clearTimeout(id)
-  }, [timeLeft, status])
+  }, [phase, timeLeft, status])
 
   // Check for completion
   useEffect(() => {
+    if (!puzzle) return
     if (found.length > 0 && found.length === puzzle.placements.length) {
       setStatus('complete')
     }
-  }, [found, puzzle.placements.length])
+  }, [found, puzzle])
 
   const selectedCells = getSelectedCells(dragStart, dragCurrent)
   const selectedSet   = new Set(selectedCells.map(({ row, col }) => `${row},${col}`))
 
   // Map each found cell to its word's color
   const foundCellColors = new Map()
-  found.forEach(i => {
-    const color = CHIP_COLORS[i % CHIP_COLORS.length]
-    puzzle.placements[i].cells.forEach(({ row, col }) =>
-      foundCellColors.set(`${row},${col}`, color)
-    )
-  })
+  if (puzzle) {
+    found.forEach(i => {
+      const color = CHIP_COLORS[i % CHIP_COLORS.length]
+      puzzle.placements[i].cells.forEach(({ row, col }) =>
+        foundCellColors.set(`${row},${col}`, color)
+      )
+    })
+  }
 
   function getCellFromPointer(e) {
     const el = gridRef.current
@@ -206,8 +235,20 @@ export default function WordSearchScreen() {
     setDragCurrent(null)
   }
 
+  function handlePickTheme(themeId) {
+    setTheme(themeId)
+    setPuzzle(buildPuzzle(WORD_COUNT, themeId))
+    setFound([])
+    setLives(3)
+    setTimeLeft(TIMER_MAX)
+    setStatus('playing')
+    setDragStart(null)
+    setDragCurrent(null)
+    setPhase('play')
+  }
+
   function handleNewGame() {
-    setPuzzle(buildPuzzle(WORD_COUNT))
+    setPuzzle(buildPuzzle(WORD_COUNT, theme))
     setFound([])
     setLives(3)
     setTimeLeft(TIMER_MAX)
@@ -216,7 +257,15 @@ export default function WordSearchScreen() {
     setDragCurrent(null)
   }
 
+  function handleNewTheme() {
+    setPhase('pick')
+  }
+
   const formatTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+
+  if (phase === 'pick') {
+    return <ThemePicker onSelect={handlePickTheme} />
+  }
 
   return (
     <div className="word-search">
@@ -289,6 +338,7 @@ export default function WordSearchScreen() {
           totalCount={puzzle.words.length}
           placements={puzzle.placements}
           onPlayAgain={handleNewGame}
+          onNewTheme={handleNewTheme}
         />
       )}
     </div>
