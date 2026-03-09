@@ -12,9 +12,10 @@
 .card__halftone {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
-  background-size: 12px 12px;
-  opacity: 0.05;
+  background-image: url('/halftone2.jpg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.12;
   pointer-events: none;
   border-radius: inherit;
 }

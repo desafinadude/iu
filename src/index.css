@@ -2,7 +2,7 @@
 :root {
   /* Colors */
   --color-bg:           #f2ece0;
-  --color-header:       #8B1A1A;
+  --color-header:       #1a2f5e;
   --color-japan-red:    #8B1A1A;
   --color-fg:           #2d2d2d;
   --color-muted:        #ddd5c4;
@@ -81,9 +81,10 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(circle, var(--color-halftone) 1px, transparent 1px);
-  background-size: 10px 10px;
-  opacity: 0.08;
+  background-image: url('/halftone2.jpg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.18;
   pointer-events: none;
   z-index: 0;
 }

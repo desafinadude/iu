@@ -9,6 +9,12 @@
   gap: var(--space-md);
 }
 
+@media (min-width: 640px) {
+  .home__grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
 .home__card {
   position: relative;
   display: flex;
@@ -42,9 +48,10 @@
 .home__card-halftone {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
-  background-size: 12px 12px;
-  opacity: 0.05;
+  background-image: url('/halftone2.jpg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.12;
   pointer-events: none;
 }
 

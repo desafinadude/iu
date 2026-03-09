@@ -26,17 +26,17 @@ export default function AppShell({ children }) {
     <div className="shell">
       <header className="shell__header">
         <div className="shell__inner">
-        <div className="shell__header-inner">
-          {!isRoot && canGoBack ? (
-            <button className="shell__back" onClick={goBack} aria-label="Go back">
-              <BackIcon />
-            </button>
-          ) : (
+          <div className="shell__header-inner">
+            {!isRoot && canGoBack ? (
+              <button className="shell__back" onClick={goBack} aria-label="Go back">
+                <BackIcon />
+              </button>
+            ) : (
+              <div className="shell__header-end" />
+            )}
+            <h1 className="shell__title">{title}</h1>
             <div className="shell__header-end" />
-          )}
-          <h1 className="shell__title">{title}</h1>
-          <div className="shell__header-end" />
-        </div>
+          </div>
         </div>
       </header>
 
@@ -48,21 +48,21 @@ export default function AppShell({ children }) {
 
       <nav className="shell__bottom-nav" aria-label="Main navigation">
         <div className="shell__inner" style={{ display: 'flex', width: '100%' }}>
-        {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
-          const active = screen === id || (!ROOT_SCREENS.has(screen) && id === 'home' && screen !== 'progress' && screen !== 'settings')
-          return (
-            <button
-              key={id}
-              className={`shell__nav-btn ${active ? 'shell__nav-btn--active' : ''}`}
-              onClick={() => navigate(id)}
-              aria-label={label}
-              aria-current={active ? 'page' : undefined}
-            >
-              <Icon />
-              <span className="shell__nav-label">{label}</span>
-            </button>
-          )
-        })}
+          {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+            const active = screen === id || (!ROOT_SCREENS.has(screen) && id === 'home' && screen !== 'progress' && screen !== 'settings')
+            return (
+              <button
+                key={id}
+                className={`shell__nav-btn ${active ? 'shell__nav-btn--active' : ''}`}
+                onClick={() => navigate(id)}
+                aria-label={label}
+                aria-current={active ? 'page' : undefined}
+              >
+                <Icon />
+                <span className="shell__nav-label">{label}</span>
+              </button>
+            )
+          })}
         </div>
       </nav>
     </div>

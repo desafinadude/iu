@@ -17,8 +17,23 @@
   flex-shrink: 0;
   background: var(--color-header);
   border-bottom: 3px solid var(--color-fg);
+  border-radius: 0 0 255px 8px / 0 0 8px 255px;
+  box-shadow: 0 2px 0 0 var(--color-fg);
   padding-top: env(safe-area-inset-top);
   z-index: 10;
+  position: relative;
+  overflow: hidden;
+}
+
+.shell__header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/halftone2.jpg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.12;
+  pointer-events: none;
 }
 
 .shell__header-inner {
@@ -84,8 +99,23 @@
   display: flex;
   background: var(--color-surface);
   border-top: 3px solid var(--color-fg);
+  border-radius: 8px 255px 0 0 / 255px 8px 0 0;
+  box-shadow: 0 -2px 0 0 var(--color-fg);
   padding-bottom: env(safe-area-inset-bottom);
   z-index: 10;
+  position: relative;
+  overflow: hidden;
+}
+
+.shell__bottom-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/halftone2.jpg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.1;
+  pointer-events: none;
 }
 
 .shell__nav-btn {
