@@ -36,6 +36,16 @@ export default function HomeScreen() {
           <span className="home__card-kana" aria-hidden="true">書</span>
           <span className="home__card-label">Writing</span>
         </button>
+
+        <button
+          className="home__card"
+          onClick={() => navigate('verb_drill')}
+          aria-label="Start Verb Dojo"
+        >
+          <div className="home__card-halftone" aria-hidden="true" />
+          <span className="home__card-kana" aria-hidden="true">動</span>
+          <span className="home__card-label">Verb Dojo</span>
+        </button>
       </div>
     </div>
   )
