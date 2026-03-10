@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNav } from '../context/NavContext'
+import {
+  Eye, Ear, Utensils, Sparkles, MessageCircle, ArrowRight, ArrowLeft,
+  Coffee, Zap, ShoppingBag, MessageSquare, BookOpen, PenLine, Lightbulb,
+  PersonStanding, Armchair, Car, Moon, Home, AlarmClock, Clock,
+  Users, Wrench, Hammer, DoorOpen, Shuffle,
+} from 'lucide-react'
 import { VERB_LIST } from '../data/vocabData'
+import { kanaToRomaji } from '../utils/kanaToRomaji'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import { speak } from '../utils/speech'
 import './VerbDrillScreen.css'
 
-const STYLES  = ['polite', 'casual']
-const TENSES  = ['present_pos', 'present_neg', 'past_pos', 'past_neg']
+const STYLES = ['polite', 'casual']
+const TENSES = ['present_pos', 'present_neg', 'past_pos', 'past_neg']
 
 const TENSE_LABELS = {
   present_pos: 'Present +',
@@ -21,7 +27,41 @@ const TYPE_LABELS = {
   irregular: 'Irregular',
 }
 
-// Polite first (top → bottom), then casual
+const VERB_ICON_MAP = {
+  '見る':    Eye,
+  '聞く':    Ear,
+  '味わう':  Utensils,
+  '感じる':  Sparkles,
+  '言う':    MessageCircle,
+  '行く':    ArrowRight,
+  '来る':    ArrowLeft,
+  '食べる':  Utensils,
+  '飲む':    Coffee,
+  'する':    Zap,
+  '買う':    ShoppingBag,
+  '話す':    MessageSquare,
+  '読む':    BookOpen,
+  '書く':    PenLine,
+  '考える':  Lightbulb,
+  '歩く':    PersonStanding,
+  '座る':    Armchair,
+  '運転する': Car,
+  '寝る':    Moon,
+  '帰る':    Home,
+  '起きる':  AlarmClock,
+  '待つ':    Clock,
+  '会う':    Users,
+  '分かる':  Lightbulb,
+  '使う':    Wrench,
+  '作る':    Hammer,
+  '開ける':  DoorOpen,
+}
+
+function VerbIcon({ verb, size = 24, className = '' }) {
+  const Icon = VERB_ICON_MAP[verb.dict] ?? Zap
+  return <Icon size={size} strokeWidth={2} className={className} aria-hidden="true" />
+}
+
 const DRILL_ORDER = STYLES.flatMap(style =>
   TENSES.map(tense => ({ style, tense }))
 )
@@ -32,7 +72,6 @@ function buildOptions(verb, style, tense) {
     .filter(v => v !== verb)
     .map(v => v[style][tense].word)
     .filter(w => w !== correct)
-  // Shuffle pool
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[pool[i], pool[j]] = [pool[j], pool[i]]
@@ -49,28 +88,15 @@ function buildOptions(verb, style, tense) {
 // ── Verb Picker ───────────────────────────────────────────────────────────────
 
 function VerbPicker({ onSelect }) {
+  function pickRandom() {
+    const v = VERB_LIST[Math.floor(Math.random() * VERB_LIST.length)]
+    speak(v.dict)
+    onSelect(v)
+  }
+
   return (
     <div className="vp">
-      <div className="vp__hero">
-        <div className="vp__hero-halftone" aria-hidden="true" />
-        <span className="vp__hero-kanji" aria-hidden="true">動</span>
-        <div className="vp__hero-body">
-          <h2 className="vp__title">Verb Dojo</h2>
-          <p className="vp__subtitle">Pick a verb — drill every tense to see the pattern</p>
-        </div>
-      </div>
-
-      <button
-        className="vp__random"
-        onClick={() => {
-          const v = VERB_LIST[Math.floor(Math.random() * VERB_LIST.length)]
-          speak(v.dict)
-          onSelect(v)
-        }}
-      >
-        ⚡ Random Verb
-      </button>
-
+      <p className="vp__subtitle">Choose a verb</p>
       <div className="vp__list">
         {VERB_LIST.map((verb, i) => (
           <button
@@ -78,45 +104,101 @@ function VerbPicker({ onSelect }) {
             className="vp__item"
             onClick={() => { speak(verb.dict); onSelect(verb) }}
           >
-            <span className="vp__item-dict">{verb.dict}</span>
-            <span className="vp__item-kana">{verb.kana}</span>
-            <span className="vp__item-meaning">{verb.meaning}</span>
-            <span className={`vp__item-badge vp__item-badge--${verb.type}`}>
+            <div className="vp__item-halftone" aria-hidden="true" />
+            <div className={`vp__item-tape vp__item-tape--${verb.type}`}>
               {TYPE_LABELS[verb.type]}
+            </div>
+            <span className="vp__item-icon">
+              <VerbIcon verb={verb} size={32} />
             </span>
+            <div className="vp__item-body">
+              <span className="vp__item-label">{verb.dict} · {verb.meaning}</span>
+              <span className="vp__item-kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
+            </div>
           </button>
         ))}
+
+        {/* Random tile at the bottom */}
+        <button className="vp__item vp__item--random" onClick={pickRandom}>
+          <div className="vp__item-halftone" aria-hidden="true" />
+          <span className="vp__item-icon"><Shuffle size={32} strokeWidth={1.5} /></span>
+          <div className="vp__item-body">
+            <span className="vp__item-label">Random</span>
+            <span className="vp__item-kana">ランダム</span>
+          </div>
+        </button>
       </div>
     </div>
   )
 }
 
 
-// ── Form strip — shows revealed / hidden chips in 2 columns ──────────────────
+// ── Form Cards — scrapbook style vertical list for study phase ────────────────
 
-function FormStrip({ verb, phase, currentIdx, revealed }) {
+function FormCards({ verb }) {
+  return (
+    <div className="fc">
+      {STYLES.map(style => (
+        <div key={style} className="fc__group">
+
+          {/* Section header tape */}
+          <div className={`fc__section-tape fc__section-tape--${style}`}>
+            {style === 'polite' ? 'Polite Forms' : 'Casual Forms'}
+          </div>
+
+          {/* 4 form cards */}
+          {TENSES.map((tense, ti) => {
+            const form = verb[style][tense]
+            return (
+              <div key={tense} className={`fc__card fc__card--${style} fc__card--tilt${ti % 3}`}>
+                <span className="fc__card-tense">{TENSE_LABELS[tense]}</span>
+                <span className="fc__card-word">{form.word}</span>
+                <span className="fc__card-kana">{form.kana}</span>
+                <span className="fc__card-dot">·</span>
+                <span className="fc__card-romaji">{kanaToRomaji(form.kana)}</span>
+                <span className="fc__card-meaning">{form.meaning}</span>
+              </div>
+            )
+          })}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+
+// ── Drill mini-strip — compact, always visible during quiz ────────────────────
+
+function DrillStrip({ verb, currentIdx, revealed }) {
   function cellState(style, tense) {
     const key = `${style}_${tense}`
     if (revealed[key]) return revealed[key].correct ? 'correct' : 'wrong'
-    if (phase === 'study') return 'show'
     const active = DRILL_ORDER[currentIdx]
     if (active && active.style === style && active.tense === tense) return 'active'
     return 'hidden'
   }
 
   return (
-    <div className="vd-strip">
+    <div className="ds">
       {STYLES.map(style => (
-        <div key={style} className="vd-strip__col">
-          <div className="vd-strip__col-head">{style === 'polite' ? 'Polite' : 'Casual'}</div>
+        <div key={style} className="ds__col">
+          <div className={`ds__col-head ds__col-head--${style}`}>
+            {style === 'polite' ? 'Polite' : 'Casual'}
+          </div>
           {TENSES.map(tense => {
             const state = cellState(style, tense)
             const form  = verb[style][tense]
-            const show  = state === 'show' || state === 'correct' || state === 'wrong'
+            const show  = state === 'correct' || state === 'wrong'
             return (
-              <div key={tense} className={`vd-strip__chip vd-strip__chip--${state}`}>
-                {show   ? form.word
-                        : state === 'active' ? '？' : '· · ·'}
+              <div key={tense} className={`ds__chip ds__chip--${state}`}>
+                <span className="ds__chip-tense">{TENSE_LABELS[tense]}</span>
+                {show ? (
+                  <span className="ds__chip-word">{form.word}</span>
+                ) : (
+                  <span className="ds__chip-placeholder">
+                    {state === 'active' ? '？' : '· ·'}
+                  </span>
+                )}
               </div>
             )
           })}
@@ -134,11 +216,10 @@ function VerbDrill({ verb, onBack }) {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [revealed, setRevealed]     = useState({})
   const [options, setOptions]       = useState([])
-  const [feedback, setFeedback]     = useState(null)   // null | 'correct' | 'wrong'
+  const [feedback, setFeedback]     = useState(null)
   const [selected, setSelected]     = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
 
-  // Speak verb on mount
   useEffect(() => { speak(verb.dict) }, [verb])
 
   const startDrill = useCallback(() => {
@@ -154,8 +235,8 @@ function VerbDrill({ verb, onBack }) {
   function handleAnswer(opt) {
     if (feedback) return
     const { style, tense } = DRILL_ORDER[currentIdx]
-    const correct  = verb[style][tense].word
-    const isRight  = opt === correct
+    const correct = verb[style][tense].word
+    const isRight = opt === correct
 
     setSelected(opt)
     setFeedback(isRight ? 'correct' : 'wrong')
@@ -164,15 +245,10 @@ function VerbDrill({ verb, onBack }) {
       [`${style}_${tense}`]: { correct: isRight },
     }))
 
-    if (isRight) {
-      playCorrectSound()
-      setCorrectCount(c => c + 1)
-    } else {
-      playWrongSound()
-    }
+    if (isRight) { playCorrectSound(); setCorrectCount(c => c + 1) }
+    else         { playWrongSound() }
 
-    // Speak the correct form after a beat
-    setTimeout(() => speak(correct), 300)
+    setTimeout(() => speak(correct), 350)
 
     setTimeout(() => {
       setFeedback(null)
@@ -187,7 +263,7 @@ function VerbDrill({ verb, onBack }) {
     }, 1000)
   }
 
-  // ── Complete screen
+  // ── Complete
   if (phase === 'complete') {
     const perfect = correctCount === DRILL_ORDER.length
     return (
@@ -195,8 +271,10 @@ function VerbDrill({ verb, onBack }) {
         <div className="vd-result__card">
           <div className="vd-result__halftone" aria-hidden="true" />
           <p className="vd-result__overline">Complete</p>
+          <div className="vd-result__icon"><VerbIcon verb={verb} size={52} /></div>
           <p className="vd-result__dict">{verb.dict}</p>
-          <p className="vd-result__kana">{verb.kana}</p>
+          <p className="vd-result__reading">{verb.kana} · {kanaToRomaji(verb.kana)}</p>
+          <p className="vd-result__meaning">{verb.meaning}</p>
           <div className="vd-result__score-row">
             <span className="vd-result__score">{correctCount}</span>
             <span className="vd-result__denom">/ {DRILL_ORDER.length}</span>
@@ -214,43 +292,68 @@ function VerbDrill({ verb, onBack }) {
   return (
     <div className="vd">
 
-      {/* Compact verb header */}
-      <div className="vd__header">
-        <div className="vd__header-left">
-          <span className="vd__dict">{verb.dict}</span>
-          <span className="vd__kana">{verb.kana}</span>
-        </div>
-        <div className="vd__header-right">
-          <span className={`vd__badge vd__badge--${verb.type}`}>{TYPE_LABELS[verb.type]}</span>
-          <span className="vd__meaning">{verb.meaning}</span>
-        </div>
-      </div>
-
-      {/* Form strip — always visible, fills in as you answer */}
-      <FormStrip
-        verb={verb}
-        phase={phase}
-        currentIdx={currentIdx}
-        revealed={revealed}
-      />
-
-      {/* ── Study phase ── */}
+      {/* ── STUDY PHASE ── */}
       {phase === 'study' && (
         <>
+          {/* Big postit verb card */}
+          <div className="vd__verb-card">
+            <span className="vd__tape" aria-hidden="true" />
+            <div className="vd__halftone" aria-hidden="true" />
+            {/* Type badge as corner tape */}
+            <div className={`vd__type-tape vd__type-tape--${verb.type}`}>
+              {TYPE_LABELS[verb.type]}
+            </div>
+            <div className="vd__verb-card-inner">
+              <span className="vd__verb-icon">
+                <VerbIcon verb={verb} size={40} />
+              </span>
+              <span className="vd__verb-dict">{verb.dict}</span>
+              <div className="vd__verb-readings">
+                <span className="vd__verb-kana">{verb.kana}</span>
+                <span className="vd__verb-sep">·</span>
+                <span className="vd__verb-romaji">{kanaToRomaji(verb.kana)}</span>
+              </div>
+              <span className="vd__verb-meaning">{verb.meaning}</span>
+            </div>
+          </div>
+
+          {/* Scrapbook form cards */}
+          <FormCards verb={verb} />
+
+          {/* Example sentence */}
           <div className="vd__example">
+            <span className="vd__example-label">Example</span>
             <span className="vd__example-jp">{verb.example.jp}</span>
+            <span className="vd__example-kana">{verb.example.kana}</span>
             <span className="vd__example-en">{verb.example.en}</span>
           </div>
-          <button className="vd-btn vd-btn--primary vd-btn--start" onClick={startDrill}>
+
+          <button className="vd-btn vd-btn--primary" onClick={startDrill}>
             Start Drill →
           </button>
         </>
       )}
 
-      {/* ── Drill phase ── */}
+      {/* ── DRILL PHASE ── */}
       {phase === 'drill' && cell && (
         <>
-          {/* Prompt card — postit style like kana quiz */}
+          {/* Compact header */}
+          <div className="vd__header">
+            <div className="vd__header-jp">
+              <span className="vd__header-icon"><VerbIcon verb={verb} size={20} /></span>
+              <span className="vd__dict">{verb.dict}</span>
+              <span className="vd__kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
+            </div>
+            <div className="vd__header-right">
+              <span className={`vd__badge vd__badge--${verb.type}`}>{TYPE_LABELS[verb.type]}</span>
+              <span className="vd__meaning">{verb.meaning}</span>
+            </div>
+          </div>
+
+          {/* Mini drill strip */}
+          <DrillStrip verb={verb} currentIdx={currentIdx} revealed={revealed} />
+
+          {/* Prompt card */}
           <div className={`vd__prompt-card ${feedback ? `vd__prompt-card--${feedback}` : ''}`}>
             <span className="vd__tape" aria-hidden="true" />
             <div className="vd__halftone" aria-hidden="true" />
@@ -259,17 +362,23 @@ function VerbDrill({ verb, onBack }) {
                 {cell.style === 'polite' ? 'Polite' : 'Casual'}
               </span>
               <span className="vd__prompt-tense">{TENSE_LABELS[cell.tense]}</span>
+              <span className="vd__prompt-hint">
+                {verb[cell.style][cell.tense].meaning}
+              </span>
             </div>
           </div>
 
           {/* 2×2 options */}
           <div className="vd__options" role="group" aria-label="Choose the correct form">
             {options.map((opt, i) => {
-              const correct = verb[cell.style][cell.tense].word
+              const correctWord = verb[cell.style][cell.tense].word
+              const optVerb = VERB_LIST.find(v => v[cell.style][cell.tense].word === opt)
+              const optKana = optVerb ? optVerb[cell.style][cell.tense].kana : ''
+
               let state = ''
               if (feedback) {
-                if (opt === correct)             state = 'correct'
-                else if (opt === selected)       state = 'wrong'
+                if (opt === correctWord)   state = 'correct'
+                else if (opt === selected) state = 'wrong'
               }
               return (
                 <button
@@ -278,14 +387,20 @@ function VerbDrill({ verb, onBack }) {
                   onClick={() => handleAnswer(opt)}
                   disabled={!!feedback}
                 >
-                  {opt}
+                  <span className="vd__option-word">{opt}</span>
+                  {optKana && (
+                    <>
+                      <span className="vd__option-kana">{optKana}</span>
+                      <span className="vd__option-romaji">{kanaToRomaji(optKana)}</span>
+                    </>
+                  )}
                 </button>
               )
             })}
           </div>
 
-          {/* Progress dots */}
-          <div className="vd__dots" aria-label={`${currentIdx + 1} of ${DRILL_ORDER.length}`}>
+          {/* Progress dots with gap at polite/casual boundary */}
+          <div className="vd__dots">
             {DRILL_ORDER.map((d, i) => {
               const key  = `${d.style}_${d.tense}`
               const done = revealed[key]
@@ -294,10 +409,11 @@ function VerbDrill({ verb, onBack }) {
                   key={i}
                   className={[
                     'vd__dot',
-                    i === currentIdx                       ? 'vd__dot--active'  : '',
-                    done && revealed[key].correct          ? 'vd__dot--correct' : '',
-                    done && !revealed[key].correct         ? 'vd__dot--wrong'   : '',
-                  ].join(' ')}
+                    i === 4                        ? 'vd__dot--gap'     : '',
+                    i === currentIdx               ? 'vd__dot--active'  : '',
+                    done &&  revealed[key].correct ? 'vd__dot--correct' : '',
+                    done && !revealed[key].correct ? 'vd__dot--wrong'   : '',
+                  ].filter(Boolean).join(' ')}
                   aria-hidden="true"
                 />
               )
@@ -314,7 +430,6 @@ function VerbDrill({ verb, onBack }) {
 
 export default function VerbDrillScreen() {
   const [verb, setVerb] = useState(null)
-
   if (!verb) return <VerbPicker onSelect={setVerb} />
   return <VerbDrill key={verb.dict} verb={verb} onBack={() => setVerb(null)} />
 }
