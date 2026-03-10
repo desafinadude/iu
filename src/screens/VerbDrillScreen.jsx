@@ -5,7 +5,7 @@ import {
   PersonStanding, Armchair, Car, Moon, Home, AlarmClock, Clock,
   Users, Wrench, Hammer, DoorOpen, Shuffle,
 } from 'lucide-react'
-import { VERB_LIST } from '../data/vocabData'
+import { VERB_LIST } from '../data/verbData'
 import { kanaToRomaji } from '../utils/kanaToRomaji'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import { speak } from '../utils/speech'
@@ -90,7 +90,6 @@ function buildOptions(verb, style, tense) {
 function VerbPicker({ onSelect }) {
   function pickRandom() {
     const v = VERB_LIST[Math.floor(Math.random() * VERB_LIST.length)]
-    speak(v.dict)
     onSelect(v)
   }
 
@@ -102,7 +101,7 @@ function VerbPicker({ onSelect }) {
           <button
             key={i}
             className="vp__item"
-            onClick={() => { speak(verb.dict); onSelect(verb) }}
+            onClick={() => { onSelect(verb) }}
           >
             <div className="vp__item-halftone" aria-hidden="true" />
             <div className={`vp__item-tape vp__item-tape--${verb.type}`}>
@@ -112,7 +111,8 @@ function VerbPicker({ onSelect }) {
               <VerbIcon verb={verb} size={32} />
             </span>
             <div className="vp__item-body">
-              <span className="vp__item-label">{verb.dict} · {verb.meaning}</span>
+              <span className="vp__item-dict">{verb.dict}</span>
+              <span className="vp__item-meaning">{verb.meaning}</span>
               <span className="vp__item-kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
             </div>
           </button>
@@ -135,6 +135,12 @@ function VerbPicker({ onSelect }) {
 
 // ── Form Cards — scrapbook style vertical list for study phase ────────────────
 
+const FORM_LABELS = {
+  polite_present: 'Polite · Present',
+  casual_past:    'Casual · Past',
+  te:             'て-form',
+}
+
 function FormCards({ verb }) {
   return (
     <div className="fc">
@@ -146,22 +152,54 @@ function FormCards({ verb }) {
             {style === 'polite' ? 'Polite Forms' : 'Casual Forms'}
           </div>
 
-          {/* 4 form cards */}
+          {/* 4 tense cards */}
           {TENSES.map((tense, ti) => {
             const form = verb[style][tense]
             return (
-              <div key={tense} className={`fc__card fc__card--${style} fc__card--tilt${ti % 3}`}>
-                <span className="fc__card-tense">{TENSE_LABELS[tense]}</span>
-                <span className="fc__card-word">{form.word}</span>
-                <span className="fc__card-kana">{form.kana}</span>
-                <span className="fc__card-dot">·</span>
-                <span className="fc__card-romaji">{kanaToRomaji(form.kana)}</span>
-                <span className="fc__card-meaning">{form.meaning}</span>
-              </div>
+              <button
+                key={tense}
+                className={`fc__card fc__card--${style} fc__card--tilt${ti % 3}`}
+                onClick={() => speak(form.kana)}
+              >
+                <div className="fc__card-row1">
+                  <span className="fc__card-tense">{TENSE_LABELS[tense]}</span>
+                  <span className="fc__card-word">{form.word}</span>
+                </div>
+                <div className="fc__card-row2">
+                  <span className="fc__card-kana">{form.kana}</span>
+                  <span className="fc__card-dot">·</span>
+                  <span className="fc__card-romaji">{kanaToRomaji(form.kana)}</span>
+                  <span className="fc__card-meaning">{form.meaning}</span>
+                </div>
+              </button>
             )
           })}
         </div>
       ))}
+
+      {/* ── て-form (register-neutral connecting form) ── */}
+      {verb.casual.te && (
+        <div className="fc__group">
+          <div className="fc__section-tape fc__section-tape--te">
+            て-form
+          </div>
+          <button
+            className="fc__card fc__card--te fc__card--tilt0"
+            onClick={() => speak(verb.casual.te.kana)}
+          >
+            <div className="fc__card-row1">
+              <span className="fc__card-tense">て-form</span>
+              <span className="fc__card-word">{verb.casual.te.word}</span>
+            </div>
+            <div className="fc__card-row2">
+              <span className="fc__card-kana">{verb.casual.te.kana}</span>
+              <span className="fc__card-dot">·</span>
+              <span className="fc__card-romaji">{kanaToRomaji(verb.casual.te.kana)}</span>
+              <span className="fc__card-meaning">{verb.casual.te.meaning} · connecting / request form</span>
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -220,7 +258,7 @@ function VerbDrill({ verb, onBack }) {
   const [selected, setSelected]     = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
 
-  useEffect(() => { speak(verb.dict) }, [verb])
+  useEffect(() => { speak(verb.dict) }, [verb.dict])
 
   const startDrill = useCallback(() => {
     setPhase('drill')
@@ -320,13 +358,20 @@ function VerbDrill({ verb, onBack }) {
           {/* Scrapbook form cards */}
           <FormCards verb={verb} />
 
-          {/* Example sentence */}
-          <div className="vd__example">
-            <span className="vd__example-label">Example</span>
-            <span className="vd__example-jp">{verb.example.jp}</span>
-            <span className="vd__example-kana">{verb.example.kana}</span>
-            <span className="vd__example-en">{verb.example.en}</span>
-          </div>
+          {/* Example sentences */}
+          <div className="vd__examples-label">Examples · tap to hear</div>
+          {verb.examples.map((ex, i) => (
+            <button
+              key={i}
+              className={`vd__example vd__example--tilt${i % 3}`}
+              onClick={() => speak(ex.jp)}
+            >
+              <span className="vd__example-form">{FORM_LABELS[ex.form] ?? ex.form}</span>
+              <span className="vd__example-jp">{ex.jp}</span>
+              <span className="vd__example-kana">{ex.kana}</span>
+              <span className="vd__example-en">{ex.en}</span>
+            </button>
+          ))}
 
           <button className="vd-btn vd-btn--primary" onClick={startDrill}>
             Start Drill →

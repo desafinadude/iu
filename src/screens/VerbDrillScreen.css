@@ -109,17 +109,26 @@
   min-width: 0;
 }
 
-.vp__item-label {
-  font-family: var(--font-display);
+.vp__item-dict {
+  font-family: var(--font-japanese);
   font-size: 22px;
   font-weight: 700;
   color: var(--color-fg);
   line-height: 1.1;
 }
 
+.vp__item-meaning {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--color-fg);
+  opacity: 0.75;
+  line-height: 1.2;
+}
+
 .vp__item-kana {
   font-family: var(--font-japanese);
-  font-size: 15px;
+  font-size: 13px;
   color: var(--color-japan-red);
   opacity: 0.85;
   line-height: 1;
@@ -136,7 +145,7 @@
   height: 100%;
   width: 100%;
   padding: var(--space-md) var(--space-lg) var(--space-lg);
-  gap: var(--space-md);
+  gap: var(--space-lg);
   overflow-y: auto;
 }
 
@@ -265,13 +274,13 @@
 .fc {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 
 .fc__group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 /* Section tape label */
@@ -296,7 +305,7 @@
 .fc__section-tape--polite  { background: var(--color-header); }
 .fc__section-tape--casual  { background: var(--color-japan-red); }
 
-/* Individual form cards — single row */
+/* Individual form cards — two-row layout for mobile clarity */
 .fc__card {
   position: relative;
   background: var(--color-surface);
@@ -305,9 +314,25 @@
   box-shadow: var(--shadow-md);
   padding: var(--space-sm) var(--space-md);
   display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  gap: var(--space-sm);
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fc__card:active {
+  transform: translateX(3px) translateY(3px);
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .fc__card:hover {
+    transform: translateX(2px) translateY(2px);
+    box-shadow: var(--shadow-sm);
+  }
 }
 
 /* Subtle alternating tilts for scrapbook feel */
@@ -317,22 +342,38 @@
 
 .fc__card--polite { border-left: 5px solid var(--color-header); }
 .fc__card--casual { border-left: 5px solid var(--color-japan-red); }
+.fc__card--te     { border-left: 5px solid #5c6bc0; }
+.fc__card--ta     { border-left: 5px solid #7b4f9e; }
+
+.fc__card-row1 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.fc__card-row2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
 
 .fc__card-tense {
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--color-fg);
   opacity: 0.45;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  min-width: 60px;
+  min-width: 54px;
   flex-shrink: 0;
+  align-self: center;
 }
 
 .fc__card-word {
   font-family: var(--font-japanese);
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--color-fg);
   line-height: 1;
@@ -341,7 +382,7 @@
 
 .fc__card-kana {
   font-family: var(--font-japanese);
-  font-size: 18px;
+  font-size: 16px;
   color: var(--color-fg);
   opacity: 0.65;
 }
@@ -349,44 +390,67 @@
 .fc__card-dot {
   color: var(--color-fg);
   opacity: 0.25;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .fc__card-romaji {
   font-family: var(--font-body);
-  font-size: 17px;
+  font-size: 15px;
   color: var(--color-fg);
   opacity: 0.4;
 }
 
 .fc__card-meaning {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 14px;
   color: var(--color-fg);
   opacity: 0.65;
   font-style: italic;
-  margin-left: auto;
-  text-align: right;
-  flex-shrink: 0;
 }
 
+.fc__section-tape--te { background: #5c6bc0; }
 
-/* ── Example sentence ───────────────────────────────────────────── */
+
+/* ── Example sentences ──────────────────────────────────────────── */
+
+.vd__examples-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg);
+  opacity: 0.4;
+  margin-top: var(--space-sm);
+}
 
 .vd__example {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   background: var(--color-postit);
   border: 2px solid var(--color-fg);
   border-radius: var(--radius-sm);
   box-shadow: 2px 2px 0 #333;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-md) var(--space-md);
   flex-shrink: 0;
-  transform: rotate(0.4deg);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.vd__example-label {
+.vd__example--tilt0 { transform: rotate(-0.4deg); }
+.vd__example--tilt1 { transform: rotate(0.5deg); }
+.vd__example--tilt2 { transform: rotate(-0.2deg); }
+
+.vd__example:active {
+  transform: rotate(0deg) translateX(2px) translateY(2px);
+  box-shadow: none;
+}
+
+.vd__example-form {
   font-family: var(--font-display);
   font-size: 10px;
   font-weight: 700;
