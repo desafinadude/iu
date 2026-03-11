@@ -1,0 +1,468 @@
+/* ─── Screen shell ────────────────────────────────────────────────────────── */
+.sb-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: var(--space-md) var(--space-md) 0;
+  gap: var(--space-sm);
+}
+
+/* ─── Sentence construction area ─────────────────────────────────────────── */
+.sb-sentence-area {
+  flex-shrink: 0;
+  min-height: 72px;
+  max-height: 180px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 2.5px solid var(--color-fg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-sm) var(--space-md);
+  position: relative;
+}
+
+.sb-sentence-hint {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-fg);
+  opacity: 0.35;
+  text-align: center;
+  padding: var(--space-sm) 0;
+  font-style: italic;
+}
+
+.sb-sentence-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  align-items: flex-start;
+}
+
+.sb-sentence-maru {
+  font-family: var(--font-japanese);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1;
+  align-self: center;
+  opacity: 0.5;
+}
+
+.sb-swap-hint {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-accent-blue);
+  font-weight: 700;
+  margin-top: var(--space-xs);
+  text-align: center;
+}
+
+/* ─── Sentence chip ───────────────────────────────────────────────────────── */
+.sb-chip {
+  display: flex;
+  align-items: stretch;
+  background: var(--chip-color, var(--color-surface));
+  border: 2px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow 80ms ease, transform 80ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sb-chip--selected {
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 0 0 2px var(--color-accent-blue), var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.sb-chip__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 5px 8px;
+  text-align: left;
+  flex: 1;
+}
+
+.sb-chip__body:active {
+  opacity: 0.75;
+}
+
+.sb-chip__word {
+  font-family: var(--font-japanese);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1.1;
+}
+
+.sb-chip__kana {
+  font-family: var(--font-japanese);
+  font-size: 10px;
+  color: var(--color-fg);
+  opacity: 0.5;
+  line-height: 1;
+}
+
+.sb-chip__meaning {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-fg);
+  opacity: 0.65;
+  line-height: 1.2;
+}
+
+/* Particle badge — tappable to cycle */
+.sb-chip__particle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  background: rgba(0,0,0,0.12);
+  border-left: 1.5px solid var(--color-fg);
+  font-family: var(--font-japanese);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-fg);
+  min-width: 28px;
+  flex-shrink: 0;
+  transition: background 80ms ease;
+}
+
+.sb-chip__particle:active {
+  background: rgba(0,0,0,0.22);
+}
+
+/* Remove button */
+.sb-chip__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  color: var(--color-fg);
+  opacity: 0.35;
+  border-left: 1.5px solid var(--color-fg);
+  flex-shrink: 0;
+  transition: opacity 80ms ease;
+}
+
+.sb-chip__remove:active {
+  opacity: 0.8;
+}
+
+/* ─── Validation result ───────────────────────────────────────────────────── */
+.sb-result {
+  flex-shrink: 0;
+  border: 2px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sb-result--valid {
+  background: #d4f5d4;
+}
+
+.sb-result--invalid {
+  background: #ffd6d6;
+}
+
+.sb-result__title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg);
+  margin-bottom: 2px;
+}
+
+.sb-result__row {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  line-height: 1.4;
+}
+
+.sb-result__row--issue { opacity: 0.85; }
+.sb-result__row--pass  { opacity: 0.65; }
+
+/* ─── Picker panel ────────────────────────────────────────────────────────── */
+.sb-picker {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2.5px solid var(--color-fg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  background: var(--color-surface);
+}
+
+/* ─── Tab bar ─────────────────────────────────────────────────────────────── */
+.sb-tabs {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 2px solid var(--color-fg);
+  flex-shrink: 0;
+}
+
+.sb-tabs::-webkit-scrollbar { display: none; }
+
+.sb-tab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-fg);
+  opacity: 0.5;
+  white-space: nowrap;
+  border-right: 1.5px solid var(--color-muted);
+  flex-shrink: 0;
+  transition: opacity 80ms ease, background 80ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sb-tab:last-child { border-right: none; }
+
+.sb-tab--active {
+  opacity: 1;
+  background: var(--tab-color, var(--color-bg));
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+/* ─── Word list ───────────────────────────────────────────────────────────── */
+.sb-word-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xs) var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ─── Word item ───────────────────────────────────────────────────────────── */
+.sb-word-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding: 6px 10px;
+  background: var(--chip-color, var(--color-surface));
+  border: 1.5px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.sb-word-item:active {
+  transform: translateX(2px) translateY(2px);
+  box-shadow: none;
+}
+
+.sb-word-item__word {
+  font-family: var(--font-japanese);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+
+.sb-word-item__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.sb-word-item__kana {
+  font-family: var(--font-japanese);
+  font-size: 12px;
+  color: var(--color-fg);
+  opacity: 0.55;
+}
+
+.sb-word-item__romaji {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-fg);
+  opacity: 0.45;
+  font-style: italic;
+}
+
+.sb-word-item__meaning {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.7;
+  margin-left: auto;
+}
+
+/* ─── Verb form picker ────────────────────────────────────────────────────── */
+.sb-verb-picker {
+  padding: var(--space-sm);
+}
+
+.sb-verb-picker__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1.5px solid var(--color-muted);
+}
+
+.sb-verb-picker__back {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent-blue);
+  opacity: 0.8;
+  padding: 4px 0;
+}
+
+.sb-verb-picker__dict {
+  font-family: var(--font-japanese);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-fg);
+}
+
+.sb-verb-picker__meaning {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+.sb-verb-picker__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.sb-verb-form-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--chip-color, #ffdfc2);
+  border: 1.5px solid var(--color-fg);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sb-verb-form-btn:active {
+  transform: translateX(2px) translateY(2px);
+  box-shadow: none;
+}
+
+.sb-verb-form-btn__word {
+  font-family: var(--font-japanese);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1.1;
+}
+
+.sb-verb-form-btn__kana {
+  font-family: var(--font-japanese);
+  font-size: 11px;
+  color: var(--color-fg);
+  opacity: 0.5;
+}
+
+.sb-verb-form-btn__label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-fg);
+  opacity: 0.45;
+  margin-top: 1px;
+}
+
+/* ─── Action bar ──────────────────────────────────────────────────────────── */
+.sb-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+  padding-bottom: var(--space-md);
+}
+
+.sb-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 var(--space-md);
+  background: var(--color-fg);
+  color: var(--color-surface);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  transition: transform 80ms ease, box-shadow 80ms ease, opacity 80ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sb-action-btn--check {
+  flex: 1;
+}
+
+.sb-action-btn--icon {
+  width: 44px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sb-action-btn--copied {
+  background: #2a7a2a;
+}
+
+.sb-action-btn--clear {
+  background: var(--color-surface);
+  color: var(--color-fg);
+  border: 2.5px solid var(--color-fg);
+}
+
+.sb-action-btn:active {
+  transform: translateX(2px) translateY(2px);
+  box-shadow: none;
+}
+
+.sb-action-btn:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .sb-action-btn:hover:not(:disabled) {
+    transform: translateX(1px) translateY(1px);
+    box-shadow: 1px 1px 0 #333;
+  }
+}

@@ -7,6 +7,7 @@ import ProgressScreen from './screens/ProgressScreen'
 import WordSearchScreen from './screens/WordSearchScreen'
 import WritingScreen from './screens/WritingScreen'
 import VerbDrillScreen from './screens/VerbDrillScreen'
+import SentenceBuilderScreen from './screens/SentenceBuilderScreen'
 
 function Screens() {
   const { screen, params } = useNav()
@@ -24,6 +25,8 @@ function Screens() {
       return <WritingScreen />
     case 'verb_drill':
       return <VerbDrillScreen />
+    case 'sentence_builder':
+      return <SentenceBuilderScreen />
     case 'home':
     default:
       return <HomeScreen />

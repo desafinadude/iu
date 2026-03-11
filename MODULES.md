@@ -72,3 +72,13 @@ A handwriting practice quiz for hiragana, katakana, and JLPT N5 kanji. Players d
 - Mastery is tracked per character via a consecutive-correct streak (stored in localStorage).
 - 10 correct answers in a row = mastered (streak 10/10). Any wrong answer resets the streak to 0.
 - Writing mastery is shown on the Progress screen alongside kana quiz mastery.
+
+
+### 4. Sentence Builder Module
+
+Using templates like [Time]、[Subject] は [Adjective + Object] を [Location] で [Adverb + Verb], users can quickoy construct sentences by selecting from dropdowns of vocabulary we already have. This reinforces sentence structure and grammar patterns in a fun, low-pressure way.
+The dropdowns should be populated with vocabulary from the Word Search and verb modules and should include all of them with the necessary particles.
+
+The word dropdowns should show kanji, kana, romaji and english meaning to help users make connections between the different representations of the words they are learning. The sentence builder should also have a "speak" button that uses the Web Speech API to read the constructed sentence aloud, allowing users to practice their listening and pronunciation skills.
+
+Selecting a word from the dropdown just adds the sentence to the table, we have to rearrange the sentence to make a valid sentence. This encourages users to think about sentence structure and grammar rather than just memorizing fixed phrases. 
