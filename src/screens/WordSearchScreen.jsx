@@ -157,7 +157,14 @@ export default function WordSearchScreen() {
   const [lives,       setLives]       = useState(3)
   const [timeLeft,    setTimeLeft]    = useState(TIMER_MAX)
   const [status,      setStatus]      = useState('playing')
+  const [hiddenWords, setHiddenWords] = useState(new Set())
   const gridRef = useRef(null)
+
+  function buildHiddenSet(count) {
+    const indices = Array.from({ length: count }, (_, i) => i)
+    const shuffled = indices.sort(() => Math.random() - 0.5)
+    return new Set(shuffled.slice(0, Math.round(count * 0.5)))
+  }
 
   // Timer countdown (only while puzzle is active)
   useEffect(() => {
@@ -245,25 +252,29 @@ export default function WordSearchScreen() {
   }
 
   function handlePickTheme(themeId) {
+    const p = buildPuzzle(WORD_COUNT, themeId)
     setTheme(themeId)
-    setPuzzle(buildPuzzle(WORD_COUNT, themeId))
+    setPuzzle(p)
     setFound([])
     setLives(3)
     setTimeLeft(TIMER_MAX)
     setStatus('playing')
     setDragStart(null)
     setDragCurrent(null)
+    setHiddenWords(buildHiddenSet(p.words.length))
     setPhase('play')
   }
 
   function handleNewGame() {
-    setPuzzle(buildPuzzle(WORD_COUNT, theme))
+    const p = buildPuzzle(WORD_COUNT, theme)
+    setPuzzle(p)
     setFound([])
     setLives(3)
     setTimeLeft(TIMER_MAX)
     setStatus('playing')
     setDragStart(null)
     setDragCurrent(null)
+    setHiddenWords(buildHiddenSet(p.words.length))
   }
 
   function handleNewTheme() {
@@ -293,18 +304,19 @@ export default function WordSearchScreen() {
         {/* Word chips — tap to hear */}
         <div className="ws-words" aria-label="Words to find">
           {puzzle.words.map((word, i) => {
-            const isFound = found.includes(i)
-            const color   = CHIP_COLORS[i % CHIP_COLORS.length]
+            const isFound  = found.includes(i)
+            const isHidden = hiddenWords.has(i) && !isFound
+            const color    = CHIP_COLORS[i % CHIP_COLORS.length]
             return (
               <button
                 key={i}
-                className={`ws-chip${isFound ? ' ws-chip--found' : ''}`}
+                className={`ws-chip${isFound ? ' ws-chip--found' : ''}${isHidden ? ' ws-chip--hidden' : ''}`}
                 style={{ background: color }}
                 onClick={() => speak(word.kana)}
-                aria-label={`${word.meaning}, tap to hear`}
+                aria-label={isHidden ? 'hidden word, tap to hear' : `${word.meaning}, tap to hear`}
               >
-                {word.meaning}
-                {word.script === 'kana' && word.hasKanji && (
+                {isHidden ? '????' : word.meaning}
+                {!isHidden && word.script === 'kana' && word.hasKanji && (
                   <span className="ws-chip__script">か</span>
                 )}
               </button>

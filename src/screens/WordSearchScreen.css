@@ -182,6 +182,12 @@
   box-shadow: none;
 }
 
+/* Hidden chip — meaning replaced with ???? until found */
+.ws-chip--hidden {
+  letter-spacing: 0.08em;
+  font-style: italic;
+}
+
 /* Chip color comes from inline style; found = pressed-in look */
 .ws-chip--found {
   box-shadow: none;
