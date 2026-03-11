@@ -1,224 +1,208 @@
-import { useState } from 'react'
-import * as LucideIcons from 'lucide-react'
-import { VOCAB_LIST } from '../data/vocabData'
+import { useState, useRef, useEffect } from 'react'
+import { Volume2, Copy, Check, ChevronRight, ChevronLeft } from 'lucide-react'
+import { VOCAB_LIST, ADJ_LIST } from '../data/vocabData'
 import { VERB_LIST } from '../data/verbData'
 import { speak } from '../utils/speech'
 import { kanaToRomaji } from '../utils/kanaToRomaji'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import './SentenceBuilderScreen.css'
 
-// ─── Vocabulary buckets ────────────────────────────────────────────────────
+// ─── Category data ─────────────────────────────────────────────────────────
 
-const SUBJECTS  = VOCAB_LIST.filter(w => w.type === 'pronoun' || (w.type === 'noun' && w.theme === 'people'))
-const OBJECTS   = VOCAB_LIST.filter(w => w.type === 'noun' && ['animal','food','home','clothing','body','nature','transport'].includes(w.theme))
-const LOCATIONS = VOCAB_LIST.filter(w => w.type === 'noun' && w.theme === 'places')
-const TIME_WORDS = VOCAB_LIST.filter(w => w.type === 'noun' && ['time','calendar'].includes(w.theme))
-const ADVERBS   = VOCAB_LIST.filter(w => w.type === 'adverb')
-
-// ─── Particles available per role ─────────────────────────────────────────
-
-const ROLE_PARTICLES = {
-  subject:  ['は', 'が'],
-  object:   ['を', 'は'],
-  location: ['で', 'に', 'へ', 'から', 'まで'],
-  time:     ['に', 'は', 'から', 'まで'],
-  adverb:   [],
-  verb:     [],
-}
-
-const DEFAULT_PARTICLE = {
-  subject:  'は',
-  object:   'を',
-  location: 'で',
-  time:     'に',
-  adverb:   null,
-  verb:     null,
-}
-
-const CHIP_COLORS = {
-  subject:  '#c2dcff',
-  object:   '#ffd6d6',
-  location: '#d4f5d4',
-  time:     '#fff4b3',
-  adverb:   '#e0c8ff',
-  verb:     '#ffdfc2',
-}
-
-// ─── Tabs ──────────────────────────────────────────────────────────────────
-
-const TABS = [
-  { id: 'subject',  label: 'Subject',  iconName: 'User',       words: SUBJECTS,   role: 'subject'  },
-  { id: 'time',     label: 'Time',     iconName: 'Clock',      words: TIME_WORDS, role: 'time'     },
-  { id: 'object',   label: 'Object',   iconName: 'Package',    words: OBJECTS,    role: 'object'   },
-  { id: 'location', label: 'Location', iconName: 'MapPin',     words: LOCATIONS,  role: 'location' },
-  { id: 'adverb',   label: 'Adverb',   iconName: 'Zap',        words: ADVERBS,    role: 'adverb'   },
-  { id: 'verb',     label: 'Verb',     iconName: 'PlayCircle', words: VERB_LIST,  role: 'verb'     },
+const PARTICLES = [
+  { word: 'は',   kana: 'は',   meaning: 'topic',               type: 'particle' },
+  { word: 'が',   kana: 'が',   meaning: 'subject',             type: 'particle' },
+  { word: 'を',   kana: 'を',   meaning: 'object',              type: 'particle' },
+  { word: 'に',   kana: 'に',   meaning: 'direction / time',    type: 'particle' },
+  { word: 'で',   kana: 'で',   meaning: 'location / means',    type: 'particle' },
+  { word: 'へ',   kana: 'へ',   meaning: 'direction',           type: 'particle' },
+  { word: 'と',   kana: 'と',   meaning: 'and / with',          type: 'particle' },
+  { word: 'の',   kana: 'の',   meaning: 'possession',          type: 'particle' },
+  { word: 'も',   kana: 'も',   meaning: 'also / too',          type: 'particle' },
+  { word: 'か',   kana: 'か',   meaning: 'question marker',     type: 'particle' },
+  { word: 'ね',   kana: 'ね',   meaning: "isn't it / right?",   type: 'particle' },
+  { word: 'よ',   kana: 'よ',   meaning: 'emphasis / assertion',type: 'particle' },
+  { word: 'から', kana: 'から', meaning: 'from / because',      type: 'particle' },
+  { word: 'まで', kana: 'まで', meaning: 'until / up to',       type: 'particle' },
+  { word: 'だ',   kana: 'だ',   meaning: 'copula (casual)',     type: 'particle' },
+  { word: 'です', kana: 'です', meaning: 'copula (polite)',     type: 'particle' },
 ]
 
-// ─── Grammar validator ─────────────────────────────────────────────────────
+function fromVocab(filter, type) {
+  return VOCAB_LIST.filter(filter).map(w => ({ word: w.word, kana: w.kana, meaning: w.meaning, type: type ?? 'noun' }))
+}
+
+const CATEGORIES = [
+  { id: 'particles',  label: 'Particles',        opts: PARTICLES },
+  { id: 'pronouns',   label: 'Pronouns',          opts: fromVocab(w => w.type === 'pronoun', 'pronoun') },
+  { id: 'people',     label: 'Nouns — People',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'people') },
+  { id: 'places',     label: 'Nouns — Places',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'places') },
+  { id: 'food',       label: 'Nouns — Food',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'food') },
+  { id: 'animals',    label: 'Nouns — Animals',   opts: fromVocab(w => w.type === 'noun' && w.theme === 'animal') },
+  { id: 'home',       label: 'Nouns — Home',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'home') },
+  { id: 'clothing',   label: 'Nouns — Clothing',  opts: fromVocab(w => w.type === 'noun' && w.theme === 'clothing') },
+  { id: 'body',       label: 'Nouns — Body',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'body') },
+  { id: 'nature',     label: 'Nouns — Nature',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'nature') },
+  { id: 'transport',  label: 'Nouns — Transport', opts: fromVocab(w => w.type === 'noun' && w.theme === 'transport') },
+  { id: 'time',       label: 'Time',              opts: fromVocab(w => w.type === 'noun' && (w.theme === 'time' || w.theme === 'calendar'), 'time') },
+  { id: 'adverbs',    label: 'Adverbs',           opts: fromVocab(w => w.type === 'adverb', 'adverb') },
+  {
+    id: 'verbs_polite', label: 'Verbs — Polite',
+    opts: VERB_LIST.flatMap(v => [
+      { word: v.polite.present_pos.word, kana: v.polite.present_pos.kana, meaning: `${v.meaning} · pres +`, type: 'verb' },
+      { word: v.polite.present_neg.word, kana: v.polite.present_neg.kana, meaning: `${v.meaning} · pres −`, type: 'verb' },
+      { word: v.polite.past_pos.word,    kana: v.polite.past_pos.kana,    meaning: `${v.meaning} · past +`, type: 'verb' },
+      { word: v.polite.past_neg.word,    kana: v.polite.past_neg.kana,    meaning: `${v.meaning} · past −`, type: 'verb' },
+    ]),
+  },
+  {
+    id: 'verbs_casual', label: 'Verbs — Casual',
+    opts: VERB_LIST.flatMap(v => [
+      { word: v.casual.present_pos.word, kana: v.casual.present_pos.kana, meaning: `${v.meaning} · pres +`, type: 'verb' },
+      { word: v.casual.present_neg.word, kana: v.casual.present_neg.kana, meaning: `${v.meaning} · pres −`, type: 'verb' },
+      { word: v.casual.past_pos.word,    kana: v.casual.past_pos.kana,    meaning: `${v.meaning} · past +`, type: 'verb' },
+      { word: v.casual.past_neg.word,    kana: v.casual.past_neg.kana,    meaning: `${v.meaning} · past −`, type: 'verb' },
+    ]),
+  },
+  {
+    id: 'adjectives', label: 'Adjectives',
+    opts: ADJ_LIST.flatMap(a => [
+      { word: a.polite.present_pos.word, kana: a.polite.present_pos.kana, meaning: `${a.meaning} · pres +`, type: 'adj' },
+      { word: a.polite.present_neg.word, kana: a.polite.present_neg.kana, meaning: `${a.meaning} · pres −`, type: 'adj' },
+    ]),
+  },
+]
+
+// ─── Grammar checker ───────────────────────────────────────────────────────
 
 function validateSentence(chips) {
   if (chips.length === 0) return null
+  const issues = [], passes = []
+  const lastPredIdx = chips.findLastIndex(c => c.type === 'verb' || c.type === 'adj')
 
-  const issues = []
-  const passes = []
-
-  const verbIdx = chips.findLastIndex(c => c.role === 'verb')
-
-  if (verbIdx === -1) {
-    return { valid: false, issues: ['Add a verb to complete the sentence.'], passes: [] }
+  if (lastPredIdx === -1) {
+    return { valid: false, issues: ['Add a verb or adjective to complete the sentence.'], passes: [] }
   }
-
-  // Verb last
-  if (verbIdx === chips.length - 1) {
-    passes.push('Verb is at the end — correct Japanese word order!')
+  if (lastPredIdx === chips.length - 1) {
+    passes.push('Predicate at the end — correct Japanese word order!')
   } else {
-    issues.push('In Japanese the verb comes at the end of the sentence.')
+    issues.push('In Japanese, the verb or adjective comes at the end.')
   }
 
-  // Objects before verb
-  const lateObj = chips.findIndex((c, i) => c.particle === 'を' && i > verbIdx)
-  if (lateObj !== -1) {
-    issues.push('Objects marked with を must come before the verb.')
-  } else if (chips.some(c => c.particle === 'を')) {
-    passes.push('Object (を) is correctly placed before the verb.')
+  const woIdx = chips.findLastIndex(c => c.word === 'を')
+  if (woIdx !== -1) {
+    if (woIdx < lastPredIdx) passes.push('Object particle (を) is before the verb.')
+    else issues.push('The を particle should come before the verb.')
   }
 
-  // Location before verb
-  const lateLoc = chips.findIndex((c, i) => (c.particle === 'で' || c.particle === 'に') && c.role === 'location' && i > verbIdx)
-  if (lateLoc !== -1) {
-    issues.push('Location phrases (で / に) should come before the verb.')
-  }
-
-  // Time before subject
-  const timeIdx  = chips.findIndex(c => c.role === 'time')
-  const subjectIdx = chips.findIndex(c => c.role === 'subject')
-  if (timeIdx !== -1 && subjectIdx !== -1) {
-    if (timeIdx < subjectIdx) {
-      passes.push('Time expression at the start — natural Japanese ordering.')
+  const negAdverb = chips.find(c => ['あまり', '全然'].includes(c.word))
+  if (negAdverb) {
+    const vk = chips[lastPredIdx]?.kana ?? ''
+    if (vk.includes('ない') || vk.includes('ません')) {
+      passes.push('Negative adverb paired correctly with negative verb form.')
     } else {
-      issues.push('Time expressions usually come at the start, before the subject.')
-    }
-  }
-
-  // Negative adverbs need negative verb
-  const negAdverbs = ['あまり', 'ぜんぜん']
-  const negAdverbChip = chips.find(c => negAdverbs.includes(c.kana))
-  if (negAdverbChip) {
-    const verbChip = chips[verbIdx]
-    const neg = verbChip?.kana?.includes('ない') || verbChip?.kana?.includes('ません')
-    if (neg) {
-      passes.push(`「${negAdverbChip.word}」correctly paired with a negative verb form.`)
-    } else {
-      issues.push(`「${negAdverbChip.word}」is used with negative verb forms (ない / ません).`)
+      issues.push(`「${negAdverb.word}」is used with negative forms (ない・ません).`)
     }
   }
 
   return { valid: issues.length === 0, issues, passes }
 }
 
-// ─── Verb form picker ──────────────────────────────────────────────────────
+// ─── Two-step dropdown ─────────────────────────────────────────────────────
 
-function VerbFormPicker({ verb, onSelect, onBack }) {
-  const rows = [
-    { register: 'polite', label: 'Polite' },
-    { register: 'casual', label: 'Casual' },
-  ]
-  const cols = [
-    { key: 'present_pos', label: 'Pres +' },
-    { key: 'present_neg', label: 'Pres −' },
-    { key: 'past_pos',    label: 'Past +' },
-    { key: 'past_neg',    label: 'Past −' },
-  ]
+function WordDropdown({ onSelect }) {
+  const [open,     setOpen]     = useState(false)
+  const [category, setCategory] = useState(null)  // null = category list
+  const panelRef = useRef(null)
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    function onDown(e) {
+      if (!panelRef.current?.parentElement?.contains(e.target)) {
+        setOpen(false)
+        setCategory(null)
+      }
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
+  }, [open])
+
+  function pickCategory(cat) { setCategory(cat) }
+
+  function pickWord(opt) {
+    onSelect(opt)
+    setOpen(false)
+    setCategory(null)
+  }
+
+  function goBack() { setCategory(null) }
+
+  function toggleOpen() {
+    setOpen(v => !v)
+    setCategory(null)
+  }
 
   return (
-    <div className="sb-verb-picker">
-      <div className="sb-verb-picker__header">
-        <button className="sb-verb-picker__back" onClick={onBack} aria-label="Back to verb list">
-          <LucideIcons.ChevronLeft size={16} aria-hidden="true" /> Back
-        </button>
-        <span className="sb-verb-picker__dict">{verb.dict}</span>
-        <span className="sb-verb-picker__meaning">{verb.meaning}</span>
-      </div>
-      <div className="sb-verb-picker__grid">
-        {rows.flatMap(row =>
-          cols.map(col => {
-            const form = verb[row.register][col.key]
-            return (
-              <button
-                key={`${row.register}-${col.key}`}
-                className="sb-verb-form-btn"
-                style={{ '--chip-color': CHIP_COLORS.verb }}
-                onClick={() => onSelect({ word: form.word, kana: form.kana, meaning: form.meaning })}
-              >
-                <span className="sb-verb-form-btn__word">{form.word}</span>
-                <span className="sb-verb-form-btn__kana">{form.kana}</span>
-                <span className="sb-verb-form-btn__label">{row.label} · {col.label}</span>
+    <div className="sb-dropdown">
+      <button className="sb-dropdown__trigger" onClick={toggleOpen} aria-expanded={open}>
+        <span className="sb-dropdown__trigger-label">
+          {category ? category.label : 'Add a word…'}
+        </span>
+        <ChevronRight
+          size={16}
+          className={`sb-dropdown__arrow${open ? ' sb-dropdown__arrow--open' : ''}`}
+          aria-hidden="true"
+        />
+      </button>
+
+      {open && (
+        <div className="sb-dropdown__panel" ref={panelRef}>
+          {category ? (
+            <>
+              <button className="sb-dropdown__back" onClick={goBack}>
+                <ChevronLeft size={14} aria-hidden="true" />
+                <span>Back</span>
               </button>
-            )
-          })
-        )}
-      </div>
+              {category.opts.map((opt, i) => (
+                <button key={i} className="sb-dropdown__item" onClick={() => pickWord(opt)}>
+                  <span className="sb-dropdown__item-word">{opt.word}</span>
+                  <span className="sb-dropdown__item-meta">
+                    {opt.kana !== opt.word && <span className="sb-dropdown__item-kana">{opt.kana}</span>}
+                    <span className="sb-dropdown__item-romaji">{kanaToRomaji(opt.kana)}</span>
+                    <span className="sb-dropdown__item-meaning">{opt.meaning}</span>
+                  </span>
+                </button>
+              ))}
+            </>
+          ) : (
+            CATEGORIES.map(cat => (
+              <button key={cat.id} className="sb-dropdown__cat" onClick={() => pickCategory(cat)}>
+                <span>{cat.label}</span>
+                <ChevronRight size={14} aria-hidden="true" />
+              </button>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
-// ─── Word picker item ──────────────────────────────────────────────────────
+// ─── Chip ──────────────────────────────────────────────────────────────────
 
-function WordItem({ word, role, onClick }) {
-  const showKana   = word.word !== word.kana
-  const romaji     = kanaToRomaji(word.kana)
-  const showRomaji = romaji !== word.kana
-
-  return (
-    <button
-      className="sb-word-item"
-      style={{ '--chip-color': CHIP_COLORS[role] }}
-      onClick={() => onClick(word)}
-    >
-      <span className="sb-word-item__word">{word.word}</span>
-      <span className="sb-word-item__meta">
-        {showKana && <span className="sb-word-item__kana">{word.kana}</span>}
-        {showRomaji && <span className="sb-word-item__romaji">{romaji}</span>}
-        <span className="sb-word-item__meaning">{word.meaning}</span>
-      </span>
-    </button>
-  )
-}
-
-// ─── Sentence chip ─────────────────────────────────────────────────────────
-
-function SentenceChip({ chip, isSelected, onTap, onRemove, onCycleParticle }) {
-  const particles = ROLE_PARTICLES[chip.role]
+function Chip({ chip, isDragging, onPointerDown, onTap }) {
+  const showKana = chip.word !== chip.kana
 
   return (
     <div
-      className={`sb-chip${isSelected ? ' sb-chip--selected' : ''}`}
-      style={{ '--chip-color': CHIP_COLORS[chip.role] }}
+      className={`sb-chip${isDragging ? ' sb-chip--dragging' : ''}`}
+      onPointerDown={onPointerDown}
+      onClick={onTap}
+      data-chip-id={chip.id}
     >
-      <button
-        className="sb-chip__body"
-        onClick={onTap}
-        aria-label={`${chip.word}${chip.particle ?? ''} — tap to select for reordering`}
-      >
-        <span className="sb-chip__word">{chip.word}</span>
-        {chip.word !== chip.kana && (
-          <span className="sb-chip__kana">{chip.kana}</span>
-        )}
-        <span className="sb-chip__meaning">{chip.meaning}</span>
-      </button>
-      {particles.length > 0 && (
-        <button
-          className="sb-chip__particle"
-          onClick={onCycleParticle}
-          aria-label={`Particle ${chip.particle} — tap to change`}
-        >
-          {chip.particle}
-        </button>
-      )}
-      <button className="sb-chip__remove" onClick={onRemove} aria-label="Remove word">
-        <LucideIcons.X size={12} strokeWidth={3} aria-hidden="true" />
-      </button>
+      <span className="sb-chip__word">{chip.word}</span>
+      {showKana && <span className="sb-chip__kana">{chip.kana}</span>}
     </div>
   )
 }
@@ -226,85 +210,134 @@ function SentenceChip({ chip, isSelected, onTap, onRemove, onCycleParticle }) {
 // ─── Main screen ───────────────────────────────────────────────────────────
 
 export default function SentenceBuilderScreen() {
-  const [activeTab,   setActiveTab]   = useState('subject')
   const [sentence,    setSentence]    = useState([])
-  const [selectedIdx, setSelectedIdx] = useState(null)
-  const [activeVerb,  setActiveVerb]  = useState(null)
   const [checkResult, setCheckResult] = useState(null)
   const [copied,      setCopied]      = useState(false)
 
-  const currentTab = TABS.find(t => t.id === activeTab)
+  // Drag state
+  const [draggingId, setDraggingId] = useState(null)
+  const [insertAt,   setInsertAt]   = useState(null)
+  const [ghostStyle, setGhostStyle] = useState(null)
 
-  // ── Word / verb selection ──────────────────────────────────────────────
+  const dragRef     = useRef(null)
+  const insertRef   = useRef(null)
+  const didDragRef  = useRef(false)
+  const sentRef     = useRef(sentence)
+  const chipsRef    = useRef(null)
 
-  function handleWordClick(word) {
-    if (activeTab === 'verb') {
-      setActiveVerb(word)
-      return
-    }
-    const chip = {
-      id:       `${word.word}-${Date.now()}`,
-      word:     word.word,
-      kana:     word.kana,
-      meaning:  word.meaning,
-      role:     activeTab,
-      particle: DEFAULT_PARTICLE[activeTab],
-    }
-    setSentence(prev => [...prev, chip])
+  // Double-tap timers for remove
+  const tapTimers = useRef({})
+
+  useEffect(() => { sentRef.current = sentence }, [sentence])
+
+  // ── Word selection ─────────────────────────────────────────────────────
+
+  function handleSelect(opt) {
+    setSentence(prev => [...prev, { ...opt, id: `${opt.word}-${Date.now()}` }])
     setCheckResult(null)
-    setSelectedIdx(null)
   }
 
-  function handleVerbFormSelect(form) {
-    const chip = {
-      id:      `verb-${Date.now()}`,
-      word:    form.word,
-      kana:    form.kana,
-      meaning: form.meaning,
-      role:    'verb',
-      particle: null,
-    }
-    setSentence(prev => [...prev, chip])
-    setActiveVerb(null)
-    setCheckResult(null)
-    setSelectedIdx(null)
-  }
+  // ── Tap: speak (single) / remove (double) ─────────────────────────────
 
-  // ── Chip interactions ──────────────────────────────────────────────────
+  function handleChipTap(chip) {
+    if (didDragRef.current) return  // ignore tap after drag
 
-  function handleChipTap(idx) {
-    if (selectedIdx === null) {
-      setSelectedIdx(idx)
-    } else if (selectedIdx === idx) {
-      setSelectedIdx(null)
+    if (tapTimers.current[chip.id]) {
+      clearTimeout(tapTimers.current[chip.id])
+      delete tapTimers.current[chip.id]
+      setSentence(prev => prev.filter(c => c.id !== chip.id))
+      setCheckResult(null)
     } else {
+      tapTimers.current[chip.id] = setTimeout(() => {
+        delete tapTimers.current[chip.id]
+        speak(chip.kana)
+      }, 280)
+    }
+  }
+
+  // ── Drag ───────────────────────────────────────────────────────────────
+
+  function getInsertIdx(clientX, clientY, dragId) {
+    if (!chipsRef.current) return null
+    const els = Array.from(chipsRef.current.querySelectorAll('[data-chip-id]'))
+    for (const el of els) {
+      if (el.dataset.chipId === dragId) continue
+      const r = el.getBoundingClientRect()
+      if (Math.abs(clientY - (r.top + r.height / 2)) < r.height * 0.75) {
+        const sentIdx = sentRef.current.findIndex(c => c.id === el.dataset.chipId)
+        return clientX < r.left + r.width / 2 ? sentIdx : sentIdx + 1
+      }
+    }
+    return null
+  }
+
+  function onPointerMove(e) {
+    if (!dragRef.current) return
+    const { offsetX, offsetY, startX, startY } = dragRef.current
+
+    // Activate drag after threshold
+    if (!didDragRef.current) {
+      const dx = Math.abs(e.clientX - startX)
+      const dy = Math.abs(e.clientY - startY)
+      if (dx < 6 && dy < 6) return
+      didDragRef.current = true
+      setDraggingId(dragRef.current.id)
+    }
+
+    setGhostStyle(prev => prev ? { ...prev, left: e.clientX - offsetX, top: e.clientY - offsetY } : prev)
+
+    const idx = getInsertIdx(e.clientX, e.clientY, dragRef.current.id)
+    insertRef.current = idx
+    setInsertAt(idx)
+  }
+
+  function onPointerUp() {
+    if (!dragRef.current) return
+    const { id } = dragRef.current
+
+    if (didDragRef.current && insertRef.current !== null) {
       setSentence(prev => {
+        const from = prev.findIndex(c => c.id === id)
+        if (from === -1) return prev
         const next = [...prev]
-        ;[next[selectedIdx], next[idx]] = [next[idx], next[selectedIdx]]
+        const [chip] = next.splice(from, 1)
+        let to = insertRef.current
+        if (to > from) to--
+        next.splice(to, 0, chip)
         return next
       })
-      setSelectedIdx(null)
       setCheckResult(null)
     }
+
+    dragRef.current    = null
+    insertRef.current  = null
+    // Reset didDragRef after click fires
+    setTimeout(() => { didDragRef.current = false }, 0)
+    setDraggingId(null)
+    setInsertAt(null)
+    setGhostStyle(null)
+
+    window.removeEventListener('pointermove', onPointerMove)
+    window.removeEventListener('pointerup',   onPointerUp)
   }
 
-  function removeChip(idx) {
-    setSentence(prev => prev.filter((_, i) => i !== idx))
-    if (selectedIdx === idx) setSelectedIdx(null)
-    setCheckResult(null)
-  }
+  function handleChipPointerDown(e, chip) {
+    e.preventDefault()
+    const el = e.currentTarget
+    const rect = el.getBoundingClientRect()
 
-  function cycleParticle(idx) {
-    setSentence(prev => {
-      const chip    = prev[idx]
-      const options = ROLE_PARTICLES[chip.role]
-      if (!options.length) return prev
-      const next = [...prev]
-      const cur  = options.indexOf(chip.particle)
-      next[idx]  = { ...chip, particle: options[(cur + 1) % options.length] }
-      return next
-    })
-    setCheckResult(null)
+    dragRef.current = {
+      id:      chip.id,
+      startX:  e.clientX,
+      startY:  e.clientY,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+    }
+    didDragRef.current = false
+    setGhostStyle({ left: rect.left, top: rect.top, width: rect.width })
+
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup',   onPointerUp)
   }
 
   // ── Actions ────────────────────────────────────────────────────────────
@@ -317,154 +350,91 @@ export default function SentenceBuilderScreen() {
   }
 
   function handleSpeak() {
-    const kana = sentence.map(c => c.kana + (c.particle ?? '')).join('')
-    if (kana) speak(kana)
+    const text = sentence.map(c => c.kana).join('')
+    if (text) speak(text)
   }
 
   function handleCopy() {
-    const text = sentence.map(c => c.word + (c.particle ?? '')).join('') + '。'
+    const text = sentence.map(c => c.word).join('') + '。'
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     })
   }
 
-  function handleClear() {
-    setSentence([])
-    setSelectedIdx(null)
-    setCheckResult(null)
-    setActiveVerb(null)
-  }
-
   const hasChips = sentence.length > 0
-
-  // ─────────────────────────────────────────────────────────────────────────
+  const draggingChip = draggingId ? sentence.find(c => c.id === draggingId) : null
 
   return (
     <div className="sb-screen">
 
-      {/* ── Sentence construction area ─────────────────────────────────── */}
+      {/* ── Dropdown ───────────────────────────────────────────────────── */}
+      <WordDropdown onSelect={handleSelect} />
+
+      {/* ── Sentence area (no card) ────────────────────────────────────── */}
       <div className="sb-sentence-area">
-        {sentence.length === 0 ? (
-          <p className="sb-sentence-hint">Pick words below to build a sentence</p>
-        ) : (
-          <div className="sb-sentence-chips">
-            {sentence.map((chip, idx) => (
-              <SentenceChip
-                key={chip.id}
-                chip={chip}
-                isSelected={selectedIdx === idx}
-                onTap={() => handleChipTap(idx)}
-                onRemove={() => removeChip(idx)}
-                onCycleParticle={() => cycleParticle(idx)}
-              />
-            ))}
-            <span className="sb-sentence-maru">。</span>
-          </div>
-        )}
-        {selectedIdx !== null && (
-          <p className="sb-swap-hint">Tap another word to swap positions</p>
-        )}
+        {hasChips ? (
+          <>
+            <div className="sb-chips" ref={chipsRef}>
+              {sentence.map((chip, i) => (
+                <div key={chip.id} className="sb-chip-slot">
+                  {insertAt === i && <div className="sb-insert-bar" />}
+                  <Chip
+                    chip={chip}
+                    isDragging={chip.id === draggingId}
+                    onPointerDown={e => handleChipPointerDown(e, chip)}
+                    onTap={() => handleChipTap(chip)}
+                  />
+                </div>
+              ))}
+              {insertAt === sentence.length && <div className="sb-insert-bar" />}
+              <span className="sb-maru">。</span>
+            </div>
+          </>
+        ) : null}
       </div>
+
+      {/* ── Romaji block ───────────────────────────────────────────────── */}
+      {hasChips && (
+        <p className="sb-romaji-line">
+          {kanaToRomaji(sentence.map(c => c.kana).join(''))}。
+        </p>
+      )}
 
       {/* ── Validation result ──────────────────────────────────────────── */}
       {checkResult && (
-        <div className={`sb-result ${checkResult.valid ? 'sb-result--valid' : 'sb-result--invalid'}`}>
-          {checkResult.valid
-            ? <p className="sb-result__title">Looks correct!</p>
-            : <p className="sb-result__title">A few things to check:</p>
-          }
-          {checkResult.issues.map((msg, i) => (
-            <p key={i} className="sb-result__row sb-result__row--issue">✗ {msg}</p>
-          ))}
-          {checkResult.passes.map((msg, i) => (
-            <p key={i} className="sb-result__row sb-result__row--pass">✓ {msg}</p>
-          ))}
+        <div className={`sb-result ${checkResult.valid ? 'sb-result--ok' : 'sb-result--bad'}`}>
+          <p className="sb-result__title">
+            {checkResult.valid ? 'Looks correct!' : 'A few things to check:'}
+          </p>
+          {checkResult.issues.map((m, i) => <p key={i} className="sb-result__row">✗ {m}</p>)}
+          {checkResult.passes.map((m, i) => <p key={i} className="sb-result__row sb-result__row--pass">✓ {m}</p>)}
         </div>
       )}
 
-      {/* ── Word picker ────────────────────────────────────────────────── */}
-      <div className="sb-picker">
+      {/* ── Actions ────────────────────────────────────────────────────── */}
+      <div className="sb-actions">
+        <button className="sb-btn sb-btn--check" onClick={handleCheck} disabled={!hasChips}>Check</button>
+        <button className="sb-btn sb-btn--icon"  onClick={handleSpeak} disabled={!hasChips} aria-label="Speak all">
+          <Volume2 size={18} aria-hidden="true" />
+        </button>
+        <button
+          className={`sb-btn sb-btn--icon${copied ? ' sb-btn--copied' : ''}`}
+          onClick={handleCopy} disabled={!hasChips} aria-label={copied ? 'Copied!' : 'Copy'}
+        >
+          {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
+        </button>
+      </div>
 
-        {/* Tab bar */}
-        <div className="sb-tabs" role="tablist">
-          {TABS.map(tab => {
-            const Icon = LucideIcons[tab.iconName]
-            return (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={activeTab === tab.id}
-                className={`sb-tab${activeTab === tab.id ? ' sb-tab--active' : ''}`}
-                style={activeTab === tab.id ? { '--tab-color': CHIP_COLORS[tab.role] } : undefined}
-                onClick={() => { setActiveTab(tab.id); setActiveVerb(null) }}
-              >
-                {Icon && <Icon size={13} strokeWidth={2} aria-hidden="true" />}
-                <span>{tab.label}</span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Word list / verb form picker */}
-        <div className="sb-word-list">
-          {activeTab === 'verb' && activeVerb ? (
-            <VerbFormPicker
-              verb={activeVerb}
-              onSelect={handleVerbFormSelect}
-              onBack={() => setActiveVerb(null)}
-            />
-          ) : (
-            currentTab.words.map((word, i) => (
-              <WordItem
-                key={`${word.word ?? word.dict}-${i}`}
-                word={activeTab === 'verb' ? { word: word.dict, kana: word.kana, meaning: word.meaning } : word}
-                role={activeTab}
-                onClick={handleWordClick}
-              />
-            ))
+      {/* ── Drag ghost ─────────────────────────────────────────────────── */}
+      {ghostStyle && draggingChip && didDragRef.current && (
+        <div className="sb-chip sb-chip--ghost" style={ghostStyle} aria-hidden="true">
+          <span className="sb-chip__word">{draggingChip.word}</span>
+          {draggingChip.word !== draggingChip.kana && (
+            <span className="sb-chip__kana">{draggingChip.kana}</span>
           )}
         </div>
-
-      </div>
-
-      {/* ── Action bar ─────────────────────────────────────────────────── */}
-      <div className="sb-actions">
-        <button
-          className="sb-action-btn sb-action-btn--check"
-          onClick={handleCheck}
-          disabled={!hasChips}
-        >
-          Check
-        </button>
-        <button
-          className="sb-action-btn sb-action-btn--icon"
-          onClick={handleSpeak}
-          disabled={!hasChips}
-          aria-label="Speak sentence"
-        >
-          <LucideIcons.Volume2 size={18} aria-hidden="true" />
-        </button>
-        <button
-          className={`sb-action-btn sb-action-btn--icon${copied ? ' sb-action-btn--copied' : ''}`}
-          onClick={handleCopy}
-          disabled={!hasChips}
-          aria-label={copied ? 'Copied!' : 'Copy sentence'}
-        >
-          {copied
-            ? <LucideIcons.Check size={18} aria-hidden="true" />
-            : <LucideIcons.Copy  size={18} aria-hidden="true" />
-          }
-        </button>
-        <button
-          className="sb-action-btn sb-action-btn--icon sb-action-btn--clear"
-          onClick={handleClear}
-          disabled={!hasChips}
-          aria-label="Clear sentence"
-        >
-          <LucideIcons.Trash2 size={18} aria-hidden="true" />
-        </button>
-      </div>
+      )}
 
     </div>
   )
