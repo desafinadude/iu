@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Volume2, Copy, Check, ChevronRight, ChevronLeft, Heart } from 'lucide-react'
+import { Volume2, Copy, Check, ChevronRight, ChevronLeft } from 'lucide-react'
 import { VOCAB_LIST, ADJ_LIST } from '../data/vocabData'
 import { VERB_LIST } from '../data/verbData'
 import { speak } from '../utils/speech'
@@ -108,32 +108,70 @@ function validateSentence(chips) {
   return { valid: issues.length === 0, issues, passes }
 }
 
-// ─── Challenges ────────────────────────────────────────────────────────────
+// ─── Dynamic challenge generation from existing vocab examples ─────────────
+// Uses the `example` field already present on every VOCAB_LIST and ADJ_LIST
+// entry, so challenges only ever use words that exist in the dropdown.
 
 const CHALLENGE_TIME = 90
+const CHALLENGES_PER_GAME = 6
 
-const CHALLENGES = [
-  { en: 'I eat sushi.',          needs: ['たべ', 'すし']        },
-  { en: 'The cat is cute.',      needs: ['ねこ', 'かわい']       },
-  { en: 'I drink water.',        needs: ['のみ', 'みず']         },
-  { en: 'I go to school.',       needs: ['がっこう', 'いき']     },
-  { en: 'Mother is kind.',       needs: ['おかあ', 'やさし']     },
-  { en: 'I like dogs.',          needs: ['いぬ', 'すき']         },
-]
+function buildAllChallenges() {
+  const out = []
+
+  // From VOCAB_LIST — each noun/pronoun/adverb has an example sentence
+  for (const w of VOCAB_LIST) {
+    if (!w.example || w.type === 'particle' || w.kana.length < 2) continue
+    out.push({ en: w.example.en, needs: [w.kana] })
+  }
+
+  // From ADJ_LIST — each adjective has an example sentence
+  for (const a of ADJ_LIST) {
+    if (!a.example || a.kana.length < 2) continue
+    out.push({ en: a.example.en, needs: [a.kana] })
+  }
+
+  // From VERB_LIST — each verb has multiple example sentences
+  for (const v of VERB_LIST) {
+    for (const ex of v.examples ?? []) {
+      out.push({ en: ex.en, needs: [v.kana] })
+    }
+  }
+
+  // Deduplicate by English sentence
+  const seen = new Set()
+  return out.filter(c => {
+    if (seen.has(c.en)) return false
+    seen.add(c.en)
+    return true
+  })
+}
+
+const ALL_CHALLENGES = buildAllChallenges()
+
+function pickChallenges(n = CHALLENGES_PER_GAME) {
+  const shuffled = [...ALL_CHALLENGES].sort(() => Math.random() - 0.5)
+  return shuffled.slice(0, n)
+}
 
 function checkChallenge(chips, challenge) {
   if (chips.length === 0) return null
   const allKana = chips.map(c => c.kana).join('')
+
   const missing = challenge.needs.filter(k => !allKana.includes(k))
   if (missing.length > 0) {
-    return { valid: false, issue: 'Not quite — make sure all the key words are in your sentence.' }
+    return { valid: false, issue: 'Make sure the key word from the English sentence is included.' }
   }
-  // Basic predicate-last check
-  const lastType = chips[chips.length - 1]?.type
+
   const hasPred = chips.some(c => c.type === 'verb' || c.type === 'adj')
-  if (hasPred && lastType !== 'verb' && lastType !== 'adj' && lastType !== 'particle') {
-    return { valid: false, issue: 'Remember: the verb or adjective goes at the end in Japanese.' }
+  if (!hasPred) {
+    return { valid: false, issue: 'Add a verb or adjective to complete the sentence.' }
   }
+
+  const lastType = chips[chips.length - 1]?.type
+  if (lastType !== 'verb' && lastType !== 'adj' && lastType !== 'particle') {
+    return { valid: false, issue: 'Remember: verb or adjective goes at the end in Japanese.' }
+  }
+
   return { valid: true }
 }
 
@@ -141,10 +179,9 @@ function checkChallenge(chips, challenge) {
 
 function WordDropdown({ onSelect }) {
   const [open,     setOpen]     = useState(false)
-  const [category, setCategory] = useState(null)  // null = category list
+  const [category, setCategory] = useState(null)
   const panelRef = useRef(null)
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return
     function onDown(e) {
@@ -157,15 +194,11 @@ function WordDropdown({ onSelect }) {
     return () => document.removeEventListener('pointerdown', onDown)
   }, [open])
 
-  function pickCategory(cat) { setCategory(cat) }
-
   function pickWord(opt) {
     onSelect(opt)
     setOpen(false)
     setCategory(null)
   }
-
-  function goBack() { setCategory(null) }
 
   function toggleOpen() {
     setOpen(v => !v)
@@ -189,7 +222,7 @@ function WordDropdown({ onSelect }) {
         <div className="sb-dropdown__panel" ref={panelRef}>
           {category ? (
             <>
-              <button className="sb-dropdown__back" onClick={goBack}>
+              <button className="sb-dropdown__back" onClick={() => setCategory(null)}>
                 <ChevronLeft size={14} aria-hidden="true" />
                 <span>Back</span>
               </button>
@@ -206,7 +239,7 @@ function WordDropdown({ onSelect }) {
             </>
           ) : (
             CATEGORIES.map(cat => (
-              <button key={cat.id} className="sb-dropdown__cat" onClick={() => pickCategory(cat)}>
+              <button key={cat.id} className="sb-dropdown__cat" onClick={() => setCategory(cat)}>
                 <span>{cat.label}</span>
                 <ChevronRight size={14} aria-hidden="true" />
               </button>
@@ -221,8 +254,6 @@ function WordDropdown({ onSelect }) {
 // ─── Chip ──────────────────────────────────────────────────────────────────
 
 function Chip({ chip, isDragging, onPointerDown, onTap }) {
-  const showKana = chip.word !== chip.kana
-
   return (
     <div
       className={`sb-chip${isDragging ? ' sb-chip--dragging' : ''}`}
@@ -231,7 +262,7 @@ function Chip({ chip, isDragging, onPointerDown, onTap }) {
       data-chip-id={chip.id}
     >
       <span className="sb-chip__word">{chip.word}</span>
-      {showKana && <span className="sb-chip__kana">{chip.kana}</span>}
+      {chip.word !== chip.kana && <span className="sb-chip__kana">{chip.kana}</span>}
     </div>
   )
 }
@@ -244,7 +275,8 @@ export default function SentenceBuilderScreen() {
   const [copied,      setCopied]      = useState(false)
 
   // Challenge mode
-  const [mode,            setMode]            = useState('free')  // 'free' | 'challenge'
+  const [mode,            setMode]            = useState('free')
+  const [challenges,      setChallenges]      = useState([])
   const [challengeIdx,    setChallengeIdx]    = useState(0)
   const [timeLeft,        setTimeLeft]        = useState(CHALLENGE_TIME)
   const [lives,           setLives]           = useState(3)
@@ -257,14 +289,12 @@ export default function SentenceBuilderScreen() {
   const [insertAt,   setInsertAt]   = useState(null)
   const [ghostStyle, setGhostStyle] = useState(null)
 
-  const dragRef     = useRef(null)
-  const insertRef   = useRef(null)
-  const didDragRef  = useRef(false)
-  const sentRef     = useRef(sentence)
-  const chipsRef    = useRef(null)
-
-  // Double-tap timers for remove
-  const tapTimers = useRef({})
+  const dragRef    = useRef(null)
+  const insertRef  = useRef(null)
+  const didDragRef = useRef(false)
+  const sentRef    = useRef(sentence)
+  const chipsRef   = useRef(null)
+  const tapTimers  = useRef({})
 
   useEffect(() => { sentRef.current = sentence }, [sentence])
 
@@ -285,7 +315,7 @@ export default function SentenceBuilderScreen() {
     }
     setLives(newLives)
     const nextIdx = challengeIdx + 1
-    if (nextIdx >= CHALLENGES.length) {
+    if (nextIdx >= challenges.length) {
       setAllDone(true)
       return
     }
@@ -293,11 +323,13 @@ export default function SentenceBuilderScreen() {
     setTimeLeft(CHALLENGE_TIME)
     setSentence([])
     setChallengeResult(null)
-  }, [mode, timeLeft, lives, challengeIdx, gameOver, allDone, challengeResult])
+  }, [mode, timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult])
 
   // ── Mode helpers ───────────────────────────────────────────────────────
 
   function enterChallenge() {
+    const picked = pickChallenges()
+    setChallenges(picked)
     setMode('challenge')
     setChallengeIdx(0)
     setTimeLeft(CHALLENGE_TIME)
@@ -327,7 +359,7 @@ export default function SentenceBuilderScreen() {
   // ── Tap: speak (single) / remove (double) ─────────────────────────────
 
   function handleChipTap(chip) {
-    if (didDragRef.current) return  // ignore tap after drag
+    if (didDragRef.current) return
 
     if (tapTimers.current[chip.id]) {
       clearTimeout(tapTimers.current[chip.id])
@@ -362,8 +394,6 @@ export default function SentenceBuilderScreen() {
   function onPointerMove(e) {
     if (!dragRef.current) return
     const { offsetX, offsetY, startX, startY } = dragRef.current
-
-    // Activate drag after threshold
     if (!didDragRef.current) {
       const dx = Math.abs(e.clientX - startX)
       const dy = Math.abs(e.clientY - startY)
@@ -371,9 +401,7 @@ export default function SentenceBuilderScreen() {
       didDragRef.current = true
       setDraggingId(dragRef.current.id)
     }
-
     setGhostStyle(prev => prev ? { ...prev, left: e.clientX - offsetX, top: e.clientY - offsetY } : prev)
-
     const idx = getInsertIdx(e.clientX, e.clientY, dragRef.current.id)
     insertRef.current = idx
     setInsertAt(idx)
@@ -382,7 +410,6 @@ export default function SentenceBuilderScreen() {
   function onPointerUp() {
     if (!dragRef.current) return
     const { id } = dragRef.current
-
     if (didDragRef.current && insertRef.current !== null) {
       setSentence(prev => {
         const from = prev.findIndex(c => c.id === id)
@@ -397,24 +424,19 @@ export default function SentenceBuilderScreen() {
       setCheckResult(null)
       setChallengeResult(null)
     }
-
-    dragRef.current    = null
-    insertRef.current  = null
-    // Reset didDragRef after click fires
+    dragRef.current   = null
+    insertRef.current = null
     setTimeout(() => { didDragRef.current = false }, 0)
     setDraggingId(null)
     setInsertAt(null)
     setGhostStyle(null)
-
     window.removeEventListener('pointermove', onPointerMove)
     window.removeEventListener('pointerup',   onPointerUp)
   }
 
   function handleChipPointerDown(e, chip) {
     e.preventDefault()
-    const el = e.currentTarget
-    const rect = el.getBoundingClientRect()
-
+    const rect = e.currentTarget.getBoundingClientRect()
     dragRef.current = {
       id:      chip.id,
       startX:  e.clientX,
@@ -424,7 +446,6 @@ export default function SentenceBuilderScreen() {
     }
     didDragRef.current = false
     setGhostStyle({ left: rect.left, top: rect.top, width: rect.width })
-
     window.addEventListener('pointermove', onPointerMove)
     window.addEventListener('pointerup',   onPointerUp)
   }
@@ -433,13 +454,13 @@ export default function SentenceBuilderScreen() {
 
   function handleCheck() {
     if (mode === 'challenge') {
-      const result = checkChallenge(sentence, CHALLENGES[challengeIdx])
+      const result = checkChallenge(sentence, challenges[challengeIdx])
       setChallengeResult(result)
       if (result?.valid) {
         playCorrectSound()
         setTimeout(() => {
           const nextIdx = challengeIdx + 1
-          if (nextIdx >= CHALLENGES.length) {
+          if (nextIdx >= challenges.length) {
             setAllDone(true)
           } else {
             setChallengeIdx(nextIdx)
@@ -475,64 +496,64 @@ export default function SentenceBuilderScreen() {
     })
   }
 
-  const hasChips = sentence.length > 0
+  const hasChips    = sentence.length > 0
   const draggingChip = draggingId ? sentence.find(c => c.id === draggingId) : null
-  const timerPct = timeLeft / CHALLENGE_TIME
-  const timerColor = timerPct > 0.5 ? '#4ade80' : timerPct > 0.25 ? '#fb923c' : '#f87171'
-  const inChallenge = mode === 'challenge'
+  const inChallenge  = mode === 'challenge'
+  const timerPct     = (timeLeft / CHALLENGE_TIME) * 100
+  const timerUrgent  = timeLeft <= 20
+  const currentChallenge = challenges[challengeIdx]
 
   return (
     <div className="sb-screen">
 
       {/* ── Mode tabs ──────────────────────────────────────────────────── */}
       <div className="sb-mode-tabs">
-        <button
-          className={`sb-tab${mode === 'free' ? ' sb-tab--active' : ''}`}
-          onClick={enterFree}
-        >
+        <button className={`sb-tab${mode === 'free' ? ' sb-tab--active' : ''}`} onClick={enterFree}>
           Free Build
         </button>
-        <button
-          className={`sb-tab${mode === 'challenge' ? ' sb-tab--active' : ''}`}
-          onClick={enterChallenge}
-        >
+        <button className={`sb-tab${mode === 'challenge' ? ' sb-tab--active' : ''}`} onClick={enterChallenge}>
           Challenge
         </button>
       </div>
 
-      {/* ── Challenge header ────────────────────────────────────────────── */}
-      {inChallenge && !gameOver && !allDone && (
-        <>
-          <div className="sb-challenge-card">
-            <span className="sb-challenge-num">{challengeIdx + 1} / {CHALLENGES.length}</span>
-            <p className="sb-challenge-en">{CHALLENGES[challengeIdx].en}</p>
-          </div>
+      {/* ── Challenge prompt card (post-it style) ──────────────────────── */}
+      {inChallenge && !gameOver && !allDone && currentChallenge && (
+        <div className="sb-prompt-card">
+          <span className="sb-tape" aria-hidden="true" />
+          <div className="sb-halftone" aria-hidden="true" />
+          <span className="sb-challenge-num">{challengeIdx + 1} / {challenges.length}</span>
+          <p className="sb-challenge-en">{currentChallenge.en}</p>
+        </div>
+      )}
 
-          <div className="sb-timer-row">
-            <div className="sb-timer-bar">
-              <div
-                className="sb-timer-fill"
-                style={{ width: `${timerPct * 100}%`, background: timerColor }}
-              />
-            </div>
-            <span className="sb-timer-num">{timeLeft}s</span>
-            <div className="sb-hearts">
-              {[0, 1, 2].map(i => (
-                <Heart
-                  key={i}
-                  size={18}
-                  className={i < lives ? 'sb-heart sb-heart--alive' : 'sb-heart sb-heart--dead'}
-                  aria-hidden="true"
-                />
-              ))}
-            </div>
+      {/* ── Timer + lives ───────────────────────────────────────────────── */}
+      {inChallenge && !gameOver && !allDone && (
+        <div className="sb-status-row">
+          <div className="sb-lives" aria-label={`${lives} lives remaining`}>
+            {[0, 1, 2].map(i => (
+              <span key={i} className={`sb-heart${i < lives ? '' : ' sb-heart--lost'}`} aria-hidden="true">♥</span>
+            ))}
           </div>
-        </>
+          <div
+            className="sb-timer-track"
+            role="progressbar"
+            aria-valuenow={timeLeft}
+            aria-valuemin={0}
+            aria-valuemax={CHALLENGE_TIME}
+            aria-label="Time remaining"
+          >
+            <div
+              className={`sb-timer-fill${timerUrgent ? ' sb-timer-fill--urgent' : ''}`}
+              style={{ width: `${timerPct}%` }}
+            />
+          </div>
+          <span className="sb-timer-num">{timeLeft}s</span>
+        </div>
       )}
 
       {/* ── Game over ───────────────────────────────────────────────────── */}
       {inChallenge && gameOver && (
-        <div className="sb-overlay sb-overlay--fail">
+        <div className="sb-overlay">
           <p className="sb-overlay__title">Game Over</p>
           <p className="sb-overlay__sub">No lives remaining</p>
           <button className="sb-btn sb-btn--check" onClick={enterChallenge}>Try Again</button>
@@ -541,9 +562,9 @@ export default function SentenceBuilderScreen() {
 
       {/* ── All done ────────────────────────────────────────────────────── */}
       {inChallenge && allDone && (
-        <div className="sb-overlay sb-overlay--win">
+        <div className="sb-overlay">
           <p className="sb-overlay__title">All Done!</p>
-          <p className="sb-overlay__sub">You completed all {CHALLENGES.length} challenges</p>
+          <p className="sb-overlay__sub">You completed all {challenges.length} challenges</p>
           <button className="sb-btn sb-btn--check" onClick={enterChallenge}>Play Again</button>
         </div>
       )}
@@ -553,10 +574,10 @@ export default function SentenceBuilderScreen() {
         <WordDropdown onSelect={handleSelect} />
       )}
 
-      {/* ── Sentence area (no card) ────────────────────────────────────── */}
+      {/* ── Sentence area ──────────────────────────────────────────────── */}
       {!(inChallenge && (gameOver || allDone)) && (
         <div className="sb-sentence-area">
-          {hasChips ? (
+          {hasChips && (
             <div className="sb-chips" ref={chipsRef}>
               {sentence.map((chip, i) => (
                 <div key={chip.id} className="sb-chip-slot">
@@ -572,7 +593,7 @@ export default function SentenceBuilderScreen() {
               {insertAt === sentence.length && <div className="sb-insert-bar" />}
               <span className="sb-maru">。</span>
             </div>
-          ) : null}
+          )}
         </div>
       )}
 
@@ -587,12 +608,8 @@ export default function SentenceBuilderScreen() {
       {inChallenge ? (
         challengeResult && (
           <div className={`sb-result ${challengeResult.valid ? 'sb-result--ok' : 'sb-result--bad'}`}>
-            <p className="sb-result__title">
-              {challengeResult.valid ? 'Correct!' : 'Not quite'}
-            </p>
-            {!challengeResult.valid && (
-              <p className="sb-result__row">✗ {challengeResult.issue}</p>
-            )}
+            <p className="sb-result__title">{challengeResult.valid ? 'Correct!' : 'Not quite'}</p>
+            {!challengeResult.valid && <p className="sb-result__row">✗ {challengeResult.issue}</p>}
           </div>
         )
       ) : (
@@ -611,7 +628,7 @@ export default function SentenceBuilderScreen() {
       {!(inChallenge && (gameOver || allDone)) && (
         <div className="sb-actions">
           <button className="sb-btn sb-btn--check" onClick={handleCheck} disabled={!hasChips}>Check</button>
-          <button className="sb-btn sb-btn--icon"  onClick={handleSpeak} disabled={!hasChips} aria-label="Speak all">
+          <button className="sb-btn sb-btn--icon" onClick={handleSpeak} disabled={!hasChips} aria-label="Speak all">
             <Volume2 size={18} aria-hidden="true" />
           </button>
           <button
