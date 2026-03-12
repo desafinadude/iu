@@ -27,6 +27,12 @@ export const THEMES = [
     description: 'Neon retro-future',
     preview: { bg: '#090014', accent: '#FF00FF', fg: '#00FFFF' },
   },
+  {
+    id: 'material',
+    name: 'Material',
+    description: 'Personal & adaptive',
+    preview: { bg: '#FFFBFE', accent: '#6750A4', fg: '#1C1B1F' },
+  },
 ]
 
 export function useTheme() {

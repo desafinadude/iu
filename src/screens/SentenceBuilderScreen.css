@@ -171,6 +171,38 @@
   text-align: center;
 }
 
+.sb-hint-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.12);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-fg);
+  opacity: 0.6;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.sb-hint-btn:active { opacity: 1; }
+
+.sb-challenge-hint {
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.18);
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-fg);
+  opacity: 0.6;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
 /* ─── Status row (timer + lives) — same pattern as KanaQuiz ─────────────── */
 .sb-status-row {
   display: flex;
@@ -368,6 +400,32 @@
   flex-direction: column;
   gap: 2px;
 }
+
+.sb-dropdown__item-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ─── Tense badges ──────────────────────────────────────────────────────────── */
+.sb-tense-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+.sb-tense-badge--pres-pos { background: #d1fae5; color: #065f46; }
+.sb-tense-badge--pres-neg { background: #fee2e2; color: #991b1b; }
+.sb-tense-badge--past-pos { background: #dbeafe; color: #1e40af; }
+.sb-tense-badge--past-neg { background: #fef3c7; color: #92400e; }
 
 .sb-dropdown__item-word {
   font-family: var(--font-japanese);
@@ -571,9 +629,27 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.sb-btn--check { flex: 1; }
-.sb-btn--icon  { width: 44px; padding: 0; flex-shrink: 0; }
+.sb-btn--check  { flex: 1; }
+.sb-btn--icon   { width: 44px; padding: 0; flex-shrink: 0; }
 .sb-btn--copied { background: #2a7a2a; }
+
+.sb-btn--english {
+  width: 44px;
+  padding: 0;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  background: var(--color-surface);
+  color: var(--color-fg);
+  border: 2.5px solid var(--color-fg);
+  opacity: 0.45;
+}
+.sb-btn--english-on {
+  background: var(--color-fg);
+  color: var(--color-surface);
+  opacity: 1;
+}
 
 .sb-btn:active  { transform: translate(2px, 2px); box-shadow: none; }
 .sb-btn:disabled { opacity: 0.25; pointer-events: none; }

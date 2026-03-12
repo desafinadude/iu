@@ -214,7 +214,8 @@ Return ONLY this JSON:
     [{ role: 'system', content: system }, { role: 'user', content: user }],
     { maxTokens: 200, temperature: 0.7 },
   )
-  return parseJson(text)
+  const parsed = parseJson(text)
+  return { ...parsed, template: structure.template }
 }
 
 // ─── Check a user's answer ────────────────────────────────────────────────

@@ -118,9 +118,14 @@ function validateSentence(chips) {
   return { valid: issues.length === 0, issues, passes }
 }
 
+// ─── Tense badge helpers ────────────────────────────────────────────────────
+
+const TENSE_SET = new Set(['pres +', 'pres −', 'past +', 'past −'])
+const TENSE_CLASS = { 'pres +': 'pres-pos', 'pres −': 'pres-neg', 'past +': 'past-pos', 'past −': 'past-neg' }
+
 // ─── Two-step dropdown ─────────────────────────────────────────────────────
 
-function WordDropdown({ onSelect }) {
+function WordDropdown({ onSelect, showEnglish }) {
   const [open,     setOpen]     = useState(false)
   const [category, setCategory] = useState(null)
   const panelRef = useRef(null)
@@ -138,6 +143,7 @@ function WordDropdown({ onSelect }) {
   }, [open])
 
   function pickWord(opt) {
+    speak(opt.kana)
     onSelect(opt)
     setOpen(false)
     setCategory(null)
@@ -162,17 +168,31 @@ function WordDropdown({ onSelect }) {
                 <ChevronLeft size={14} aria-hidden="true" />
                 <span>Back</span>
               </button>
-              {category.opts.map((opt, i) => (
-                <button key={i} className="sb-dropdown__item" onClick={() => pickWord(opt)}>
-                  <div className="sb-dropdown__item-inner">
-                    <span className="sb-dropdown__item-word">{opt.word}</span>
-                    <span className="sb-dropdown__item-meta">
-                      {opt.kana !== opt.word && <>{opt.kana}<span className="sb-dropdown__sep"> · </span></>}
-                      {kanaToRomaji(opt.kana)}<span className="sb-dropdown__sep"> · </span>{opt.meaning}
-                    </span>
-                  </div>
-                </button>
-              ))}
+              {category.opts.map((opt, i) => {
+                const parts = opt.meaning.split(' · ')
+                const lastPart = parts[parts.length - 1]
+                const tenseSuffix = TENSE_SET.has(lastPart) ? lastPart : null
+                const baseMeaning = tenseSuffix ? parts.slice(0, -1).join(' · ') : opt.meaning
+                return (
+                  <button key={i} className="sb-dropdown__item" onClick={() => pickWord(opt)}>
+                    <div className="sb-dropdown__item-inner">
+                      <div className="sb-dropdown__item-header">
+                        <span className="sb-dropdown__item-word">{opt.word}</span>
+                        {tenseSuffix && (
+                          <span className={`sb-tense-badge sb-tense-badge--${TENSE_CLASS[tenseSuffix]}`}>
+                            {tenseSuffix}
+                          </span>
+                        )}
+                      </div>
+                      <span className="sb-dropdown__item-meta">
+                        {opt.kana !== opt.word && <>{opt.kana}<span className="sb-dropdown__sep"> · </span></>}
+                        {kanaToRomaji(opt.kana)}
+                        {showEnglish && baseMeaning && <><span className="sb-dropdown__sep"> · </span>{baseMeaning}</>}
+                      </span>
+                    </div>
+                  </button>
+                )
+              })}
             </>
           ) : (
             CATEGORIES.map(cat => (
@@ -200,7 +220,9 @@ function Chip({ chip, isDragging, onPointerDown, onTap }) {
       data-chip-id={chip.id}
     >
       <span className="sb-chip__word">{chip.word}</span>
-      {chip.word !== chip.kana && <span className="sb-chip__kana">{chip.kana}</span>}
+      <span className="sb-chip__kana" style={chip.word === chip.kana ? { visibility: 'hidden' } : undefined}>
+        {chip.kana}
+      </span>
     </div>
   )
 }
@@ -213,6 +235,8 @@ export default function SentenceBuilderScreen() {
   const [sentence,    setSentence]    = useState([])
   const [checkResult, setCheckResult] = useState(null)
   const [copied,      setCopied]      = useState(false)
+  const [showEnglish, setShowEnglish] = useState(false)
+  const [showHint,    setShowHint]    = useState(false)
 
   // Challenge mode
   const [mode,            setMode]            = useState('free')
@@ -267,6 +291,7 @@ export default function SentenceBuilderScreen() {
     setTimeLeft(CHALLENGE_TIME)
     setSentence([])
     setChallengeResult(null)
+    setShowHint(false)
   }
 
   // ── Mode helpers ───────────────────────────────────────────────────────
@@ -497,8 +522,20 @@ export default function SentenceBuilderScreen() {
             {currentChallenge.structure && (
               <span className="sb-challenge-tag">{currentChallenge.structure}</span>
             )}
+            {currentChallenge.template && (
+              <button
+                className="sb-hint-btn"
+                onClick={() => setShowHint(v => !v)}
+                aria-label={showHint ? 'Hide hint' : 'Show hint'}
+              >
+                ?
+              </button>
+            )}
           </div>
           <p className="sb-challenge-en">{currentChallenge.en}</p>
+          {showHint && currentChallenge.template && (
+            <p className="sb-challenge-hint">{currentChallenge.template}</p>
+          )}
         </div>
       )}
 
@@ -547,7 +584,7 @@ export default function SentenceBuilderScreen() {
 
       {/* ── Dropdown ─────────────────────────────────────────────────── */}
       {!(inChallenge && (gameOver || allDone || generatingChallenges)) && (
-        <WordDropdown onSelect={handleSelect} />
+        <WordDropdown onSelect={handleSelect} showEnglish={showEnglish} />
       )}
 
       {/* ── Sentence area ────────────────────────────────────────────── */}
@@ -620,6 +657,13 @@ export default function SentenceBuilderScreen() {
               ? <Loader size={18} className="sb-loading-card__spinner" aria-hidden="true" />
               : 'Check'
             }
+          </button>
+          <button
+            className={`sb-btn sb-btn--english${showEnglish ? ' sb-btn--english-on' : ''}`}
+            onClick={() => setShowEnglish(v => !v)}
+            aria-label={showEnglish ? 'Hide English' : 'Show English'}
+          >
+            EN
           </button>
           <button className="sb-btn sb-btn--icon" onClick={handleSpeak} disabled={!hasChips} aria-label="Speak all">
             <Volume2 size={18} aria-hidden="true" />
