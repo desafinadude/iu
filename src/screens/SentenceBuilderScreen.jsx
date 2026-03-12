@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
-import { Volume2, Copy, Check, ChevronRight, ChevronLeft, Loader } from 'lucide-react'
+import {
+  Volume2, Copy, Check, ChevronRight, ChevronLeft, Loader,
+  Sparkles, User, Users, MapPin, Utensils, PawPrint, Home,
+  Shirt, Heart, Leaf, Train, Clock, Wind, BookOpen,
+  Zap, Smile,
+} from 'lucide-react'
 import { VOCAB_LIST, ADJ_LIST } from '../data/vocabData'
 import { VERB_LIST } from '../data/verbData'
 import { speak } from '../utils/speech'
@@ -38,21 +43,21 @@ function fromVocab(filter, type) {
 }
 
 const CATEGORIES = [
-  { id: 'particles',  label: 'Particles',        opts: PARTICLES },
-  { id: 'pronouns',   label: 'Pronouns',          opts: fromVocab(w => w.type === 'pronoun', 'pronoun') },
-  { id: 'people',     label: 'Nouns — People',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'people') },
-  { id: 'places',     label: 'Nouns — Places',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'places') },
-  { id: 'food',       label: 'Nouns — Food',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'food') },
-  { id: 'animals',    label: 'Nouns — Animals',   opts: fromVocab(w => w.type === 'noun' && w.theme === 'animal') },
-  { id: 'home',       label: 'Nouns — Home',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'home') },
-  { id: 'clothing',   label: 'Nouns — Clothing',  opts: fromVocab(w => w.type === 'noun' && w.theme === 'clothing') },
-  { id: 'body',       label: 'Nouns — Body',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'body') },
-  { id: 'nature',     label: 'Nouns — Nature',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'nature') },
-  { id: 'transport',  label: 'Nouns — Transport', opts: fromVocab(w => w.type === 'noun' && w.theme === 'transport') },
-  { id: 'time',       label: 'Time',              opts: fromVocab(w => w.type === 'noun' && (w.theme === 'time' || w.theme === 'calendar'), 'time') },
-  { id: 'adverbs',    label: 'Adverbs',           opts: fromVocab(w => w.type === 'adverb', 'adverb') },
+  { id: 'particles',    Icon: Sparkles, label: 'Particles',        opts: PARTICLES },
+  { id: 'pronouns',     Icon: User,     label: 'Pronouns',          opts: fromVocab(w => w.type === 'pronoun', 'pronoun') },
+  { id: 'people',       Icon: Users,    label: 'Nouns — People',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'people') },
+  { id: 'places',       Icon: MapPin,   label: 'Nouns — Places',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'places') },
+  { id: 'food',         Icon: Utensils, label: 'Nouns — Food',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'food') },
+  { id: 'animals',      Icon: PawPrint, label: 'Nouns — Animals',   opts: fromVocab(w => w.type === 'noun' && w.theme === 'animal') },
+  { id: 'home',         Icon: Home,     label: 'Nouns — Home',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'home') },
+  { id: 'clothing',     Icon: Shirt,    label: 'Nouns — Clothing',  opts: fromVocab(w => w.type === 'noun' && w.theme === 'clothing') },
+  { id: 'body',         Icon: Heart,    label: 'Nouns — Body',      opts: fromVocab(w => w.type === 'noun' && w.theme === 'body') },
+  { id: 'nature',       Icon: Leaf,     label: 'Nouns — Nature',    opts: fromVocab(w => w.type === 'noun' && w.theme === 'nature') },
+  { id: 'transport',    Icon: Train,    label: 'Nouns — Transport', opts: fromVocab(w => w.type === 'noun' && w.theme === 'transport') },
+  { id: 'time',         Icon: Clock,    label: 'Time',              opts: fromVocab(w => w.type === 'noun' && (w.theme === 'time' || w.theme === 'calendar'), 'time') },
+  { id: 'adverbs',      Icon: Wind,     label: 'Adverbs',           opts: fromVocab(w => w.type === 'adverb', 'adverb') },
   {
-    id: 'verbs_polite', label: 'Verbs — Polite',
+    id: 'verbs_polite', Icon: BookOpen, label: 'Verbs — Polite',
     opts: VERB_LIST.flatMap(v => [
       { word: v.polite.present_pos.word, kana: v.polite.present_pos.kana, meaning: `${v.meaning} · pres +`, type: 'verb' },
       { word: v.polite.present_neg.word, kana: v.polite.present_neg.kana, meaning: `${v.meaning} · pres −`, type: 'verb' },
@@ -61,7 +66,7 @@ const CATEGORIES = [
     ]),
   },
   {
-    id: 'verbs_casual', label: 'Verbs — Casual',
+    id: 'verbs_casual', Icon: Zap,      label: 'Verbs — Casual',
     opts: VERB_LIST.flatMap(v => [
       { word: v.casual.present_pos.word, kana: v.casual.present_pos.kana, meaning: `${v.meaning} · pres +`, type: 'verb' },
       { word: v.casual.present_neg.word, kana: v.casual.present_neg.kana, meaning: `${v.meaning} · pres −`, type: 'verb' },
@@ -70,7 +75,7 @@ const CATEGORIES = [
     ]),
   },
   {
-    id: 'adjectives', label: 'Adjectives',
+    id: 'adjectives',   Icon: Smile,    label: 'Adjectives',
     opts: ADJ_LIST.flatMap(a => [
       { word: a.polite.present_pos.word, kana: a.polite.present_pos.kana, meaning: `${a.meaning} · pres +`, type: 'adj' },
       { word: a.polite.present_neg.word, kana: a.polite.present_neg.kana, meaning: `${a.meaning} · pres −`, type: 'adj' },
@@ -159,20 +164,22 @@ function WordDropdown({ onSelect }) {
               </button>
               {category.opts.map((opt, i) => (
                 <button key={i} className="sb-dropdown__item" onClick={() => pickWord(opt)}>
-                  <span className="sb-dropdown__item-word">{opt.word}</span>
-                  <span className="sb-dropdown__item-meta">
-                    {opt.kana !== opt.word && <span className="sb-dropdown__item-kana">{opt.kana}</span>}
-                    <span className="sb-dropdown__item-romaji">{kanaToRomaji(opt.kana)}</span>
-                    <span className="sb-dropdown__item-meaning">{opt.meaning}</span>
-                  </span>
+                  <div className="sb-dropdown__item-inner">
+                    <span className="sb-dropdown__item-word">{opt.word}</span>
+                    <span className="sb-dropdown__item-meta">
+                      {opt.kana !== opt.word && <>{opt.kana}<span className="sb-dropdown__sep"> · </span></>}
+                      {kanaToRomaji(opt.kana)}<span className="sb-dropdown__sep"> · </span>{opt.meaning}
+                    </span>
+                  </div>
                 </button>
               ))}
             </>
           ) : (
             CATEGORIES.map(cat => (
               <button key={cat.id} className="sb-dropdown__cat" onClick={() => setCategory(cat)}>
+                <cat.Icon size={16} className="sb-dropdown__cat-icon" aria-hidden="true" />
                 <span>{cat.label}</span>
-                <ChevronRight size={14} aria-hidden="true" />
+                <ChevronRight size={14} className="sb-dropdown__cat-chevron" aria-hidden="true" />
               </button>
             ))
           )}
@@ -485,7 +492,12 @@ export default function SentenceBuilderScreen() {
         <div className="sb-prompt-card">
           <span className="sb-tape" aria-hidden="true" />
           <div className="sb-halftone" aria-hidden="true" />
-          <span className="sb-challenge-num">{challengeIdx + 1} / {challenges.length}</span>
+          <div className="sb-challenge-header">
+            <span className="sb-challenge-num">{challengeIdx + 1} / {challenges.length}</span>
+            {currentChallenge.structure && (
+              <span className="sb-challenge-tag">{currentChallenge.structure}</span>
+            )}
+          </div>
           <p className="sb-challenge-en">{currentChallenge.en}</p>
         </div>
       )}

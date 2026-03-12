@@ -132,6 +132,14 @@
   border-radius: var(--radius-md);
 }
 
+.sb-challenge-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
 .sb-challenge-num {
   font-family: var(--font-body);
   font-size: 11px;
@@ -140,6 +148,18 @@
   opacity: 0.45;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.sb-challenge-tag {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-fg);
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 99px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .sb-challenge-en {
@@ -307,7 +327,7 @@
 .sb-dropdown__cat {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   width: 100%;
   padding: 11px 14px;
   font-family: var(--font-body);
@@ -321,11 +341,19 @@
 .sb-dropdown__cat:last-child { border-bottom: none; }
 .sb-dropdown__cat:active { background: var(--color-bg); }
 
+.sb-dropdown__cat-icon {
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.sb-dropdown__cat-chevron {
+  margin-left: auto;
+  opacity: 0.35;
+  flex-shrink: 0;
+}
+
 /* Word row */
 .sb-dropdown__item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
   width: 100%;
   padding: 10px 14px;
   border-bottom: 1px solid var(--color-muted);
@@ -335,41 +363,30 @@
 .sb-dropdown__item:last-child { border-bottom: none; }
 .sb-dropdown__item:active { background: var(--color-bg); }
 
-.sb-dropdown__item-word {
-  font-family: var(--font-japanese);
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-fg);
-  flex-shrink: 0;
-}
-
-.sb-dropdown__item-meta {
+.sb-dropdown__item-inner {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  flex: 1;
 }
 
-.sb-dropdown__item-kana {
+.sb-dropdown__item-word {
   font-family: var(--font-japanese);
-  font-size: 18px;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--color-fg);
-  opacity: 0.5;
+  line-height: 1.2;
 }
 
-.sb-dropdown__item-romaji {
+.sb-dropdown__item-meta {
   font-family: var(--font-body);
-  font-size: 18px;
-  font-style: italic;
+  font-size: 13px;
   color: var(--color-fg);
-  opacity: 0.45;
+  opacity: 0.55;
+  line-height: 1.4;
 }
 
-.sb-dropdown__item-meaning {
-  font-family: var(--font-body);
-  font-size: 18px;
-  color: var(--color-fg);
-  opacity: 0.65;
+.sb-dropdown__sep {
+  opacity: 0.4;
 }
 
 /* ─── Sentence area (plain background) ───────────────────────────────────── */
