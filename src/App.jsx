@@ -4,6 +4,7 @@ import AppShell from './components/layout/AppShell'
 import HomeScreen from './screens/HomeScreen'
 import KanaQuizScreen from './screens/KanaQuizScreen'
 import KanaSettingsScreen from './screens/KanaSettingsScreen'
+import KanaQuizSettingsScreen from './screens/KanaQuizSettingsScreen'
 import ProgressScreen from './screens/ProgressScreen'
 import WordSearchScreen from './screens/WordSearchScreen'
 import WritingScreen from './screens/WritingScreen'
@@ -18,6 +19,8 @@ function Screens() {
       return <KanaQuizScreen key={params?.mode ?? 'select'} />
     case 'settings':
       return <KanaSettingsScreen />
+    case 'kana_quiz_settings':
+      return <KanaQuizSettingsScreen />
     case 'progress':
       return <ProgressScreen />
     case 'word_search':

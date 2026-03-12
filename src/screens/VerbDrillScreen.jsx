@@ -94,40 +94,36 @@ function VerbPicker({ onSelect }) {
   }
 
   return (
-    <div className="vp">
-      <p className="vp__subtitle">Choose a verb</p>
-      <div className="vp__list">
-        {VERB_LIST.map((verb, i) => (
-          <button
-            key={i}
-            className="vp__item"
-            onClick={() => { onSelect(verb) }}
-          >
-            <div className="vp__item-halftone" aria-hidden="true" />
-            <div className={`vp__item-tape vp__item-tape--${verb.type}`}>
-              {TYPE_LABELS[verb.type]}
-            </div>
-            <span className="vp__item-icon">
-              <VerbIcon verb={verb} size={32} />
-            </span>
-            <div className="vp__item-body">
-              <span className="vp__item-dict">{verb.dict}</span>
-              <span className="vp__item-meaning">{verb.meaning}</span>
-              <span className="vp__item-kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
-            </div>
-          </button>
-        ))}
-
-        {/* Random tile at the bottom */}
-        <button className="vp__item vp__item--random" onClick={pickRandom}>
-          <div className="vp__item-halftone" aria-hidden="true" />
-          <span className="vp__item-icon"><Shuffle size={32} strokeWidth={1.5} /></span>
-          <div className="vp__item-body">
-            <span className="vp__item-label">Random</span>
-            <span className="vp__item-kana">ランダム</span>
+    <div className="menu-list">
+      <p className="menu-list__label">Choose a verb</p>
+      {VERB_LIST.map((verb, i) => (
+        <button
+          key={i}
+          className="menu-card"
+          onClick={() => { onSelect(verb) }}
+        >
+          <div className={`vp__badge vp__badge--${verb.type}`}>
+            {TYPE_LABELS[verb.type]}
+          </div>
+          <span className="menu-card__icon">
+            <VerbIcon verb={verb} size={32} />
+          </span>
+          <div className="menu-card__body">
+            <span className="vp__item-dict">{verb.dict}</span>
+            <span className="vp__item-meaning">{verb.meaning}</span>
+            <span className="vp__item-kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
           </div>
         </button>
-      </div>
+      ))}
+
+      {/* Random tile at the bottom */}
+      <button className="menu-card menu-card--random" onClick={pickRandom}>
+        <span className="menu-card__icon"><Shuffle size={32} strokeWidth={1.5} /></span>
+        <div className="menu-card__body">
+          <span className="menu-card__title">Random</span>
+          <span className="menu-card__meta">ランダム</span>
+        </div>
+      </button>
     </div>
   )
 }

@@ -8,11 +8,12 @@ const NAV_ITEMS = [
 ]
 
 const SCREEN_TITLES = {
-  home:        'KoiKata',
-  progress:    'Progress',
-  settings:    'Settings',
-  kana_quiz:   'Kana Quiz',
-  word_search: 'Word Search',
+  home:               'KoiKata',
+  progress:           'Progress',
+  settings:           'Settings',
+  kana_quiz:          'Kana Quiz',
+  kana_quiz_settings: 'Quiz Settings',
+  word_search:        'Word Search',
 }
 
 const ROOT_SCREENS = new Set(['home', 'progress', 'settings'])

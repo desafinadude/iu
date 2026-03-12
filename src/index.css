@@ -44,56 +44,6 @@
   --space-2xl: 48px;
 }
 
-/* ─── Theme: Sakura ─────────────────────────────────────────────── */
-[data-theme="sakura"] {
-  --color-bg:            #fdf0f4;
-  --color-header:        #8b2252;
-  --color-japan-red:     #c94070;
-  --color-fg:            #2d1a23;
-  --color-muted:         #f0d5df;
-  --color-accent:        #e0305a;
-  --color-accent-orange: #e05080;
-  --color-accent-blue:   #8b5080;
-  --color-surface:       #fffafc;
-  --color-postit:        #fde8ef;
-  --color-halftone:      #8b2252;
-}
-
-/* ─── Theme: Dojo (dark ink) ─────────────────────────────────────── */
-[data-theme="dojo"] {
-  --color-bg:            #1a1a1f;
-  --color-header:        #0d0d12;
-  --color-japan-red:     #cc2222;
-  --color-fg:            #e8e0d0;
-  --color-muted:         #2e2e38;
-  --color-accent:        #e8002d;
-  --color-accent-orange: #ff6b00;
-  --color-accent-blue:   #4a80c8;
-  --color-surface:       #24242c;
-  --color-postit:        #2c2c1a;
-  --color-halftone:      #e8e0d0;
-  --shadow-sm:           2px 2px 0px 0px #000000;
-  --shadow-md:           3px 3px 0px 0px #000000;
-  --shadow-lg:           5px 5px 0px 0px #000000;
-  --halftone-opacity:    0.06;
-  --halftone-blend:      screen;
-}
-
-/* ─── Theme: Shizen (natural green) ──────────────────────────────── */
-[data-theme="shizen"] {
-  --color-bg:            #f0f4ec;
-  --color-header:        #1a3a1e;
-  --color-japan-red:     #2d6b35;
-  --color-fg:            #1a2e1c;
-  --color-muted:         #ccd9c4;
-  --color-accent:        #3a8a42;
-  --color-accent-orange: #6b8a30;
-  --color-accent-blue:   #2d6b8a;
-  --color-surface:       #fafdf8;
-  --color-postit:        #eef5e0;
-  --color-halftone:      #1a3a1e;
-}
-
 /* ─── Theme: Vaporwave / Outrun ──────────────────────────────────── */
 [data-theme="vaporwave"] {
   /* Colors — neon void */
@@ -133,9 +83,9 @@
 [data-theme="vaporwave"] body {
   background-image:
     radial-gradient(ellipse 120% 35% at 50% 100%, rgba(255,153,0,0.18) 0%, rgba(255,0,255,0.12) 40%, transparent 70%),
-    linear-gradient(transparent 95%, rgba(255,0,255,0.25) 95%),
-    linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.25) 95%);
-  background-size: 100% 100%, 40px 40px, 40px 40px;
+    linear-gradient(transparent 95%, rgba(255,0,255,0.14) 95%),
+    linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.14) 95%);
+  background-size: 100% 100%, 24px 24px, 24px 24px;
 }
 
 /* CRT scanlines + RGB chromatic aberration overlay */
@@ -144,11 +94,449 @@
   position: fixed;
   inset: 0;
   background:
-    linear-gradient(rgba(18,16,20,0) 50%, rgba(0,0,0,0.22) 50%),
+    linear-gradient(rgba(18,16,20,0) 50%, rgba(0,0,0,0.09) 50%),
     linear-gradient(90deg, rgba(255,0,0,0.03) 0%, rgba(0,255,0,0.01) 50%, rgba(0,0,255,0.03) 100%);
   background-size: 100% 4px, 100% 100%;
   pointer-events: none;
   z-index: 9998;
+}
+
+/* ─── Theme: Swiss International ─────────────────────────────────── */
+[data-theme="swiss"] {
+  /* Colors — strict monochrome + Swiss red signal */
+  --color-bg:            #FFFFFF;
+  --color-header:        #FFFFFF;
+  --color-japan-red:     #FF3000;
+  --color-fg:            #000000;
+  --color-muted:         #F2F2F2;
+  --color-accent:        #FF3000;
+  --color-accent-orange: #FF3000;
+  --color-accent-blue:   #000000;
+  --color-surface:       #FFFFFF;
+  --color-postit:        #F2F2F2;
+  --color-halftone:      #000000;
+
+  /* Grotesque sans-serif — neutral vessel for information */
+  --font-display: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Strictly rectangular — no rounded corners */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  /* Flat — no shadows; structure comes from borders */
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-lg:     none;
+  --shadow-accent: none;
+  --shadow-blue:   none;
+
+  /* Kill halftone jpg — CSS grid pattern replaces it */
+  --halftone-opacity: 0;
+}
+
+/* 24px grid overlay on body — the grid is God */
+[data-theme="swiss"] body {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Swiss AppShell ─────────────────────────────────────────────── */
+
+/* Header — white, thick ruled baseline */
+[data-theme="swiss"] .shell__header {
+  border-radius: 0;
+  border-bottom: 4px solid #000000;
+  box-shadow: none;
+}
+[data-theme="swiss"] .shell__header::before { display: none; }
+
+/* Title — Inter Black, uppercase, tight tracking */
+[data-theme="swiss"] .shell__title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #000000;
+}
+
+/* Back button — pure black */
+[data-theme="swiss"] .shell__back { color: #000000; }
+
+/* Bottom nav — white, thick ruled top line */
+[data-theme="swiss"] .shell__bottom-nav {
+  border-radius: 0;
+  border-top: 4px solid #000000;
+  box-shadow: none;
+}
+[data-theme="swiss"] .shell__bottom-nav::before { display: none; }
+
+/* Active nav — Swiss red 4px bar */
+[data-theme="swiss"] .shell__nav-btn--active::after {
+  background: #FF3000;
+  height: 4px;
+}
+
+/* Nav labels — uppercase, tracked */
+[data-theme="swiss"] .shell__nav-label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+/* ── Swiss interactive overrides ─────────────────────────────────── */
+
+/* No translate-press — Swiss uses color change instead */
+[data-theme="swiss"] .menu-card:active,
+[data-theme="swiss"] .sb-btn:active,
+[data-theme="swiss"] .ws-result__btn:active,
+[data-theme="swiss"] .kana-settings__theme-card:active {
+  transform: none;
+}
+
+/* Menu card — heavier border, full inversion on hover */
+[data-theme="swiss"] .menu-card {
+  border-width: 4px;
+  border-radius: 0;
+  box-shadow: none;
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+
+[data-theme="swiss"] .menu-card:active {
+  background: #FF3000;
+  border-color: #FF3000;
+}
+
+@media (hover: hover) {
+  [data-theme="swiss"] .menu-card:hover {
+    background: #000000;
+    border-color: #000000;
+    transform: none;
+    box-shadow: none;
+  }
+  [data-theme="swiss"] .menu-card:hover .menu-card__title,
+  [data-theme="swiss"] .menu-card:hover .menu-card__subtitle,
+  [data-theme="swiss"] .menu-card:hover .menu-card__meta,
+  [data-theme="swiss"] .menu-card:hover .menu-card__icon,
+  [data-theme="swiss"] .menu-card:hover .vp__item-dict,
+  [data-theme="swiss"] .menu-card:hover .vp__item-meaning,
+  [data-theme="swiss"] .menu-card:hover .vp__item-kana {
+    color: #FFFFFF;
+    opacity: 1;
+  }
+}
+
+/* Card titles — uppercase, heavy */
+[data-theme="swiss"] .menu-card__title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 900;
+}
+
+[data-theme="swiss"] .menu-list__label {
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+/* ── Swiss quiz play ─────────────────────────────────────────────── */
+
+/* Timer — rectangular, Swiss red urgent */
+[data-theme="swiss"] .quiz-play__timer-track,
+[data-theme="swiss"] .ws-timer-bar {
+  border-radius: 0;
+  border-width: 3px;
+  border-color: #000000;
+}
+
+[data-theme="swiss"] .quiz-play__timer-fill,
+[data-theme="swiss"] .ws-timer-fill {
+  border-radius: 0;
+}
+
+[data-theme="swiss"] .quiz-play__timer-fill--urgent,
+[data-theme="swiss"] .ws-timer-fill--urgent {
+  background: #FF3000;
+  box-shadow: none;
+}
+
+/* Hearts — Swiss red */
+[data-theme="swiss"] .quiz-play__heart,
+[data-theme="swiss"] .ws-heart,
+[data-theme="swiss"] .sb-heart {
+  color: #FF3000;
+}
+
+/* Score — Inter Black */
+[data-theme="swiss"] .quiz-play__score,
+[data-theme="swiss"] .ws-hud__count {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+}
+
+/* Prompt card — gray surface, thick ruled border, no tape */
+[data-theme="swiss"] .quiz-play__prompt-card {
+  border-radius: 0;
+  border-width: 4px;
+  border-color: #000000;
+  background: #F2F2F2;
+  box-shadow: none;
+}
+[data-theme="swiss"] .quiz-play__tape,
+[data-theme="swiss"] .sb-tape { display: none; }
+
+/* Hide halftone texture divs — grid pattern on body replaces texture */
+[data-theme="swiss"] .quiz-play__halftone,
+[data-theme="swiss"] .quiz-results__halftone { display: none; }
+
+/* Kana prompt — Inter Black */
+[data-theme="swiss"] .quiz-play__prompt-kana {
+  font-weight: 900;
+  color: #000000;
+}
+
+/* Romaji prompt — Inter Black Uppercase */
+[data-theme="swiss"] .quiz-play__prompt-romaji {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Options — rectangular, bold inversion on feedback */
+[data-theme="swiss"] .quiz-play__option {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  border-radius: 0;
+  border-width: 3px;
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+
+@media (hover: hover) {
+  [data-theme="swiss"] .quiz-play__option:hover:not(:disabled) {
+    background: #000000;
+    color: #FFFFFF;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+[data-theme="swiss"] .quiz-play__option:active:not(:disabled) {
+  transform: none;
+}
+
+[data-theme="swiss"] .quiz-play__option--correct {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #000000;
+  box-shadow: none;
+}
+
+[data-theme="swiss"] .quiz-play__option--wrong {
+  background: #FF3000;
+  color: #FFFFFF;
+  border-color: #FF3000;
+  box-shadow: none;
+}
+
+/* Results card — gray surface, heavy border */
+[data-theme="swiss"] .quiz-results__card {
+  border-radius: 0;
+  border-width: 4px;
+  background: #F2F2F2;
+  box-shadow: none;
+}
+
+[data-theme="swiss"] .quiz-results__over-label {
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  opacity: 1;
+  color: #FF3000;
+}
+
+[data-theme="swiss"] .quiz-results__score {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+/* ── Swiss sentence builder ──────────────────────────────────────── */
+
+/* Word chips — rectangular, uppercase */
+[data-theme="swiss"] .sb-chip {
+  border-radius: 0;
+  border-width: 3px;
+  background: #FFFFFF;
+  box-shadow: none;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+[data-theme="swiss"] .sb-chip--ghost {
+  box-shadow: none;
+  border-style: dashed;
+}
+
+/* Dropdown — rectangular, thick border */
+[data-theme="swiss"] .sb-dropdown__trigger,
+[data-theme="swiss"] .sb-dropdown__panel {
+  border-radius: 0;
+  border-width: 3px;
+  box-shadow: none;
+}
+
+/* Result cards */
+[data-theme="swiss"] .sb-result--ok {
+  background: #F2F2F2;
+  border-color: #000000;
+  box-shadow: none;
+}
+[data-theme="swiss"] .sb-result--bad {
+  background: #FFF4F2;
+  border-color: #FF3000;
+  box-shadow: none;
+}
+
+/* ── Swiss word search ───────────────────────────────────────────── */
+
+/* Word chips */
+[data-theme="swiss"] .ws-chip {
+  border-radius: 0;
+  border-width: 3px;
+  box-shadow: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Grid cells */
+[data-theme="swiss"] .ws-cell {
+  border-color: rgba(0,0,0,0.15);
+  border-radius: 0;
+  font-weight: 700;
+}
+
+[data-theme="swiss"] .ws-cell--selected {
+  background: #000000;
+  border-color: #000000;
+  color: #FFFFFF;
+}
+
+/* Result overlay */
+[data-theme="swiss"] .ws-overlay {
+  background: rgba(255,255,255,0.95);
+}
+
+[data-theme="swiss"] .ws-result {
+  border-radius: 0;
+  border-width: 4px;
+  box-shadow: none;
+  background: #F2F2F2;
+}
+
+[data-theme="swiss"] .ws-result__btn {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ── Swiss kana settings ─────────────────────────────────────────── */
+
+/* Script toggle buttons */
+[data-theme="swiss"] .kana-settings__script-btn {
+  border-radius: 0;
+  border-width: 3px;
+  box-shadow: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition: background 150ms ease-out;
+}
+
+[data-theme="swiss"] .kana-settings__script-btn--active {
+  background: #000000;
+  border-color: #000000;
+  transform: none;
+}
+
+/* Kana table */
+[data-theme="swiss"] .kana-table {
+  border-width: 3px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+[data-theme="swiss"] .kana-table__row--active {
+  background: #000000;
+}
+
+[data-theme="swiss"] .kana-table__row--active .kana-table__cell,
+[data-theme="swiss"] .kana-table__row--active .kana-table__row-label {
+  color: #FFFFFF;
+  opacity: 1;
+}
+
+/* Theme cards */
+[data-theme="swiss"] .kana-settings__theme-card {
+  border-width: 4px;
+  border-radius: 0;
+  box-shadow: none;
+  transition: background 150ms ease-out;
+}
+
+[data-theme="swiss"] .kana-settings__theme-card--active {
+  background: #FF3000;
+  border-color: #FF3000;
+  transform: none;
+}
+
+[data-theme="swiss"] .kana-settings__theme-card--active .kana-settings__theme-name,
+[data-theme="swiss"] .kana-settings__theme-card--active .kana-settings__theme-desc {
+  color: #FFFFFF;
+}
+
+/* Pill toggle */
+[data-theme="swiss"] .kana-settings__pill-toggle {
+  border-radius: 0;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="swiss"] .kana-settings__pill-toggle--on {
+  background: #FF3000;
+  border-color: #FF3000;
+  color: #FFFFFF;
+}
+
+/* Section titles — uppercase, heavy */
+[data-theme="swiss"] .kana-settings__section-title {
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  opacity: 1;
+}
+
+/* Settings link — red underline */
+[data-theme="swiss"] .kana-settings__link {
+  color: #FF3000;
+  font-weight: 700;
+}
+
+/* Home kana character — red accent */
+[data-theme="swiss"] .home__card-kana {
+  color: #FF3000;
+}
+
+/* Quiz settings gear button */
+[data-theme="swiss"] .quiz-mode-select__settings-btn {
+  color: #000000;
 }
 
 /* ── AppShell overrides ─────────────────────────────────────────── */
@@ -194,11 +582,16 @@
 /* Buttons: glow intensifies on press instead of shadow-drop */
 [data-theme="vaporwave"] .sb-btn:active,
 [data-theme="vaporwave"] .ws-result__btn:active,
-[data-theme="vaporwave"] .mode-card:active,
-[data-theme="vaporwave"] .ws-theme-card:active,
+[data-theme="vaporwave"] .menu-card:active,
 [data-theme="vaporwave"] .kana-settings__theme-card:active {
   transform: none;
   filter: brightness(1.3);
+}
+
+/* Menu card — neon surface */
+[data-theme="vaporwave"] .menu-card {
+  border-color: #FF00FF;
+  box-shadow: 0 0 8px rgba(255,0,255,0.3);
 }
 
 /* Quiz options — cyan glow on correct, magenta on wrong */
@@ -247,11 +640,18 @@
   backdrop-filter: blur(4px);
 }
 
-/* Word chips — neon outline */
+/* Word chips — dark surface + neon outline so text is legible */
 [data-theme="vaporwave"] .sb-chip {
+  background: #1a103c;
   border-color: #FF00FF;
   box-shadow: 0 0 8px rgba(255,0,255,0.4);
 }
+
+/* Word search chips (pastel inline bg) — force dark text for readability */
+[data-theme="vaporwave"] .ws-chip {
+  color: #090014;
+}
+[data-theme="vaporwave"] .ws-chip__script { opacity: 0.6; }
 [data-theme="vaporwave"] .sb-chip--ghost {
   box-shadow: 0 0 16px #FF00FF;
 }
@@ -368,6 +768,114 @@ body::before {
 .font-display  { font-family: var(--font-display); }
 .font-body     { font-family: var(--font-body); }
 .font-japanese { font-family: var(--font-japanese); }
+
+/* ─── Shared: Menu list ──────────────────────────────────────────── */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  height: 100%;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.menu-list__label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* ─── Shared: Menu card ──────────────────────────────────────────── */
+.menu-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  border: 3px solid var(--color-fg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-lg);
+  overflow: hidden;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Halftone dot pattern via pseudo-element — no extra div needed */
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.menu-card:active {
+  transform: translateX(5px) translateY(5px);
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .menu-card:hover {
+    transform: translateX(2px) translateY(2px);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.menu-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-japanese);
+  font-size: 40px;
+  line-height: 1;
+  color: var(--color-fg);
+  flex-shrink: 0;
+  width: 52px;
+  text-align: center;
+  user-select: none;
+}
+
+.menu-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.menu-card__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1.1;
+}
+
+.menu-card__subtitle {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-fg);
+  opacity: 0.65;
+}
+
+.menu-card__meta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  opacity: 0.5;
+  line-height: 1.2;
+}
 
 .sr-only {
   position: absolute;

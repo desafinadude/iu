@@ -118,29 +118,26 @@ function ResultOverlay({ status, foundCount, totalCount, placements, onPlayAgain
 
 function ThemePicker({ onSelect }) {
   return (
-    <div className="ws-theme-picker">
-      <p className="ws-theme-subtitle">Choose a theme</p>
-      <div className="ws-theme-list">
-        {THEMES.map(t => {
-          const Icon = LucideIcons[t.iconName]
-          return (
-            <button
-              key={t.id ?? 'random'}
-              className="ws-theme-card"
-              onClick={() => onSelect(t.id)}
-            >
-              <div className="ws-theme-card__halftone" aria-hidden="true" />
-              <span className="ws-theme-icon">
-                {Icon && <Icon size={32} strokeWidth={1.5} aria-hidden="true" />}
-              </span>
-              <div className="ws-theme-card__body">
-                <span className="ws-theme-label">{t.label}</span>
-                <span className="ws-theme-kana">{t.kana}</span>
-              </div>
-            </button>
-          )
-        })}
-      </div>
+    <div className="menu-list">
+      <p className="menu-list__label">Choose a theme</p>
+      {THEMES.map(t => {
+        const Icon = LucideIcons[t.iconName]
+        return (
+          <button
+            key={t.id ?? 'random'}
+            className="menu-card"
+            onClick={() => onSelect(t.id)}
+          >
+            <span className="menu-card__icon">
+              {Icon && <Icon size={32} strokeWidth={1.5} aria-hidden="true" />}
+            </span>
+            <div className="menu-card__body">
+              <span className="menu-card__title">{t.label}</span>
+              <span className="menu-card__meta">{t.kana}</span>
+            </div>
+          </button>
+        )
+      })}
     </div>
   )
 }

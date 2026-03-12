@@ -28,26 +28,39 @@ const MODES = [
   },
 ]
 
-function ModeSelect({ onSelect }) {
+function ModeSelect({ onSelect, onSettings }) {
   return (
-    <div className="quiz-mode-select">
-      <p className="quiz-mode-select__subtitle">Choose a mode</p>
+    <div className="menu-list">
+      <div className="quiz-mode-select__header">
+        <p className="menu-list__label">Choose a mode</p>
+        <button className="quiz-mode-select__settings-btn" onClick={onSettings} aria-label="Quiz settings">
+          <SettingsIcon />
+        </button>
+      </div>
       {MODES.map(m => (
         <button
           key={m.mode}
-          className="mode-card"
+          className="menu-card"
           onClick={() => onSelect(m.mode)}
           aria-label={`Start ${m.title}`}
         >
-          <div className="mode-card__halftone" aria-hidden="true" />
-          <span className="mode-card__kana" aria-hidden="true">{m.kana}</span>
-          <div className="mode-card__body">
-            <h2 className="mode-card__title">{m.title}</h2>
-            <p className="mode-card__subtitle">{m.subtitle}</p>
+          <span className="menu-card__icon" aria-hidden="true">{m.kana}</span>
+          <div className="menu-card__body">
+            <h2 className="menu-card__title">{m.title}</h2>
+            <p className="menu-card__subtitle">{m.subtitle}</p>
           </div>
         </button>
       ))}
     </div>
+  )
+}
+
+function SettingsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+    </svg>
   )
 }
 
@@ -71,7 +84,10 @@ export default function KanaQuizScreen() {
   } = useQuiz(mode ?? 'kana_to_romaji', settings)
 
   if (!mode) {
-    return <ModeSelect onSelect={m => navigate('kana_quiz', { mode: m })} />
+    return <ModeSelect
+      onSelect={m => navigate('kana_quiz', { mode: m })}
+      onSettings={() => navigate('kana_quiz_settings')}
+    />
   }
 
   if (phase === 'gameover') {
