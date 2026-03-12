@@ -11,7 +11,9 @@
   --color-accent-blue:  #2d5da1;
   --color-surface:      #ffffff;
   --color-postit:       #fff9c4;
-  --color-halftone:     #2d2d2d;
+  --color-halftone:       #2d2d2d;
+  --halftone-opacity:     0.18;
+  --halftone-blend:       multiply;
 
   /* Typography */
   --font-display:  'Kalam', cursive;
@@ -40,6 +42,56 @@
   --space-lg: 24px;
   --space-xl: 32px;
   --space-2xl: 48px;
+}
+
+/* ─── Theme: Sakura ─────────────────────────────────────────────── */
+[data-theme="sakura"] {
+  --color-bg:            #fdf0f4;
+  --color-header:        #8b2252;
+  --color-japan-red:     #c94070;
+  --color-fg:            #2d1a23;
+  --color-muted:         #f0d5df;
+  --color-accent:        #e0305a;
+  --color-accent-orange: #e05080;
+  --color-accent-blue:   #8b5080;
+  --color-surface:       #fffafc;
+  --color-postit:        #fde8ef;
+  --color-halftone:      #8b2252;
+}
+
+/* ─── Theme: Dojo (dark ink) ─────────────────────────────────────── */
+[data-theme="dojo"] {
+  --color-bg:            #1a1a1f;
+  --color-header:        #0d0d12;
+  --color-japan-red:     #cc2222;
+  --color-fg:            #e8e0d0;
+  --color-muted:         #2e2e38;
+  --color-accent:        #e8002d;
+  --color-accent-orange: #ff6b00;
+  --color-accent-blue:   #4a80c8;
+  --color-surface:       #24242c;
+  --color-postit:        #2c2c1a;
+  --color-halftone:      #e8e0d0;
+  --shadow-sm:           2px 2px 0px 0px #000000;
+  --shadow-md:           3px 3px 0px 0px #000000;
+  --shadow-lg:           5px 5px 0px 0px #000000;
+  --halftone-opacity:    0.06;
+  --halftone-blend:      screen;
+}
+
+/* ─── Theme: Shizen (natural green) ──────────────────────────────── */
+[data-theme="shizen"] {
+  --color-bg:            #f0f4ec;
+  --color-header:        #1a3a1e;
+  --color-japan-red:     #2d6b35;
+  --color-fg:            #1a2e1c;
+  --color-muted:         #ccd9c4;
+  --color-accent:        #3a8a42;
+  --color-accent-orange: #6b8a30;
+  --color-accent-blue:   #2d6b8a;
+  --color-surface:       #fafdf8;
+  --color-postit:        #eef5e0;
+  --color-halftone:      #1a3a1e;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────── */
@@ -83,8 +135,8 @@ body::before {
   inset: 0;
   background-image: url('/halftone2.jpg');
   background-size: cover;
-  mix-blend-mode: multiply;
-  opacity: 0.18;
+  mix-blend-mode: var(--halftone-blend);
+  opacity: var(--halftone-opacity);
   pointer-events: none;
   z-index: 0;
 }

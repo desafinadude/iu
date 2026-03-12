@@ -10,7 +10,7 @@ const NAV_ITEMS = [
 const SCREEN_TITLES = {
   home:        'KoiKata',
   progress:    'Progress',
-  settings:    'Quiz Settings',
+  settings:    'Settings',
   kana_quiz:   'Kana Quiz',
   word_search: 'Word Search',
 }

@@ -11,16 +11,28 @@ function buildWordPool() {
 
   for (const w of VOCAB_LIST) {
     if (['noun', 'pronoun', 'adverb'].includes(w.type) && w.kana.length >= 2) {
-      pool.push({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type })
+      pool.push({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type, theme: w.theme })
     }
   }
 
+  // Include all conjugated forms so the LLM knows exactly which forms are available
   for (const v of VERB_LIST) {
-    pool.push({ word: v.dict, kana: v.kana, meaning: v.meaning, type: 'verb' })
+    const forms = [
+      v.polite.present_pos, v.polite.present_neg,
+      v.polite.past_pos,    v.polite.past_neg,
+      v.casual.present_pos, v.casual.present_neg,
+      v.casual.past_pos,    v.casual.past_neg,
+    ]
+    for (const f of forms) {
+      pool.push({ word: f.word, kana: f.kana, meaning: `${v.meaning} (${f.meaning})`, type: 'verb', baseKana: v.kana })
+    }
   }
 
   for (const a of ADJ_LIST) {
-    pool.push({ word: a.dict, kana: a.kana, meaning: a.meaning, type: 'adj' })
+    const forms = [a.polite.present_pos, a.polite.present_neg]
+    for (const f of forms) {
+      pool.push({ word: f.word, kana: f.kana, meaning: `${a.meaning} (${f.meaning})`, type: 'adj', baseKana: a.kana })
+    }
   }
 
   return pool
@@ -135,19 +147,30 @@ const STRUCTURES = [
 // Returns { en: string, structure: string, needs: string[] }
 
 export async function generateChallenge() {
-  // Weighted sample: more nouns/verbs, fewer adverbs
-  const nouns = WORD_POOL.filter(w => w.type === 'noun' || w.type === 'pronoun')
+  // Separate word pools by type (theme property now included on nouns)
+  const nouns  = WORD_POOL.filter(w => (w.type === 'noun' || w.type === 'pronoun') && !w.baseKana)
   const places = WORD_POOL.filter(w => w.type === 'noun' && ['places', 'home'].includes(w.theme))
-  const verbs  = WORD_POOL.filter(w => w.type === 'verb')
+  // Deduplicate verbs by baseKana + meaning so we get variety of base verbs
+  const verbMap = new Map()
+  WORD_POOL.filter(w => w.type === 'verb').forEach(w => {
+    if (!verbMap.has(w.baseKana)) verbMap.set(w.baseKana, [])
+    verbMap.get(w.baseKana).push(w)
+  })
+  const verbBases = [...verbMap.values()]
   const adjs   = WORD_POOL.filter(w => w.type === 'adj')
   const adv    = WORD_POOL.filter(w => w.type === 'adverb')
-  const time   = WORD_POOL.filter(w => w.type === 'time' || (w.type === 'noun' && w.meaning?.match(/day|week|month|year|morning|evening|night|today|yesterday|tomorrow|every/i)))
+  const time   = WORD_POOL.filter(w => w.type === 'noun' && w.meaning?.match(/day|week|month|year|morning|evening|night|today|yesterday|tomorrow|every/i))
 
   const pick = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n)
+
+  // Pick diverse verb bases, then include all their forms
+  const pickedVerbBases = pick(verbBases, 5)
+  const pickedVerbs = pickedVerbBases.flatMap(forms => forms)
+
   const sample = [
-    ...pick(nouns,  8),
-    ...pick(places, 4),
-    ...pick(verbs,  8),
+    ...pick(nouns,  6),
+    ...pick(places, 3),
+    ...pickedVerbs,
     ...pick(adjs,   4),
     ...pick(adv,    2),
     ...pick(time,   2),
@@ -165,29 +188,31 @@ export async function generateChallenge() {
   const structure = STRUCTURES[Math.floor(Math.random() * STRUCTURES.length)]
 
   const wordList = uniqueSample
-    .map(w => `${w.word}／${w.kana}（${w.meaning}）`)
-    .join(', ')
+    .map(w => `${w.word}（${w.kana}・${w.meaning}）`)
+    .join('\n')
 
-  const system = `You are a Japanese language teacher creating translation exercises for beginner-intermediate students. Return ONLY valid JSON, no extra text.`
+  const system = `You are a Japanese language teacher creating translation exercises. Return ONLY valid JSON, no extra text, no markdown.`
 
-  const user = `Available Japanese words (kanji／kana（meaning）):
+  const user = `AVAILABLE JAPANESE WORDS — the student can ONLY use these exact words plus particles (は が を に で へ の も と か から まで です):
+
 ${wordList}
 
-Sentence structure to use: ${structure.template}
-Hint for this structure: ${structure.hint}
+Sentence structure: ${structure.template}
+Example hint: ${structure.hint}
 
-Create ONE English sentence that:
-- Follows the structure above as closely as possible
-- Can be translated into Japanese using ONLY words from the list plus common particles (は が を に で へ の も と か から まで)
-- Is natural English (3–12 words)
-- Does NOT use any vocabulary not present in the word list above
+Create ONE simple English sentence (3–10 words) that:
+1. Can be translated into Japanese using ONLY the words listed above (exact forms shown) plus particles
+2. Fits the sentence structure
+3. Uses natural English
 
-Return ONLY this JSON (no markdown, no explanation):
+IMPORTANT: Every content word in the translation must appear in the word list above. Do not invent words.
+
+Return ONLY this JSON:
 {"en": "The English sentence.", "structure": "${structure.label}", "needs": ["kana1", "kana2"]}`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],
-    { maxTokens: 150, temperature: 0.85 },
+    { maxTokens: 200, temperature: 0.7 },
   )
   return parseJson(text)
 }
@@ -204,11 +229,11 @@ Student's Japanese answer (kana): "${userKana}"
 Grade the answer. Accept it if the core meaning is conveyed and the grammar is reasonable for a beginner. Don't penalise minor omissions (like dropping わたし). Do penalise if a completely wrong or unrelated word is used, or if the sentence has no predicate.
 
 Return ONLY this JSON:
-{"valid": true_or_false, "feedback": "One short encouraging sentence of feedback."}`
+{"valid": true_or_false, "feedback": "One short encouraging sentence of feedback.", "correct": "A natural kana-only Japanese translation of the English sentence."}`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],
-    { maxTokens: 80, temperature: 0.2 },
+    { maxTokens: 120, temperature: 0.2 },
   )
   return parseJson(text)
 }

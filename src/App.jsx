@@ -1,4 +1,5 @@
 import { NavProvider, useNav } from './context/NavContext'
+import { useTheme } from './hooks/useTheme'
 import AppShell from './components/layout/AppShell'
 import HomeScreen from './screens/HomeScreen'
 import KanaQuizScreen from './screens/KanaQuizScreen'
@@ -33,8 +34,10 @@ function Screens() {
   }
 }
 
-
 export default function App() {
+  // Initialises theme from localStorage and applies data-theme to <html>
+  useTheme()
+
   return (
     <NavProvider>
       <AppShell>

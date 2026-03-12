@@ -1,4 +1,5 @@
 import { useSettings } from '../hooks/useSettings'
+import { useTheme, THEMES } from '../hooks/useTheme'
 import { GOJUON_ROWS, VOWEL_HEADERS } from '../data/kana'
 import './KanaSettingsScreen.css'
 
@@ -47,11 +48,38 @@ export default function KanaSettingsScreen() {
     selectNone,
   } = useSettings()
 
-
+  const { theme, setTheme } = useTheme()
   const { script, activeRows, includeDakuten, includeHandakuten } = settings
 
   return (
     <div className="kana-settings">
+
+      {/* Theme picker */}
+      <section className="kana-settings__section">
+        <h2 className="kana-settings__section-title">Theme</h2>
+        <div className="kana-settings__theme-grid">
+          {THEMES.map(t => (
+            <button
+              key={t.id}
+              className={`kana-settings__theme-card ${theme === t.id ? 'kana-settings__theme-card--active' : ''}`}
+              onClick={() => setTheme(t.id)}
+              aria-pressed={theme === t.id}
+            >
+              <span
+                className="kana-settings__theme-swatch"
+                style={{ background: t.preview.bg, borderColor: t.preview.fg }}
+              >
+                <span
+                  className="kana-settings__theme-dot"
+                  style={{ background: t.preview.accent }}
+                />
+              </span>
+              <span className="kana-settings__theme-name">{t.name}</span>
+              <span className="kana-settings__theme-desc">{t.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       {/* Script toggle */}
       <section className="kana-settings__section">

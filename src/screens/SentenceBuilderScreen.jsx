@@ -207,7 +207,7 @@ function Chip({ chip, isDragging, onPointerDown, onTap }) {
 
 // ─── Main screen ───────────────────────────────────────────────────────────
 
-const CHALLENGE_TIME = 90
+const CHALLENGE_TIME = 120
 
 export default function SentenceBuilderScreen() {
   const [sentence,    setSentence]    = useState([])
@@ -287,7 +287,7 @@ export default function SentenceBuilderScreen() {
     setGeneratingChallenges(true)
 
     try {
-      const picked = await generateGameChallenges((done, total) => {
+      const picked = await generateGameChallenges((done) => {
         setGeneratedCount(done)
       })
       setChallenges(picked)
@@ -453,7 +453,7 @@ export default function SentenceBuilderScreen() {
   const draggingChip   = draggingId ? sentence.find(c => c.id === draggingId) : null
   const inChallenge    = mode === 'challenge'
   const timerPct       = (timeLeft / CHALLENGE_TIME) * 100
-  const timerUrgent    = timeLeft <= 20
+  const timerUrgent    = timeLeft <= 30
   const currentChallenge = challenges[challengeIdx]
 
   return (
@@ -587,6 +587,12 @@ export default function SentenceBuilderScreen() {
             <p className="sb-result__title">{challengeResult.valid ? 'Correct!' : 'Not quite'}</p>
             {challengeResult.feedback && (
               <p className="sb-result__row">{challengeResult.feedback}</p>
+            )}
+            {!challengeResult.valid && challengeResult.correct && (
+              <p className="sb-result__row sb-result__row--correct">
+                <span className="sb-result__correct-label">Correct: </span>
+                <span className="sb-result__correct-kana">{challengeResult.correct}</span>
+              </p>
             )}
           </div>
         )

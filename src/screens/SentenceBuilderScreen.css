@@ -530,6 +530,22 @@
 }
 .sb-result__row--pass { opacity: 0.5; }
 
+.sb-result__row--correct {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.sb-result__correct-label {
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.sb-result__correct-kana {
+  font-family: var(--font-japanese);
+  font-size: 15px;
+}
+
 /* ─── Action bar ──────────────────────────────────────────────────────────── */
 .sb-actions {
   display: flex;

@@ -31,6 +31,7 @@ const MODES = [
 function ModeSelect({ onSelect }) {
   return (
     <div className="quiz-mode-select">
+      <p className="quiz-mode-select__subtitle">Choose a mode</p>
       {MODES.map(m => (
         <button
           key={m.mode}
@@ -65,7 +66,6 @@ export default function KanaQuizScreen() {
     streak,
     bestStreak,
     timeLeft,
-    totalAnswered,
     answer,
     restart,
   } = useQuiz(mode ?? 'kana_to_romaji', settings)
