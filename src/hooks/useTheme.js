@@ -27,6 +27,12 @@ export const THEMES = [
     description: 'Natural green & earth',
     preview: { bg: '#f0f4ec', accent: '#3a8a42', fg: '#1a2e1c' },
   },
+  {
+    id: 'vaporwave',
+    name: 'Vaporwave',
+    description: 'Neon retro-future',
+    preview: { bg: '#090014', accent: '#FF00FF', fg: '#00FFFF' },
+  },
 ]
 
 export function useTheme() {

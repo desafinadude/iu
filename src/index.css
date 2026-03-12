@@ -94,6 +94,229 @@
   --color-halftone:      #1a3a1e;
 }
 
+/* ─── Theme: Vaporwave / Outrun ──────────────────────────────────── */
+[data-theme="vaporwave"] {
+  /* Colors — neon void */
+  --color-bg:            #090014;
+  --color-header:        #0d0020;
+  --color-japan-red:     #FF00FF;
+  --color-fg:            #E0E0E0;
+  --color-muted:         #2D1B4E;
+  --color-accent:        #FF00FF;
+  --color-accent-orange: #FF9900;
+  --color-accent-blue:   #00FFFF;
+  --color-surface:       #1a103c;
+  --color-postit:        #1a103c;
+  --color-halftone:      #FF00FF;
+
+  /* Fonts — terminal + geometric */
+  --font-display: 'Orbitron', sans-serif;
+  --font-body:    'Share Tech Mono', monospace;
+
+  /* Sharp geometry — no wobble */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  /* Neon glow shadows */
+  --shadow-sm:     0 0 8px #FF00FF, 0 0 16px rgba(255,0,255,0.35);
+  --shadow-md:     0 0 12px #FF00FF, 0 0 24px rgba(255,0,255,0.45);
+  --shadow-lg:     0 0 20px #FF00FF, 0 0 40px rgba(255,0,255,0.5);
+  --shadow-accent: 0 0 12px #FF00FF, 0 0 24px rgba(255,0,255,0.45);
+  --shadow-blue:   0 0 12px #00FFFF, 0 0 24px rgba(0,255,255,0.45);
+
+  /* Hide halftone — replaced by scanlines below */
+  --halftone-opacity: 0;
+}
+
+/* Grid + sun glow on body background */
+[data-theme="vaporwave"] body {
+  background-image:
+    radial-gradient(ellipse 120% 35% at 50% 100%, rgba(255,153,0,0.18) 0%, rgba(255,0,255,0.12) 40%, transparent 70%),
+    linear-gradient(transparent 95%, rgba(255,0,255,0.25) 95%),
+    linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.25) 95%);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* CRT scanlines + RGB chromatic aberration overlay */
+[data-theme="vaporwave"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(18,16,20,0) 50%, rgba(0,0,0,0.22) 50%),
+    linear-gradient(90deg, rgba(255,0,0,0.03) 0%, rgba(0,255,0,0.01) 50%, rgba(0,0,255,0.03) 100%);
+  background-size: 100% 4px, 100% 100%;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── AppShell overrides ─────────────────────────────────────────── */
+
+/* Header — sharp, neon-bordered, magenta glow */
+[data-theme="vaporwave"] .shell__header {
+  border-radius: 0;
+  border-bottom: 2px solid #FF00FF;
+  box-shadow: 0 0 20px rgba(255,0,255,0.6), 0 0 40px rgba(255,0,255,0.2);
+}
+[data-theme="vaporwave"] .shell__header::before { display: none; }
+
+/* Title — cyan with glow */
+[data-theme="vaporwave"] .shell__title {
+  color: #00FFFF;
+  text-shadow: 0 0 8px rgba(0,255,255,0.9), 0 0 20px rgba(0,255,255,0.4);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Back button — cyan */
+[data-theme="vaporwave"] .shell__back { color: #00FFFF; }
+
+/* Bottom nav — sharp, cyan-bordered */
+[data-theme="vaporwave"] .shell__bottom-nav {
+  border-radius: 0;
+  border-top: 2px solid #00FFFF;
+  box-shadow: 0 0 16px rgba(0,255,255,0.5), 0 0 32px rgba(0,255,255,0.15);
+}
+[data-theme="vaporwave"] .shell__bottom-nav::before { display: none; }
+
+/* Active nav indicator — sunset gradient */
+[data-theme="vaporwave"] .shell__nav-btn--active::after {
+  background: linear-gradient(to right, #FF9900, #FF00FF, #00FFFF);
+  height: 2px;
+}
+
+/* Nav label — tighter tracking */
+[data-theme="vaporwave"] .shell__nav-label { letter-spacing: 0.1em; }
+
+/* ── Interactive overrides ──────────────────────────────────────── */
+
+/* Buttons: glow intensifies on press instead of shadow-drop */
+[data-theme="vaporwave"] .sb-btn:active,
+[data-theme="vaporwave"] .ws-result__btn:active,
+[data-theme="vaporwave"] .mode-card:active,
+[data-theme="vaporwave"] .ws-theme-card:active,
+[data-theme="vaporwave"] .kana-settings__theme-card:active {
+  transform: none;
+  filter: brightness(1.3);
+}
+
+/* Quiz options — cyan glow on correct, magenta on wrong */
+[data-theme="vaporwave"] .quiz-play__option--correct {
+  background: rgba(0,255,255,0.15);
+  border-color: #00FFFF;
+  box-shadow: 0 0 16px #00FFFF, 0 0 32px rgba(0,255,255,0.3);
+  color: #00FFFF;
+}
+[data-theme="vaporwave"] .quiz-play__option--wrong {
+  background: rgba(255,0,255,0.15);
+  border-color: #FF00FF;
+  box-shadow: 0 0 16px #FF00FF, 0 0 32px rgba(255,0,255,0.3);
+  color: #FF00FF;
+}
+
+/* Result cards — themed glow */
+[data-theme="vaporwave"] .sb-result--ok {
+  background: rgba(0,255,255,0.08);
+  border-color: #00FFFF;
+  box-shadow: 0 0 12px rgba(0,255,255,0.4);
+}
+[data-theme="vaporwave"] .sb-result--bad {
+  background: rgba(255,0,255,0.08);
+  border-color: #FF00FF;
+  box-shadow: 0 0 12px rgba(255,0,255,0.4);
+}
+
+/* Timer urgent — cyan instead of red */
+[data-theme="vaporwave"] .sb-timer-fill--urgent,
+[data-theme="vaporwave"] .ws-timer-fill--urgent,
+[data-theme="vaporwave"] .quiz-play__timer-fill--urgent {
+  background: #FF9900;
+  box-shadow: 0 0 8px #FF9900;
+}
+
+/* Tape strip — hide; doesn't fit the aesthetic */
+[data-theme="vaporwave"] .sb-tape,
+[data-theme="vaporwave"] .quiz-play__tape { display: none; }
+
+/* Post-it / prompt cards — glassmorphism dark panel */
+[data-theme="vaporwave"] .sb-prompt-card,
+[data-theme="vaporwave"] .quiz-play__prompt-card {
+  border-color: #00FFFF;
+  box-shadow: 0 0 20px rgba(0,255,255,0.4), inset 0 0 20px rgba(0,255,255,0.05);
+  backdrop-filter: blur(4px);
+}
+
+/* Word chips — neon outline */
+[data-theme="vaporwave"] .sb-chip {
+  border-color: #FF00FF;
+  box-shadow: 0 0 8px rgba(255,0,255,0.4);
+}
+[data-theme="vaporwave"] .sb-chip--ghost {
+  box-shadow: 0 0 16px #FF00FF;
+}
+
+/* Dropdown — dark glass */
+[data-theme="vaporwave"] .sb-dropdown__trigger,
+[data-theme="vaporwave"] .sb-dropdown__panel {
+  border-color: #FF00FF;
+  box-shadow: 0 0 10px rgba(255,0,255,0.3);
+}
+
+/* Timer track border */
+[data-theme="vaporwave"] .sb-timer-track,
+[data-theme="vaporwave"] .ws-timer-bar,
+[data-theme="vaporwave"] .quiz-play__timer-track {
+  border-color: #2D1B4E;
+}
+
+/* Hearts — magenta */
+[data-theme="vaporwave"] .sb-heart,
+[data-theme="vaporwave"] .ws-heart,
+[data-theme="vaporwave"] .quiz-play__heart { color: #FF00FF; }
+
+/* Gradient text for kana prompts */
+[data-theme="vaporwave"] .quiz-play__prompt-kana,
+[data-theme="vaporwave"] .quiz-play__prompt-romaji {
+  background: linear-gradient(135deg, #FF9900, #FF00FF, #00FFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(255,0,255,0.5));
+}
+
+/* Theme card active — cyan glow instead of ink-press */
+[data-theme="vaporwave"] .kana-settings__theme-card--active {
+  background: rgba(0,255,255,0.1);
+  border-color: #00FFFF;
+  box-shadow: 0 0 16px rgba(0,255,255,0.5);
+  transform: none;
+}
+[data-theme="vaporwave"] .kana-settings__theme-card--active .kana-settings__theme-name {
+  color: #00FFFF;
+  text-shadow: 0 0 8px rgba(0,255,255,0.7);
+}
+[data-theme="vaporwave"] .kana-settings__theme-card--active .kana-settings__theme-desc {
+  color: var(--color-fg);
+}
+
+/* Kana settings script buttons — neon style */
+[data-theme="vaporwave"] .kana-settings__script-btn--active {
+  background: #FF00FF;
+  border-color: #FF00FF;
+  box-shadow: 0 0 16px rgba(255,0,255,0.6);
+  color: #090014;
+  transform: none;
+}
+
+/* Home card kana character — gradient */
+[data-theme="vaporwave"] .home__card-kana {
+  background: linear-gradient(135deg, #FF00FF, #00FFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ─── Reset ─────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
