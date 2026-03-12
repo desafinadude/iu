@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
-import { Volume2, Copy, Check, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Volume2, Copy, Check, ChevronRight, ChevronLeft, Loader } from 'lucide-react'
 import { VOCAB_LIST, ADJ_LIST } from '../data/vocabData'
 import { VERB_LIST } from '../data/verbData'
 import { speak } from '../utils/speech'
 import { kanaToRomaji } from '../utils/kanaToRomaji'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
+import {
+  generateGameChallenges,
+  checkAnswer,
+  CHALLENGES_PER_GAME,
+} from '../utils/llmChallenge'
 import './SentenceBuilderScreen.css'
 
 // ─── Category data ─────────────────────────────────────────────────────────
@@ -73,7 +78,7 @@ const CATEGORIES = [
   },
 ]
 
-// ─── Grammar checker ───────────────────────────────────────────────────────
+// ─── Free-mode grammar checker ────────────────────────────────────────────
 
 function validateSentence(chips) {
   if (chips.length === 0) return null
@@ -108,73 +113,6 @@ function validateSentence(chips) {
   return { valid: issues.length === 0, issues, passes }
 }
 
-// ─── Dynamic challenge generation from existing vocab examples ─────────────
-// Uses the `example` field already present on every VOCAB_LIST and ADJ_LIST
-// entry, so challenges only ever use words that exist in the dropdown.
-
-const CHALLENGE_TIME = 90
-const CHALLENGES_PER_GAME = 6
-
-function buildAllChallenges() {
-  const out = []
-
-  // From VOCAB_LIST — each noun/pronoun/adverb has an example sentence
-  for (const w of VOCAB_LIST) {
-    if (!w.example || w.type === 'particle' || w.kana.length < 2) continue
-    out.push({ en: w.example.en, needs: [w.kana] })
-  }
-
-  // From ADJ_LIST — each adjective has an example sentence
-  for (const a of ADJ_LIST) {
-    if (!a.example || a.kana.length < 2) continue
-    out.push({ en: a.example.en, needs: [a.kana] })
-  }
-
-  // From VERB_LIST — each verb has multiple example sentences
-  for (const v of VERB_LIST) {
-    for (const ex of v.examples ?? []) {
-      out.push({ en: ex.en, needs: [v.kana] })
-    }
-  }
-
-  // Deduplicate by English sentence
-  const seen = new Set()
-  return out.filter(c => {
-    if (seen.has(c.en)) return false
-    seen.add(c.en)
-    return true
-  })
-}
-
-const ALL_CHALLENGES = buildAllChallenges()
-
-function pickChallenges(n = CHALLENGES_PER_GAME) {
-  const shuffled = [...ALL_CHALLENGES].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, n)
-}
-
-function checkChallenge(chips, challenge) {
-  if (chips.length === 0) return null
-  const allKana = chips.map(c => c.kana).join('')
-
-  const missing = challenge.needs.filter(k => !allKana.includes(k))
-  if (missing.length > 0) {
-    return { valid: false, issue: 'Make sure the key word from the English sentence is included.' }
-  }
-
-  const hasPred = chips.some(c => c.type === 'verb' || c.type === 'adj')
-  if (!hasPred) {
-    return { valid: false, issue: 'Add a verb or adjective to complete the sentence.' }
-  }
-
-  const lastType = chips[chips.length - 1]?.type
-  if (lastType !== 'verb' && lastType !== 'adj' && lastType !== 'particle') {
-    return { valid: false, issue: 'Remember: verb or adjective goes at the end in Japanese.' }
-  }
-
-  return { valid: true }
-}
-
 // ─── Two-step dropdown ─────────────────────────────────────────────────────
 
 function WordDropdown({ onSelect }) {
@@ -200,17 +138,10 @@ function WordDropdown({ onSelect }) {
     setCategory(null)
   }
 
-  function toggleOpen() {
-    setOpen(v => !v)
-    setCategory(null)
-  }
-
   return (
     <div className="sb-dropdown">
-      <button className="sb-dropdown__trigger" onClick={toggleOpen} aria-expanded={open}>
-        <span className="sb-dropdown__trigger-label">
-          {category ? category.label : 'Add a word…'}
-        </span>
+      <button className="sb-dropdown__trigger" onClick={() => { setOpen(v => !v); setCategory(null) }} aria-expanded={open}>
+        <span className="sb-dropdown__trigger-label">Add a word…</span>
         <ChevronRight
           size={16}
           className={`sb-dropdown__arrow${open ? ' sb-dropdown__arrow--open' : ''}`}
@@ -269,6 +200,8 @@ function Chip({ chip, isDragging, onPointerDown, onTap }) {
 
 // ─── Main screen ───────────────────────────────────────────────────────────
 
+const CHALLENGE_TIME = 90
+
 export default function SentenceBuilderScreen() {
   const [sentence,    setSentence]    = useState([])
   const [checkResult, setCheckResult] = useState(null)
@@ -283,6 +216,12 @@ export default function SentenceBuilderScreen() {
   const [challengeResult, setChallengeResult] = useState(null)
   const [gameOver,        setGameOver]        = useState(false)
   const [allDone,         setAllDone]         = useState(false)
+
+  // Loading states
+  const [generatingChallenges, setGeneratingChallenges] = useState(false)
+  const [generatedCount,       setGeneratedCount]       = useState(0)
+  const [checkingAnswer,       setCheckingAnswer]       = useState(false)
+  const [llmError,             setLlmError]             = useState(null)
 
   // Drag state
   const [draggingId, setDraggingId] = useState(null)
@@ -301,35 +240,31 @@ export default function SentenceBuilderScreen() {
   // ── Challenge timer ────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (mode !== 'challenge' || gameOver || allDone || challengeResult?.valid) return
+    if (mode !== 'challenge' || gameOver || allDone || challengeResult?.valid || generatingChallenges || checkingAnswer) return
+    if (challenges.length === 0) return
     if (timeLeft > 0) {
       const t = setTimeout(() => setTimeLeft(p => p - 1), 1000)
       return () => clearTimeout(t)
     }
-    // Time's up — lose a life
+    // Time's up
     const newLives = lives - 1
-    if (newLives <= 0) {
-      setLives(0)
-      setGameOver(true)
-      return
-    }
+    if (newLives <= 0) { setLives(0); setGameOver(true); return }
     setLives(newLives)
+    advanceChallenge()
+  }, [mode, timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult, generatingChallenges, checkingAnswer])
+
+  function advanceChallenge() {
     const nextIdx = challengeIdx + 1
-    if (nextIdx >= challenges.length) {
-      setAllDone(true)
-      return
-    }
+    if (nextIdx >= challenges.length) { setAllDone(true); return }
     setChallengeIdx(nextIdx)
     setTimeLeft(CHALLENGE_TIME)
     setSentence([])
     setChallengeResult(null)
-  }, [mode, timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult])
+  }
 
   // ── Mode helpers ───────────────────────────────────────────────────────
 
-  function enterChallenge() {
-    const picked = pickChallenges()
-    setChallenges(picked)
+  async function enterChallenge() {
     setMode('challenge')
     setChallengeIdx(0)
     setTimeLeft(CHALLENGE_TIME)
@@ -339,6 +274,21 @@ export default function SentenceBuilderScreen() {
     setSentence([])
     setCheckResult(null)
     setChallengeResult(null)
+    setChallenges([])
+    setLlmError(null)
+    setGeneratedCount(0)
+    setGeneratingChallenges(true)
+
+    try {
+      const picked = await generateGameChallenges((done, total) => {
+        setGeneratedCount(done)
+      })
+      setChallenges(picked)
+    } catch (err) {
+      setLlmError(err.message)
+    } finally {
+      setGeneratingChallenges(false)
+    }
   }
 
   function enterFree() {
@@ -346,6 +296,7 @@ export default function SentenceBuilderScreen() {
     setSentence([])
     setCheckResult(null)
     setChallengeResult(null)
+    setLlmError(null)
   }
 
   // ── Word selection ─────────────────────────────────────────────────────
@@ -360,7 +311,6 @@ export default function SentenceBuilderScreen() {
 
   function handleChipTap(chip) {
     if (didDragRef.current) return
-
     if (tapTimers.current[chip.id]) {
       clearTimeout(tapTimers.current[chip.id])
       delete tapTimers.current[chip.id]
@@ -395,9 +345,7 @@ export default function SentenceBuilderScreen() {
     if (!dragRef.current) return
     const { offsetX, offsetY, startX, startY } = dragRef.current
     if (!didDragRef.current) {
-      const dx = Math.abs(e.clientX - startX)
-      const dy = Math.abs(e.clientY - startY)
-      if (dx < 6 && dy < 6) return
+      if (Math.abs(e.clientX - startX) < 6 && Math.abs(e.clientY - startY) < 6) return
       didDragRef.current = true
       setDraggingId(dragRef.current.id)
     }
@@ -452,28 +400,26 @@ export default function SentenceBuilderScreen() {
 
   // ── Actions ────────────────────────────────────────────────────────────
 
-  function handleCheck() {
+  async function handleCheck() {
     if (mode === 'challenge') {
-      const result = checkChallenge(sentence, challenges[challengeIdx])
-      setChallengeResult(result)
-      if (result?.valid) {
-        playCorrectSound()
-        setTimeout(() => {
-          const nextIdx = challengeIdx + 1
-          if (nextIdx >= challenges.length) {
-            setAllDone(true)
-          } else {
-            setChallengeIdx(nextIdx)
-            setTimeLeft(CHALLENGE_TIME)
-            setSentence([])
-            setChallengeResult(null)
-          }
-        }, 1500)
-      } else {
-        playWrongSound()
-        const newLives = lives - 1
-        setLives(newLives)
-        if (newLives <= 0) setGameOver(true)
+      const userKana = sentence.map(c => c.kana).join('')
+      setCheckingAnswer(true)
+      try {
+        const result = await checkAnswer(challenges[challengeIdx].en, userKana)
+        setChallengeResult(result)
+        if (result?.valid) {
+          playCorrectSound()
+          setTimeout(() => advanceChallenge(), 1800)
+        } else {
+          playWrongSound()
+          const newLives = lives - 1
+          setLives(newLives)
+          if (newLives <= 0) setGameOver(true)
+        }
+      } catch (err) {
+        setLlmError(err.message)
+      } finally {
+        setCheckingAnswer(false)
       }
     } else {
       const result = validateSentence(sentence)
@@ -496,28 +442,46 @@ export default function SentenceBuilderScreen() {
     })
   }
 
-  const hasChips    = sentence.length > 0
-  const draggingChip = draggingId ? sentence.find(c => c.id === draggingId) : null
-  const inChallenge  = mode === 'challenge'
-  const timerPct     = (timeLeft / CHALLENGE_TIME) * 100
-  const timerUrgent  = timeLeft <= 20
+  const hasChips       = sentence.length > 0
+  const draggingChip   = draggingId ? sentence.find(c => c.id === draggingId) : null
+  const inChallenge    = mode === 'challenge'
+  const timerPct       = (timeLeft / CHALLENGE_TIME) * 100
+  const timerUrgent    = timeLeft <= 20
   const currentChallenge = challenges[challengeIdx]
 
   return (
     <div className="sb-screen">
 
-      {/* ── Mode tabs ──────────────────────────────────────────────────── */}
+      {/* ── Mode tabs ────────────────────────────────────────────────── */}
       <div className="sb-mode-tabs">
         <button className={`sb-tab${mode === 'free' ? ' sb-tab--active' : ''}`} onClick={enterFree}>
           Free Build
         </button>
-        <button className={`sb-tab${mode === 'challenge' ? ' sb-tab--active' : ''}`} onClick={enterChallenge}>
+        <button className={`sb-tab${mode === 'challenge' ? ' sb-tab--active' : ''}`} onClick={enterChallenge} disabled={generatingChallenges}>
           Challenge
         </button>
       </div>
 
-      {/* ── Challenge prompt card (post-it style) ──────────────────────── */}
-      {inChallenge && !gameOver && !allDone && currentChallenge && (
+      {/* ── LLM error ────────────────────────────────────────────────── */}
+      {llmError && (
+        <div className="sb-error">
+          <strong>Error:</strong> {llmError}
+          <button className="sb-error__dismiss" onClick={() => setLlmError(null)}>✕</button>
+        </div>
+      )}
+
+      {/* ── Generating challenges loader ─────────────────────────────── */}
+      {inChallenge && generatingChallenges && (
+        <div className="sb-loading-card">
+          <Loader size={22} className="sb-loading-card__spinner" aria-hidden="true" />
+          <p className="sb-loading-card__text">
+            Generating challenges… {generatedCount}/{CHALLENGES_PER_GAME}
+          </p>
+        </div>
+      )}
+
+      {/* ── Challenge prompt card (post-it) ──────────────────────────── */}
+      {inChallenge && !generatingChallenges && !gameOver && !allDone && currentChallenge && (
         <div className="sb-prompt-card">
           <span className="sb-tape" aria-hidden="true" />
           <div className="sb-halftone" aria-hidden="true" />
@@ -526,8 +490,8 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
-      {/* ── Timer + lives ───────────────────────────────────────────────── */}
-      {inChallenge && !gameOver && !allDone && (
+      {/* ── Timer + lives ─────────────────────────────────────────────── */}
+      {inChallenge && !generatingChallenges && !gameOver && !allDone && (
         <div className="sb-status-row">
           <div className="sb-lives" aria-label={`${lives} lives remaining`}>
             {[0, 1, 2].map(i => (
@@ -551,7 +515,7 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
-      {/* ── Game over ───────────────────────────────────────────────────── */}
+      {/* ── Game over ─────────────────────────────────────────────────── */}
       {inChallenge && gameOver && (
         <div className="sb-overlay">
           <p className="sb-overlay__title">Game Over</p>
@@ -560,7 +524,7 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
-      {/* ── All done ────────────────────────────────────────────────────── */}
+      {/* ── All done ──────────────────────────────────────────────────── */}
       {inChallenge && allDone && (
         <div className="sb-overlay">
           <p className="sb-overlay__title">All Done!</p>
@@ -569,13 +533,13 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
-      {/* ── Dropdown ───────────────────────────────────────────────────── */}
-      {!(inChallenge && (gameOver || allDone)) && (
+      {/* ── Dropdown ─────────────────────────────────────────────────── */}
+      {!(inChallenge && (gameOver || allDone || generatingChallenges)) && (
         <WordDropdown onSelect={handleSelect} />
       )}
 
-      {/* ── Sentence area ──────────────────────────────────────────────── */}
-      {!(inChallenge && (gameOver || allDone)) && (
+      {/* ── Sentence area ────────────────────────────────────────────── */}
+      {!(inChallenge && (gameOver || allDone || generatingChallenges)) && (
         <div className="sb-sentence-area">
           {hasChips && (
             <div className="sb-chips" ref={chipsRef}>
@@ -597,19 +561,21 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
-      {/* ── Romaji block ───────────────────────────────────────────────── */}
-      {hasChips && !(inChallenge && (gameOver || allDone)) && (
+      {/* ── Romaji block ──────────────────────────────────────────────── */}
+      {hasChips && !(inChallenge && (gameOver || allDone || generatingChallenges)) && (
         <p className="sb-romaji-line">
           {sentence.map(c => kanaToRomaji(c.kana)).join(' ')}。
         </p>
       )}
 
-      {/* ── Validation result ──────────────────────────────────────────── */}
+      {/* ── Validation result ─────────────────────────────────────────── */}
       {inChallenge ? (
         challengeResult && (
           <div className={`sb-result ${challengeResult.valid ? 'sb-result--ok' : 'sb-result--bad'}`}>
             <p className="sb-result__title">{challengeResult.valid ? 'Correct!' : 'Not quite'}</p>
-            {!challengeResult.valid && <p className="sb-result__row">✗ {challengeResult.issue}</p>}
+            {challengeResult.feedback && (
+              <p className="sb-result__row">{challengeResult.feedback}</p>
+            )}
           </div>
         )
       ) : (
@@ -624,10 +590,19 @@ export default function SentenceBuilderScreen() {
         )
       )}
 
-      {/* ── Actions ────────────────────────────────────────────────────── */}
-      {!(inChallenge && (gameOver || allDone)) && (
+      {/* ── Actions ──────────────────────────────────────────────────── */}
+      {!(inChallenge && (gameOver || allDone || generatingChallenges)) && (
         <div className="sb-actions">
-          <button className="sb-btn sb-btn--check" onClick={handleCheck} disabled={!hasChips}>Check</button>
+          <button
+            className="sb-btn sb-btn--check"
+            onClick={handleCheck}
+            disabled={!hasChips || checkingAnswer}
+          >
+            {checkingAnswer
+              ? <Loader size={18} className="sb-loading-card__spinner" aria-hidden="true" />
+              : 'Check'
+            }
+          </button>
           <button className="sb-btn sb-btn--icon" onClick={handleSpeak} disabled={!hasChips} aria-label="Speak all">
             <Volume2 size={18} aria-hidden="true" />
           </button>
@@ -640,7 +615,7 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
-      {/* ── Drag ghost ─────────────────────────────────────────────────── */}
+      {/* ── Drag ghost ────────────────────────────────────────────────── */}
       {ghostStyle && draggingChip && didDragRef.current && (
         <div className="sb-chip sb-chip--ghost" style={ghostStyle} aria-hidden="true">
           <span className="sb-chip__word">{draggingChip.word}</span>

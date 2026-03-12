@@ -35,6 +35,59 @@
   opacity: 1;
 }
 
+/* ─── LLM error banner ───────────────────────────────────────────────────── */
+.sb-error {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #ffd6d6;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-fg);
+  line-height: 1.4;
+}
+
+.sb-error__dismiss {
+  margin-left: auto;
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* ─── Generating challenges loader ───────────────────────────────────────── */
+.sb-loading-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.sb-loading-card__spinner {
+  animation: sb-spin 1s linear infinite;
+  color: var(--color-fg);
+  opacity: 0.5;
+}
+
+.sb-loading-card__text {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-fg);
+  opacity: 0.55;
+}
+
+@keyframes sb-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ─── Challenge prompt (post-it card — same style as KanaQuiz) ───────────── */
 .sb-prompt-card {
   position: relative;
