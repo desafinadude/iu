@@ -1,9 +1,6 @@
 import { VOCAB_LIST, ADJ_LIST } from '../data/vocabData'
 import { VERB_LIST } from '../data/verbData'
 
-const MODEL = 'Qwen/Qwen2.5-72B-Instruct'
-// Direct OpenAI-compatible endpoint — bypasses the SDK router entirely
-const HF_API_URL = `https://api-inference.huggingface.co/models/${MODEL}/v1/chat/completions`
 const CHALLENGES_PER_GAME = 6
 
 // ─── Build a flat word pool from all available data ───────────────────────
@@ -31,34 +28,17 @@ function buildWordPool() {
 
 export const WORD_POOL = buildWordPool()
 
-// ─── Raw fetch — no SDK routing, no auth surprises ────────────────────────
-
-function getToken() {
-  const token = import.meta.env.VITE_HF_TOKEN
-  if (!token || token === 'your_token_here') {
-    throw new Error('No HuggingFace token. Set VITE_HF_TOKEN in .env.local')
-  }
-  return token
-}
+// ─── Proxy fetch — routes through Netlify function to avoid CORS ──────────
 
 async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
-  const token = getToken()
-  const res = await fetch(HF_API_URL, {
+  const res = await fetch('/.netlify/functions/hf-chat', {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages,
-      max_tokens: maxTokens,
-      temperature,
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, maxTokens, temperature }),
   })
   if (!res.ok) {
     const body = await res.text()
-    throw new Error(`HuggingFace API error ${res.status}: ${body}`)
+    throw new Error(`API error ${res.status}: ${body}`)
   }
   const data = await res.json()
   return data.choices[0].message.content
