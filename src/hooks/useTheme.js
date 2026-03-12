@@ -16,6 +16,12 @@ export const THEMES = [
     preview: { bg: '#FFFFFF', accent: '#FF3000', fg: '#000000' },
   },
   {
+    id: 'playful',
+    name: 'Playful',
+    description: 'Geometric pop & energy',
+    preview: { bg: '#FFFDF5', accent: '#8B5CF6', fg: '#1E293B' },
+  },
+  {
     id: 'vaporwave',
     name: 'Vaporwave',
     description: 'Neon retro-future',

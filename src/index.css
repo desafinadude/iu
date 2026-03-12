@@ -101,6 +101,262 @@
   z-index: 9998;
 }
 
+/* ─── Theme: Playful Geometric ───────────────────────────────────── */
+[data-theme="playful"] {
+  /* Colors — punchy, high-saturation, anchored by warm cream */
+  --color-bg:            #FFFDF5;
+  --color-header:        #FFFDF5;
+  --color-japan-red:     #8B5CF6;
+  --color-fg:            #1E293B;
+  --color-muted:         #F1F5F9;
+  --color-accent:        #8B5CF6;
+  --color-accent-orange: #FBBF24;
+  --color-accent-blue:   #34D399;
+  --color-surface:       #FFFFFF;
+  --color-postit:        #FEF9C3;
+  --color-halftone:      #1E293B;
+
+  /* Geometric friendly headings + humanist body */
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Rounded corners — friendly, not wobbly */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  /* "Pop" hard shadows — sticker / cut-out paper feel */
+  --shadow-sm:     2px 2px 0px 0px #1E293B;
+  --shadow-md:     4px 4px 0px 0px #1E293B;
+  --shadow-lg:     6px 6px 0px 0px #1E293B;
+  --shadow-accent: 4px 4px 0px 0px #8B5CF6;
+  --shadow-blue:   4px 4px 0px 0px #34D399;
+
+  /* Kill halftone jpg — dot grid replaces it */
+  --halftone-opacity: 0;
+}
+
+/* Dot grid body background — Memphis-style polka dots */
+[data-theme="playful"] body {
+  background-image: radial-gradient(circle, rgba(30,41,59,0.1) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+/* ── Playful AppShell ────────────────────────────────────────────── */
+
+/* Header — cream, 2px dark ruled baseline */
+[data-theme="playful"] .shell__header {
+  border-radius: 0;
+  border-bottom: 2px solid #1E293B;
+  box-shadow: none;
+}
+[data-theme="playful"] .shell__header::before { display: none; }
+
+/* Title — Outfit ExtraBold, friendly casing */
+[data-theme="playful"] .shell__title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #1E293B;
+}
+
+/* Bottom nav — cream, 2px dark ruled top */
+[data-theme="playful"] .shell__bottom-nav {
+  border-radius: 0;
+  border-top: 2px solid #1E293B;
+  box-shadow: none;
+}
+[data-theme="playful"] .shell__bottom-nav::before { display: none; }
+
+/* Active nav — violet bar */
+[data-theme="playful"] .shell__nav-btn--active::after {
+  background: #8B5CF6;
+  height: 3px;
+}
+
+/* ── Playful menu cards ───────────────────────────────────────────── */
+
+/* Bouncy elastic transition on hover */
+[data-theme="playful"] .menu-card {
+  border-width: 2px;
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Wiggle + lift on hover */
+@media (hover: hover) {
+  [data-theme="playful"] .menu-card:hover {
+    transform: rotate(-1deg) scale(1.02);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+}
+
+/* Press-in on active */
+[data-theme="playful"] .menu-card:active {
+  transform: translateX(4px) translateY(4px);
+  box-shadow: none;
+}
+
+/* ── Playful quiz play ────────────────────────────────────────────── */
+
+/* Timer — rounded pill, violet urgent */
+[data-theme="playful"] .quiz-play__timer-fill--urgent,
+[data-theme="playful"] .ws-timer-fill--urgent {
+  background: #F472B6;
+  box-shadow: none;
+}
+
+/* Hearts — violet */
+[data-theme="playful"] .quiz-play__heart,
+[data-theme="playful"] .ws-heart,
+[data-theme="playful"] .sb-heart {
+  color: #8B5CF6;
+}
+
+/* Prompt card — yellow sticky note */
+[data-theme="playful"] .quiz-play__prompt-card {
+  background: #FEF9C3;
+  border-color: #1E293B;
+  border-width: 2px;
+}
+
+/* Options — bouncy hover, bright feedback colors */
+[data-theme="playful"] .quiz-play__option {
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 150ms ease-out;
+}
+
+@media (hover: hover) {
+  [data-theme="playful"] .quiz-play__option:hover:not(:disabled) {
+    background: #FBBF24;
+    transform: translateX(-2px) translateY(-2px);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+}
+
+[data-theme="playful"] .quiz-play__option:active:not(:disabled) {
+  transform: translateX(2px) translateY(2px);
+  box-shadow: 2px 2px 0px 0px #1E293B;
+}
+
+/* Correct — mint green */
+[data-theme="playful"] .quiz-play__option--correct {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #34D399;
+  box-shadow: 4px 4px 0px 0px #34D399;
+}
+
+/* Wrong — hot pink */
+[data-theme="playful"] .quiz-play__option--wrong {
+  background: #fce7f3;
+  color: #9d174d;
+  border-color: #F472B6;
+  box-shadow: 4px 4px 0px 0px #F472B6;
+}
+
+/* Results card */
+[data-theme="playful"] .quiz-results__card {
+  box-shadow: 8px 8px 0px 0px #1E293B;
+}
+
+[data-theme="playful"] .quiz-results__over-label {
+  color: #8B5CF6;
+  opacity: 1;
+}
+
+/* ── Playful sentence builder ────────────────────────────────────── */
+
+/* Chips — rounded pill, violet outline */
+[data-theme="playful"] .sb-chip {
+  border-width: 2px;
+  border-color: #1E293B;
+  font-weight: 700;
+}
+
+[data-theme="playful"] .sb-chip--ghost {
+  border-style: dashed;
+  border-color: #8B5CF6;
+  box-shadow: none;
+}
+
+/* Result cards */
+[data-theme="playful"] .sb-result--ok {
+  border-color: #34D399;
+  box-shadow: 4px 4px 0px 0px #34D399;
+}
+[data-theme="playful"] .sb-result--bad {
+  border-color: #F472B6;
+  box-shadow: 4px 4px 0px 0px #F472B6;
+}
+
+/* ── Playful word search ─────────────────────────────────────────── */
+
+/* Grid cell selected — violet */
+[data-theme="playful"] .ws-cell--selected {
+  background: #ede9fe;
+  border-color: #8B5CF6;
+  color: #5b21b6;
+}
+
+/* Result overlay */
+[data-theme="playful"] .ws-result {
+  box-shadow: 8px 8px 0px 0px #1E293B;
+}
+
+/* ── Playful kana settings ───────────────────────────────────────── */
+
+/* Kana table active row — violet */
+[data-theme="playful"] .kana-table__row--active {
+  background: #8B5CF6;
+}
+
+[data-theme="playful"] .kana-table__row--active .kana-table__cell,
+[data-theme="playful"] .kana-table__row--active .kana-table__row-label {
+  color: #FFFFFF;
+  opacity: 1;
+}
+
+/* Script toggle active — violet */
+[data-theme="playful"] .kana-settings__script-btn--active {
+  background: #8B5CF6;
+  border-color: #8B5CF6;
+  color: #FFFFFF;
+  box-shadow: 3px 3px 0px 0px #1E293B;
+  transform: none;
+}
+
+/* Theme card active — violet */
+[data-theme="playful"] .kana-settings__theme-card--active {
+  background: #8B5CF6;
+  border-color: #8B5CF6;
+  transform: none;
+  box-shadow: 3px 3px 0px 0px #1E293B;
+}
+
+[data-theme="playful"] .kana-settings__theme-card--active .kana-settings__theme-name,
+[data-theme="playful"] .kana-settings__theme-card--active .kana-settings__theme-desc {
+  color: #FFFFFF;
+}
+
+/* Pill toggle active — violet */
+[data-theme="playful"] .kana-settings__pill-toggle--on {
+  background: #8B5CF6;
+  border-color: #8B5CF6;
+  color: #FFFFFF;
+}
+
+/* Home kana — violet accent */
+[data-theme="playful"] .home__card-kana {
+  color: #8B5CF6;
+}
+
+/* Vaporwave menu-card active override does not apply here */
+[data-theme="playful"] .menu-card:active {
+  filter: none;
+}
+
 /* ─── Theme: Swiss International ─────────────────────────────────── */
 [data-theme="swiss"] {
   /* Colors — strict monochrome + Swiss red signal */
