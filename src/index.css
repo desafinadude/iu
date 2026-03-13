@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================================================
-   Material You Design Tokens (Material Design 3)
+   Material You Design Tokens (Material Design 3) - Default Theme
    ============================================================================ */
 
 @layer base {
@@ -52,6 +52,8 @@
     /* ── Typography ─────────────────────────────────────────────────── */
     --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
     --font-japanese: 'Noto Sans JP', sans-serif;
+    --font-heading: 'Roboto', system-ui, sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
     
     /* ── Border Radius (Soft, Organic) ─────────────────────────────────  */
     --radius-sm: 0.5rem;   /* 8px */
@@ -76,6 +78,120 @@
     --bottom-nav-height: 64px;
     --content-max-width: 512px;
   }
+
+  /* ============================================================================
+     COMIC BOOK THEME - Hand-Drawn & Graphic Novel
+     ============================================================================ */
+  [data-theme="comic"] {
+    /* Colors - Paper & Ink Palette */
+    --background: 40 20% 94%;          /* #f5f0e8 - Off-white beige */
+    --foreground: 0 0% 18%;            /* #2d2d2d - Soft pencil black */
+    --surface: 0 0% 100%;              /* #ffffff - Clean card surface */
+    --surface-container: 40 13% 92%;   /* #e5e0d8 - Old paper */
+    --surface-container-low: 40 13% 92%;
+    
+    --primary: 0 100% 65%;             /* #ff4d4d - Red correction marker */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 214 61% 41%;          /* #2d5da1 - Ballpoint blue */
+    --secondary-foreground: 0 0% 100%;
+    
+    --tertiary: 54 100% 94%;           /* #fff9c4 - Post-it yellow */
+    --tertiary-foreground: 0 0% 18%;
+    
+    --accent: 0 100% 65%;              /* Red accent */
+    --accent-foreground: 0 0% 100%;
+    
+    --muted: 40 13% 92%;               /* Old paper */
+    --muted-foreground: 0 0% 18%;
+    
+    --border: 0 0% 18%;                /* Always pencil black */
+    --input: 0 0% 100%;
+    --ring: 214 61% 41%;               /* Blue focus */
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 18%;
+    
+    --destructive: 0 100% 65%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Typography - Handwritten */
+    --font-sans: 'Patrick Hand', 'Comic Sans MS', cursive;
+    --font-heading: 'Kalam', 'Patrick Hand', cursive;
+    --font-japanese: 'Noto Sans JP', sans-serif;
+    --font-mono: 'Patrick Hand', monospace;
+    
+    /* Wobbly Borders */
+    --radius-sm: 255px 8px 180px 8px / 8px 180px 8px 255px;
+    --radius-md: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    --radius-lg: 300px 20px 280px 20px / 20px 280px 20px 300px;
+    --radius-xl: 300px 20px 280px 20px / 20px 280px 20px 300px;
+    --radius-full: 9999px;
+    
+    /* Hard Ink Shadows - Reduced opacity, darker color */
+    --shadow-1: 1.8px 1.8px 0px 0px rgba(51, 51, 51, 0.6);
+    --shadow-2: 3px 3px 0px 0px rgba(51, 51, 51, 0.6);
+    --shadow-3: 4.8px 4.8px 0px 0px rgba(51, 51, 51, 0.6);
+    --shadow-accent: 3px 3px 0px 0px rgba(255, 77, 77, 0.6);
+    --shadow-blue: 3px 3px 0px 0px rgba(45, 93, 161, 0.6);
+  }
+
+  /* ============================================================================
+     VAPORWAVE THEME - Neon Retro-Futuristic
+     ============================================================================ */
+  [data-theme="vaporwave"] {
+    /* Colors - Digital Void & Neon */
+    --background: 280 91% 4%;          /* #090014 - Near-black purple void */
+    --foreground: 0 0% 88%;            /* #E0E0E0 - Chrome silver-gray */
+    --surface: 266 48% 15%;            /* #1a103c - Semi-transparent deep purple */
+    --surface-container: 266 48% 15%;
+    --surface-container-low: 266 48% 12%;
+    
+    --primary: 300 100% 50%;           /* #FF00FF - Hot magenta */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 180 100% 50%;         /* #00FFFF - Electric cyan */
+    --secondary-foreground: 280 91% 4%;
+    
+    --tertiary: 30 100% 50%;           /* #FF9900 - Sunset orange */
+    --tertiary-foreground: 0 0% 0%;
+    
+    --accent: 300 100% 50%;            /* Magenta */
+    --accent-foreground: 0 0% 100%;
+    
+    --muted: 260 46% 18%;              /* #2D1B4E - Muted dark purple */
+    --muted-foreground: 0 0% 70%;
+    
+    --border: 260 46% 18%;             /* Dark purple default */
+    --input: 266 48% 15%;
+    --ring: 180 100% 50%;              /* Cyan focus */
+    
+    --card: 266 48% 15%;
+    --card-foreground: 0 0% 88%;
+    
+    --destructive: 300 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Typography - Retro Terminal */
+    --font-sans: 'Share Tech Mono', 'Courier New', monospace;
+    --font-heading: 'Orbitron', 'Arial Black', sans-serif;
+    --font-japanese: 'Noto Sans JP', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    
+    /* Sharp Geometric Borders */
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-full: 9999px;
+    
+    /* Neon Glow Shadows */
+    --shadow-1: 0 0 10px rgba(255, 0, 255, 0.3);
+    --shadow-2: 0 0 20px rgba(255, 0, 255, 0.3), 0 0 30px rgba(0, 255, 255, 0.2);
+    --shadow-3: 0 0 30px rgba(255, 0, 255, 0.4), 0 0 50px rgba(0, 255, 255, 0.3);
+    --shadow-accent: 0 0 20px #FF00FF;
+    --shadow-cyan: 0 0 20px #00FFFF;
+  }
 }
 
 @layer base {
@@ -87,11 +203,13 @@
     @apply h-full;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 300ms ease, color 300ms ease;
   }
   
   body {
     @apply bg-background text-foreground font-sans h-full;
     font-feature-settings: 'rlig' 1, 'calt' 1;
+    transition: background-color 300ms ease, color 300ms ease;
   }
   
   #root {
@@ -101,6 +219,7 @@
   /* Typography Styles */
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium;
+    transition: color 300ms ease;
   }
   
   /* Smooth transitions for interactive elements */
@@ -123,6 +242,18 @@
   /* Disable text selection on interactive elements */
   button, [role="button"] {
     @apply select-none;
+  }
+  
+  /* Theme transition for all themed elements */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+  }
+  
+  /* Don't transition transforms and opacity (for interactions) */
+  *:not(html):not(body) {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
   }
 }
 
@@ -278,4 +409,306 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* ============================================================================
+   COMIC BOOK THEME EFFECTS
+   ============================================================================ */
+
+[data-theme="comic"] {
+  /* Halftone background texture on body */
+  body {
+    position: relative;
+    background-color: hsl(var(--background));
+    background-image: url('/halftone.jpg');
+    background-size: 400px 400px;
+    background-repeat: repeat;
+    background-blend-mode: multiply;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-color: hsl(var(--background));
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  /* Prevent clipping from shadows and transforms */
+  #root,
+  main,
+  section,
+  [class*="container"] {
+    overflow: visible !important;
+  }
+  
+  /* Add padding to main container to accommodate shadows */
+  main .app-container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  
+  /* Add breathing room for elements with shadows */
+  [class*="card"],
+  [class*="Card"],
+  button {
+    margin: 4px;
+  }
+  
+  /* Stronger wobbly borders - apply to common elements */
+  button, 
+  [class*="card"],
+  [class*="Card"],
+  input,
+  textarea,
+  select,
+  .rounded,
+  .rounded-sm,
+  .rounded-md, 
+  .rounded-lg, 
+  .rounded-xl,
+  [role="button"] {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px !important;
+  }
+  
+  /* Keep circular elements circular */
+  .rounded-full,
+  [class*="avatar"],
+  [class*="Avatar"] {
+    border-radius: 9999px !important;
+  }
+  
+  /* Thicker borders */
+  .border,
+  button,
+  [class*="card"],
+  [class*="Card"] {
+    border-width: 2px;
+  }
+  
+  .border-2 {
+    border-width: 3px;
+  }
+  
+  /* Buttons get hard shadows */
+  button:not(.ghost):not([class*="icon"]) {
+    box-shadow: var(--shadow-2);
+    transition: all 100ms ease;
+  }
+  
+  button:not(.ghost):not([class*="icon"]):hover {
+    box-shadow: var(--shadow-1);
+    transform: translate(1px, 1px);
+  }
+  
+  button:not(.ghost):not([class*="icon"]):active {
+    box-shadow: none;
+    transform: translate(3px, 3px);
+  }
+  
+  /* Cards get hard ink shadows */
+  [class*="card"], 
+  [class*="Card"],
+  [role="button"] {
+    box-shadow: var(--shadow-2);
+  }
+  
+  [class*="card"]:hover,
+  [class*="Card"]:hover {
+    box-shadow: var(--shadow-3);
+    transform: translateY(-1px);
+  }
+  
+  /* Dashed dividers */
+  hr, .border-t, .border-b {
+    border-style: dashed;
+  }
+  
+  /* Halftone on muted backgrounds */
+  .bg-muted, .bg-surface-container {
+    position: relative;
+  }
+  
+  .bg-muted::before, .bg-surface-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, #2d2d2d 1.5px, transparent 1.5px);
+    background-size: 12px 12px;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+}
+
+/* ============================================================================
+   VAPORWAVE THEME EFFECTS
+   ============================================================================ */
+
+[data-theme="vaporwave"] {
+  /* CRT Scanlines overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(rgba(18,16,20,0) 50%, rgba(0,0,0,0.25) 50%);
+    background-size: 100% 4px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanlines 0.1s linear infinite;
+  }
+  
+  @keyframes scanlines {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+  }
+  
+  /* Perspective grid background */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) perspective(500px) rotateX(60deg) translateY(-100px) scale(2);
+    width: 100%;
+    height: 400px;
+    background-image: 
+      linear-gradient(transparent 95%, rgba(255, 0, 255, 0.3) 95%),
+      linear-gradient(90deg, transparent 95%, rgba(255, 0, 255, 0.3) 95%);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+  
+  /* All content above grid */
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Prevent clipping from glows and transforms */
+  #root,
+  main,
+  section,
+  [class*="container"] {
+    overflow: visible !important;
+  }
+  
+  /* Sharp geometric borders only */
+  .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl {
+    border-radius: 0 !important;
+  }
+  
+  /* Neon glow on borders */
+  .border-primary {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+  }
+  
+  .border-secondary {
+    border-color: hsl(var(--secondary));
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  }
+  
+  /* Buttons get neon glow */
+  button {
+    border: 2px solid hsl(var(--secondary));
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+    transition: all 200ms linear;
+  }
+  
+  button:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), 0 0 35px rgba(255, 0, 255, 0.2);
+    transform: scale(1.01);
+  }
+  
+  /* Cards get cyan glow */
+  [class*="card"] {
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    border-top: 2px solid hsl(var(--secondary));
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+  }
+  
+  [class*="card"]:hover {
+    border-color: rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  }
+  
+  /* Headings get gradient text */
+  h1, h2, h3 {
+    background: linear-gradient(to right, #FF9900, #FF00FF, #00FFFF);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.3));
+  }
+  
+  /* Input fields get cyan glow */
+  input, textarea, select {
+    border: 2px solid rgba(255, 0, 255, 0.3);
+    border-bottom: 2px solid hsl(var(--secondary));
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    background: rgba(26, 16, 60, 0.5);
+    color: hsl(var(--foreground));
+  }
+  
+  input:focus, textarea:focus, select:focus {
+    border-color: hsl(var(--secondary));
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    outline: none;
+  }
+  
+  /* Floating sun gradient (decorative) */
+  body {
+    background-image: radial-gradient(
+      circle at 50% -50%,
+      rgba(255, 153, 0, 0.15),
+      rgba(255, 0, 255, 0.1),
+      transparent 60%
+    );
+  }
+  
+  /* Word Search & Badge fixes - better contrast */
+  /* Word chips with inline styles */
+  button[style*="background"] {
+    color: #000000 !important;
+  }
+  
+  /* Grid tiles with inline styles */
+  div[style*="background"]:not([class*="bg-"]) {
+    color: #000000 !important;
+  }
+  
+  /* Selected grid cells */
+  .bg-primary,
+  .bg-primary\/20,
+  [class*="bg-primary"] {
+    color: #000000 !important;
+  }
+  
+  /* Badges and chips with classes */
+  [class*="badge"],
+  [class*="Badge"],
+  [class*="chip"],
+  [class*="Chip"] {
+    color: #000000 !important;
+  }
+  
+  /* Ensure high contrast on colored backgrounds */
+  .bg-secondary,
+  [class*="bg-secondary"],
+  .text-secondary-foreground,
+  .text-primary-foreground {
+    color: #000000 !important;
+  }
 }

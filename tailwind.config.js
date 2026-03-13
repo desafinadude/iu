@@ -53,8 +53,10 @@ export default {
         sm: 'var(--radius-sm)',
       },
       fontFamily: {
-        sans: ['Roboto', 'sans-serif'],
-        japanese: ['Noto Sans JP', 'sans-serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
+        japanese: ['var(--font-japanese)', 'sans-serif'],
+        heading: ['var(--font-heading)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
       },
       boxShadow: {
         'md3-1': 'var(--shadow-1)',

@@ -59,7 +59,7 @@ export default function AppShell({ children }) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto">
         <div className="app-container h-full">
           {children}
         </div>
