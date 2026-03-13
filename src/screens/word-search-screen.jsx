@@ -322,7 +322,7 @@ export default function WordSearchScreen() {
   }
 
   function startGame(themeId) {
-    const p = buildPuzzle(themeId, WORD_COUNT)
+    const p = buildPuzzle(WORD_COUNT, themeId)
     setPuzzle(p)
     setHiddenWords(buildHiddenSet(p.placements.length))
     setTheme(themeId)
@@ -363,7 +363,7 @@ export default function WordSearchScreen() {
 
       {/* Word Chips */}
       <WordChips
-        words={puzzle.placements.map((p) => p.word)}
+        words={puzzle.words}
         found={found}
         onSpeak={speak}
         hiddenWords={hiddenWords}
