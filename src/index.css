@@ -1,1521 +1,277 @@
-/* ─── Design Tokens ─────────────────────────────────────────────── */
-:root {
-  /* Colors */
-  --color-bg:           #f2ece0;
-  --color-header:       #1a2f5e;
-  --color-japan-red:    #8B1A1A;
-  --color-fg:           #2d2d2d;
-  --color-border:       var(--color-fg);
-  --color-muted:        #ddd5c4;
-  --color-accent:       #E8002D;
-  --color-accent-orange: #FF6B00;
-  --color-accent-blue:  #2d5da1;
-  --color-surface:      #ffffff;
-  --color-postit:       #fff9c4;
-  --color-halftone:       #2d2d2d;
-  --halftone-opacity:     0.18;
-  --halftone-blend:       multiply;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  /* Typography */
-  --font-display:  'Kalam', cursive;
-  --font-body:     'Patrick Hand', cursive;
-  --font-japanese: 'Noto Sans JP', sans-serif;
+/* ============================================================================
+   Material You Design Tokens (Material Design 3)
+   ============================================================================ */
 
-  /* Wobbly border radii */
-  --radius-sm: 255px 8px 180px 8px / 8px 180px 8px 255px;
-  --radius-md: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  --radius-lg: 300px 20px 280px 20px / 20px 280px 20px 300px;
-
-  /* Hard ink shadows — no blur, ever */
-  --shadow-sm:     2px 2px 0px 0px #333333;
-  --shadow-md:     3px 3px 0px 0px #333333;
-  --shadow-lg:     5px 5px 0px 0px #333333;
-  --shadow-accent: 3px 3px 0px 0px #333333;
-  --shadow-blue:   3px 3px 0px 0px #333333;
-
-  /* Layout */
-  --header-height:     56px;
-  --bottom-nav-height: 64px;
-  --content-max-width: 512px;
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
-}
-
-/* ─── Theme: Vaporwave / Outrun ──────────────────────────────────── */
-[data-theme="vaporwave"] {
-  /* Colors — neon void */
-  --color-bg:            #090014;
-  --color-header:        #0d0020;
-  --color-japan-red:     #FF00FF;
-  --color-fg:            #E0E0E0;
-  --color-muted:         #2D1B4E;
-  --color-accent:        #FF00FF;
-  --color-accent-orange: #FF9900;
-  --color-accent-blue:   #00FFFF;
-  --color-surface:       #1a103c;
-  --color-postit:        #1a103c;
-  --color-halftone:      #FF00FF;
-
-  /* Fonts — terminal + geometric */
-  --font-display: 'Orbitron', sans-serif;
-  --font-body:    'Share Tech Mono', monospace;
-
-  /* Sharp geometry — no wobble */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-
-  /* Neon glow shadows */
-  --shadow-sm:     0 0 8px #FF00FF, 0 0 16px rgba(255,0,255,0.35);
-  --shadow-md:     0 0 12px #FF00FF, 0 0 24px rgba(255,0,255,0.45);
-  --shadow-lg:     0 0 20px #FF00FF, 0 0 40px rgba(255,0,255,0.5);
-  --shadow-accent: 0 0 12px #FF00FF, 0 0 24px rgba(255,0,255,0.45);
-  --shadow-blue:   0 0 12px #00FFFF, 0 0 24px rgba(0,255,255,0.45);
-
-  /* Hide halftone — replaced by scanlines below */
-  --halftone-opacity: 0;
-}
-
-/* Grid + sun glow on body background */
-[data-theme="vaporwave"] body {
-  background-image:
-    radial-gradient(ellipse 120% 35% at 50% 100%, rgba(255,153,0,0.18) 0%, rgba(255,0,255,0.12) 40%, transparent 70%),
-    linear-gradient(transparent 95%, rgba(255,0,255,0.14) 95%),
-    linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.14) 95%);
-  background-size: 100% 100%, 24px 24px, 24px 24px;
-}
-
-/* CRT scanlines + RGB chromatic aberration overlay */
-[data-theme="vaporwave"] body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    linear-gradient(rgba(18,16,20,0) 50%, rgba(0,0,0,0.09) 50%),
-    linear-gradient(90deg, rgba(255,0,0,0.03) 0%, rgba(0,255,0,0.01) 50%, rgba(0,0,255,0.03) 100%);
-  background-size: 100% 4px, 100% 100%;
-  pointer-events: none;
-  z-index: 9998;
-}
-
-/* ─── Theme: Playful Geometric ───────────────────────────────────── */
-[data-theme="playful"] {
-  /* Colors — punchy, high-saturation, anchored by warm cream */
-  --color-bg:            #FFFDF5;
-  --color-header:        #FFFDF5;
-  --color-japan-red:     #8B5CF6;
-  --color-fg:            #1E293B;
-  --color-muted:         #F1F5F9;
-  --color-accent:        #8B5CF6;
-  --color-accent-orange: #FBBF24;
-  --color-accent-blue:   #34D399;
-  --color-surface:       #FFFFFF;
-  --color-postit:        #FEF9C3;
-  --color-halftone:      #1E293B;
-
-  /* Geometric friendly headings + humanist body */
-  --font-display: 'Outfit', system-ui, sans-serif;
-  --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
-
-  /* Rounded corners — friendly, not wobbly */
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-
-  /* "Pop" hard shadows — sticker / cut-out paper feel */
-  --shadow-sm:     2px 2px 0px 0px #1E293B;
-  --shadow-md:     4px 4px 0px 0px #1E293B;
-  --shadow-lg:     6px 6px 0px 0px #1E293B;
-  --shadow-accent: 4px 4px 0px 0px #8B5CF6;
-  --shadow-blue:   4px 4px 0px 0px #34D399;
-
-  /* Kill halftone jpg — dot grid replaces it */
-  --halftone-opacity: 0;
-}
-
-/* Dot grid body background — Memphis-style polka dots */
-[data-theme="playful"] body {
-  background-image: radial-gradient(circle, rgba(30,41,59,0.1) 1.5px, transparent 1.5px);
-  background-size: 20px 20px;
-}
-
-/* ── Playful AppShell ────────────────────────────────────────────── */
-
-/* Header — cream, 2px dark ruled baseline */
-[data-theme="playful"] .shell__header {
-  border-radius: 0;
-  border-bottom: 2px solid #1E293B;
-  box-shadow: none;
-}
-[data-theme="playful"] .shell__header::before { display: none; }
-
-/* Title — Outfit ExtraBold, friendly casing */
-[data-theme="playful"] .shell__title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #1E293B;
-}
-
-/* Bottom nav — cream, 2px dark ruled top */
-[data-theme="playful"] .shell__bottom-nav {
-  border-radius: 0;
-  border-top: 2px solid #1E293B;
-  box-shadow: none;
-}
-[data-theme="playful"] .shell__bottom-nav::before { display: none; }
-
-/* Active nav — violet bar */
-[data-theme="playful"] .shell__nav-btn--active::after {
-  background: #8B5CF6;
-  height: 3px;
-}
-
-/* ── Playful menu cards ───────────────────────────────────────────── */
-
-/* Bouncy elastic transition on hover */
-[data-theme="playful"] .menu-card {
-  border-width: 2px;
-  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Wiggle + lift on hover */
-@media (hover: hover) {
-  [data-theme="playful"] .menu-card:hover {
-    transform: rotate(-1deg) scale(1.02);
-    box-shadow: 6px 6px 0px 0px #1E293B;
+@layer base {
+  :root {
+    /* ── Material You Color System (Light Mode) ────────────────────────── */
+    
+    /* Core Surface Colors */
+    --background: 0 5% 99%;           /* #FFFBFE - Warm off-white */
+    --foreground: 280 7% 11%;         /* #1C1B1F - Near black */
+    --surface: 290 17% 96%;           /* #F3EDF7 - Subtle tinted surface */
+    --surface-container: 270 11% 95%; /* #F3EDF7 */
+    --surface-container-low: 274 10% 91%; /* #E7E0EC */
+    
+    /* Primary (Purple Seed) */
+    --primary: 266 47% 49%;           /* #6750A4 */
+    --primary-foreground: 0 0% 100%;  /* #FFFFFF */
+    
+    /* Secondary */
+    --secondary: 270 42% 90%;         /* #E8DEF8 - Light lavender */
+    --secondary-foreground: 276 54% 12%; /* #1D192B */
+    
+    /* Tertiary (Complementary Mauve) */
+    --tertiary: 345 24% 43%;          /* #7D5260 */
+    --tertiary-foreground: 0 0% 100%;
+    
+    /* Accent/Surface States */
+    --accent: 270 42% 90%;            /* Same as secondary for consistency */
+    --accent-foreground: 276 54% 12%;
+    
+    --muted: 274 10% 91%;             /* Surface container low */
+    --muted-foreground: 260 9% 31%;   /* #49454F */
+    
+    /* UI Elements */
+    --border: 260 7% 49%;             /* #79747E - Medium gray */
+    --input: 274 10% 91%;             /* Surface container low */
+    --ring: 266 47% 49%;              /* Primary */
+    
+    /* Card */
+    --card: 290 17% 96%;
+    --card-foreground: 280 7% 11%;
+    
+    /* Destructive/Error */
+    --destructive: 0 84% 37%;         /* #BA1A1A */
+    --destructive-foreground: 0 0% 100%;
+    
+    /* ── Typography ─────────────────────────────────────────────────── */
+    --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
+    --font-japanese: 'Noto Sans JP', sans-serif;
+    
+    /* ── Border Radius (Soft, Organic) ─────────────────────────────────  */
+    --radius-sm: 0.5rem;   /* 8px */
+    --radius-md: 0.75rem;  /* 12px */
+    --radius-lg: 1rem;     /* 16px */
+    --radius-xl: 1.5rem;   /* 24px - for cards */
+    --radius-full: 9999px; /* Pills */
+    
+    /* ── Material You Elevation Shadows ───────────────────────────────── */
+    --shadow-1: 
+      0px 1px 2px 0px rgba(0, 0, 0, 0.3),
+      0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --shadow-2: 
+      0px 1px 2px 0px rgba(0, 0, 0, 0.3),
+      0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --shadow-3: 
+      0px 4px 8px 3px rgba(0, 0, 0, 0.15),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+    
+    /* ── Layout Spacing ────────────────────────────────────────────────── */
+    --header-height: 56px;
+    --bottom-nav-height: 64px;
+    --content-max-width: 512px;
   }
 }
 
-/* Press-in on active */
-[data-theme="playful"] .menu-card:active {
-  transform: translateX(4px) translateY(4px);
-  box-shadow: none;
-}
-
-/* ── Playful quiz play ────────────────────────────────────────────── */
-
-/* Timer — rounded pill, violet urgent */
-[data-theme="playful"] .quiz-play__timer-fill--urgent,
-[data-theme="playful"] .ws-timer-fill--urgent {
-  background: #F472B6;
-  box-shadow: none;
-}
-
-/* Hearts — violet */
-[data-theme="playful"] .quiz-play__heart,
-[data-theme="playful"] .ws-heart,
-[data-theme="playful"] .sb-heart {
-  color: #8B5CF6;
-}
-
-/* Prompt card — yellow sticky note */
-[data-theme="playful"] .quiz-play__prompt-card {
-  background: #FEF9C3;
-  border-color: #1E293B;
-  border-width: 2px;
-}
-
-/* Options — bouncy hover, bright feedback colors */
-[data-theme="playful"] .quiz-play__option {
-  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              background 150ms ease-out;
-}
-
-@media (hover: hover) {
-  [data-theme="playful"] .quiz-play__option:hover:not(:disabled) {
-    background: #FBBF24;
-    transform: translateX(-2px) translateY(-2px);
-    box-shadow: 6px 6px 0px 0px #1E293B;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    @apply h-full;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans h-full;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+  
+  /* Typography Styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium;
+  }
+  
+  /* Smooth transitions for interactive elements */
+  button, a, [role="button"] {
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  /* Focus visible styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    outline-offset: 2px;
+  }
+  
+  /* Remove default button styles */
+  button {
+    @apply outline-none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Disable text selection on interactive elements */
+  button, [role="button"] {
+    @apply select-none;
   }
 }
 
-[data-theme="playful"] .quiz-play__option:active:not(:disabled) {
-  transform: translateX(2px) translateY(2px);
-  box-shadow: 2px 2px 0px 0px #1E293B;
-}
+/* ============================================================================
+   Material You Component Patterns
+   ============================================================================ */
 
-/* Correct — mint green */
-[data-theme="playful"] .quiz-play__option--correct {
-  background: #d1fae5;
-  color: #065f46;
-  border-color: #34D399;
-  box-shadow: 4px 4px 0px 0px #34D399;
-}
-
-/* Wrong — hot pink */
-[data-theme="playful"] .quiz-play__option--wrong {
-  background: #fce7f3;
-  color: #9d174d;
-  border-color: #F472B6;
-  box-shadow: 4px 4px 0px 0px #F472B6;
-}
-
-/* Results card */
-[data-theme="playful"] .quiz-results__card {
-  box-shadow: 8px 8px 0px 0px #1E293B;
-}
-
-[data-theme="playful"] .quiz-results__over-label {
-  color: #8B5CF6;
-  opacity: 1;
-}
-
-/* ── Playful sentence builder ────────────────────────────────────── */
-
-/* Chips — rounded pill, violet outline */
-[data-theme="playful"] .sb-chip {
-  border-width: 2px;
-  border-color: #1E293B;
-  font-weight: 700;
-}
-
-[data-theme="playful"] .sb-chip--ghost {
-  border-style: dashed;
-  border-color: #8B5CF6;
-  box-shadow: none;
-}
-
-/* Result cards */
-[data-theme="playful"] .sb-result--ok {
-  border-color: #34D399;
-  box-shadow: 4px 4px 0px 0px #34D399;
-}
-[data-theme="playful"] .sb-result--bad {
-  border-color: #F472B6;
-  box-shadow: 4px 4px 0px 0px #F472B6;
-}
-
-/* ── Playful word search ─────────────────────────────────────────── */
-
-/* Grid cell selected — violet */
-[data-theme="playful"] .ws-cell--selected {
-  background: #ede9fe;
-  border-color: #8B5CF6;
-  color: #5b21b6;
-}
-
-/* Result overlay */
-[data-theme="playful"] .ws-result {
-  box-shadow: 8px 8px 0px 0px #1E293B;
-}
-
-/* ── Playful kana settings ───────────────────────────────────────── */
-
-/* Kana table active row — violet */
-[data-theme="playful"] .kana-table__row--active {
-  background: #8B5CF6;
-}
-
-[data-theme="playful"] .kana-table__row--active .kana-table__cell,
-[data-theme="playful"] .kana-table__row--active .kana-table__row-label {
-  color: #FFFFFF;
-  opacity: 1;
-}
-
-/* Script toggle active — violet */
-[data-theme="playful"] .kana-settings__script-btn--active {
-  background: #8B5CF6;
-  border-color: #8B5CF6;
-  color: #FFFFFF;
-  box-shadow: 3px 3px 0px 0px #1E293B;
-  transform: none;
-}
-
-/* Theme card active — violet */
-[data-theme="playful"] .kana-settings__theme-card--active {
-  background: #8B5CF6;
-  border-color: #8B5CF6;
-  transform: none;
-  box-shadow: 3px 3px 0px 0px #1E293B;
-}
-
-[data-theme="playful"] .kana-settings__theme-card--active .kana-settings__theme-name,
-[data-theme="playful"] .kana-settings__theme-card--active .kana-settings__theme-desc {
-  color: #FFFFFF;
-}
-
-/* Pill toggle active — violet */
-[data-theme="playful"] .kana-settings__pill-toggle--on {
-  background: #8B5CF6;
-  border-color: #8B5CF6;
-  color: #FFFFFF;
-}
-
-/* Home kana — violet accent */
-[data-theme="playful"] .home__card-kana {
-  color: #8B5CF6;
-}
-
-/* Vaporwave menu-card active override does not apply here */
-[data-theme="playful"] .menu-card:active {
-  filter: none;
-}
-
-/* ─── Theme: Swiss International ─────────────────────────────────── */
-[data-theme="swiss"] {
-  /* Colors — strict monochrome + Swiss red signal */
-  --color-bg:            #FFFFFF;
-  --color-header:        #FFFFFF;
-  --color-japan-red:     #FF3000;
-  --color-fg:            #000000;
-  --color-muted:         #F2F2F2;
-  --color-accent:        #FF3000;
-  --color-accent-orange: #FF3000;
-  --color-accent-blue:   #000000;
-  --color-surface:       #FFFFFF;
-  --color-postit:        #F2F2F2;
-  --color-halftone:      #000000;
-
-  /* Grotesque sans-serif — neutral vessel for information */
-  --font-display: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
-
-  /* Strictly rectangular — no rounded corners */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-
-  /* Flat — no shadows; structure comes from borders */
-  --shadow-sm:     none;
-  --shadow-md:     none;
-  --shadow-lg:     none;
-  --shadow-accent: none;
-  --shadow-blue:   none;
-
-  /* Kill halftone jpg — CSS grid pattern replaces it */
-  --halftone-opacity: 0;
-}
-
-[data-theme="swiss"] body {
-  background-image: none;
-}
-
-/* ── Swiss AppShell ─────────────────────────────────────────────── */
-
-/* Header — white, thick ruled baseline */
-[data-theme="swiss"] .shell__header {
-  border-radius: 0;
-  border-bottom: 4px solid #000000;
-  box-shadow: none;
-}
-[data-theme="swiss"] .shell__header::before { display: none; }
-
-/* Title — Inter Black, uppercase, tight tracking */
-[data-theme="swiss"] .shell__title {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #000000;
-}
-
-/* Back button — pure black */
-[data-theme="swiss"] .shell__back { color: #000000; }
-
-/* Bottom nav — white, thick ruled top line */
-[data-theme="swiss"] .shell__bottom-nav {
-  border-radius: 0;
-  border-top: 4px solid #000000;
-  box-shadow: none;
-}
-[data-theme="swiss"] .shell__bottom-nav::before { display: none; }
-
-/* Active nav — Swiss red 4px bar */
-[data-theme="swiss"] .shell__nav-btn--active::after {
-  background: #FF3000;
-  height: 4px;
-}
-
-/* Nav labels — uppercase, tracked */
-[data-theme="swiss"] .shell__nav-label {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-}
-
-/* ── Swiss interactive overrides ─────────────────────────────────── */
-
-/* No translate-press — Swiss uses color change instead */
-[data-theme="swiss"] .menu-card:active,
-[data-theme="swiss"] .sb-btn:active,
-[data-theme="swiss"] .ws-result__btn:active,
-[data-theme="swiss"] .kana-settings__theme-card:active {
-  transform: none;
-}
-
-/* Menu card — heavier border, full inversion on hover */
-[data-theme="swiss"] .menu-card {
-  border-width: 4px;
-  border-radius: 0;
-  box-shadow: none;
-  transition: background 150ms ease-out, color 150ms ease-out;
-}
-
-[data-theme="swiss"] .menu-card:active {
-  background: #FF3000;
-  border-color: #FF3000;
-}
-
-@media (hover: hover) {
-  [data-theme="swiss"] .menu-card:hover {
-    background: #000000;
-    border-color: #000000;
-    transform: none;
-    box-shadow: none;
+@layer components {
+  /* ── State Layers (hover/active overlays) ──────────────────────────── */
+  .state-layer {
+    @apply relative overflow-hidden;
   }
-  [data-theme="swiss"] .menu-card:hover .menu-card__title,
-  [data-theme="swiss"] .menu-card:hover .menu-card__subtitle,
-  [data-theme="swiss"] .menu-card:hover .menu-card__meta,
-  [data-theme="swiss"] .menu-card:hover .menu-card__icon,
-  [data-theme="swiss"] .menu-card:hover .vp__item-dict,
-  [data-theme="swiss"] .menu-card:hover .vp__item-meaning,
-  [data-theme="swiss"] .menu-card:hover .vp__item-kana {
-    color: #FFFFFF;
-    opacity: 1;
+  
+  .state-layer::before {
+    content: '';
+    @apply absolute inset-0 bg-foreground opacity-0 transition-opacity duration-200;
+  }
+  
+  .state-layer:hover::before {
+    @apply opacity-[0.08];
+  }
+  
+  .state-layer:active::before {
+    @apply opacity-[0.12];
+  }
+  
+  /* ── Elevated Cards (with soft shadows) ────────────────────────────── */
+  .card-elevated {
+    @apply bg-surface rounded-xl shadow-md3-1 transition-shadow duration-200;
+  }
+  
+  .card-elevated:hover {
+    @apply shadow-md3-2;
+  }
+  
+  /* ── Filled Cards (tonal surface) ──────────────────────────────────── */
+  .card-filled {
+    @apply bg-surface-container rounded-xl;
+  }
+  
+  /* ── Interactive Card Pattern ──────────────────────────────────────── */
+  .card-interactive {
+    @apply card-elevated state-layer cursor-pointer;
+    @apply hover:shadow-md3-2 active:scale-[0.98];
   }
 }
 
-/* Card titles — uppercase, heavy */
-[data-theme="swiss"] .menu-card__title {
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 900;
-}
+/* ============================================================================
+   Utility Classes
+   ============================================================================ */
 
-[data-theme="swiss"] .menu-list__label {
-  font-weight: 900;
-  letter-spacing: 0.18em;
-}
-
-/* ── Swiss quiz play ─────────────────────────────────────────────── */
-
-/* Timer — rectangular, Swiss red urgent */
-[data-theme="swiss"] .quiz-play__timer-track,
-[data-theme="swiss"] .ws-timer-bar {
-  border-radius: 0;
-  border-width: 3px;
-  border-color: #000000;
-}
-
-[data-theme="swiss"] .quiz-play__timer-fill,
-[data-theme="swiss"] .ws-timer-fill {
-  border-radius: 0;
-}
-
-[data-theme="swiss"] .quiz-play__timer-fill--urgent,
-[data-theme="swiss"] .ws-timer-fill--urgent {
-  background: #FF3000;
-  box-shadow: none;
-}
-
-/* Hearts — Swiss red */
-[data-theme="swiss"] .quiz-play__heart,
-[data-theme="swiss"] .ws-heart,
-[data-theme="swiss"] .sb-heart {
-  color: #FF3000;
-}
-
-/* Score — Inter Black */
-[data-theme="swiss"] .quiz-play__score,
-[data-theme="swiss"] .ws-hud__count {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-}
-
-/* Prompt card — gray surface, thick ruled border, no tape */
-[data-theme="swiss"] .quiz-play__prompt-card {
-  border-radius: 0;
-  border-width: 4px;
-  border-color: #000000;
-  background: #F2F2F2;
-  box-shadow: none;
-}
-[data-theme="swiss"] .quiz-play__tape,
-[data-theme="swiss"] .sb-tape { display: none; }
-
-/* Hide halftone texture divs — grid pattern on body replaces texture */
-[data-theme="swiss"] .quiz-play__halftone,
-[data-theme="swiss"] .quiz-results__halftone { display: none; }
-
-/* Kana prompt — Inter Black */
-[data-theme="swiss"] .quiz-play__prompt-kana {
-  font-weight: 900;
-  color: #000000;
-}
-
-/* Romaji prompt — Inter Black Uppercase */
-[data-theme="swiss"] .quiz-play__prompt-romaji {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #000000;
-}
-
-/* Options — rectangular, bold inversion on feedback */
-[data-theme="swiss"] .quiz-play__option {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  border-radius: 0;
-  border-width: 3px;
-  transition: background 150ms ease-out, color 150ms ease-out;
-}
-
-@media (hover: hover) {
-  [data-theme="swiss"] .quiz-play__option:hover:not(:disabled) {
-    background: #000000;
-    color: #FFFFFF;
-    transform: none;
-    box-shadow: none;
+@layer utilities {
+  /* Material You specific utilities */
+  .text-headline-large {
+    @apply text-[3.5rem] leading-[4rem] font-medium tracking-tight;
+  }
+  
+  .text-headline-medium {
+    @apply text-[2.5rem] leading-[3rem] font-medium tracking-tight;
+  }
+  
+  .text-headline-small {
+    @apply text-[2rem] leading-[2.5rem] font-medium tracking-tight;
+  }
+  
+  .text-title-large {
+    @apply text-[1.375rem] leading-[1.75rem] font-medium;
+  }
+  
+  .text-title-medium {
+    @apply text-[1rem] leading-[1.5rem] font-medium tracking-[0.15px];
+  }
+  
+  .text-title-small {
+    @apply text-[0.875rem] leading-[1.25rem] font-medium tracking-[0.1px];
+  }
+  
+  .text-body-large {
+    @apply text-[1rem] leading-[1.5rem] tracking-[0.5px];
+  }
+  
+  .text-body-medium {
+    @apply text-[0.875rem] leading-[1.25rem] tracking-[0.25px];
+  }
+  
+  .text-body-small {
+    @apply text-[0.75rem] leading-[1rem] tracking-[0.4px];
+  }
+  
+  .text-label-large {
+    @apply text-[0.875rem] leading-[1.25rem] font-medium tracking-[0.1px];
+  }
+  
+  .text-label-medium {
+    @apply text-[0.75rem] leading-[1rem] font-medium tracking-[0.5px];
+  }
+  
+  .text-label-small {
+    @apply text-[0.6875rem] leading-[1rem] font-medium tracking-[0.5px];
   }
 }
 
-[data-theme="swiss"] .quiz-play__option:active:not(:disabled) {
-  transform: none;
-}
-
-[data-theme="swiss"] .quiz-play__option--correct {
-  background: #000000;
-  color: #FFFFFF;
-  border-color: #000000;
-  box-shadow: none;
-}
-
-[data-theme="swiss"] .quiz-play__option--wrong {
-  background: #FF3000;
-  color: #FFFFFF;
-  border-color: #FF3000;
-  box-shadow: none;
-}
-
-/* Results card — gray surface, heavy border */
-[data-theme="swiss"] .quiz-results__card {
-  border-radius: 0;
-  border-width: 4px;
-  background: #F2F2F2;
-  box-shadow: none;
-}
-
-[data-theme="swiss"] .quiz-results__over-label {
-  font-weight: 900;
-  letter-spacing: 0.18em;
-  opacity: 1;
-  color: #FF3000;
-}
-
-[data-theme="swiss"] .quiz-results__score {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-}
-
-/* ── Swiss sentence builder ──────────────────────────────────────── */
-
-/* Word chips — rectangular, uppercase */
-[data-theme="swiss"] .sb-chip {
-  border-radius: 0;
-  border-width: 3px;
-  background: #FFFFFF;
-  box-shadow: none;
-  text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-
-[data-theme="swiss"] .sb-chip--ghost {
-  box-shadow: none;
-  border-style: dashed;
-}
-
-/* Dropdown — rectangular, thick border */
-[data-theme="swiss"] .sb-dropdown__trigger,
-[data-theme="swiss"] .sb-dropdown__panel {
-  border-radius: 0;
-  border-width: 3px;
-  box-shadow: none;
-}
-
-/* Result cards */
-[data-theme="swiss"] .sb-result--ok {
-  background: #F2F2F2;
-  border-color: #000000;
-  box-shadow: none;
-}
-[data-theme="swiss"] .sb-result--bad {
-  background: #FFF4F2;
-  border-color: #FF3000;
-  box-shadow: none;
-}
-
-/* ── Swiss word search ───────────────────────────────────────────── */
-
-/* Word chips */
-[data-theme="swiss"] .ws-chip {
-  border-radius: 0;
-  border-width: 3px;
-  box-shadow: none;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #000000;
-}
-
-/* Grid cells */
-[data-theme="swiss"] .ws-cell {
-  border-color: rgba(0,0,0,0.15);
-  border-radius: 0;
-  font-weight: 700;
-}
-
-[data-theme="swiss"] .ws-cell--selected {
-  background: #000000;
-  border-color: #000000;
-  color: #FFFFFF;
-}
-
-/* Result overlay */
-[data-theme="swiss"] .ws-overlay {
-  background: rgba(255,255,255,0.95);
-}
-
-[data-theme="swiss"] .ws-result {
-  border-radius: 0;
-  border-width: 4px;
-  box-shadow: none;
-  background: #F2F2F2;
-}
-
-[data-theme="swiss"] .ws-result__btn {
-  border-radius: 0;
-  box-shadow: none;
-}
-
-/* ── Swiss kana settings ─────────────────────────────────────────── */
-
-/* Script toggle buttons */
-[data-theme="swiss"] .kana-settings__script-btn {
-  border-radius: 0;
-  border-width: 3px;
-  box-shadow: none;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  transition: background 150ms ease-out;
-}
-
-[data-theme="swiss"] .kana-settings__script-btn--active {
-  background: #000000;
-  border-color: #000000;
-  transform: none;
-}
-
-/* Kana table */
-[data-theme="swiss"] .kana-table {
-  border-width: 3px;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-[data-theme="swiss"] .kana-table__row--active {
-  background: #000000;
-}
-
-[data-theme="swiss"] .kana-table__row--active .kana-table__cell,
-[data-theme="swiss"] .kana-table__row--active .kana-table__row-label {
-  color: #FFFFFF;
-  opacity: 1;
-}
-
-/* Theme cards */
-[data-theme="swiss"] .kana-settings__theme-card {
-  border-width: 4px;
-  border-radius: 0;
-  box-shadow: none;
-  transition: background 150ms ease-out;
-}
-
-[data-theme="swiss"] .kana-settings__theme-card--active {
-  background: #FF3000;
-  border-color: #FF3000;
-  transform: none;
-}
-
-[data-theme="swiss"] .kana-settings__theme-card--active .kana-settings__theme-name,
-[data-theme="swiss"] .kana-settings__theme-card--active .kana-settings__theme-desc {
-  color: #FFFFFF;
-}
-
-/* Pill toggle */
-[data-theme="swiss"] .kana-settings__pill-toggle {
-  border-radius: 0;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-[data-theme="swiss"] .kana-settings__pill-toggle--on {
-  background: #FF3000;
-  border-color: #FF3000;
-  color: #FFFFFF;
-}
-
-/* Section titles — uppercase, heavy */
-[data-theme="swiss"] .kana-settings__section-title {
-  font-weight: 900;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  opacity: 1;
-}
-
-/* Settings link — red underline */
-[data-theme="swiss"] .kana-settings__link {
-  color: #FF3000;
-  font-weight: 700;
-}
-
-/* Home kana character — red accent */
-[data-theme="swiss"] .home__card-kana {
-  color: #FF3000;
-}
-
-/* Quiz settings gear button */
-[data-theme="swiss"] .quiz-mode-select__settings-btn {
-  color: #000000;
-}
-
-/* ── AppShell overrides ─────────────────────────────────────────── */
-
-/* Header — sharp, neon-bordered, magenta glow */
-[data-theme="vaporwave"] .shell__header {
-  border-radius: 0;
-  border-bottom: 2px solid #FF00FF;
-  box-shadow: 0 0 20px rgba(255,0,255,0.6), 0 0 40px rgba(255,0,255,0.2);
-}
-[data-theme="vaporwave"] .shell__header::before { display: none; }
-
-/* Title — cyan with glow */
-[data-theme="vaporwave"] .shell__title {
-  color: #00FFFF;
-  text-shadow: 0 0 8px rgba(0,255,255,0.9), 0 0 20px rgba(0,255,255,0.4);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* Back button — cyan */
-[data-theme="vaporwave"] .shell__back { color: #00FFFF; }
-
-/* Bottom nav — sharp, cyan-bordered */
-[data-theme="vaporwave"] .shell__bottom-nav {
-  border-radius: 0;
-  border-top: 2px solid #00FFFF;
-  box-shadow: 0 0 16px rgba(0,255,255,0.5), 0 0 32px rgba(0,255,255,0.15);
-}
-[data-theme="vaporwave"] .shell__bottom-nav::before { display: none; }
-
-/* Active nav indicator — sunset gradient */
-[data-theme="vaporwave"] .shell__nav-btn--active::after {
-  background: linear-gradient(to right, #FF9900, #FF00FF, #00FFFF);
-  height: 2px;
-}
-
-/* Nav label — tighter tracking */
-[data-theme="vaporwave"] .shell__nav-label { letter-spacing: 0.1em; }
-
-/* ── Interactive overrides ──────────────────────────────────────── */
-
-/* Buttons: glow intensifies on press instead of shadow-drop */
-[data-theme="vaporwave"] .sb-btn:active,
-[data-theme="vaporwave"] .ws-result__btn:active,
-[data-theme="vaporwave"] .menu-card:active,
-[data-theme="vaporwave"] .kana-settings__theme-card:active {
-  transform: none;
-  filter: brightness(1.3);
-}
-
-/* Menu card — neon surface */
-[data-theme="vaporwave"] .menu-card {
-  border-color: #FF00FF;
-  box-shadow: 0 0 8px rgba(255,0,255,0.3);
-}
-
-/* Quiz options — cyan glow on correct, magenta on wrong */
-[data-theme="vaporwave"] .quiz-play__option--correct {
-  background: rgba(0,255,255,0.15);
-  border-color: #00FFFF;
-  box-shadow: 0 0 16px #00FFFF, 0 0 32px rgba(0,255,255,0.3);
-  color: #00FFFF;
-}
-[data-theme="vaporwave"] .quiz-play__option--wrong {
-  background: rgba(255,0,255,0.15);
-  border-color: #FF00FF;
-  box-shadow: 0 0 16px #FF00FF, 0 0 32px rgba(255,0,255,0.3);
-  color: #FF00FF;
-}
-
-/* Result cards — themed glow */
-[data-theme="vaporwave"] .sb-result--ok {
-  background: rgba(0,255,255,0.08);
-  border-color: #00FFFF;
-  box-shadow: 0 0 12px rgba(0,255,255,0.4);
-}
-[data-theme="vaporwave"] .sb-result--bad {
-  background: rgba(255,0,255,0.08);
-  border-color: #FF00FF;
-  box-shadow: 0 0 12px rgba(255,0,255,0.4);
-}
-
-/* Timer urgent — cyan instead of red */
-[data-theme="vaporwave"] .sb-timer-fill--urgent,
-[data-theme="vaporwave"] .ws-timer-fill--urgent,
-[data-theme="vaporwave"] .quiz-play__timer-fill--urgent {
-  background: #FF9900;
-  box-shadow: 0 0 8px #FF9900;
-}
-
-/* Tape strip — hide; doesn't fit the aesthetic */
-[data-theme="vaporwave"] .sb-tape,
-[data-theme="vaporwave"] .quiz-play__tape { display: none; }
-
-/* Post-it / prompt cards — glassmorphism dark panel */
-[data-theme="vaporwave"] .sb-prompt-card,
-[data-theme="vaporwave"] .quiz-play__prompt-card {
-  border-color: #00FFFF;
-  box-shadow: 0 0 20px rgba(0,255,255,0.4), inset 0 0 20px rgba(0,255,255,0.05);
-  backdrop-filter: blur(4px);
-}
+/* ============================================================================
+   App-Specific Styles
+   ============================================================================ */
 
-/* Word chips — dark surface + neon outline so text is legible */
-[data-theme="vaporwave"] .sb-chip {
-  background: #1a103c;
-  border-color: #FF00FF;
-  box-shadow: 0 0 8px rgba(255,0,255,0.4);
+/* Global container for max-width consistency */
+.app-container {
+  @apply mx-auto w-full;
+  max-width: var(--content-max-width);
 }
 
-/* Word search chips (pastel inline bg) — force dark text for readability */
-[data-theme="vaporwave"] .ws-chip {
-  color: #090014;
+/* Japanese text styling */
+.text-japanese {
+  @apply font-japanese;
 }
 
-/* Found cells have pastel inline backgrounds — dark text for contrast */
-[data-theme="vaporwave"] .ws-cell--found {
-  color: #090014;
+/* Smooth page transitions */
+.page-transition-enter {
+  @apply opacity-0 translate-y-4;
 }
-[data-theme="vaporwave"] .ws-chip__script { opacity: 0.6; }
-[data-theme="vaporwave"] .sb-chip--ghost {
-  box-shadow: 0 0 16px #FF00FF;
-}
-
-/* Dropdown — dark glass */
-[data-theme="vaporwave"] .sb-dropdown__trigger,
-[data-theme="vaporwave"] .sb-dropdown__panel {
-  border-color: #FF00FF;
-  box-shadow: 0 0 10px rgba(255,0,255,0.3);
-}
-
-/* Timer track border */
-[data-theme="vaporwave"] .sb-timer-track,
-[data-theme="vaporwave"] .ws-timer-bar,
-[data-theme="vaporwave"] .quiz-play__timer-track {
-  border-color: #2D1B4E;
-}
-
-/* Hearts — magenta */
-[data-theme="vaporwave"] .sb-heart,
-[data-theme="vaporwave"] .ws-heart,
-[data-theme="vaporwave"] .quiz-play__heart { color: #FF00FF; }
-
-/* Gradient text for kana prompts */
-[data-theme="vaporwave"] .quiz-play__prompt-kana,
-[data-theme="vaporwave"] .quiz-play__prompt-romaji {
-  background: linear-gradient(135deg, #FF9900, #FF00FF, #00FFFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 8px rgba(255,0,255,0.5));
-}
-
-/* Theme card active — cyan glow instead of ink-press */
-[data-theme="vaporwave"] .kana-settings__theme-card--active {
-  background: rgba(0,255,255,0.1);
-  border-color: #00FFFF;
-  box-shadow: 0 0 16px rgba(0,255,255,0.5);
-  transform: none;
-}
-[data-theme="vaporwave"] .kana-settings__theme-card--active .kana-settings__theme-name {
-  color: #00FFFF;
-  text-shadow: 0 0 8px rgba(0,255,255,0.7);
-}
-[data-theme="vaporwave"] .kana-settings__theme-card--active .kana-settings__theme-desc {
-  color: var(--color-fg);
-}
-
-/* Kana settings script buttons — neon style */
-[data-theme="vaporwave"] .kana-settings__script-btn--active {
-  background: #FF00FF;
-  border-color: #FF00FF;
-  box-shadow: 0 0 16px rgba(255,0,255,0.6);
-  color: #090014;
-  transform: none;
-}
-
-/* Home card kana character — gradient */
-[data-theme="vaporwave"] .home__card-kana {
-  background: linear-gradient(135deg, #FF00FF, #00FFFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ─── Theme: Material You (MD3) ──────────────────────────────────── */
-[data-theme="material"] {
-  /* Tonal purple palette — seed #6750A4 */
-  --color-bg:            #FFFBFE;
-  --color-header:        #F3EDF7;
-  --color-japan-red:     #6750A4;
-  --color-fg:            #1C1B1F;
-  --color-border:        rgba(121,116,126,0.30);
-  --color-muted:         #E7E0EC;
-  --color-accent:        #6750A4;
-  --color-accent-orange: #7D5260;
-  --color-accent-blue:   #625B71;
-  --color-surface:       #F3EDF7;
-  --color-postit:        #E8DEF8;
-  --color-halftone:      #6750A4;
-
-  /* Roboto — the canonical Material typeface */
-  --font-display: 'Roboto', system-ui, sans-serif;
-  --font-body:    'Roboto', system-ui, sans-serif;
-
-  /* Organic generous rounding */
-  --radius-sm: 12px;
-  --radius-md: 24px;
-  --radius-lg: 28px;
-
-  /* Soft diffuse shadows — elevation through tonal surfaces */
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.10), 0 1px 3px 1px rgba(0,0,0,0.07);
-  --shadow-md:     0 2px 6px rgba(0,0,0,0.12), 0 2px 8px 2px rgba(0,0,0,0.08);
-  --shadow-lg:     0 4px 12px rgba(0,0,0,0.14), 0 4px 16px 4px rgba(0,0,0,0.10);
-  --shadow-accent: 0 2px 8px rgba(103,80,164,0.30), 0 2px 16px rgba(103,80,164,0.20);
-  --shadow-blue:   0 2px 8px rgba(98,91,113,0.25);
-
-  /* Kill halftone jpg — atmospheric blur replaces it */
-  --halftone-opacity: 0;
-}
-
-/* Atmospheric organic blur blobs */
-[data-theme="material"] body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 40% at 85% 15%, rgba(103,80,164,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 35% at 10% 85%, rgba(125,82,96,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(232,222,248,0.15) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── Material AppShell ───────────────────────────────────────────── */
-
-[data-theme="material"] .shell__header {
-  background: #F3EDF7;
-  border-radius: 0;
-  border-bottom: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-}
-[data-theme="material"] .shell__header::before { display: none; }
-
-[data-theme="material"] .shell__title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: #1C1B1F;
-}
-
-[data-theme="material"] .shell__back { color: #6750A4; }
-
-[data-theme="material"] .shell__bottom-nav {
-  background: #F3EDF7;
-  border-radius: 0;
-  border-top: none;
-  box-shadow: 0 -2px 4px rgba(0,0,0,0.06);
-}
-[data-theme="material"] .shell__bottom-nav::before { display: none; }
-
-/* Active nav — pill indicator */
-[data-theme="material"] .shell__nav-btn--active {
-  color: #6750A4;
-}
-[data-theme="material"] .shell__nav-btn--active::after {
-  background: #6750A4;
-  border-radius: 9999px;
-  height: 3px;
-  width: 60%;
-  left: 20%;
-}
-
-/* ── Material home cards ─────────────────────────────────────────── */
-
-[data-theme="material"] .home__card {
-  background: #F3EDF7;
-  border-radius: 24px;
-  box-shadow: var(--shadow-sm);
-  transition: transform 300ms cubic-bezier(0.2,0,0,1),
-              box-shadow 300ms cubic-bezier(0.2,0,0,1),
-              background 200ms cubic-bezier(0.2,0,0,1);
-}
-[data-theme="material"] .home__card-halftone { display: none; }
-
-@media (hover: hover) {
-  [data-theme="material"] .home__card:hover {
-    transform: scale(1.01) translateY(-1px);
-    box-shadow: var(--shadow-md);
-    background: #EDE5F7;
-  }
-}
-
-[data-theme="material"] .home__card:active {
-  transform: scale(0.97);
-  box-shadow: none;
-  background: #E3D9F1;
-}
-
-/* ── Material quiz ───────────────────────────────────────────────── */
-
-/* Hide halftone divs */
-[data-theme="material"] .quiz-play__halftone,
-[data-theme="material"] .quiz-results__halftone { display: none; }
-[data-theme="material"] .quiz-play__tape,
-[data-theme="material"] .sb-tape { display: none; }
-
-/* Prompt card — secondary container tint */
-[data-theme="material"] .quiz-play__prompt-card {
-  background: #E8DEF8;
-  border-color: rgba(103,80,164,0.20);
-  border-radius: 28px;
-  box-shadow: var(--shadow-md);
-}
-
-/* Options — rounded, state layer hover */
-[data-theme="material"] .quiz-play__option {
-  border-radius: 16px;
-  border: 1px solid rgba(121,116,126,0.30);
-  background: #F3EDF7;
-  transition: background 200ms cubic-bezier(0.2,0,0,1),
-              box-shadow 200ms cubic-bezier(0.2,0,0,1),
-              transform 200ms cubic-bezier(0.2,0,0,1);
-}
-
-@media (hover: hover) {
-  [data-theme="material"] .quiz-play__option:hover:not(:disabled) {
-    background: #EAE0F5;
-    box-shadow: var(--shadow-sm);
-    transform: scale(1.01);
-  }
-}
-
-[data-theme="material"] .quiz-play__option:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-[data-theme="material"] .quiz-play__option--correct {
-  background: #d1fae5;
-  border-color: #34d399;
-  color: #065f46;
-  box-shadow: var(--shadow-sm);
-}
-[data-theme="material"] .quiz-play__option--wrong {
-  background: #fee2e2;
-  border-color: #f87171;
-  color: #991b1b;
-  box-shadow: var(--shadow-sm);
-}
-
-/* Results card */
-[data-theme="material"] .quiz-results__card {
-  background: #F3EDF7;
-  border-color: rgba(121,116,126,0.20);
-  border-radius: 28px;
-  box-shadow: var(--shadow-lg);
-}
-[data-theme="material"] .quiz-results__over-label {
-  color: #6750A4;
-  opacity: 1;
-}
-
-/* Hearts */
-[data-theme="material"] .quiz-play__heart,
-[data-theme="material"] .ws-heart,
-[data-theme="material"] .sb-heart { color: #7D5260; }
-
-/* Timer urgent */
-[data-theme="material"] .quiz-play__timer-fill--urgent,
-[data-theme="material"] .ws-timer-fill--urgent,
-[data-theme="material"] .sb-timer-fill--urgent {
-  background: #B3261E;
-  box-shadow: 0 0 8px rgba(179,38,30,0.25);
-}
-
-/* ── Material sentence builder ────────────────────────────────────── */
-
-/* Mode tabs — pill-shaped */
-[data-theme="material"] .sb-tab {
-  border-radius: 9999px;
-  border: 1px solid rgba(103,80,164,0.30);
-  background: #F3EDF7;
-  color: #49454F;
-}
-[data-theme="material"] .sb-tab--active {
-  background: #6750A4;
-  border-color: #6750A4;
-  color: #FFFFFF;
-}
-
-/* Dropdown */
-[data-theme="material"] .sb-dropdown__trigger {
-  border-radius: 16px;
-  background: #F3EDF7;
-  border-color: rgba(121,116,126,0.30);
-  box-shadow: var(--shadow-sm);
-}
-[data-theme="material"] .sb-dropdown__panel {
-  border-radius: 16px;
-  background: #F3EDF7;
-  border-color: rgba(121,116,126,0.20);
-  box-shadow: var(--shadow-lg);
-}
-
-/* Chips — secondary container */
-[data-theme="material"] .sb-chip {
-  border-radius: 12px;
-  background: #E8DEF8;
-  border-color: rgba(103,80,164,0.25);
-}
-[data-theme="material"] .sb-chip--ghost {
-  border-style: dashed;
-  border-color: #6750A4;
-  box-shadow: none;
-}
-
-/* Action buttons — pill-shaped */
-[data-theme="material"] .sb-btn {
-  border-radius: 9999px;
-  transition: background 200ms cubic-bezier(0.2,0,0,1),
-              box-shadow 200ms cubic-bezier(0.2,0,0,1),
-              transform 200ms cubic-bezier(0.2,0,0,1);
-}
-[data-theme="material"] .sb-btn--check { background: #6750A4; }
-[data-theme="material"] .sb-btn--check:active { transform: scale(0.95); }
-[data-theme="material"] .sb-btn--icon:active  { transform: scale(0.95); }
-
-/* English toggle in Material */
-[data-theme="material"] .sb-btn--english {
-  border-radius: 9999px;
-  border-color: rgba(103,80,164,0.40);
-  color: #6750A4;
-}
-[data-theme="material"] .sb-btn--english-on {
-  background: #6750A4;
-  border-color: #6750A4;
-  color: #FFFFFF;
-}
-
-/* Result cards */
-[data-theme="material"] .sb-result--ok {
-  background: #e8f5e9;
-  border-color: #4caf50;
-  box-shadow: var(--shadow-sm);
-}
-[data-theme="material"] .sb-result--bad {
-  background: #ffebee;
-  border-color: #ef5350;
-  box-shadow: var(--shadow-sm);
-}
 
-/* ── Material word search ─────────────────────────────────────────── */
-
-[data-theme="material"] .ws-cell--selected {
-  background: #E8DEF8;
-  border-color: #6750A4;
-}
-[data-theme="material"] .ws-chip {
-  border-radius: 9999px;
-  border: 1px solid rgba(103,80,164,0.25);
-  background: #E8DEF8;
-  color: #1C1B1F;
+.page-transition-enter-active {
+  @apply opacity-100 translate-y-0 transition-all duration-300 ease-out;
 }
-[data-theme="material"] .ws-result {
-  border-radius: 28px;
-  box-shadow: var(--shadow-lg);
-  background: #F3EDF7;
-  border-color: rgba(121,116,126,0.20);
-}
-[data-theme="material"] .ws-result__btn {
-  border-radius: 9999px;
-  transition: background 200ms cubic-bezier(0.2,0,0,1),
-              transform 200ms cubic-bezier(0.2,0,0,1);
-}
-[data-theme="material"] .ws-result__btn:active { transform: scale(0.95); }
-
-/* ── Material kana settings ──────────────────────────────────────── */
 
-/* Script toggle — pill */
-[data-theme="material"] .kana-settings__script-btn {
-  border-radius: 9999px;
-  transition: background 200ms cubic-bezier(0.2,0,0,1);
+/* Animation for quiz feedback */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
 }
-[data-theme="material"] .kana-settings__script-btn--active {
-  background: #6750A4;
-  border-color: #6750A4;
-  color: #FFFFFF;
-  transform: none;
-}
 
-/* Theme cards */
-[data-theme="material"] .kana-settings__theme-card {
-  border-radius: 24px;
-  border: 1px solid rgba(121,116,126,0.20);
-  background: #F3EDF7;
-  box-shadow: var(--shadow-sm);
-  transition: background 200ms cubic-bezier(0.2,0,0,1),
-              box-shadow 200ms cubic-bezier(0.2,0,0,1),
-              transform 200ms cubic-bezier(0.2,0,0,1);
-}
-[data-theme="material"] .kana-settings__theme-card--active {
-  background: #E8DEF8;
-  border-color: #6750A4;
-  box-shadow: 0 0 0 2px #6750A4;
-  transform: none;
-}
-[data-theme="material"] .kana-settings__theme-card--active .kana-settings__theme-name {
-  color: #6750A4;
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
 }
 
-/* Pill toggle */
-[data-theme="material"] .kana-settings__pill-toggle {
-  border-radius: 9999px;
-  transition: background 200ms cubic-bezier(0.2,0,0,1);
+@keyframes pulse-success {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
-[data-theme="material"] .kana-settings__pill-toggle--on {
-  background: #6750A4;
-  border-color: #6750A4;
-  color: #FFFFFF;
-}
 
-/* Kana table active row — secondary container */
-[data-theme="material"] .kana-table__row--active {
-  background: #E8DEF8;
+.animate-pulse-success {
+  animation: pulse-success 0.3s ease-in-out;
 }
-[data-theme="material"] .kana-table__row--active .kana-table__cell,
-[data-theme="material"] .kana-table__row--active .kana-table__row-label {
-  color: #6750A4;
-  opacity: 1;
-}
-
-/* Home kana — purple accent */
-[data-theme="material"] .home__card-kana { color: #6750A4; }
 
-/* ─── Reset ─────────────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
+/* Remove spinner from number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
   margin: 0;
-  padding: 0;
 }
 
-html {
-  height: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  height: 100%;
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.5;
-  color: var(--color-fg);
-  background-color: var(--color-bg);
-  -webkit-font-smoothing: antialiased;
-  overflow: hidden;
-}
-
-#root {
-  height: 100%;
-}
-
-button {
-  cursor: pointer;
-  font-family: inherit;
-  border: none;
-  background: none;
-}
-
-/* ─── Global halftone background ─────────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url('/halftone2.jpg');
-  background-size: cover;
-  mix-blend-mode: var(--halftone-blend);
-  opacity: var(--halftone-opacity);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ─── Utility classes ────────────────────────────────────────────── */
-.font-display  { font-family: var(--font-display); }
-.font-body     { font-family: var(--font-body); }
-.font-japanese { font-family: var(--font-japanese); }
-
-/* ─── Shared: Menu list ──────────────────────────────────────────── */
-.menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  padding: var(--space-lg);
-  height: 100%;
-  overflow-y: auto;
-  width: 100%;
-}
-
-.menu-list__label {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-fg);
-  opacity: 0.5;
-  flex-shrink: 0;
-}
-
-/* ─── Shared: Menu card ──────────────────────────────────────────── */
-.menu-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  width: 100%;
-  text-align: left;
-  background: var(--color-surface);
-  border: 3px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-lg);
-  overflow: hidden;
-  transition: transform 100ms ease, box-shadow 100ms ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Halftone dot pattern via pseudo-element — no extra div needed */
-.menu-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
-  background-size: 12px 12px;
-  opacity: 0.05;
-  pointer-events: none;
-}
-
-.menu-card:active {
-  transform: translateX(5px) translateY(5px);
-  box-shadow: none;
-}
-
-@media (hover: hover) {
-  .menu-card:hover {
-    transform: translateX(2px) translateY(2px);
-    box-shadow: var(--shadow-sm);
-  }
-}
-
-.menu-card__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-japanese);
-  font-size: 40px;
-  line-height: 1;
-  color: var(--color-fg);
-  flex-shrink: 0;
-  width: 52px;
-  text-align: center;
-  user-select: none;
-}
-
-.menu-card__body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.menu-card__title {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--color-fg);
-  line-height: 1.1;
-}
-
-.menu-card__subtitle {
-  font-family: var(--font-body);
-  font-size: 15px;
-  color: var(--color-fg);
-  opacity: 0.65;
-}
-
-.menu-card__meta {
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--color-fg);
-  opacity: 0.5;
-  line-height: 1.2;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-/* ─── Animations ─────────────────────────────────────────────────── */
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes pop-in {
-    from { transform: scale(0.92); opacity: 0; }
-    to   { transform: scale(1);    opacity: 1; }
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-6px); }
-    40%       { transform: translateX(6px); }
-    60%       { transform: translateX(-4px); }
-    80%       { transform: translateX(4px); }
-  }
-
-  @keyframes bounce-dot {
-    0%, 80%, 100% { transform: scale(0); }
-    40%            { transform: scale(1); }
-  }
-
-  .animate-pop-in { animation: pop-in 120ms ease forwards; }
-  .animate-shake  { animation: shake 350ms ease; }
+input[type="number"] {
+  -moz-appearance: textfield;
 }

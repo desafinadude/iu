@@ -1,15 +1,14 @@
 import { NavProvider, useNav } from './context/NavContext'
-import { useTheme } from './hooks/useTheme'
-import AppShell from './components/layout/AppShell'
-import HomeScreen from './screens/HomeScreen'
-import KanaQuizScreen from './screens/KanaQuizScreen'
-import KanaSettingsScreen from './screens/KanaSettingsScreen'
+import AppShell from './components/layout/app-shell'
+import HomeScreen from './screens/home-screen'
+import KanaQuizScreen from './screens/kana-quiz-screen'
+import SettingsScreen from './screens/settings-screen'
+import ProgressScreen from './screens/progress-screen'
 import KanaQuizSettingsScreen from './screens/KanaQuizSettingsScreen'
-import ProgressScreen from './screens/ProgressScreen'
-import WordSearchScreen from './screens/WordSearchScreen'
-import WritingScreen from './screens/WritingScreen'
-import VerbDrillScreen from './screens/VerbDrillScreen'
-import SentenceBuilderScreen from './screens/SentenceBuilderScreen'
+import WordSearchScreen from './screens/word-search-screen'
+import WritingScreen from './screens/writing-screen'
+import VerbDrillScreen from './screens/verb-drill-screen'
+import SentenceBuilderScreen from './screens/sentence-builder-screen'
 
 function Screens() {
   const { screen, params } = useNav()
@@ -18,7 +17,7 @@ function Screens() {
     case 'kana_quiz':
       return <KanaQuizScreen key={params?.mode ?? 'select'} />
     case 'settings':
-      return <KanaSettingsScreen />
+      return <SettingsScreen />
     case 'kana_quiz_settings':
       return <KanaQuizSettingsScreen />
     case 'progress':
@@ -38,9 +37,6 @@ function Screens() {
 }
 
 export default function App() {
-  // Initialises theme from localStorage and applies data-theme to <html>
-  useTheme()
-
   return (
     <NavProvider>
       <AppShell>
