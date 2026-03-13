@@ -81,7 +81,7 @@
   align-items: center;
   gap: 5px;
   background: var(--color-surface);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   padding: var(--space-md) var(--space-xs) var(--space-sm);
@@ -191,7 +191,7 @@
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-md);
   background: var(--color-surface);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   text-align: left;

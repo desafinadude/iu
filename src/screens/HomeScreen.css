@@ -23,7 +23,7 @@
   justify-content: center;
   gap: var(--space-sm);
   background: var(--color-surface);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   padding: var(--space-xl) var(--space-md);

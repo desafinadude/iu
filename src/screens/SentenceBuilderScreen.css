@@ -21,7 +21,7 @@
   font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-fg);
@@ -99,7 +99,7 @@
   gap: 4px;
   min-height: 90px;
   background: var(--color-postit);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   overflow: visible;
@@ -234,7 +234,7 @@
   flex: 1;
   height: 8px;
   background: var(--color-muted);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -299,7 +299,7 @@
   justify-content: space-between;
   padding: 10px 14px;
   background: var(--color-surface);
-  border: 2.5px solid var(--color-fg);
+  border: 2.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   font-family: var(--font-display);
@@ -331,7 +331,7 @@
   left: 0;
   right: 0;
   background: var(--color-surface);
-  border: 2.5px solid var(--color-fg);
+  border: 2.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
   overflow-y: auto;
@@ -484,7 +484,7 @@
 .sb-romaji-line {
   flex-shrink: 0;
   background: #fff9c2;
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   padding: 10px 14px;
@@ -505,7 +505,7 @@
   gap: 3px;
   padding: 10px 16px;
   background: #ffffff;
-  border: 2.5px solid var(--color-fg);
+  border: 2.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   cursor: grab;
@@ -561,7 +561,7 @@
 /* ─── Result ──────────────────────────────────────────────────────────────── */
 .sb-result {
   flex-shrink: 0;
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   padding: 8px var(--space-md);
@@ -642,7 +642,7 @@
   letter-spacing: 0.06em;
   background: var(--color-surface);
   color: var(--color-fg);
-  border: 2.5px solid var(--color-fg);
+  border: 2.5px solid var(--color-border);
   opacity: 0.45;
 }
 .sb-btn--english-on {
@@ -675,7 +675,7 @@
   width: 100%;
   max-height: 82vh;
   background: var(--color-surface);
-  border: 2.5px solid var(--color-fg);
+  border: 2.5px solid var(--color-border);
   border-bottom: none;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
   display: flex;
@@ -772,7 +772,7 @@
   padding: 8px 12px;
   min-width: 52px;
   background: var(--color-surface);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: 2px 2px 0 var(--color-fg);
   cursor: pointer;

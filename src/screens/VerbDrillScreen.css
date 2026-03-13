@@ -80,7 +80,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-postit);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   padding: var(--space-xl) var(--space-lg) var(--space-lg);
@@ -216,7 +216,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #fff;
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: 4px;
   box-shadow: 2px 2px 0 #333;
   align-self: flex-start;
@@ -230,7 +230,7 @@
 .fc__card {
   position: relative;
   background: var(--color-surface);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   padding: var(--space-sm) var(--space-md);
@@ -350,7 +350,7 @@
   flex-direction: column;
   gap: 4px;
   background: var(--color-postit);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: 2px 2px 0 #333;
   padding: var(--space-md) var(--space-md);
@@ -494,7 +494,7 @@
   color: #fff;
   text-align: center;
   padding: 4px;
-  border: 1.5px solid var(--color-fg);
+  border: 1.5px solid var(--color-border);
   border-radius: 4px;
 }
 
@@ -506,7 +506,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 4px 8px;
-  border: 1.5px solid var(--color-fg);
+  border: 1.5px solid var(--color-border);
   border-radius: 4px;
   background: var(--color-surface);
   min-height: 30px;
@@ -566,7 +566,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-postit);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   overflow: visible;
@@ -640,7 +640,7 @@
   padding: var(--space-sm) 4px;
   background: var(--color-surface);
   color: var(--color-fg);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
   transition: transform 100ms, box-shadow 100ms, background 120ms;
@@ -702,7 +702,7 @@
   height: 10px;
   border-radius: 50%;
   background: var(--color-muted);
-  border: 1.5px solid var(--color-fg);
+  border: 1.5px solid var(--color-border);
   transition: background 200ms ease, transform 150ms ease;
 }
 
@@ -722,7 +722,7 @@
   font-family: var(--font-display);
   font-size: 17px;
   font-weight: 700;
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   transition: transform 80ms ease, box-shadow 80ms ease;
@@ -756,7 +756,7 @@
   width: 100%;
   max-width: 480px;
   background: var(--color-surface);
-  border: 4px solid var(--color-fg);
+  border: 4px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: var(--space-2xl) var(--space-xl);

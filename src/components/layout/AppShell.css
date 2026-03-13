@@ -16,7 +16,7 @@
 .shell__header {
   flex-shrink: 0;
   background: var(--color-header);
-  border-bottom: 3px solid var(--color-fg);
+  border-bottom: 3px solid var(--color-border);
   border-radius: 0 0 255px 8px / 0 0 8px 255px;
   box-shadow: 0 2px 0 0 var(--color-fg);
   padding-top: env(safe-area-inset-top);
@@ -98,7 +98,7 @@
   flex-shrink: 0;
   display: flex;
   background: var(--color-surface);
-  border-top: 3px solid var(--color-fg);
+  border-top: 3px solid var(--color-border);
   border-radius: 8px 255px 0 0 / 255px 8px 0 0;
   box-shadow: 0 -2px 0 0 var(--color-fg);
   padding-bottom: env(safe-area-inset-bottom);

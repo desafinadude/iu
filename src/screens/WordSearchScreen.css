@@ -73,7 +73,7 @@
 .ws-timer-bar {
   height: 8px;
   background: var(--color-muted);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: 99px;
   overflow: hidden;
   flex-shrink: 0;
@@ -158,7 +158,7 @@
   gap: 5px;
   padding: 5px 10px;
   background: var(--color-surface);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   font-family: var(--font-body);
@@ -212,7 +212,7 @@
   align-items: center;
   gap: var(--space-md);
   background: var(--color-surface);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   padding: var(--space-xl) var(--space-2xl);
@@ -251,7 +251,7 @@
 
 /* Background color set via inline style (rainbow pastel) */
 .ws-result__word-item {
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   padding: var(--space-sm) var(--space-md);
@@ -290,7 +290,7 @@
   width: 100%;
   text-align: left;
   background: rgba(255,255,255,0.55);
-  border: 1.5px solid var(--color-fg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: var(--space-xs) var(--space-sm);
   transition: opacity 80ms ease;
@@ -370,7 +370,7 @@
 .ws-result__btn--secondary {
   background: var(--color-surface);
   color: var(--color-fg);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
 }
 
 /* Theme picker now uses shared .menu-list + .menu-card from index.css */

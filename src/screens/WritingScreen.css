@@ -42,7 +42,7 @@
   text-align: left;
   padding: var(--space-lg);
   background: var(--color-surface);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -149,7 +149,7 @@
   text-align: left;
   padding: var(--space-lg);
   background: var(--color-surface);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -277,7 +277,7 @@
 .wr-timer-bar {
   height: 8px;
   background: var(--color-muted);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: 99px;
   overflow: hidden;
   flex-shrink: 0;
@@ -303,7 +303,7 @@
   flex-shrink: 0;
   padding: var(--space-sm) var(--space-xl);
   background: var(--color-postit);
-  border: 2px solid var(--color-fg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   transition: background 250ms ease;
@@ -347,7 +347,7 @@
   );
   aspect-ratio: 1;
   background: white;
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -420,7 +420,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.88);
-  border: 1.5px solid var(--color-fg);
+  border: 1.5px solid var(--color-border);
   border-radius: 50%;
   font-size: 14px;
   font-weight: 700;
@@ -538,7 +538,7 @@
   align-items: center;
   gap: var(--space-md);
   background: var(--color-surface);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   padding: var(--space-xl) var(--space-2xl);
@@ -591,6 +591,6 @@
 .wr-result__btn--secondary {
   background: var(--color-surface);
   color: var(--color-fg);
-  border: 3px solid var(--color-fg);
+  border: 3px solid var(--color-border);
 }
 
