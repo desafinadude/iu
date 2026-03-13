@@ -32,35 +32,35 @@ const VERB_ICON_MAP = {
 }
 
 const STYLES = ['polite', 'casual']
-const TENSES = ['present', 'past', 'negative', 'past_negative']
+const TENSES = ['present_pos', 'present_neg', 'past_pos', 'past_neg']
 
 const TENSE_LABELS = {
-  present: 'Present',
-  past: 'Past',
-  negative: 'Negative',
-  past_negative: 'Past Neg.',
+  present_pos: 'Present',
+  present_neg: 'Negative',
+  past_pos: 'Past',
+  past_neg: 'Past Neg.',
 }
 
 const FORM_LABELS = {
-  polite_present: 'Polite Present',
-  polite_past: 'Polite Past',
-  polite_negative: 'Polite Negative',
-  polite_past_negative: 'Polite Past Neg.',
-  casual_present: 'Casual Present',
-  casual_past: 'Casual Past',
-  casual_negative: 'Casual Negative',
-  casual_past_negative: 'Casual Past Neg.',
+  polite_present_pos: 'Polite Present',
+  polite_past_pos: 'Polite Past',
+  polite_present_neg: 'Polite Negative',
+  polite_past_neg: 'Polite Past Neg.',
+  casual_present_pos: 'Casual Present',
+  casual_past_pos: 'Casual Past',
+  casual_present_neg: 'Casual Negative',
+  casual_past_neg: 'Casual Past Neg.',
 }
 
 const DRILL_ORDER = [
-  { style: 'polite', tense: 'present' },
-  { style: 'polite', tense: 'past' },
-  { style: 'polite', tense: 'negative' },
-  { style: 'polite', tense: 'past_negative' },
-  { style: 'casual', tense: 'present' },
-  { style: 'casual', tense: 'past' },
-  { style: 'casual', tense: 'negative' },
-  { style: 'casual', tense: 'past_negative' },
+  { style: 'polite', tense: 'present_pos' },
+  { style: 'polite', tense: 'past_pos' },
+  { style: 'polite', tense: 'present_neg' },
+  { style: 'polite', tense: 'past_neg' },
+  { style: 'casual', tense: 'present_pos' },
+  { style: 'casual', tense: 'past_pos' },
+  { style: 'casual', tense: 'present_neg' },
+  { style: 'casual', tense: 'past_neg' },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -121,14 +121,14 @@ function VerbPicker({ onSelect }) {
 
 function FormCards({ verb }) {
   const forms = [
-    { style: 'polite', tense: 'present' },
-    { style: 'polite', tense: 'past' },
-    { style: 'polite', tense: 'negative' },
-    { style: 'polite', tense: 'past_negative' },
-    { style: 'casual', tense: 'present' },
-    { style: 'casual', tense: 'past' },
-    { style: 'casual', tense: 'negative' },
-    { style: 'casual', tense: 'past_negative' },
+    { style: 'polite', tense: 'present_pos' },
+    { style: 'polite', tense: 'past_pos' },
+    { style: 'polite', tense: 'present_neg' },
+    { style: 'polite', tense: 'past_neg' },
+    { style: 'casual', tense: 'present_pos' },
+    { style: 'casual', tense: 'past_pos' },
+    { style: 'casual', tense: 'present_neg' },
+    { style: 'casual', tense: 'past_neg' },
   ]
 
   return (

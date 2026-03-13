@@ -43,17 +43,25 @@ export const WORD_POOL = buildWordPool()
 // ─── Proxy fetch — routes through Netlify function to avoid CORS ──────────
 
 async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
-  const res = await fetch('/.netlify/functions/hf-chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, maxTokens, temperature }),
-  })
-  if (!res.ok) {
-    const body = await res.text()
-    throw new Error(`API error ${res.status}: ${body}`)
+  try {
+    const res = await fetch('/.netlify/functions/hf-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, maxTokens, temperature }),
+    })
+    if (!res.ok) {
+      const body = await res.text()
+      throw new Error(`API error ${res.status}: ${body}`)
+    }
+    const data = await res.json()
+    return data.choices[0].message.content
+  } catch (err) {
+    // Check if it's a network/fetch error (likely Netlify function not available)
+    if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+      throw new Error('Netlify function not available. Run "netlify dev" instead of "npm run dev" to use AI features.')
+    }
+    throw err
   }
-  const data = await res.json()
-  return data.choices[0].message.content
 }
 
 function parseJson(text) {

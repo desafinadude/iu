@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import * as LucideIcons from 'lucide-react'
-import { WRITING_SETS } from '../data/writingData'
+import { WRITING_SETS, getCharsForSet } from '../data/writingData'
 import { recognizeInk } from '../utils/googleInputTools'
 import { speak } from '../utils/speech'
 import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
@@ -25,12 +25,6 @@ function shuffle(arr) {
     ;[a[i], a[j]] = [a[j], a[i]]
   }
   return a
-}
-
-function getCharsForSet(setId) {
-  const set = WRITING_SETS.find((s) => s.id === setId)
-  if (!set) return []
-  return set.chars
 }
 
 // ─── Components ───────────────────────────────────────────────────
@@ -81,13 +75,14 @@ function SetPicker({ onSelect }) {
 
       <MenuCardList>
         {WRITING_SETS.map((s) => {
-          const Icon = LucideIcons[s.iconName] ?? LucideIcons.PenTool
+          const chars = getCharsForSet(s.id)
           return (
             <MenuCard
               key={s.id}
-              icon={<Icon />}
+              icon={<span className="text-3xl font-japanese">{s.icon}</span>}
               title={s.label}
-              meta={`${s.chars.length} characters`}
+              subtitle={s.kana}
+              meta={`${chars.length} characters`}
               onClick={() => onSelect(s.id)}
             />
           )
