@@ -252,8 +252,11 @@ export async function generateVerbChallenges(verbObj, onProgress) {
 
   let completed = 0
 
-  // Generate challenges in parallel - OpenRouter/Gemini handles this well
-  const promises = VERB_FORMS.map(async (verbForm) => {
+  // Generate challenges SEQUENTIALLY to respect free tier rate limits (8 RPM)
+  const results = []
+  
+  for (let i = 0; i < VERB_FORMS.length; i++) {
+    const verbForm = VERB_FORMS[i]
     const form = verbForm.getForm(verbObj)
 
     const system = `You are a Japanese teacher. You MUST respond with valid JSON only. No markdown, no extra text.`
@@ -274,66 +277,75 @@ Respond with ONLY valid JSON (no markdown):
 
 Words array must list ALL words/particles used.`
 
-    const text = await hfChat(
-      [{ role: 'system', content: system }, { role: 'user', content: user }],
-      { maxTokens: 400, temperature: 0.7 },
-    )
-    const parsed = parseJson(text)
+    try {
+      const text = await hfChat(
+        [{ role: 'system', content: system }, { role: 'user', content: user }],
+        { maxTokens: 400, temperature: 0.7 },
+      )
+      const parsed = parseJson(text)
 
-    // Build word pool from what was actually used + add distractors
-    const usedWords = parsed.words || []
-    const usedKanas = new Set(usedWords.map(w => w.kana))
-    
-    // Add distractors: other forms of same verb
-    const verbDistractors = VERB_FORMS
-      .filter(vf => vf.key !== verbForm.key)
-      .map(vf => {
-        const f = vf.getForm(verbObj)
-        return { word: f.word, kana: f.kana, meaning: `${verbObj.meaning} (${vf.label})`, type: 'verb' }
-      })
-      .filter(w => !usedKanas.has(w.kana))
-      .slice(0, 3)
-    
-    // Add noun/pronoun distractors
-    const nounDistractors = VOCAB_LIST
-      .filter(w => ['noun', 'pronoun'].includes(w.type) && !usedKanas.has(w.kana))
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 4)
-      .map(w => ({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type }))
-    
-    // Add confusing particle distractors
-    const CONFUSE = { 'は': 'が', 'が': 'は', 'を': 'に', 'に': 'で', 'で': 'に' }
-    const particleDistractors = []
-    for (const used of usedWords) {
-      const alt = CONFUSE[used.kana]
-      if (alt && !usedKanas.has(alt)) {
-        const p = CORE_PARTICLES.find(p => p.kana === alt)
-        if (p) particleDistractors.push({ ...p })
+      // Build word pool from what was actually used + add distractors
+      const usedWords = parsed.words || []
+      const usedKanas = new Set(usedWords.map(w => w.kana))
+      
+      // Add distractors: other forms of same verb
+      const verbDistractors = VERB_FORMS
+        .filter(vf => vf.key !== verbForm.key)
+        .map(vf => {
+          const f = vf.getForm(verbObj)
+          return { word: f.word, kana: f.kana, meaning: `${verbObj.meaning} (${vf.label})`, type: 'verb' }
+        })
+        .filter(w => !usedKanas.has(w.kana))
+        .slice(0, 3)
+      
+      // Add noun/pronoun distractors
+      const nounDistractors = VOCAB_LIST
+        .filter(w => ['noun', 'pronoun'].includes(w.type) && !usedKanas.has(w.kana))
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4)
+        .map(w => ({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type }))
+      
+      // Add confusing particle distractors
+      const CONFUSE = { 'は': 'が', 'が': 'は', 'を': 'に', 'に': 'で', 'で': 'に' }
+      const particleDistractors = []
+      for (const used of usedWords) {
+        const alt = CONFUSE[used.kana]
+        if (alt && !usedKanas.has(alt)) {
+          const p = CORE_PARTICLES.find(p => p.kana === alt)
+          if (p) particleDistractors.push({ ...p })
+        }
       }
+      
+      // Combine and shuffle
+      const wordPool = [
+        ...usedWords,
+        ...verbDistractors,
+        ...nounDistractors,
+        ...particleDistractors
+      ].sort(() => Math.random() - 0.5)
+
+      results.push({
+        ja: parsed.ja,
+        en: parsed.en,
+        verbForm: verbForm.key,
+        formLabel: verbForm.label,
+        tenseClass: verbForm.tenseClass,
+        verbWord: form.word,
+        verbKana: form.kana,
+        wordPool,
+      })
+
+      onProgress?.(++completed)
+      
+      // Wait 8 seconds between requests to respect 8 RPM limit
+      if (i < VERB_FORMS.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 8000))
+      }
+    } catch (err) {
+      console.error(`Failed to generate challenge ${i + 1}:`, err)
+      throw err
     }
-    
-    // Combine and shuffle
-    const wordPool = [
-      ...usedWords,
-      ...verbDistractors,
-      ...nounDistractors,
-      ...particleDistractors
-    ].sort(() => Math.random() - 0.5)
+  }
 
-    onProgress?.(++completed)
-
-    return {
-      ja: parsed.ja,           // Japanese sentence with kanji
-      en: parsed.en,           // English translation
-      verbForm: verbForm.key,
-      formLabel: verbForm.label,
-      tenseClass: verbForm.tenseClass,
-      verbWord: form.word,
-      verbKana: form.kana,
-      wordPool,                // Words needed + distractors
-    }
-  })
-
-  // Run all 8 requests in parallel - much faster!
-  return Promise.all(promises)
+  return results
 }
