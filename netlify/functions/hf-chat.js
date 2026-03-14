@@ -1,5 +1,5 @@
 const MODEL = 'Qwen/Qwen2.5-72B-Instruct'
-const HF_API_URL = 'https://api-inference.huggingface.co/v1/chat/completions'
+const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions'
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
