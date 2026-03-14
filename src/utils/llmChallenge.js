@@ -244,13 +244,13 @@ Return ONLY this JSON:
 // Falls back to generating one-by-one if the batch partially fails.
 
 export async function generateGameChallenges(onProgress) {
-  const results = []
-  for (let i = 0; i < CHALLENGES_PER_GAME; i++) {
+  let completed = 0
+  const promises = Array.from({ length: CHALLENGES_PER_GAME }, async () => {
     const c = await generateChallenge()
-    results.push(c)
-    onProgress?.(results.length, CHALLENGES_PER_GAME)
-  }
-  return results
+    onProgress?.(++completed, CHALLENGES_PER_GAME)
+    return c
+  })
+  return Promise.all(promises)
 }
 
 export { CHALLENGES_PER_GAME }
@@ -383,9 +383,9 @@ export async function generateVerbChallenges(verbObj, onProgress) {
   const particlesText = CORE_PARTICLES.slice(0, 10)
     .map(p => `${p.word}（${p.kana}・${p.meaning}）`).join(', ')
 
-  const results = []
+  let completed = 0
 
-  for (const verbForm of VERB_FORMS) {
+  const promises = VERB_FORMS.map(async (verbForm) => {
     const form = verbForm.getForm(verbObj)
 
     const sampleWords = [
@@ -429,7 +429,9 @@ Return ONLY:
     const needs    = [...new Set([...(parsed.needs ?? []), form.kana])]
     const wordPool = buildChallengeWordPool(needs, verbObj, verbForm.key)
 
-    results.push({
+    onProgress?.(++completed)
+
+    return {
       en:        parsed.en,
       needs,
       verbForm:  verbForm.key,
@@ -438,10 +440,9 @@ Return ONLY:
       verbWord:  form.word,
       verbKana:  form.kana,
       wordPool,
-    })
+    }
+  })
 
-    onProgress?.(results.length)
-  }
-
-  return results
+  // Run all 8 form requests in parallel; preserve original VERB_FORMS order
+  return Promise.all(promises)
 }
