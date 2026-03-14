@@ -1,5 +1,6 @@
 // Groq API (OpenAI-compatible endpoint)
-const MODEL = 'llama-3.3-70b-versatile' // Latest Llama 3.3, excellent for structured outputs
+// Using 8B model for higher rate limits (30,000 TPM vs 12,000 for 70B)
+const MODEL = 'llama-3.1-8b-instant' // Faster, higher rate limits, still very capable
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
 export const handler = async (event) => {

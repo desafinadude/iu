@@ -7,7 +7,12 @@ async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
   const res = await fetch('/.netlify/functions/hf-chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, maxTokens, temperature }),
+    body: JSON.stringify({ 
+      messages, 
+      maxTokens, 
+      temperature,
+      // Note: Groq supports response_format for JSON mode if needed
+    }),
   })
   if (!res.ok) {
     const body = await res.text()
@@ -18,43 +23,54 @@ async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
 }
 
 function parseJson(text) {
-  // Strip markdown code fences if present
-  const cleaned = text.replace(/```(?:json)?/g, '').trim()
-  const match = cleaned.match(/\{[\s\S]*?\}/)
-  if (!match) throw new Error('No JSON object found in response')
-  return JSON.parse(match[0])
+  try {
+    // Strip markdown code fences if present
+    let cleaned = text.replace(/```(?:json)?/g, '').trim()
+    
+    // Try to find JSON object
+    const match = cleaned.match(/\{[\s\S]*\}/)
+    if (!match) throw new Error('No JSON object found in response')
+    
+    cleaned = match[0]
+    
+    // Fix common JSON issues:
+    // 1. Remove trailing commas before closing brackets
+    cleaned = cleaned.replace(/,(\s*[}\]])/g, '$1')
+    
+    // 2. Ensure property names are quoted
+    cleaned = cleaned.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":')
+    
+    // 3. Try to parse
+    return JSON.parse(cleaned)
+  } catch (err) {
+    console.error('JSON parsing failed:', text)
+    throw new Error(`Failed to parse LLM response: ${err.message}`)
+  }
 }
 
 // ─── Check a user's answer (challenge mode) ───────────────────────────────
 // Returns { valid: boolean, feedback: string }
 
 export async function checkAnswer(expectedKana, userKana, wordPool = []) {
-  const system = `You are a Japanese language teacher grading a beginner student. Return ONLY valid JSON, no extra text.`
+  const system = `You are a Japanese language teacher. You MUST respond with valid JSON only. No markdown, no explanations, just JSON.`
 
   const availableWords = wordPool.length > 0
     ? wordPool.map(w => `${w.word}（${w.kana}・${w.meaning}）`).join(', ')
     : 'standard beginner vocabulary'
 
-  const user = `Expected Japanese answer (kana): "${expectedKana}"
-Student's Japanese answer (kana): "${userKana}"
+  const user = `Expected Japanese answer: "${expectedKana}"
+Student's answer: "${userKana}"
 
 Available vocabulary: ${availableWords}
 
-Judge if the student's answer is acceptable. Accept it if:
-1. It conveys the same core meaning as the expected answer
-2. Grammar is reasonable for a beginner level
-3. Only uses words from the available vocabulary
-4. Minor differences in word order or particle choice are acceptable if grammatically valid
-5. Minor omissions (like dropping わたし when context is clear) are acceptable
+Judge if acceptable (same meaning, reasonable grammar, uses only available words).
 
-Reject if:
-- Uses words NOT in the available vocabulary
-- Completely different meaning
-- No predicate/verb present
-- Serious grammar errors
+Respond with ONLY this exact JSON format (no other text):
+{"valid": true, "feedback": "Good job!"}
 
-Return ONLY this JSON:
-{"valid": true_or_false, "feedback": "One short encouraging sentence of feedback (mention what was good or what to fix)."}`
+OR
+
+{"valid": false, "feedback": "Check your particles."}`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],
@@ -221,40 +237,27 @@ export async function generateVerbChallenges(verbObj, onProgress) {
   const promises = VERB_FORMS.map(async (verbForm) => {
     const form = verbForm.getForm(verbObj)
 
-    const system = `You are a Japanese language teacher creating beginner translation exercises. Return ONLY valid JSON, no extra text.`
+    const system = `You are a Japanese teacher. You MUST respond with valid JSON only. No markdown, no extra text.`
     
-    const user = `Create a simple Japanese sentence using this verb form, then provide its English translation.
+    const user = `Create a simple Japanese sentence using this verb: ${form.word}（${form.kana}）"${verbObj.meaning}" ${verbForm.label}
 
-REQUIRED VERB FORM (must use exactly this): ${form.word}（${form.kana}）— "${verbObj.meaning}" in ${verbForm.label}
-
-AVAILABLE VOCABULARY (you can ONLY use words from this list):
+Use 2-3 words from this vocabulary:
 ${vocabListText}
 
-AVAILABLE PARTICLES: ${particlesText}
+Particles: ${particlesText}
 
-Requirements:
-1. Create a natural, beginner-appropriate Japanese sentence
-2. MUST use the exact verb form: ${form.word}
-3. Use proper kanji from the vocab list (don't write everything in kana)
-4. Use 1-3 content words from the vocabulary list as subject/object/location
-5. Keep it simple (3-6 words total including particles)
-6. Provide a natural English translation
-
-Return ONLY this JSON:
+Respond with ONLY valid JSON (no markdown):
 {
-  "ja": "The complete Japanese sentence with kanji where vocabulary has it",
-  "en": "Natural English translation",
-  "words": [
-    {"word": "kanji form", "kana": "reading", "meaning": "English meaning"},
-    {"word": "は", "kana": "は", "meaning": "topic particle"}
-  ]
+  "ja": "Japanese sentence with kanji",
+  "en": "English translation",
+  "words": [{"word": "食べる", "kana": "たべる", "meaning": "to eat"}]
 }
 
-The "words" array should list every word/particle used in order, matching vocabulary list entries exactly.`
+Words array must list ALL words/particles used.`
 
     const text = await hfChat(
       [{ role: 'system', content: system }, { role: 'user', content: user }],
-      { maxTokens: 300, temperature: 0.7 },
+      { maxTokens: 400, temperature: 0.7 },
     )
     const parsed = parseJson(text)
 
