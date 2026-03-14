@@ -9,30 +9,6 @@ export const THEMES = [
     description: 'Warm paper & ink',
     preview: { bg: '#f2ece0', accent: '#8B1A1A', fg: '#2d2d2d' },
   },
-  {
-    id: 'swiss',
-    name: 'Swiss',
-    description: 'International Typographic',
-    preview: { bg: '#FFFFFF', accent: '#FF3000', fg: '#000000' },
-  },
-  {
-    id: 'playful',
-    name: 'Playful',
-    description: 'Geometric pop & energy',
-    preview: { bg: '#FFFDF5', accent: '#8B5CF6', fg: '#1E293B' },
-  },
-  {
-    id: 'vaporwave',
-    name: 'Vaporwave',
-    description: 'Neon retro-future',
-    preview: { bg: '#090014', accent: '#FF00FF', fg: '#00FFFF' },
-  },
-  {
-    id: 'material',
-    name: 'Material',
-    description: 'Personal & adaptive',
-    preview: { bg: '#FFFBFE', accent: '#6750A4', fg: '#1C1B1F' },
-  },
 ]
 
 export function useTheme() {
