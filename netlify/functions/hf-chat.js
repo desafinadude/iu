@@ -1,6 +1,6 @@
 // OpenRouter API (supports multiple free models)
 // Using Google Gemma 3 12B - excellent for structured outputs, completely free
-const MODEL = 'google/gemma-3-12b:free' // Free tier, good quality
+const MODEL = 'google/gemma-3n-e2b-it:free' // Free tier, good quality
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 export const handler = async (event) => {
