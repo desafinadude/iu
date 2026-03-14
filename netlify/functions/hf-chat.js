@@ -1,6 +1,6 @@
 // OpenRouter API (supports multiple free models)
-// Using Google's Gemini Flash - excellent for structured JSON, completely free
-const MODEL = 'google/gemini-flash-1.5-8b' // Free, fast, great for structured outputs
+// Using Liquid LFM - completely free, good for structured outputs
+const MODEL = 'liquid/lfm-2.5-1.2b-thinking:free' // Free tier model
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 export const handler = async (event) => {
