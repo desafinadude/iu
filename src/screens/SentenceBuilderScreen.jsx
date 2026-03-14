@@ -13,6 +13,7 @@ import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import {
   generateVerbChallenges,
   checkAnswer,
+  checkFreeSentence,
   VERB_CHALLENGES_PER_GAME,
 } from '../utils/llmChallenge'
 import './SentenceBuilderScreen.css'
@@ -82,41 +83,6 @@ const CATEGORIES = [
     ]),
   },
 ]
-
-// ─── Free-mode grammar checker ────────────────────────────────────────────
-
-function validateSentence(chips) {
-  if (chips.length === 0) return null
-  const issues = [], passes = []
-  const lastPredIdx = chips.findLastIndex(c => c.type === 'verb' || c.type === 'adj')
-
-  if (lastPredIdx === -1) {
-    return { valid: false, issues: ['Add a verb or adjective to complete the sentence.'], passes: [] }
-  }
-  if (lastPredIdx === chips.length - 1) {
-    passes.push('Predicate at the end — correct Japanese word order!')
-  } else {
-    issues.push('In Japanese, the verb or adjective comes at the end.')
-  }
-
-  const woIdx = chips.findLastIndex(c => c.word === 'を')
-  if (woIdx !== -1) {
-    if (woIdx < lastPredIdx) passes.push('Object particle (を) is before the verb.')
-    else issues.push('The を particle should come before the verb.')
-  }
-
-  const negAdverb = chips.find(c => ['あまり', '全然'].includes(c.word))
-  if (negAdverb) {
-    const vk = chips[lastPredIdx]?.kana ?? ''
-    if (vk.includes('ない') || vk.includes('ません')) {
-      passes.push('Negative adverb paired correctly with negative verb form.')
-    } else {
-      issues.push(`「${negAdverb.word}」is used with negative forms (ない・ません).`)
-    }
-  }
-
-  return { valid: issues.length === 0, issues, passes }
-}
 
 // ─── Tense badge helpers ────────────────────────────────────────────────────
 
@@ -214,7 +180,7 @@ function WordDropdown({ onSelect, showEnglish }) {
 function Chip({ chip, isDragging, onPointerDown, onTap }) {
   return (
     <div
-      className={`sb-chip${isDragging ? ' sb-chip--dragging' : ''}`}
+      className={`sb-chip${chip.type ? ` sb-chip--${chip.type}` : ''}${isDragging ? ' sb-chip--dragging' : ''}`}
       onPointerDown={onPointerDown}
       onClick={onTap}
       data-chip-id={chip.id}
@@ -499,31 +465,30 @@ export default function SentenceBuilderScreen() {
   // ── Actions ────────────────────────────────────────────────────────────
 
   async function handleCheck() {
-    if (mode === 'challenge') {
-      const userKana = sentence.map(c => c.kana).join('')
-      setCheckingAnswer(true)
-      try {
+    setCheckingAnswer(true)
+    try {
+      if (mode === 'challenge') {
+        const userKana = sentence.map(c => c.kana).join('')
         const result = await checkAnswer(challenges[challengeIdx].en, userKana)
         setChallengeResult(result)
         if (result?.valid) {
           playCorrectSound()
-          setTimeout(() => advanceChallenge(), 1800)
         } else {
           playWrongSound()
           const newLives = lives - 1
           setLives(newLives)
           if (newLives <= 0) setGameOver(true)
         }
-      } catch (err) {
-        setLlmError(err.message)
-      } finally {
-        setCheckingAnswer(false)
+      } else {
+        const result = await checkFreeSentence(sentence)
+        setCheckResult(result)
+        if (result?.valid) playCorrectSound()
+        else               playWrongSound()
       }
-    } else {
-      const result = validateSentence(sentence)
-      setCheckResult(result)
-      if (result?.valid) playCorrectSound()
-      else               playWrongSound()
+    } catch (err) {
+      setLlmError(err.message)
+    } finally {
+      setCheckingAnswer(false)
     }
   }
 
@@ -733,16 +698,22 @@ export default function SentenceBuilderScreen() {
       {/* ── Actions ──────────────────────────────────────────────────── */}
       {!verbPickerOpen && !(inChallenge && (gameOver || allDone || generatingChallenges)) && (
         <div className="sb-actions">
-          <button
-            className="sb-btn sb-btn--check"
-            onClick={handleCheck}
-            disabled={!hasChips || checkingAnswer}
-          >
-            {checkingAnswer
-              ? <Loader size={18} className="sb-loading-card__spinner" aria-hidden="true" />
-              : 'Check'
-            }
-          </button>
+          {inChallenge && challengeResult && !gameOver ? (
+            <button className="sb-btn sb-btn--check" onClick={advanceChallenge}>
+              Next →
+            </button>
+          ) : (
+            <button
+              className="sb-btn sb-btn--check"
+              onClick={handleCheck}
+              disabled={!hasChips || checkingAnswer}
+            >
+              {checkingAnswer
+                ? <Loader size={18} className="sb-loading-card__spinner" aria-hidden="true" />
+                : 'Check'
+              }
+            </button>
+          )}
           <button
             className={`sb-btn sb-btn--english${showEnglish ? ' sb-btn--english-on' : ''}`}
             onClick={() => setShowEnglish(v => !v)}
@@ -764,7 +735,7 @@ export default function SentenceBuilderScreen() {
 
       {/* ── Drag ghost ────────────────────────────────────────────────── */}
       {ghostStyle && draggingChip && didDragRef.current && (
-        <div className="sb-chip sb-chip--ghost" style={ghostStyle} aria-hidden="true">
+        <div className={`sb-chip sb-chip--ghost${draggingChip.type ? ` sb-chip--${draggingChip.type}` : ''}`} style={ghostStyle} aria-hidden="true">
           <span className="sb-chip__word">{draggingChip.word}</span>
           {draggingChip.word !== draggingChip.kana && (
             <span className="sb-chip__kana">{draggingChip.kana}</span>

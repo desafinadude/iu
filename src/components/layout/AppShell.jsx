@@ -47,7 +47,7 @@ export default function AppShell({ children }) {
         </div>
       </main>
 
-      <nav className="shell__bottom-nav" aria-label="Main navigation">
+      {/* <nav className="shell__bottom-nav" aria-label="Main navigation">
         <div className="shell__inner" style={{ display: 'flex', width: '100%' }}>
           {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
             const active = screen === id || (!ROOT_SCREENS.has(screen) && id === 'home' && screen !== 'progress' && screen !== 'settings')
@@ -65,7 +65,7 @@ export default function AppShell({ children }) {
             )
           })}
         </div>
-      </nav>
+      </nav> */}
     </div>
   )
 }

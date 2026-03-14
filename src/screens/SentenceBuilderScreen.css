@@ -507,13 +507,22 @@
   background: #ffffff;
   border: 2.5px solid var(--color-border);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
   cursor: grab;
   user-select: none;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
   text-align: center;
 }
+
+/* Type colours — same palette as word tray tiles */
+.sb-chip--particle { background: #ede9fe; border-color: #c4b5fd; }
+.sb-chip--verb     { background: #fce7f3; border-color: #f9a8d4; }
+.sb-chip--adj      { background: #dcfce7; border-color: #86efac; }
+.sb-chip--pronoun  { background: #fef9c3; border-color: #fde68a; }
+.sb-chip--noun     { background: #ffedd5; border-color: #fed7aa; }
+.sb-chip--adverb   { background: #e0f2fe; border-color: #7dd3fc; }
+.sb-chip--time     { background: #f3e8ff; border-color: #d8b4fe; }
 
 .sb-chip:active { cursor: grabbing; }
 
@@ -534,7 +543,7 @@
 
 .sb-chip__word {
   font-family: var(--font-japanese);
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--color-fg);
   line-height: 1.1;
@@ -774,22 +783,25 @@
   background: var(--color-surface);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
-  box-shadow: 2px 2px 0 var(--color-fg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
   cursor: pointer;
   text-align: center;
   -webkit-tap-highlight-color: transparent;
   transition: transform 80ms, box-shadow 80ms;
 }
 .sb-word-tile:active {
-  transform: translate(2px, 2px);
+  transform: translate(1px, 1px);
   box-shadow: none;
 }
 
 /* Type-tinted backgrounds to help learners scan by word type */
-.sb-word-tile--particle { background: #eef2ff; }
-.sb-word-tile--verb     { background: #fff0f8; }
-.sb-word-tile--adj      { background: #f0fdf4; }
-.sb-word-tile--pronoun  { background: #fefce8; }
+.sb-word-tile--particle { background: #ede9fe; border-color: #c4b5fd; }
+.sb-word-tile--verb     { background: #fce7f3; border-color: #f9a8d4; }
+.sb-word-tile--adj      { background: #dcfce7; border-color: #86efac; }
+.sb-word-tile--pronoun  { background: #fef9c3; border-color: #fde68a; }
+.sb-word-tile--noun     { background: #ffedd5; border-color: #fed7aa; }
+.sb-word-tile--adverb   { background: #e0f2fe; border-color: #7dd3fc; }
+.sb-word-tile--time     { background: #f3e8ff; border-color: #d8b4fe; }
 
 .sb-word-tile__word {
   font-family: var(--font-japanese);
