@@ -11,7 +11,7 @@ async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
       messages, 
       maxTokens, 
       temperature,
-      // Note: Groq supports response_format for JSON mode if needed
+      // Note: OpenRouter supports response_format for JSON mode if needed
     }),
   })
   if (!res.ok) {
@@ -19,17 +19,34 @@ async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
     throw new Error(`API error ${res.status}: ${body}`)
   }
   const data = await res.json()
-  return data.choices[0].message.content
+  console.log('API response:', data) // Debug log
+  
+  const content = data.choices?.[0]?.message?.content
+  if (!content) {
+    console.error('No content in API response:', data)
+    throw new Error('API returned no content')
+  }
+  
+  return content
 }
 
 function parseJson(text) {
   try {
+    // Check if text is null/undefined
+    if (!text) {
+      console.error('LLM returned empty response')
+      throw new Error('LLM returned empty response')
+    }
+    
     // Strip markdown code fences if present
     let cleaned = text.replace(/```(?:json)?/g, '').trim()
     
     // Try to find JSON object
     const match = cleaned.match(/\{[\s\S]*\}/)
-    if (!match) throw new Error('No JSON object found in response')
+    if (!match) {
+      console.error('No JSON found in LLM response:', text)
+      throw new Error('No JSON object found in response')
+    }
     
     cleaned = match[0]
     
@@ -43,7 +60,8 @@ function parseJson(text) {
     // 3. Try to parse
     return JSON.parse(cleaned)
   } catch (err) {
-    console.error('JSON parsing failed:', text)
+    console.error('JSON parsing failed. Raw text:', text)
+    console.error('Error:', err.message)
     throw new Error(`Failed to parse LLM response: ${err.message}`)
   }
 }
