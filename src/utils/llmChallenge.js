@@ -4,14 +4,31 @@ import { VERB_LIST } from '../data/verbData'
 // ─── Proxy fetch — routes through Netlify function to avoid CORS ──────────
 
 async function hfChat(messages, { maxTokens = 150, temperature = 0.7 } = {}) {
+  // Some models (like Gemma) don't support system messages - merge into user message
+  const processedMessages = []
+  let systemContent = ''
+  
+  for (const msg of messages) {
+    if (msg.role === 'system') {
+      systemContent += msg.content + '\n\n'
+    } else if (msg.role === 'user') {
+      processedMessages.push({
+        role: 'user',
+        content: systemContent + msg.content
+      })
+      systemContent = '' // Reset after merging
+    } else {
+      processedMessages.push(msg)
+    }
+  }
+  
   const res = await fetch('/.netlify/functions/hf-chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
-      messages, 
+      messages: processedMessages, 
       maxTokens, 
       temperature,
-      // Note: OpenRouter supports response_format for JSON mode if needed
     }),
   })
   if (!res.ok) {
