@@ -1,14 +1,15 @@
-const MODEL = 'Qwen/Qwen2.5-72B-Instruct'
-const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions'
+// Groq API (OpenAI-compatible endpoint)
+const MODEL = 'llama-3.1-70b-versatile' // Fast, excellent for structured outputs
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
 
-  const token = process.env.HF_TOKEN
+  const token = process.env.GROQ_API_KEY
   if (!token) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'HF_TOKEN not configured on server' }) }
+    return { statusCode: 500, body: JSON.stringify({ error: 'GROQ_API_KEY not configured on server' }) }
   }
 
   let body
@@ -21,7 +22,7 @@ export const handler = async (event) => {
   const { messages, maxTokens = 150, temperature = 0.7 } = body
 
   try {
-    const res = await fetch(HF_API_URL, {
+    const res = await fetch(GROQ_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -41,7 +42,7 @@ export const handler = async (event) => {
       return {
         statusCode: res.status,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: `HuggingFace API error ${res.status}: ${data}` }),
+        body: JSON.stringify({ error: `Groq API error ${res.status}: ${data}` }),
       }
     }
 
