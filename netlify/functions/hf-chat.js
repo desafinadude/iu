@@ -1,6 +1,6 @@
 // OpenRouter API (supports multiple free models)
-// Using Llama 3.2 - reliable, good at structured outputs, completely free
-const MODEL = 'meta-llama/llama-3.2-3b-instruct:free' // Free tier, no reasoning overhead
+// Using OpenAI GPT OSS - free tier model
+const MODEL = 'openai/gpt-oss-20b:free' // Free tier, good capacity
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 export const handler = async (event) => {
