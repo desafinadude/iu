@@ -1,6 +1,6 @@
 // OpenRouter API (supports multiple free models)
-// Using Liquid LFM - completely free, good for structured outputs
-const MODEL = 'liquid/lfm-2.5-1.2b-thinking:free' // Free tier model
+// Using Llama 3.2 - reliable, good at structured outputs, completely free
+const MODEL = 'meta-llama/llama-3.2-3b-instruct:free' // Free tier, no reasoning overhead
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 export const handler = async (event) => {
