@@ -1,5 +1,5 @@
 // Groq API (OpenAI-compatible endpoint)
-const MODEL = 'llama-3.1-70b-versatile' // Fast, excellent for structured outputs
+const MODEL = 'llama-3.3-70b-versatile' // Latest Llama 3.3, excellent for structured outputs
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
 export const handler = async (event) => {
