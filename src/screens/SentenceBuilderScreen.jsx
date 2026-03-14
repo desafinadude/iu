@@ -18,6 +18,21 @@ import {
 } from '../utils/llmChallenge'
 import './SentenceBuilderScreen.css'
 
+// ─── Pastel rainbow palette (same as WordSearch) ───────────────────────────
+
+const CHIP_COLORS = [
+  '#ffd6d6', // blush
+  '#ffdfc2', // peach
+  '#fff4b3', // butter
+  '#d4f5d4', // mint
+  '#c2dcff', // sky
+  '#e0c8ff', // lavender
+  '#ffc8ec', // rose
+  '#c2f5ee', // aqua
+  '#ffe8c2', // apricot
+  '#d4ffc2', // pistachio
+]
+
 // ─── Category data ─────────────────────────────────────────────────────────
 
 const PARTICLES = [
@@ -180,7 +195,8 @@ function WordDropdown({ onSelect, showEnglish }) {
 function Chip({ chip, isDragging, onPointerDown, onTap }) {
   return (
     <div
-      className={`sb-chip${chip.type ? ` sb-chip--${chip.type}` : ''}${isDragging ? ' sb-chip--dragging' : ''}`}
+      className={`sb-chip${isDragging ? ' sb-chip--dragging' : ''}`}
+      style={{ background: chip.color }}
       onPointerDown={onPointerDown}
       onClick={onTap}
       data-chip-id={chip.id}
@@ -226,21 +242,25 @@ function ChallengeWordTray({ wordPool, onSelect, showEnglish }) {
   }
   return (
     <div className="sb-word-tray">
-      {wordPool.map((opt, i) => (
-        <button
-          key={i}
-          className={`sb-word-tile sb-word-tile--${opt.type}`}
-          onClick={() => pickWord(opt)}
-        >
-          <span className="sb-word-tile__word">{opt.word}</span>
-          {opt.word !== opt.kana && (
-            <span className="sb-word-tile__kana">{opt.kana}</span>
-          )}
-          {showEnglish && opt.meaning && (
-            <span className="sb-word-tile__meaning">{opt.meaning}</span>
-          )}
-        </button>
-      ))}
+      {wordPool.map((opt, i) => {
+        const color = CHIP_COLORS[i % CHIP_COLORS.length]
+        return (
+          <button
+            key={i}
+            className="sb-word-tile"
+            style={{ background: color }}
+            onClick={() => pickWord(opt)}
+          >
+            <span className="sb-word-tile__word">{opt.word}</span>
+            {opt.word !== opt.kana && (
+              <span className="sb-word-tile__kana">{opt.kana}</span>
+            )}
+            {showEnglish && opt.meaning && (
+              <span className="sb-word-tile__meaning">{opt.meaning}</span>
+            )}
+          </button>
+        )
+      })}
     </div>
   )
 }
@@ -366,7 +386,10 @@ export default function SentenceBuilderScreen() {
   // ── Word selection ─────────────────────────────────────────────────────
 
   function handleSelect(opt) {
-    setSentence(prev => [...prev, { ...opt, id: `${opt.word}-${Date.now()}` }])
+    setSentence(prev => {
+      const colorIdx = prev.length % CHIP_COLORS.length
+      return [...prev, { ...opt, id: `${opt.word}-${Date.now()}`, color: CHIP_COLORS[colorIdx] }]
+    })
     setCheckResult(null)
     setChallengeResult(null)
   }
@@ -735,7 +758,7 @@ export default function SentenceBuilderScreen() {
 
       {/* ── Drag ghost ────────────────────────────────────────────────── */}
       {ghostStyle && draggingChip && didDragRef.current && (
-        <div className={`sb-chip sb-chip--ghost${draggingChip.type ? ` sb-chip--${draggingChip.type}` : ''}`} style={ghostStyle} aria-hidden="true">
+        <div className="sb-chip sb-chip--ghost" style={{ ...ghostStyle, background: draggingChip.color }} aria-hidden="true">
           <span className="sb-chip__word">{draggingChip.word}</span>
           {draggingChip.word !== draggingChip.kana && (
             <span className="sb-chip__kana">{draggingChip.kana}</span>
