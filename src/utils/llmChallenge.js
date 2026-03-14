@@ -243,109 +243,130 @@ function buildChallengeWordPool(needs, verbObj, formKey) {
 export async function generateVerbChallenges(verbObj, onProgress) {
   // Build comprehensive vocab list to send to LLM
   const vocabListText = VOCAB_LIST
-    .map(w => `${w.word}（${w.kana}・${w.meaning}・${w.type}）`)
-    .join('\n')
+    .map(w => `${w.word}（${w.kana}・${w.meaning}）`)
+    .join(', ')
   
   const particlesText = CORE_PARTICLES
     .map(p => `${p.word}（${p.kana}・${p.meaning}）`)
     .join(', ')
 
-  let completed = 0
+  // Get all 8 verb forms
+  const verbForms = VERB_FORMS.map(vf => {
+    const form = vf.getForm(verbObj)
+    return {
+      key: vf.key,
+      word: form.word,
+      kana: form.kana,
+      label: vf.label,
+      tenseClass: vf.tenseClass
+    }
+  })
 
-  // Generate challenges SEQUENTIALLY to respect free tier rate limits (8 RPM)
-  const results = []
+  const system = `You are a Japanese teacher. You MUST respond with valid JSON only. No markdown, no extra text.`
   
-  for (let i = 0; i < VERB_FORMS.length; i++) {
-    const verbForm = VERB_FORMS[i]
-    const form = verbForm.getForm(verbObj)
+  const user = `Create 8 simple Japanese sentences, one for each conjugation of the verb "${verbObj.dict}" (${verbObj.kana} - ${verbObj.meaning}).
 
-    const system = `You are a Japanese teacher. You MUST respond with valid JSON only. No markdown, no extra text.`
-    
-    const user = `Create a simple Japanese sentence using this verb: ${form.word}（${form.kana}）"${verbObj.meaning}" ${verbForm.label}
+VERB FORMS (create one sentence for each):
+${verbForms.map((vf, i) => `${i + 1}. ${vf.word}（${vf.kana}）- ${vf.label}`).join('\n')}
 
-Use 2-3 words from this vocabulary:
+VOCABULARY (use 2-3 words from this list per sentence):
 ${vocabListText}
 
-Particles: ${particlesText}
+PARTICLES: ${particlesText}
 
-Respond with ONLY valid JSON (no markdown):
+For each sentence:
+- Use proper kanji from the vocabulary
+- Keep it simple and natural
+- List all words/particles used
+
+Respond with ONLY this JSON (no markdown):
 {
-  "ja": "Japanese sentence with kanji",
-  "en": "English translation",
-  "words": [{"word": "食べる", "kana": "たべる", "meaning": "to eat"}]
+  "challenges": [
+    {
+      "ja": "私は犬を見ます",
+      "en": "I see a dog",
+      "words": [
+        {"word": "私", "kana": "わたし", "meaning": "I"},
+        {"word": "は", "kana": "は", "meaning": "topic particle"},
+        {"word": "犬", "kana": "いぬ", "meaning": "dog"},
+        {"word": "を", "kana": "を", "meaning": "object particle"},
+        {"word": "見ます", "kana": "みます", "meaning": "to see"}
+      ]
+    }
+  ]
 }
 
-Words array must list ALL words/particles used.`
+Create ALL 8 challenges in the array.`
 
-    try {
-      const text = await hfChat(
-        [{ role: 'system', content: system }, { role: 'user', content: user }],
-        { maxTokens: 400, temperature: 0.7 },
-      )
-      const parsed = parseJson(text)
+  const text = await hfChat(
+    [{ role: 'system', content: system }, { role: 'user', content: user }],
+    { maxTokens: 2500, temperature: 0.7 },
+  )
+  
+  onProgress?.(1) // Show some progress while parsing
+  
+  const parsed = parseJson(text)
+  const challenges = parsed.challenges || []
 
-      // Build word pool from what was actually used + add distractors
-      const usedWords = parsed.words || []
-      const usedKanas = new Set(usedWords.map(w => w.kana))
-      
-      // Add distractors: other forms of same verb
-      const verbDistractors = VERB_FORMS
-        .filter(vf => vf.key !== verbForm.key)
-        .map(vf => {
-          const f = vf.getForm(verbObj)
-          return { word: f.word, kana: f.kana, meaning: `${verbObj.meaning} (${vf.label})`, type: 'verb' }
-        })
-        .filter(w => !usedKanas.has(w.kana))
-        .slice(0, 3)
-      
-      // Add noun/pronoun distractors
-      const nounDistractors = VOCAB_LIST
-        .filter(w => ['noun', 'pronoun'].includes(w.type) && !usedKanas.has(w.kana))
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 4)
-        .map(w => ({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type }))
-      
-      // Add confusing particle distractors
-      const CONFUSE = { 'は': 'が', 'が': 'は', 'を': 'に', 'に': 'で', 'で': 'に' }
-      const particleDistractors = []
-      for (const used of usedWords) {
-        const alt = CONFUSE[used.kana]
-        if (alt && !usedKanas.has(alt)) {
-          const p = CORE_PARTICLES.find(p => p.kana === alt)
-          if (p) particleDistractors.push({ ...p })
-        }
-      }
-      
-      // Combine and shuffle
-      const wordPool = [
-        ...usedWords,
-        ...verbDistractors,
-        ...nounDistractors,
-        ...particleDistractors
-      ].sort(() => Math.random() - 0.5)
-
-      results.push({
-        ja: parsed.ja,
-        en: parsed.en,
-        verbForm: verbForm.key,
-        formLabel: verbForm.label,
-        tenseClass: verbForm.tenseClass,
-        verbWord: form.word,
-        verbKana: form.kana,
-        wordPool,
-      })
-
-      onProgress?.(++completed)
-      
-      // Wait 8 seconds between requests to respect 8 RPM limit
-      if (i < VERB_FORMS.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 8000))
-      }
-    } catch (err) {
-      console.error(`Failed to generate challenge ${i + 1}:`, err)
-      throw err
-    }
+  if (challenges.length !== 8) {
+    console.warn(`Expected 8 challenges, got ${challenges.length}`)
   }
+
+  // Build word pools for each challenge
+  const results = challenges.map((challenge, idx) => {
+    const verbForm = verbForms[idx]
+    const usedWords = challenge.words || []
+    const usedKanas = new Set(usedWords.map(w => w.kana))
+    
+    // Add distractors: other forms of same verb
+    const verbDistractors = VERB_FORMS
+      .filter(vf => vf.key !== verbForm.key)
+      .map(vf => {
+        const f = vf.getForm(verbObj)
+        return { word: f.word, kana: f.kana, meaning: `${verbObj.meaning} (${vf.label})`, type: 'verb' }
+      })
+      .filter(w => !usedKanas.has(w.kana))
+      .slice(0, 3)
+    
+    // Add noun/pronoun distractors
+    const nounDistractors = VOCAB_LIST
+      .filter(w => ['noun', 'pronoun'].includes(w.type) && !usedKanas.has(w.kana))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 4)
+      .map(w => ({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type }))
+    
+    // Add confusing particle distractors
+    const CONFUSE = { 'は': 'が', 'が': 'は', 'を': 'に', 'に': 'で', 'で': 'に' }
+    const particleDistractors = []
+    for (const used of usedWords) {
+      const alt = CONFUSE[used.kana]
+      if (alt && !usedKanas.has(alt)) {
+        const p = CORE_PARTICLES.find(p => p.kana === alt)
+        if (p) particleDistractors.push({ ...p })
+      }
+    }
+    
+    // Combine and shuffle
+    const wordPool = [
+      ...usedWords,
+      ...verbDistractors,
+      ...nounDistractors,
+      ...particleDistractors
+    ].sort(() => Math.random() - 0.5)
+
+    onProgress?.(idx + 2) // Update progress as we process each
+
+    return {
+      ja: challenge.ja,
+      en: challenge.en,
+      verbForm: verbForm.key,
+      formLabel: verbForm.label,
+      tenseClass: verbForm.tenseClass,
+      verbWord: verbForm.word,
+      verbKana: verbForm.kana,
+      wordPool,
+    }
+  })
 
   return results
 }
