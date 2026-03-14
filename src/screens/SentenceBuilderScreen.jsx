@@ -491,8 +491,9 @@ export default function SentenceBuilderScreen() {
     setCheckingAnswer(true)
     try {
       if (mode === 'challenge') {
-        const userKana = sentence.map(c => c.kana).join('')
-        const result = await checkAnswer(challenges[challengeIdx].en, userKana)
+        const challenge = challenges[challengeIdx]
+        const userJapanese = sentence.map(c => c.word).join('')
+        const result = await checkAnswer(challenge.ja, userJapanese, challenge.wordPool)
         setChallengeResult(result)
         if (result?.valid) {
           playCorrectSound()
@@ -698,10 +699,10 @@ export default function SentenceBuilderScreen() {
             {challengeResult.feedback && (
               <p className="sb-result__row">{challengeResult.feedback}</p>
             )}
-            {!challengeResult.valid && challengeResult.correct && (
+            {!challengeResult.valid && currentChallenge?.ja && (
               <p className="sb-result__row sb-result__row--correct">
-                <span className="sb-result__correct-label">Correct: </span>
-                <span className="sb-result__correct-kana">{challengeResult.correct}</span>
+                <span className="sb-result__correct-label">Expected: </span>
+                <span className="sb-result__correct-kana">{currentChallenge.ja}</span>
               </p>
             )}
           </div>

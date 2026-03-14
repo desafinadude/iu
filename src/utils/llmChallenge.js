@@ -26,18 +26,35 @@ function parseJson(text) {
 }
 
 // ─── Check a user's answer (challenge mode) ───────────────────────────────
-// Returns { valid: boolean, feedback: string, correct: string }
+// Returns { valid: boolean, feedback: string }
 
-export async function checkAnswer(en, userKana) {
+export async function checkAnswer(expectedKana, userKana, wordPool = []) {
   const system = `You are a Japanese language teacher grading a beginner student. Return ONLY valid JSON, no extra text.`
 
-  const user = `English sentence to translate: "${en}"
+  const availableWords = wordPool.length > 0
+    ? wordPool.map(w => `${w.word}（${w.kana}・${w.meaning}）`).join(', ')
+    : 'standard beginner vocabulary'
+
+  const user = `Expected Japanese answer (kana): "${expectedKana}"
 Student's Japanese answer (kana): "${userKana}"
 
-Grade the answer. Accept it if the core meaning is conveyed and the grammar is reasonable for a beginner. Don't penalise minor omissions (like dropping わたし). Do penalise if a completely wrong or unrelated word is used, or if the sentence has no predicate.
+Available vocabulary: ${availableWords}
+
+Judge if the student's answer is acceptable. Accept it if:
+1. It conveys the same core meaning as the expected answer
+2. Grammar is reasonable for a beginner level
+3. Only uses words from the available vocabulary
+4. Minor differences in word order or particle choice are acceptable if grammatically valid
+5. Minor omissions (like dropping わたし when context is clear) are acceptable
+
+Reject if:
+- Uses words NOT in the available vocabulary
+- Completely different meaning
+- No predicate/verb present
+- Serious grammar errors
 
 Return ONLY this JSON:
-{"valid": true_or_false, "feedback": "One short encouraging sentence of feedback.", "correct": "A natural kana-only Japanese translation of the English sentence."}`
+{"valid": true_or_false, "feedback": "One short encouraging sentence of feedback (mention what was good or what to fix)."}`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],
@@ -186,76 +203,112 @@ function buildChallengeWordPool(needs, verbObj, formKey) {
 }
 
 // ─── Generate 8 verb-focused challenges ───────────────────────────────────
-// One challenge per conjugated form. Each challenge includes a curated
-// word pool (correct answer words + distractors) for the dropdown.
+// NEW APPROACH: LLM generates complete Japanese sentences (with kanji) + English,
+// then we extract the word pool from what it actually used.
 
 export async function generateVerbChallenges(verbObj, onProgress) {
-  const pronouns = VOCAB_LIST.filter(w => w.type === 'pronoun' && w.kana.length >= 2)
-  const nouns    = VOCAB_LIST.filter(w => w.type === 'noun' && w.kana.length >= 2)
-  const places   = VOCAB_LIST.filter(w => w.type === 'noun' && w.theme === 'places')
-  const adverbs  = VOCAB_LIST.filter(w => w.type === 'adverb')
-  const pick     = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n)
-
-  const particlesText = CORE_PARTICLES.slice(0, 10)
-    .map(p => `${p.word}（${p.kana}・${p.meaning}）`).join(', ')
+  // Build comprehensive vocab list to send to LLM
+  const vocabListText = VOCAB_LIST
+    .map(w => `${w.word}（${w.kana}・${w.meaning}・${w.type}）`)
+    .join('\n')
+  
+  const particlesText = CORE_PARTICLES
+    .map(p => `${p.word}（${p.kana}・${p.meaning}）`)
+    .join(', ')
 
   let completed = 0
 
   const promises = VERB_FORMS.map(async (verbForm) => {
     const form = verbForm.getForm(verbObj)
 
-    const sampleWords = [
-      ...pick(pronouns, 2),
-      ...pick(nouns,    4),
-      ...pick(places,   1),
-      ...pick(adverbs,  1),
-    ]
-
-    const wordListText = [
-      `${form.word}（${form.kana}・${verbObj.meaning}）← USE THIS EXACT VERB FORM`,
-      ...sampleWords.map(w => `${w.word}（${w.kana}・${w.meaning}）`),
-    ].join('\n')
-
     const system = `You are a Japanese language teacher creating beginner translation exercises. Return ONLY valid JSON, no extra text.`
-    const user   = `Create a simple English sentence for a beginner to translate into Japanese.
+    
+    const user = `Create a simple Japanese sentence using this verb form, then provide its English translation.
 
-REQUIRED verb form: ${form.word}（${form.kana}）— "${verbObj.meaning}" in ${verbForm.label}.
+REQUIRED VERB FORM (must use exactly this): ${form.word}（${form.kana}）— "${verbObj.meaning}" in ${verbForm.label}
 
-Available content words (student can ONLY use these plus particles):
-${wordListText}
+AVAILABLE VOCABULARY (you can ONLY use words from this list):
+${vocabListText}
 
-Available particles: ${particlesText}
+AVAILABLE PARTICLES: ${particlesText}
 
-Rules:
-1. The Japanese translation MUST use exactly "${form.kana}" as the verb
-2. Use 1–2 content words above as subject/object (keep it simple)
-3. English sentence: 3–8 words, natural, beginner-appropriate
-4. List ALL kana tokens needed to build the Japanese translation (content words + particles + the verb itself)
+Requirements:
+1. Create a natural, beginner-appropriate Japanese sentence
+2. MUST use the exact verb form: ${form.word}
+3. Use proper kanji from the vocab list (don't write everything in kana)
+4. Use 1-3 content words from the vocabulary list as subject/object/location
+5. Keep it simple (3-6 words total including particles)
+6. Provide a natural English translation
 
-Return ONLY:
-{"en": "Simple English sentence.", "needs": ["kana1", "kana2", "${form.kana}"]}`
+Return ONLY this JSON:
+{
+  "ja": "The complete Japanese sentence with kanji where vocabulary has it",
+  "en": "Natural English translation",
+  "words": [
+    {"word": "kanji form", "kana": "reading", "meaning": "English meaning"},
+    {"word": "は", "kana": "は", "meaning": "topic particle"}
+  ]
+}
 
-    const text   = await hfChat(
+The "words" array should list every word/particle used in order, matching vocabulary list entries exactly.`
+
+    const text = await hfChat(
       [{ role: 'system', content: system }, { role: 'user', content: user }],
-      { maxTokens: 200, temperature: 0.65 },
+      { maxTokens: 300, temperature: 0.7 },
     )
     const parsed = parseJson(text)
 
-    // Always ensure the verb kana is in needs
-    const needs    = [...new Set([...(parsed.needs ?? []), form.kana])]
-    const wordPool = buildChallengeWordPool(needs, verbObj, verbForm.key)
+    // Build word pool from what was actually used + add distractors
+    const usedWords = parsed.words || []
+    const usedKanas = new Set(usedWords.map(w => w.kana))
+    
+    // Add distractors: other forms of same verb
+    const verbDistractors = VERB_FORMS
+      .filter(vf => vf.key !== verbForm.key)
+      .map(vf => {
+        const f = vf.getForm(verbObj)
+        return { word: f.word, kana: f.kana, meaning: `${verbObj.meaning} (${vf.label})`, type: 'verb' }
+      })
+      .filter(w => !usedKanas.has(w.kana))
+      .slice(0, 3)
+    
+    // Add noun/pronoun distractors
+    const nounDistractors = VOCAB_LIST
+      .filter(w => ['noun', 'pronoun'].includes(w.type) && !usedKanas.has(w.kana))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 4)
+      .map(w => ({ word: w.word, kana: w.kana, meaning: w.meaning, type: w.type }))
+    
+    // Add confusing particle distractors
+    const CONFUSE = { 'は': 'が', 'が': 'は', 'を': 'に', 'に': 'で', 'で': 'に' }
+    const particleDistractors = []
+    for (const used of usedWords) {
+      const alt = CONFUSE[used.kana]
+      if (alt && !usedKanas.has(alt)) {
+        const p = CORE_PARTICLES.find(p => p.kana === alt)
+        if (p) particleDistractors.push({ ...p })
+      }
+    }
+    
+    // Combine and shuffle
+    const wordPool = [
+      ...usedWords,
+      ...verbDistractors,
+      ...nounDistractors,
+      ...particleDistractors
+    ].sort(() => Math.random() - 0.5)
 
     onProgress?.(++completed)
 
     return {
-      en:        parsed.en,
-      needs,
-      verbForm:  verbForm.key,
+      ja: parsed.ja,           // Japanese sentence with kanji
+      en: parsed.en,           // English translation
+      verbForm: verbForm.key,
       formLabel: verbForm.label,
       tenseClass: verbForm.tenseClass,
-      verbWord:  form.word,
-      verbKana:  form.kana,
-      wordPool,
+      verbWord: form.word,
+      verbKana: form.kana,
+      wordPool,                // Words needed + distractors
     }
   })
 
