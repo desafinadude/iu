@@ -1,16 +1,16 @@
-// Groq API (OpenAI-compatible endpoint)
-// Using 8B model for higher rate limits (30,000 TPM vs 12,000 for 70B)
-const MODEL = 'llama-3.1-8b-instant' // Faster, higher rate limits, still very capable
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
+// OpenRouter API (supports multiple free models)
+// Using Google's Gemini Flash - excellent for structured JSON, completely free
+const MODEL = 'google/gemini-flash-1.5' // Free, fast, great for structured outputs
+const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
 
-  const token = process.env.GROQ_API_KEY
+  const token = process.env.OPENROUTER_API_KEY
   if (!token) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'GROQ_API_KEY not configured on server' }) }
+    return { statusCode: 500, body: JSON.stringify({ error: 'OPENROUTER_API_KEY not configured on server' }) }
   }
 
   let body
@@ -23,11 +23,13 @@ export const handler = async (event) => {
   const { messages, maxTokens = 150, temperature = 0.7 } = body
 
   try {
-    const res = await fetch(GROQ_API_URL, {
+    const res = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://iu-app.netlify.app', // Your site URL (optional but recommended)
+        'X-Title': 'IU Japanese Learning App', // App name (optional)
       },
       body: JSON.stringify({
         model: MODEL,
@@ -43,7 +45,7 @@ export const handler = async (event) => {
       return {
         statusCode: res.status,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: `Groq API error ${res.status}: ${data}` }),
+        body: JSON.stringify({ error: `OpenRouter API error ${res.status}: ${data}` }),
       }
     }
 
