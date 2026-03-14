@@ -232,9 +232,10 @@ export async function generateVerbChallenges(verbObj, onProgress) {
     .map(p => `${p.word}（${p.kana}・${p.meaning}）`)
     .join(', ')
 
-  let completed = 0
-
-  const promises = VERB_FORMS.map(async (verbForm) => {
+  // Generate challenges SEQUENTIALLY to avoid rate limits (not parallel)
+  const results = []
+  for (let i = 0; i < VERB_FORMS.length; i++) {
+    const verbForm = VERB_FORMS[i]
     const form = verbForm.getForm(verbObj)
 
     const system = `You are a Japanese teacher. You MUST respond with valid JSON only. No markdown, no extra text.`
@@ -303,7 +304,7 @@ Words array must list ALL words/particles used.`
 
     onProgress?.(++completed)
 
-    return {
+    results.push({
       ja: parsed.ja,           // Japanese sentence with kanji
       en: parsed.en,           // English translation
       verbForm: verbForm.key,
@@ -312,9 +313,13 @@ Words array must list ALL words/particles used.`
       verbWord: form.word,
       verbKana: form.kana,
       wordPool,                // Words needed + distractors
+    })
+    
+    // Small delay between requests to avoid rate limiting
+    if (i < VERB_FORMS.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 500))
     }
-  })
+  }
 
-  // Run all 8 form requests in parallel; preserve original VERB_FORMS order
-  return Promise.all(promises)
+  return results
 }
