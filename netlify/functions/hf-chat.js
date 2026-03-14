@@ -1,6 +1,6 @@
 // OpenRouter API (supports multiple free models)
-// Using OpenAI GPT OSS - free tier model
-const MODEL = 'openai/gpt-oss-20b:free' // Free tier, good capacity
+// Using Qwen 2 - reliable, good at structured outputs, completely free
+const MODEL = 'qwen/qwen-2-7b-instruct:free' // Free tier, stable
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 export const handler = async (event) => {
