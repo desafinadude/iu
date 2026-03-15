@@ -155,9 +155,9 @@ function buildSentence(verbObj, formKey) {
       : `at the ${noun.meaning}`
   }
   if (valency.target && tokens.some(t => t.kana === valency.target.particle)) {
-    const noun = tokens.find(t => t.type === 'noun')
-    if (noun) nounPhrase = noun.meaning
-    // enStem already includes 'to' for say/listen
+    const noun = tokens.find(t => t.type === 'noun' && !t._isTime)
+    if (noun) nounPhrase = `the ${noun.meaning}`
+    // enStem already includes 'to' for speak/meet
   }
 
   // Time — put at front if present

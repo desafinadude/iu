@@ -129,7 +129,7 @@ export const VERB_LIST = [
 
   {
     dict: '言う', kana: 'いう', type: 'godan', meaning: 'to say',
-    enStem: { base: 'say to', past: 'said to' },
+    enStem: { base: 'speak to', past: 'spoke to' },
     valency: {
       target: { particle: 'に', themes: ['people'] },
     },
