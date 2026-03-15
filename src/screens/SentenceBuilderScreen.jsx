@@ -16,7 +16,6 @@ import { playCorrectSound, playWrongSound } from '../utils/soundEffects'
 import {
   generateVerbChallenges,
   checkAnswer,
-  checkFreeSentence,
   VERB_CHALLENGES_PER_GAME,
 } from '../utils/llmChallenge'
 import './SentenceBuilderScreen.css'
@@ -342,15 +341,12 @@ const CHALLENGE_TIME = 120
 
 export default function SentenceBuilderScreen() {
   const [sentence,    setSentence]    = useState([])
-  const [checkResult, setCheckResult] = useState(null)
   const [copied,      setCopied]      = useState(false)
   const [showEnglish, setShowEnglish] = useState(false)
   const [showHint,    setShowHint]    = useState(false)
 
-  // Challenge mode
-  const [mode,            setMode]            = useState('free')
+  // Challenge mode (always active)
   const [selectedVerb,    setSelectedVerb]    = useState(null)
-  const [verbPickerOpen,  setVerbPickerOpen]  = useState(false)
   const [challenges,      setChallenges]      = useState([])
   const [challengeIdx,    setChallengeIdx]    = useState(0)
   const [timeLeft,        setTimeLeft]        = useState(CHALLENGE_TIME)
@@ -382,7 +378,7 @@ export default function SentenceBuilderScreen() {
   // ── Challenge timer ────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (mode !== 'challenge' || gameOver || allDone || challengeResult?.valid || generatingChallenges || checkingAnswer) return
+    if (gameOver || allDone || challengeResult?.valid || generatingChallenges || checkingAnswer) return
     if (challenges.length === 0) return
     if (timeLeft > 0) {
       const t = setTimeout(() => setTimeLeft(p => p - 1), 1000)
@@ -393,7 +389,7 @@ export default function SentenceBuilderScreen() {
     if (newLives <= 0) { setLives(0); setGameOver(true); return }
     setLives(newLives)
     advanceChallenge()
-  }, [mode, timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult, generatingChallenges, checkingAnswer])
+  }, [timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult, generatingChallenges, checkingAnswer])
 
   function advanceChallenge() {
     const nextIdx = challengeIdx + 1
@@ -405,22 +401,9 @@ export default function SentenceBuilderScreen() {
     setShowHint(false)
   }
 
-  // ── Mode helpers ───────────────────────────────────────────────────────
-
-  function enterChallenge() {
-    setMode('challenge')
-    setSentence([])
-    setCheckResult(null)
-    setChallengeResult(null)
-    setLlmError(null)
-    setGameOver(false)
-    setAllDone(false)
-    setChallenges([])
-    setVerbPickerOpen(true)
-  }
+  // ── Start challenge with selected verb ────────────────────────────────
 
   async function startVerbChallenge(verb) {
-    setVerbPickerOpen(false)
     setSelectedVerb(verb)
     setChallengeIdx(0)
     setTimeLeft(CHALLENGE_TIME)
@@ -446,12 +429,14 @@ export default function SentenceBuilderScreen() {
     }
   }
 
-  function enterFree() {
-    setMode('free')
+  function backToVerbSelect() {
+    setSelectedVerb(null)
     setSentence([])
-    setCheckResult(null)
     setChallengeResult(null)
     setLlmError(null)
+    setChallenges([])
+    setGameOver(false)
+    setAllDone(false)
   }
 
   // ── Word selection ─────────────────────────────────────────────────────
@@ -461,7 +446,6 @@ export default function SentenceBuilderScreen() {
       const colorIdx = prev.length % CHIP_COLORS.length
       return [...prev, { ...opt, id: `${opt.word}-${Date.now()}`, color: CHIP_COLORS[colorIdx] }]
     })
-    setCheckResult(null)
     setChallengeResult(null)
   }
 
@@ -473,7 +457,6 @@ export default function SentenceBuilderScreen() {
       clearTimeout(tapTimers.current[chip.id])
       delete tapTimers.current[chip.id]
       setSentence(prev => prev.filter(c => c.id !== chip.id))
-      setCheckResult(null)
       setChallengeResult(null)
     } else {
       tapTimers.current[chip.id] = setTimeout(() => {
@@ -527,7 +510,6 @@ export default function SentenceBuilderScreen() {
         next.splice(to, 0, chip)
         return next
       })
-      setCheckResult(null)
       setChallengeResult(null)
     }
     dragRef.current   = null
@@ -561,24 +543,17 @@ export default function SentenceBuilderScreen() {
   async function handleCheck() {
     setCheckingAnswer(true)
     try {
-      if (mode === 'challenge') {
-        const challenge = challenges[challengeIdx]
-        const userJapanese = sentence.map(c => c.word).join('')
-        const result = await checkAnswer(challenge.ja, userJapanese, challenge.wordPool)
-        setChallengeResult(result)
-        if (result?.valid) {
-          playCorrectSound()
-        } else {
-          playWrongSound()
-          const newLives = lives - 1
-          setLives(newLives)
-          if (newLives <= 0) setGameOver(true)
-        }
+      const challenge = challenges[challengeIdx]
+      const userJapanese = sentence.map(c => c.word).join('')
+      const result = await checkAnswer(challenge.ja, userJapanese, challenge.wordPool)
+      setChallengeResult(result)
+      if (result?.valid) {
+        playCorrectSound()
       } else {
-        const result = await checkFreeSentence(sentence)
-        setCheckResult(result)
-        if (result?.valid) playCorrectSound()
-        else               playWrongSound()
+        playWrongSound()
+        const newLives = lives - 1
+        setLives(newLives)
+        if (newLives <= 0) setGameOver(true)
       }
     } catch (err) {
       setLlmError(err.message)
@@ -602,32 +577,54 @@ export default function SentenceBuilderScreen() {
 
   const hasChips         = sentence.length > 0
   const draggingChip     = draggingId ? sentence.find(c => c.id === draggingId) : null
-  const inChallenge      = mode === 'challenge'
   const timerPct         = (timeLeft / CHALLENGE_TIME) * 100
   const timerUrgent      = timeLeft <= 30
   const currentChallenge = challenges[challengeIdx]
-  const challengeActive  = inChallenge && !verbPickerOpen && !generatingChallenges && !gameOver && !allDone
+  const challengeActive  = selectedVerb && !generatingChallenges && !gameOver && !allDone
+
+  // ── Show verb picker if no verb selected ──────────────────────────────
+  
+  if (!selectedVerb) {
+    return (
+      <div className="sb-screen">
+        <div className="vp-list">
+          {VERB_LIST.map((verb, i) => (
+            <button
+              key={i}
+              className="vp-verb-card"
+              onClick={() => startVerbChallenge(verb)}
+            >
+              <div className={`vp-verb-card__badge vp-verb-card__badge--${verb.type}`}>
+                {TYPE_LABELS[verb.type]}
+              </div>
+              <span className="vp-verb-card__icon">
+                <VerbIcon verb={verb} size={32} />
+              </span>
+              <div className="vp-verb-card__body">
+                <span className="vp-verb-card__dict">{verb.dict}</span>
+                <span className="vp-verb-card__meaning">{verb.meaning}</span>
+                <span className="vp-verb-card__kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
+              </div>
+            </button>
+          ))}
+
+          <button className="vp-verb-card vp-verb-card--random" onClick={() => {
+            const randomVerb = VERB_LIST[Math.floor(Math.random() * VERB_LIST.length)]
+            startVerbChallenge(randomVerb)
+          }}>
+            <span className="vp-verb-card__icon"><Shuffle size={32} strokeWidth={1.5} /></span>
+            <div className="vp-verb-card__body">
+              <span className="vp-verb-card__title">Random</span>
+              <span className="vp-verb-card__meta">ランダム</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="sb-screen">
-
-      {/* ── Verb picker modal (challenge mode entry) ──────────────────── */}
-      {verbPickerOpen && (
-        <VerbPickerModal
-          onSelect={startVerbChallenge}
-          onClose={() => { setVerbPickerOpen(false); setMode('free') }}
-        />
-      )}
-
-      {/* ── Mode tabs ────────────────────────────────────────────────── */}
-      <div className="sb-mode-tabs">
-        <button className={`sb-tab${mode === 'free' ? ' sb-tab--active' : ''}`} onClick={enterFree}>
-          Free Build
-        </button>
-        <button className={`sb-tab${mode === 'challenge' ? ' sb-tab--active' : ''}`} onClick={enterChallenge} disabled={generatingChallenges}>
-          Challenge
-        </button>
-      </div>
 
       {/* ── LLM error ────────────────────────────────────────────────── */}
       {llmError && (
@@ -638,7 +635,7 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Generating challenges loader ─────────────────────────────── */}
-      {inChallenge && generatingChallenges && (
+      {generatingChallenges && (
         <div className="sb-loading-card">
           <Loader size={22} className="sb-loading-card__spinner" aria-hidden="true" />
           <p className="sb-loading-card__text">
@@ -705,37 +702,36 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Game over ─────────────────────────────────────────────────── */}
-      {inChallenge && !verbPickerOpen && gameOver && (
+      {gameOver && (
         <div className="sb-overlay">
           <p className="sb-overlay__title">Game Over</p>
           <p className="sb-overlay__sub">No lives remaining</p>
-          <button className="sb-btn sb-btn--check" onClick={enterChallenge}>Try Again</button>
+          <button className="sb-btn sb-btn--check" onClick={() => startVerbChallenge(selectedVerb)}>Try Again</button>
+          <button className="sb-btn" onClick={backToVerbSelect}>Back to Verbs</button>
         </div>
       )}
 
       {/* ── All done ──────────────────────────────────────────────────── */}
-      {inChallenge && !verbPickerOpen && allDone && (
+      {allDone && (
         <div className="sb-overlay">
           <p className="sb-overlay__title">All Done!</p>
           <p className="sb-overlay__sub">You completed all {challenges.length} challenges for {selectedVerb?.dict}</p>
-          <button className="sb-btn sb-btn--check" onClick={enterChallenge}>Play Again</button>
+          <button className="sb-btn sb-btn--check" onClick={() => startVerbChallenge(selectedVerb)}>Play Again</button>
+          <button className="sb-btn" onClick={backToVerbSelect}>Back to Verbs</button>
         </div>
       )}
 
-      {/* ── Word selector ────────────────────────────────────────────── */}
-      {/* Free mode: full hierarchical dropdown. Challenge: curated word tray. */}
-      {!verbPickerOpen && !(inChallenge && (gameOver || allDone || generatingChallenges)) && (
-        inChallenge
-          ? <ChallengeWordTray
-              wordPool={currentChallenge?.wordPool ?? []}
-              onSelect={handleSelect}
-              showEnglish={showEnglish}
-            />
-          : <WordDropdown onSelect={handleSelect} showEnglish={showEnglish} />
+      {/* ── Word selector (curated word tray) ────────────────────────── */}
+      {!(gameOver || allDone || generatingChallenges) && (
+        <ChallengeWordTray
+          wordPool={currentChallenge?.wordPool ?? []}
+          onSelect={handleSelect}
+          showEnglish={showEnglish}
+        />
       )}
 
       {/* ── Sentence area ────────────────────────────────────────────── */}
-      {!verbPickerOpen && !(inChallenge && (gameOver || allDone || generatingChallenges)) && (
+      {!(gameOver || allDone || generatingChallenges) && (
         <div className="sb-sentence-area">
           {hasChips && (
             <div className="sb-chips" ref={chipsRef}>
@@ -758,44 +754,32 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Romaji block ──────────────────────────────────────────────── */}
-      {hasChips && !verbPickerOpen && !(inChallenge && (gameOver || allDone || generatingChallenges)) && (
+      {hasChips && !(gameOver || allDone || generatingChallenges) && (
         <p className="sb-romaji-line">
           {sentence.map(c => kanaToRomaji(c.kana)).join(' ')}。
         </p>
       )}
 
       {/* ── Validation result ─────────────────────────────────────────── */}
-      {inChallenge ? (
-        challengeResult && (
-          <div className={`sb-result ${challengeResult.valid ? 'sb-result--ok' : 'sb-result--bad'}`}>
-            <p className="sb-result__title">{challengeResult.valid ? 'Correct!' : 'Not quite'}</p>
-            {challengeResult.feedback && (
-              <p className="sb-result__row">{challengeResult.feedback}</p>
-            )}
-            {!challengeResult.valid && currentChallenge?.ja && (
-              <p className="sb-result__row sb-result__row--correct">
-                <span className="sb-result__correct-label">Expected: </span>
-                <span className="sb-result__correct-kana">{currentChallenge.ja}</span>
-              </p>
-            )}
-          </div>
-        )
-      ) : (
-        checkResult && (
-          <div className={`sb-result ${checkResult.valid ? 'sb-result--ok' : 'sb-result--bad'}`}>
-            <p className="sb-result__title">
-              {checkResult.valid ? 'Looks correct!' : 'A few things to check:'}
+      {challengeResult && (
+        <div className={`sb-result ${challengeResult.valid ? 'sb-result--ok' : 'sb-result--bad'}`}>
+          <p className="sb-result__title">{challengeResult.valid ? 'Correct!' : 'Not quite'}</p>
+          {challengeResult.feedback && (
+            <p className="sb-result__row">{challengeResult.feedback}</p>
+          )}
+          {!challengeResult.valid && currentChallenge?.ja && (
+            <p className="sb-result__row sb-result__row--correct">
+              <span className="sb-result__correct-label">Expected: </span>
+              <span className="sb-result__correct-kana">{currentChallenge.ja}</span>
             </p>
-            {checkResult.issues.map((m, i) => <p key={i} className="sb-result__row">✗ {m}</p>)}
-            {checkResult.passes.map((m, i) => <p key={i} className="sb-result__row sb-result__row--pass">✓ {m}</p>)}
-          </div>
-        )
+          )}
+        </div>
       )}
 
       {/* ── Actions ──────────────────────────────────────────────────── */}
-      {!verbPickerOpen && !(inChallenge && (gameOver || allDone || generatingChallenges)) && (
+      {!(gameOver || allDone || generatingChallenges) && (
         <div className="sb-actions">
-          {inChallenge && challengeResult && !gameOver ? (
+          {challengeResult && !gameOver ? (
             <button className="sb-btn sb-btn--check" onClick={advanceChallenge}>
               Next →
             </button>

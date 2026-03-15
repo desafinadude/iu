@@ -8,6 +8,14 @@
   gap: var(--space-md);
 }
 
+/* ─── Inline verb list (shown when no verb selected) ─────────────────────── */
+.sb-screen > .vp-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0;
+  padding-bottom: var(--space-md);
+}
+
 /* ─── Mode tabs ───────────────────────────────────────────────────────────── */
 .sb-mode-tabs {
   display: flex;
