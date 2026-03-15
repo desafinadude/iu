@@ -74,12 +74,18 @@
 .wr-set-icon {
   font-family: var(--font-japanese);
   font-size: 40px;
-  font-weight: 700;
-  color: var(--color-japan-red);
+  color: white;
   line-height: 1;
   flex-shrink: 0;
-  width: 52px;
+  width: 80px;
+  height: 80px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--color-japan-red);
+  border-radius: 50%;
+  background-color: var(--color-japan-red);
 }
 
 .wr-set-card__body {
@@ -182,9 +188,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-fg);
+  color: white;
   flex-shrink: 0;
-  width: 52px;
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--color-japan-red);
+  border-radius: 50%;
+  background-color: var(--color-japan-red);
 }
 
 .wr-mode-card__body {

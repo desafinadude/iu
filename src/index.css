@@ -3,7 +3,7 @@
   /* Colors */
   --color-bg:           #f2ece0;
   --color-header:       #1a2f5e;
-  --color-japan-red:    #8B1A1A;
+  --color-japan-red:    #b6002c;
   --color-fg:           #2d2d2d;
   --color-border:       var(--color-fg);
   --color-muted:        #ddd5c4;
@@ -13,7 +13,7 @@
   --color-surface:      #ffffff;
   --color-postit:       #fff9c4;
   --color-halftone:       #2d2d2d;
-  --halftone-opacity:     0.18;
+  --halftone-opacity:     0.3;
   --halftone-blend:       multiply;
 
   /* Typography */
@@ -64,6 +64,7 @@ body {
   line-height: 1.5;
   color: var(--color-fg);
   background-color: var(--color-bg);
+  
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
 }
@@ -167,11 +168,15 @@ body::before {
   font-family: var(--font-japanese);
   font-size: 40px;
   line-height: 1;
-  color: var(--color-fg);
+  color: white;
   flex-shrink: 0;
-  width: 52px;
+  width: 80px;
+  height: 80px;
   text-align: center;
   user-select: none;
+  border: 3px solid var(--color-japan-red);
+  border-radius: 50%;
+  background-color: var(--color-japan-red);
 }
 
 .menu-card__body {

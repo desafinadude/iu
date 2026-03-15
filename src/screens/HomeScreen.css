@@ -51,7 +51,7 @@
   background-image: url('/halftone2.jpg');
   background-size: cover;
   mix-blend-mode: multiply;
-  opacity: 0.12;
+  opacity: 0.2;
   pointer-events: none;
 }
 
@@ -59,8 +59,16 @@
   font-family: var(--font-japanese);
   font-size: 48px;
   line-height: 1;
-  color: var(--color-japan-red);
+  color: white;
   user-select: none;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--color-japan-red);
+  border-radius: 50%;
+  background-color: var(--color-japan-red);
 }
 
 .home__card-label {

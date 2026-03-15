@@ -68,7 +68,6 @@ function SetPicker({ onSelect }) {
             <span className="wr-set-icon">{s.icon}</span>
             <div className="wr-set-card__body">
               <span className="wr-set-name">{s.label}</span>
-              <span className="wr-set-kana">{s.kana}</span>
             </div>
           </button>
         ))}

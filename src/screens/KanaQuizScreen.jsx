@@ -32,7 +32,6 @@ function ModeSelect({ onSelect, onSettings }) {
   return (
     <div className="menu-list">
       <div className="quiz-mode-select__header">
-        <p className="menu-list__label">Choose a mode</p>
         <button className="quiz-mode-select__settings-btn" onClick={onSettings} aria-label="Quiz settings">
           <SettingsIcon />
         </button>

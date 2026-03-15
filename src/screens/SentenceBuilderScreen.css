@@ -879,11 +879,15 @@
   font-family: var(--font-japanese);
   font-size: 40px;
   line-height: 1;
-  color: var(--color-fg);
+  color: white;
   flex-shrink: 0;
-  width: 52px;
+  width: 80px;
+  height: 80px;
   text-align: center;
   user-select: none;
+  border: 3px solid var(--color-japan-red);
+  border-radius: 50%;
+  background-color: var(--color-japan-red);
 }
 
 .vp-verb-card__body {
