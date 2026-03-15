@@ -695,6 +695,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Present +</span>
                   <span className="sb-verb-table__word">{selectedVerb.polite.present_pos.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.polite.present_pos.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.polite.present_pos.kana)}</span>
                 </button>
                 <button 
                   className="sb-verb-table__cell"
@@ -703,6 +704,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Present −</span>
                   <span className="sb-verb-table__word">{selectedVerb.polite.present_neg.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.polite.present_neg.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.polite.present_neg.kana)}</span>
                 </button>
                 <button 
                   className="sb-verb-table__cell"
@@ -711,6 +713,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Past +</span>
                   <span className="sb-verb-table__word">{selectedVerb.polite.past_pos.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.polite.past_pos.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.polite.past_pos.kana)}</span>
                 </button>
                 <button 
                   className="sb-verb-table__cell"
@@ -719,6 +722,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Past −</span>
                   <span className="sb-verb-table__word">{selectedVerb.polite.past_neg.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.polite.past_neg.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.polite.past_neg.kana)}</span>
                 </button>
               </div>
               <div className="sb-verb-table__column">
@@ -730,6 +734,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Present +</span>
                   <span className="sb-verb-table__word">{selectedVerb.casual.present_pos.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.casual.present_pos.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.casual.present_pos.kana)}</span>
                 </button>
                 <button 
                   className="sb-verb-table__cell"
@@ -738,6 +743,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Present −</span>
                   <span className="sb-verb-table__word">{selectedVerb.casual.present_neg.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.casual.present_neg.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.casual.present_neg.kana)}</span>
                 </button>
                 <button 
                   className="sb-verb-table__cell"
@@ -746,6 +752,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Past +</span>
                   <span className="sb-verb-table__word">{selectedVerb.casual.past_pos.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.casual.past_pos.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.casual.past_pos.kana)}</span>
                 </button>
                 <button 
                   className="sb-verb-table__cell"
@@ -754,6 +761,7 @@ export default function SentenceBuilderScreen() {
                   <span className="sb-verb-table__label">Past −</span>
                   <span className="sb-verb-table__word">{selectedVerb.casual.past_neg.word}</span>
                   <span className="sb-verb-table__kana">{selectedVerb.casual.past_neg.kana}</span>
+                  <span className="sb-verb-table__romaji">{kanaToRomaji(selectedVerb.casual.past_neg.kana)}</span>
                 </button>
               </div>
             </div>

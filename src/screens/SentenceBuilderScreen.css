@@ -291,6 +291,15 @@
   line-height: 1;
 }
 
+.sb-verb-table__romaji {
+  font-family: var(--font-body);
+  font-size: 9px;
+  color: var(--color-fg);
+  opacity: 0.4;
+  line-height: 1;
+  font-style: italic;
+}
+
 /* ─── Status row (timer + lives) — same pattern as KanaQuiz ─────────────── */
 .sb-status-row {
   display: flex;
