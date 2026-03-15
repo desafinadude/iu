@@ -78,6 +78,22 @@ const CHIP_COLORS = [
   '#d4ffc2', // pistachio
 ]
 
+// ─── Type-based colors ─────────────────────────────────────────────────────
+
+const TYPE_COLORS = {
+  particle: '#ffc8ec', // rose/pink
+  pronoun:  '#c2dcff', // sky blue
+  verb:     '#d4f5d4', // mint green
+  adj:      '#ffe8c2', // apricot
+  adverb:   '#e0c8ff', // lavender
+  noun:     '#fff4b3', // butter yellow
+  time:     '#c2f5ee', // aqua
+}
+
+function getColorForWord(word) {
+  return TYPE_COLORS[word.type] || CHIP_COLORS[0]
+}
+
 // ─── Category data ─────────────────────────────────────────────────────────
 
 const PARTICLES = [
@@ -313,7 +329,7 @@ function ChallengeWordTray({ wordPool, onSelect, showEnglish }) {
   return (
     <div className="sb-word-tray">
       {wordPool.map((opt, i) => {
-        const color = CHIP_COLORS[i % CHIP_COLORS.length]
+        const color = getColorForWord(opt)
         return (
           <button
             key={i}
@@ -443,8 +459,8 @@ export default function SentenceBuilderScreen() {
 
   function handleSelect(opt) {
     setSentence(prev => {
-      const colorIdx = prev.length % CHIP_COLORS.length
-      return [...prev, { ...opt, id: `${opt.word}-${Date.now()}`, color: CHIP_COLORS[colorIdx] }]
+      const color = getColorForWord(opt)
+      return [...prev, { ...opt, id: `${opt.word}-${Date.now()}`, color }]
     })
     setChallengeResult(null)
   }
@@ -637,9 +653,9 @@ export default function SentenceBuilderScreen() {
       {/* ── Generating challenges loader ─────────────────────────────── */}
       {generatingChallenges && (
         <div className="sb-loading-card">
-          <Loader size={22} className="sb-loading-card__spinner" aria-hidden="true" />
+          <Loader size={50} className="sb-loading-card__spinner" aria-hidden="true" />
           <p className="sb-loading-card__text">
-            Building challenges for {selectedVerb?.dict}… {generatedCount}/{VERB_CHALLENGES_PER_GAME}
+            Building challenges for {selectedVerb?.dict}…
           </p>
         </div>
       )}
@@ -668,10 +684,79 @@ export default function SentenceBuilderScreen() {
             </button>
           </div>
           <p className="sb-challenge-en">{currentChallenge.en}</p>
-          {showHint && (
-            <p className="sb-challenge-hint">
-              Verb: {currentChallenge.verbWord}（{currentChallenge.verbKana}）
-            </p>
+          {showHint && selectedVerb && (
+            <div className="sb-verb-table">
+              <div className="sb-verb-table__column">
+                <div className="sb-verb-table__header">Polite</div>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.polite.present_pos.kana)}
+                >
+                  <span className="sb-verb-table__label">Present +</span>
+                  <span className="sb-verb-table__word">{selectedVerb.polite.present_pos.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.polite.present_pos.kana}</span>
+                </button>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.polite.present_neg.kana)}
+                >
+                  <span className="sb-verb-table__label">Present −</span>
+                  <span className="sb-verb-table__word">{selectedVerb.polite.present_neg.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.polite.present_neg.kana}</span>
+                </button>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.polite.past_pos.kana)}
+                >
+                  <span className="sb-verb-table__label">Past +</span>
+                  <span className="sb-verb-table__word">{selectedVerb.polite.past_pos.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.polite.past_pos.kana}</span>
+                </button>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.polite.past_neg.kana)}
+                >
+                  <span className="sb-verb-table__label">Past −</span>
+                  <span className="sb-verb-table__word">{selectedVerb.polite.past_neg.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.polite.past_neg.kana}</span>
+                </button>
+              </div>
+              <div className="sb-verb-table__column">
+                <div className="sb-verb-table__header">Casual</div>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.casual.present_pos.kana)}
+                >
+                  <span className="sb-verb-table__label">Present +</span>
+                  <span className="sb-verb-table__word">{selectedVerb.casual.present_pos.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.casual.present_pos.kana}</span>
+                </button>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.casual.present_neg.kana)}
+                >
+                  <span className="sb-verb-table__label">Present −</span>
+                  <span className="sb-verb-table__word">{selectedVerb.casual.present_neg.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.casual.present_neg.kana}</span>
+                </button>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.casual.past_pos.kana)}
+                >
+                  <span className="sb-verb-table__label">Past +</span>
+                  <span className="sb-verb-table__word">{selectedVerb.casual.past_pos.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.casual.past_pos.kana}</span>
+                </button>
+                <button 
+                  className="sb-verb-table__cell"
+                  onClick={() => speak(selectedVerb.casual.past_neg.kana)}
+                >
+                  <span className="sb-verb-table__label">Past −</span>
+                  <span className="sb-verb-table__word">{selectedVerb.casual.past_neg.word}</span>
+                  <span className="sb-verb-table__kana">{selectedVerb.casual.past_neg.kana}</span>
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}

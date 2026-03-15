@@ -85,7 +85,7 @@
 
 .sb-loading-card__text {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 24px;
   font-weight: 600;
   color: var(--color-fg);
   opacity: 0.55;
@@ -150,7 +150,7 @@
 
 .sb-challenge-num {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--color-fg);
   opacity: 0.45;
@@ -160,7 +160,7 @@
 
 .sb-challenge-tag {
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--color-fg);
   background: rgba(0, 0, 0, 0.1);
@@ -172,7 +172,7 @@
 
 .sb-formality-badge {
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 18px;
   font-weight: 700;
   border-radius: 4px;
   padding: 3px 7px;
@@ -220,18 +220,75 @@
 }
 .sb-hint-btn:active { opacity: 1; }
 
-.sb-challenge-hint {
+/* ─── Verb conjugation table ────────────────────────────────────────────── */
+.sb-verb-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   width: 100%;
-  margin-top: 8px;
-  padding-top: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px dashed rgba(0, 0, 0, 0.18);
+}
+
+.sb-verb-table__column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sb-verb-table__header {
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--color-fg);
-  opacity: 0.6;
+  opacity: 0.45;
   text-align: center;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
+  padding: 4px 0;
+}
+
+.sb-verb-table__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 100ms;
+}
+
+.sb-verb-table__cell:active {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.sb-verb-table__label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-fg);
+  opacity: 0.4;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sb-verb-table__word {
+  font-family: var(--font-japanese);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1;
+}
+
+.sb-verb-table__kana {
+  font-family: var(--font-japanese);
+  font-size: 10px;
+  color: var(--color-fg);
+  opacity: 0.5;
+  line-height: 1;
 }
 
 /* ─── Status row (timer + lives) — same pattern as KanaQuiz ─────────────── */
