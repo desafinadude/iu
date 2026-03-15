@@ -25,6 +25,7 @@ export const VERB_LIST = [
 
   {
     dict: '見る', kana: 'みる', type: 'ichidan', meaning: 'to see / watch',
+    enStem: { base: 'watch', past: 'watched' },
     valency: {
       object: { particle: 'を', themes: ['animal', 'transport', 'nature', 'home'] },
     },
@@ -50,6 +51,7 @@ export const VERB_LIST = [
 
   {
     dict: '聞く', kana: 'きく', type: 'godan', meaning: 'to listen / hear / ask',
+    enStem: { base: 'listen to', past: 'listened to' },
     valency: {
       object: { particle: 'を', themes: ['home'] },
     },
@@ -75,6 +77,7 @@ export const VERB_LIST = [
 
   {
     dict: '味わう', kana: 'あじわう', type: 'godan', meaning: 'to taste / savour',
+    enStem: { base: 'savour', past: 'savoured' },
     valency: {
       object: { particle: 'を', themes: ['food'] },
     },
@@ -100,6 +103,7 @@ export const VERB_LIST = [
 
   {
     dict: '感じる', kana: 'かんじる', type: 'ichidan', meaning: 'to feel / sense',
+    enStem: { base: 'feel', past: 'felt' },
     valency: {
       object: { particle: 'を', themes: ['nature', 'time'] },
     },
@@ -125,6 +129,7 @@ export const VERB_LIST = [
 
   {
     dict: '言う', kana: 'いう', type: 'godan', meaning: 'to say',
+    enStem: { base: 'say to', past: 'said to' },
     valency: {
       target: { particle: 'に', themes: ['people'] },
     },
@@ -150,6 +155,7 @@ export const VERB_LIST = [
 
   {
     dict: '行く', kana: 'いく', type: 'godan', meaning: 'to go',
+    enStem: { base: 'go to', past: 'went to' },
     valency: {
       destination: { particle: 'に', themes: ['places'] },
     },
@@ -176,6 +182,7 @@ export const VERB_LIST = [
 
   {
     dict: '来る', kana: 'くる', type: 'irregular', meaning: 'to come',
+    enStem: { base: 'come to', past: 'came to' },
     valency: {
       destination: { particle: 'に', themes: ['places'] },
     },
@@ -201,6 +208,7 @@ export const VERB_LIST = [
 
   {
     dict: '食べる', kana: 'たべる', type: 'ichidan', meaning: 'to eat',
+    enStem: { base: 'eat', past: 'ate' },
     valency: {
       object: { particle: 'を', themes: ['food'] },
       location: { particle: 'で', themes: ['places'] },
@@ -227,6 +235,7 @@ export const VERB_LIST = [
 
   {
     dict: '飲む', kana: 'のむ', type: 'godan', meaning: 'to drink',
+    enStem: { base: 'drink', past: 'drank' },
     valency: {
       object: { particle: 'を', themes: ['food'] },
       location: { particle: 'で', themes: ['places'] },
@@ -253,6 +262,7 @@ export const VERB_LIST = [
 
   {
     dict: 'する', kana: 'する', type: 'irregular', meaning: 'to do',
+    enStem: { base: 'do', past: 'did' },
     valency: {
       object: { particle: 'を', themes: ['home'] },
     },
@@ -278,6 +288,7 @@ export const VERB_LIST = [
 
   {
     dict: '買う', kana: 'かう', type: 'godan', meaning: 'to buy',
+    enStem: { base: 'buy', past: 'bought' },
     valency: {
       object: { particle: 'を', themes: ['food', 'clothing', 'home'] },
       location: { particle: 'で', themes: ['places'] },
@@ -304,6 +315,7 @@ export const VERB_LIST = [
 
   {
     dict: '話す', kana: 'はなす', type: 'godan', meaning: 'to speak / talk',
+    enStem: { base: 'speak', past: 'spoke' },
     valency: {
       location: { particle: 'で', themes: ['places'] },
     },
@@ -329,6 +341,7 @@ export const VERB_LIST = [
 
   {
     dict: '読む', kana: 'よむ', type: 'godan', meaning: 'to read',
+    enStem: { base: 'read', past: 'read' },
     valency: {
       object: { particle: 'を', themes: ['home'] },
       location: { particle: 'で', themes: ['places'] },
@@ -355,6 +368,7 @@ export const VERB_LIST = [
 
   {
     dict: '書く', kana: 'かく', type: 'godan', meaning: 'to write',
+    enStem: { base: 'write', past: 'wrote' },
     valency: {
       object: { particle: 'を', themes: ['home'] },
       location: { particle: 'で', themes: ['places'] },
@@ -381,6 +395,7 @@ export const VERB_LIST = [
 
   {
     dict: '考える', kana: 'かんがえる', type: 'ichidan', meaning: 'to think',
+    enStem: { base: 'think', past: 'thought' },
     valency: {},
     examples: [
       { jp: 'AIについて考えます。',       kana: 'AIについてかんがえます。',   en: 'I think about AI.',              form: 'polite_present' },
@@ -404,6 +419,7 @@ export const VERB_LIST = [
 
   {
     dict: '歩く', kana: 'あるく', type: 'godan', meaning: 'to walk',
+    enStem: { base: 'walk', past: 'walked' },
     valency: {
       object: { particle: 'を', themes: ['places'] },
     },
@@ -429,6 +445,7 @@ export const VERB_LIST = [
 
   {
     dict: '座る', kana: 'すわる', type: 'godan', meaning: 'to sit',
+    enStem: { base: 'sit', past: 'sat' },
     valency: {
       location: { particle: 'に', themes: ['home'] },
     },
@@ -454,6 +471,7 @@ export const VERB_LIST = [
 
   {
     dict: '運転する', kana: 'うんてんする', type: 'irregular', meaning: 'to drive',
+    enStem: { base: 'drive', past: 'drove' },
     valency: {
       object: { particle: 'を', themes: ['transport'] },
     },
@@ -479,6 +497,7 @@ export const VERB_LIST = [
 
   {
     dict: '寝る', kana: 'ねる', type: 'ichidan', meaning: 'to sleep / go to bed',
+    enStem: { base: 'sleep', past: 'slept' },
     valency: {},
     examples: [
       { jp: '十一時に寝ます。',           kana: 'じゅういちじにねます。',     en: 'I go to sleep at 11.',           form: 'polite_present' },
@@ -504,6 +523,7 @@ export const VERB_LIST = [
 
   {
     dict: '帰る', kana: 'かえる', type: 'godan', meaning: 'to return / go home',
+    enStem: { base: 'go home', past: 'went home' },
     valency: {
       destination: { particle: 'に', themes: ['places'] },
     },
@@ -529,6 +549,7 @@ export const VERB_LIST = [
 
   {
     dict: '起きる', kana: 'おきる', type: 'ichidan', meaning: 'to wake up / get up',
+    enStem: { base: 'wake up', past: 'woke up' },
     valency: {},
     examples: [
       { jp: '六時に起きます。',           kana: 'ろくじにおきます。',         en: 'I wake up at 6.',                form: 'polite_present' },
@@ -552,6 +573,7 @@ export const VERB_LIST = [
 
   {
     dict: '待つ', kana: 'まつ', type: 'godan', meaning: 'to wait',
+    enStem: { base: 'wait for', past: 'waited for' },
     valency: {
       object: { particle: 'を', themes: ['people', 'transport'] },
       location: { particle: 'で', themes: ['places'] },
@@ -578,6 +600,7 @@ export const VERB_LIST = [
 
   {
     dict: '会う', kana: 'あう', type: 'godan', meaning: 'to meet',
+    enStem: { base: 'meet', past: 'met' },
     valency: {
       target: { particle: 'に', themes: ['people'] },
       location: { particle: 'で', themes: ['places'] },
@@ -604,6 +627,7 @@ export const VERB_LIST = [
 
   {
     dict: '分かる', kana: 'わかる', type: 'godan', meaning: 'to understand',
+    enStem: { base: 'understand', past: 'understood' },
     valency: {},
     examples: [
       { jp: '日本語が分かります。',       kana: 'にほんごがわかります。',     en: 'I understand Japanese.',         form: 'polite_present' },
@@ -627,6 +651,7 @@ export const VERB_LIST = [
 
   {
     dict: '使う', kana: 'つかう', type: 'godan', meaning: 'to use',
+    enStem: { base: 'use', past: 'used' },
     valency: {
       object: { particle: 'を', themes: ['home', 'transport'] },
     },
@@ -652,6 +677,7 @@ export const VERB_LIST = [
 
   {
     dict: '作る', kana: 'つくる', type: 'godan', meaning: 'to make / create',
+    enStem: { base: 'make', past: 'made' },
     valency: {
       object: { particle: 'を', themes: ['food', 'home'] },
     },
@@ -677,6 +703,7 @@ export const VERB_LIST = [
 
   {
     dict: '開ける', kana: 'あける', type: 'ichidan', meaning: 'to open',
+    enStem: { base: 'open', past: 'opened' },
     valency: {
       object: { particle: 'を', themes: ['home'] },
     },

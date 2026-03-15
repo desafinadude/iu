@@ -554,7 +554,7 @@ export default function SentenceBuilderScreen() {
     try {
       const challenge = challenges[challengeIdx]
       const userJapanese = sentence.map(c => c.kana).join('')
-      const result = checkAnswer(challenge.ja, userJapanese, challenge.wordPool)
+      const result = checkAnswer(challenge.ja, userJapanese, challenge.wordPool, challenge.requiredTokens)
       setChallengeResult(result)
       if (result?.valid) {
         playCorrectSound()

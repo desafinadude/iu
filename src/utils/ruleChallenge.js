@@ -59,13 +59,12 @@ function buildSentence(verbObj, formKey) {
   const isPast = formKey.includes('past')
   const isNegative = formKey.includes('neg')
   
-  // 1. Time expression (40% chance)
+  // 1. Time expression (40% chance) — no particle (time adverbs work bare)
   if (Math.random() < 0.4) {
     const timeWords = getVocabByTheme(['time'])
     if (timeWords.length > 0) {
       const timeWord = pickRandom(timeWords)
-      tokens.push({ word: timeWord.word, kana: timeWord.kana, meaning: timeWord.meaning, type: 'noun' })
-      tokens.push({ word: 'に', kana: 'に', meaning: 'at (time)', type: 'particle' })
+      tokens.push({ word: timeWord.word, kana: timeWord.kana, meaning: timeWord.meaning, type: 'noun', _isTime: true })
     }
   }
   
@@ -122,47 +121,50 @@ function buildSentence(verbObj, formKey) {
   // Generate Japanese sentence (join kanas)
   const ja = tokens.map(t => t.kana).join('')
   
-  // Generate English translation
-  let en = ''
+  // Generate English translation (use existing isPast/isNegative variables)
+
+  // Subject
   const subjectToken = tokens.find(t => t.type === 'pronoun')
-  if (subjectToken) {
-    en += subjectToken.meaning + ' '
+  const subjectEn = subjectToken?.meaning ?? 'I'
+
+  // Verb stem
+  const stem = isPast ? verbObj.enStem.past : verbObj.enStem.base
+
+  // Build verb phrase
+  let verbPhrase
+  if (isNegative && isPast)   verbPhrase = `didn't ${verbObj.enStem.base}`
+  else if (isNegative)        verbPhrase = `don't ${verbObj.enStem.base}`
+  else                        verbPhrase = stem
+
+  // Object / destination / location / target noun — find the FIRST non-subject noun
+  // and pair it with the correct English preposition based on its slot type
+  let nounPhrase = ''
+  if (valency.object && tokens.some(t => t.kana === valency.object.particle)) {
+    const noun = tokens.find(t => t.type === 'noun')
+    if (noun) nounPhrase = noun.meaning
   }
-  
-  // Add tense marker for English
-  if (isNegative && isPast) {
-    en += "didn't "
-  } else if (isNegative) {
-    en += "don't "
+  if (valency.destination && tokens.some(t => t.kana === valency.destination.particle)) {
+    const noun = tokens.find(t => t.type === 'noun')
+    if (noun) nounPhrase = `the ${noun.meaning}`
+    // enStem already includes 'to' for go/come/return
   }
-  
-  // Add verb meaning in appropriate tense
-  let verbMeaning = verbObj.meaning.replace('to ', '')
-  if (!isNegative) {
-    if (isPast) {
-      // Simple past tense heuristic
-      if (verbMeaning.endsWith('e')) {
-        verbMeaning += 'd'
-      } else if (verbMeaning.match(/[aeiou][^aeiou]$/)) {
-        verbMeaning += verbMeaning.slice(-1) + 'ed'
-      } else {
-        verbMeaning += 'ed'
-      }
-    } else {
-      // Present tense - add 's' for third person (I/we don't)
-      if (subjectToken && !['I', 'we'].includes(subjectToken.meaning)) {
-        verbMeaning += 's'
-      }
-    }
+  if (valency.location && tokens.some(t => t.kana === valency.location.particle)) {
+    const noun = tokens.find(t => t.type === 'noun')
+    if (noun) nounPhrase = nounPhrase
+      ? `${nounPhrase} at the ${noun.meaning}`
+      : `at the ${noun.meaning}`
   }
-  
-  // Add object/destination meaning
-  const objectToken = tokens.find(t => t.type === 'noun' && t !== subjectToken && tokens.indexOf(t) > tokens.findIndex(tt => tt.type === 'pronoun'))
-  if (objectToken) {
-    verbMeaning += ' ' + objectToken.meaning
+  if (valency.target && tokens.some(t => t.kana === valency.target.particle)) {
+    const noun = tokens.find(t => t.type === 'noun')
+    if (noun) nounPhrase = noun.meaning
+    // enStem already includes 'to' for say/listen
   }
-  
-  en += verbMeaning
+
+  // Time — put at front if present
+  const timeToken = tokens.find(t => t.type === 'noun' && t._isTime)
+  const timePrefix = timeToken ? `${timeToken.meaning}, ` : ''
+
+  const en = `${timePrefix}${subjectEn} ${verbPhrase}${nounPhrase ? ' ' + nounPhrase : ''}`
   
   return { tokens, ja, en }
 }
@@ -230,6 +232,22 @@ export function generateVerbChallenges(verbObj) {
     const wordPool = buildWordPool(tokens, verbObj, formDef.key)
     const verbForm = formDef.getForm(verbObj)
     
+    // Build requiredTokens: verb kana + noun-particle pairs
+    const requiredTokens = {
+      verb: verbForm.kana,
+      nounParticles: tokens
+        .filter(t => t.type === 'noun' && !t._isTime) // exclude time (it has no particle)
+        .map(nounToken => {
+          // Find the particle that follows this noun
+          const nounIdx = tokens.indexOf(nounToken)
+          const particleToken = tokens[nounIdx + 1]
+          return particleToken && particleToken.type === 'particle'
+            ? { noun: nounToken.kana, particle: particleToken.kana }
+            : null
+        })
+        .filter(Boolean)
+    }
+    
     return {
       ja,
       en,
@@ -239,6 +257,7 @@ export function generateVerbChallenges(verbObj) {
       verbWord: verbForm.word,
       verbKana: verbForm.kana,
       wordPool,
+      requiredTokens,
     }
   })
   
@@ -248,40 +267,39 @@ export function generateVerbChallenges(verbObj) {
 
 // ─── Check answer (synchronous rule-based validation) ──────────────────────
 
-export function checkAnswer(expectedKana, userKana, wordPool = []) {
-  // Simple approach: check if user's sentence contains the required verb form
-  // and has reasonable structure
-  
-  // The expected answer tokens are embedded in the wordPool
-  // We need to extract them and check if they appear in user's answer
-  
-  // For now, simple validation: check if the answer matches exactly or contains the verb
+export function checkAnswer(expectedKana, userKana, wordPool = [], requiredTokens = {}) {
+  // Exact match is always correct
   if (userKana === expectedKana) {
     return { valid: true, feedback: 'Perfect!' }
   }
   
-  // Check if answer contains the verb form (most critical element)
-  const expectedTokens = expectedKana.split(/(?=[はがをにでへともかです])/)
-  const verbToken = wordPool.find(w => w.type === 'verb' && expectedKana.includes(w.kana))
-  
-  if (verbToken && !userKana.includes(verbToken.kana)) {
-    return { valid: false, feedback: `Missing the verb form: ${verbToken.word}` }
-  }
-  
-  // Check for required particles
-  const requiredParticles = ['を', 'に', 'で', 'は'].filter(p => expectedKana.includes(p))
-  for (const particle of requiredParticles) {
-    if (!userKana.includes(particle)) {
-      return { valid: false, feedback: `Missing particle: ${particle}` }
+  // 1. Check if user's answer contains the correct verb form
+  if (!userKana.includes(requiredTokens.verb)) {
+    const verbToken = wordPool.find(w => w.kana === requiredTokens.verb)
+    return { 
+      valid: false, 
+      feedback: verbToken 
+        ? `Missing the verb form: ${verbToken.word}` 
+        : 'Missing the correct verb form.'
     }
   }
   
-  // If it has the verb and particles, accept it as valid
-  if (verbToken && userKana.includes(verbToken.kana)) {
-    return { valid: true, feedback: 'Good!' }
+  // 2. Check if all noun+particle pairs are present
+  for (const { noun, particle } of requiredTokens.nounParticles) {
+    // Both noun and particle must appear together (noun followed by particle somewhere in answer)
+    if (!userKana.includes(noun + particle)) {
+      const nounToken = wordPool.find(w => w.kana === noun)
+      return { 
+        valid: false, 
+        feedback: nounToken
+          ? `Need ${nounToken.word} with particle ${particle}`
+          : `Missing required noun-particle combination: ${noun}${particle}`
+      }
+    }
   }
   
-  return { valid: false, feedback: 'Check your sentence structure.' }
+  // If it has the correct verb and all noun-particle pairs, it's valid
+  return { valid: true, feedback: 'Good!' }
 }
 
 // ─── Check free-mode sentence (keep using LLM) ────────────────────────────
