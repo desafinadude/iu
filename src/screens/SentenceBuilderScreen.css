@@ -688,19 +688,20 @@
 .vp-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 200;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
 }
 
 .vp-modal {
-  width: 100%;
-  max-height: 82vh;
-  background: var(--color-surface);
-  border: 2.5px solid var(--color-border);
-  border-bottom: none;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  width: min(440px, 92vw);
+  max-height: 85vh;
+  background: var(--color-bg);
+  border: 3px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -710,68 +711,163 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px var(--space-md);
-  border-bottom: 2px solid var(--color-muted);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 3px solid var(--color-border);
   flex-shrink: 0;
 }
 
 .vp-header__title {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--color-fg);
 }
 
 .vp-header__close {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--color-fg);
-  opacity: 0.4;
-  padding: 4px 8px;
+  opacity: 0.5;
+  flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
 }
 .vp-header__close:active { opacity: 1; }
 
 .vp-list {
   overflow-y: auto;
-  flex: 1;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
-.vp-verb-btn {
+/* Verb card buttons (same style as VerbDrill) */
+.vp-verb-card {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-md);
   width: 100%;
-  padding: 14px var(--space-md);
-  border-bottom: 1px solid var(--color-muted);
   text-align: left;
+  background: var(--color-surface);
+  border: 3px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-lg);
+  overflow: hidden;
+  transition: transform 100ms ease, box-shadow 100ms ease;
   -webkit-tap-highlight-color: transparent;
 }
-.vp-verb-btn:last-child { border-bottom: none; }
-.vp-verb-btn:active { background: var(--color-bg); }
 
-.vp-verb-btn__dict {
+/* Halftone pattern */
+.vp-verb-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-halftone) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.vp-verb-card:active {
+  transform: translateX(5px) translateY(5px);
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .vp-verb-card:hover {
+    transform: translateX(2px) translateY(2px);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* Corner type badge */
+.vp-verb-card__badge {
+  position: absolute;
+  top: 10px;
+  right: -22px;
+  width: 90px;
+  padding: 3px 0;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  transform: rotate(35deg);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.vp-verb-card__badge--ichidan   { background: var(--color-accent-blue); }
+.vp-verb-card__badge--godan     { background: var(--color-japan-red); }
+.vp-verb-card__badge--irregular { background: var(--color-accent-orange); }
+
+.vp-verb-card--random {
+  background: var(--color-postit);
+}
+
+.vp-verb-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-japanese);
+  font-size: 40px;
+  line-height: 1;
+  color: var(--color-fg);
+  flex-shrink: 0;
+  width: 52px;
+  text-align: center;
+  user-select: none;
+}
+
+.vp-verb-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.vp-verb-card__dict {
   font-family: var(--font-japanese);
   font-size: 22px;
   font-weight: 700;
   color: var(--color-fg);
-  min-width: 44px;
+  line-height: 1.1;
 }
 
-.vp-verb-btn__kana {
-  font-family: var(--font-japanese);
+.vp-verb-card__meaning {
+  font-family: var(--font-body);
   font-size: 14px;
+  font-style: italic;
   color: var(--color-fg);
-  opacity: 0.5;
-  min-width: 64px;
+  opacity: 0.75;
+  line-height: 1.2;
 }
 
-.vp-verb-btn__meaning {
+.vp-verb-card__kana {
+  font-family: var(--font-japanese);
+  font-size: 13px;
+  color: var(--color-japan-red);
+  opacity: 0.85;
+  line-height: 1;
+}
+
+/* Random button */
+.vp-verb-card__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-fg);
+  line-height: 1.1;
+}
+
+.vp-verb-card__meta {
   font-family: var(--font-body);
   font-size: 13px;
   color: var(--color-fg);
-  opacity: 0.65;
-  flex: 1;
+  opacity: 0.5;
+  line-height: 1.2;
 }
 
 /* ─── Challenge word tray ─────────────────────────────────────────────────── */

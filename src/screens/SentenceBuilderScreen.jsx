@@ -3,7 +3,10 @@ import {
   Volume2, Copy, Check, ChevronRight, ChevronLeft, Loader,
   Sparkles, User, Users, MapPin, Utensils, PawPrint, Home,
   Shirt, Heart, Leaf, Train, Clock, Wind, BookOpen,
-  Zap, Smile,
+  Zap, Smile, Eye, Ear, MessageCircle, ArrowRight, ArrowLeft,
+  Coffee, ShoppingBag, MessageSquare, PenLine, Lightbulb,
+  PersonStanding, Armchair, Car, Moon, AlarmClock,
+  Wrench, Hammer, DoorOpen, Shuffle,
 } from 'lucide-react'
 import { VOCAB_LIST, ADJ_LIST } from '../data/vocabData'
 import { VERB_LIST } from '../data/verbData'
@@ -17,6 +20,49 @@ import {
   VERB_CHALLENGES_PER_GAME,
 } from '../utils/llmChallenge'
 import './SentenceBuilderScreen.css'
+
+// ─── Verb icon map (same as VerbDrill) ─────────────────────────────────────
+
+const VERB_ICON_MAP = {
+  '見る':    Eye,
+  '聞く':    Ear,
+  '味わう':  Utensils,
+  '感じる':  Sparkles,
+  '言う':    MessageCircle,
+  '行く':    ArrowRight,
+  '来る':    ArrowLeft,
+  '食べる':  Utensils,
+  '飲む':    Coffee,
+  'する':    Zap,
+  '買う':    ShoppingBag,
+  '話す':    MessageSquare,
+  '読む':    BookOpen,
+  '書く':    PenLine,
+  '考える':  Lightbulb,
+  '歩く':    PersonStanding,
+  '座る':    Armchair,
+  '運転する': Car,
+  '寝る':    Moon,
+  '帰る':    Home,
+  '起きる':  AlarmClock,
+  '待つ':    Clock,
+  '会う':    Users,
+  '分かる':  Lightbulb,
+  '使う':    Wrench,
+  '作る':    Hammer,
+  '開ける':  DoorOpen,
+}
+
+const TYPE_LABELS = {
+  ichidan:   'Ichidan',
+  godan:     'Godan',
+  irregular: 'Irregular',
+}
+
+function VerbIcon({ verb, size = 24, className = '' }) {
+  const Icon = VERB_ICON_MAP[verb.dict] ?? Zap
+  return <Icon size={size} strokeWidth={2} className={className} aria-hidden="true" />
+}
 
 // ─── Pastel rainbow palette (same as WordSearch) ───────────────────────────
 
@@ -212,6 +258,11 @@ function Chip({ chip, isDragging, onPointerDown, onTap }) {
 // ─── Verb picker modal ─────────────────────────────────────────────────────
 
 function VerbPickerModal({ onSelect, onClose }) {
+  function pickRandom() {
+    const randomVerb = VERB_LIST[Math.floor(Math.random() * VERB_LIST.length)]
+    onSelect(randomVerb)
+  }
+
   return (
     <div className="vp-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <div className="vp-modal">
@@ -220,13 +271,33 @@ function VerbPickerModal({ onSelect, onClose }) {
           <button className="vp-header__close" onClick={onClose} aria-label="Close">✕</button>
         </div>
         <div className="vp-list">
-          {VERB_LIST.map(verb => (
-            <button key={verb.kana} className="vp-verb-btn" onClick={() => onSelect(verb)}>
-              <span className="vp-verb-btn__dict">{verb.dict}</span>
-              <span className="vp-verb-btn__kana">{verb.kana}</span>
-              <span className="vp-verb-btn__meaning">{verb.meaning}</span>
+          {VERB_LIST.map((verb, i) => (
+            <button
+              key={i}
+              className="vp-verb-card"
+              onClick={() => onSelect(verb)}
+            >
+              <div className={`vp-verb-card__badge vp-verb-card__badge--${verb.type}`}>
+                {TYPE_LABELS[verb.type]}
+              </div>
+              <span className="vp-verb-card__icon">
+                <VerbIcon verb={verb} size={32} />
+              </span>
+              <div className="vp-verb-card__body">
+                <span className="vp-verb-card__dict">{verb.dict}</span>
+                <span className="vp-verb-card__meaning">{verb.meaning}</span>
+                <span className="vp-verb-card__kana">{verb.kana} · {kanaToRomaji(verb.kana)}</span>
+              </div>
             </button>
           ))}
+
+          <button className="vp-verb-card vp-verb-card--random" onClick={pickRandom}>
+            <span className="vp-verb-card__icon"><Shuffle size={32} strokeWidth={1.5} /></span>
+            <div className="vp-verb-card__body">
+              <span className="vp-verb-card__title">Random</span>
+              <span className="vp-verb-card__meta">ランダム</span>
+            </div>
+          </button>
         </div>
       </div>
     </div>
