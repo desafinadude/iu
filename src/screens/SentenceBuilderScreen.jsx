@@ -586,9 +586,6 @@ export default function SentenceBuilderScreen() {
             {selectedVerb && (
               <span className="sb-challenge-tag">{selectedVerb.dict}</span>
             )}
-            <span className={`sb-tense-badge sb-tense-badge--${currentChallenge.tenseClass}`}>
-              {currentChallenge.formLabel}
-            </span>
             <button
               className="sb-hint-btn"
               onClick={() => setShowHint(v => !v)}

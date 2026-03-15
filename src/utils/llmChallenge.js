@@ -283,39 +283,49 @@ export async function generateVerbChallenges(verbObj, onProgress) {
   
   const user = `Create 8 Japanese sentences practicing the verb "${verbObj.dict}" (${verbObj.kana} - ${verbObj.meaning}).
 
-CRITICAL: Each sentence MUST use the EXACT verb form specified below - match the tense and politeness level!
+CRITICAL REQUIREMENTS:
+1. Each sentence MUST use the EXACT verb form listed below
+2. English translation MUST match the Japanese tense/politeness
+3. Check: Is it present or past? Positive or negative? Polite or casual?
 
-VERB FORMS (you MUST use these exact forms):
-${verbForms.map((vf, i) => `${i + 1}. ${vf.word}（${vf.kana}）- ${vf.label} ← USE THIS EXACT FORM`).join('\n')}
+VERB FORMS (use these EXACT forms, one per sentence):
+${verbForms.map((vf, i) => {
+  const tenseInfo = vf.label.includes('present') ? 'PRESENT tense' : 'PAST tense'
+  const politeInfo = vf.label.includes('Polite') ? 'POLITE form' : 'CASUAL form'
+  const polarityInfo = vf.label.includes('−') ? 'NEGATIVE' : 'POSITIVE'
+  return `${i + 1}. ${vf.word}（${vf.kana}）← ${tenseInfo}, ${politeInfo}, ${polarityInfo}`
+}).join('\n')}
 
-VOCABULARY (use 3-4 words per sentence, include adjectives/adverbs when possible):
+VOCABULARY (use 3-4 words per sentence):
 ${vocabListText}
 
 PARTICLES: ${particlesText}
 
-REQUIREMENTS for each sentence:
-1. Use the EXACT verb form specified (check tense: present/past, politeness: polite/casual, polarity: positive/negative)
-2. Use 3-4 content words: subject, object, and try to include an adjective OR adverb
-3. Make sentences varied and natural (not all "I see X")
-4. Use proper kanji from vocabulary
-5. English should be natural and match the tense
+EXAMPLE for "食べました" (polite PAST positive):
+English: "I ate sushi" (PAST tense - "ate", not "eat")
+Japanese: "私は寿司を食べました"
 
-EXAMPLE for "食べます" (polite present positive):
-{
-  "ja": "私は美味しい寿司を食べます",
-  "en": "I eat delicious sushi",
-  "words": [
-    {"word": "私", "kana": "わたし", "meaning": "I"},
-    {"word": "は", "kana": "は", "meaning": "topic particle"},
-    {"word": "美味しい", "kana": "おいしい", "meaning": "delicious"},
-    {"word": "寿司", "kana": "すし", "meaning": "sushi"},
-    {"word": "を", "kana": "を", "meaning": "object particle"},
-    {"word": "食べます", "kana": "たべます", "meaning": "eat (polite present)"}
-  ]
-}
+EXAMPLE for "食べません" (polite present NEGATIVE):
+English: "I don't eat meat" (present negative - "don't eat")
+Japanese: "私は肉を食べません"
 
-Respond with ONLY this JSON structure (no markdown, create ALL 8 challenges):
-{"challenges": [...]}`
+For each sentence:
+- Match English tense to Japanese (present→present, past→past)
+- Match polarity (positive→positive, negative→negative with "don't/didn't")
+- Use proper kanji from vocabulary
+- Include adjectives or adverbs when natural
+- Vary sentence patterns
+
+Respond ONLY with this JSON structure:
+{"challenges": [
+  {
+    "ja": "Japanese with kanji",
+    "en": "English matching tense",
+    "words": [{"word": "漢字", "kana": "かんじ", "meaning": "meaning"}]
+  }
+]}
+
+Create ALL 8 challenges.`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],
@@ -387,5 +397,6 @@ Respond with ONLY this JSON structure (no markdown, create ALL 8 challenges):
     }
   })
 
-  return results
+  // Shuffle the challenges so they're not in predictable order
+  return results.sort(() => Math.random() - 0.5)
 }
