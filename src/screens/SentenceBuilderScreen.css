@@ -162,6 +162,29 @@
   letter-spacing: 0.05em;
 }
 
+.sb-formality-badge {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 3px 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1.5px solid;
+}
+
+.sb-formality-badge--polite {
+  color: #2563eb;
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.sb-formality-badge--casual {
+  color: #7c3aed;
+  background: #ede9fe;
+  border-color: #c4b5fd;
+}
+
 .sb-challenge-en {
   font-family: var(--font-display);
   font-size: clamp(18px, 5vw, 26px);

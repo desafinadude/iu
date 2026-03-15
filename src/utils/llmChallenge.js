@@ -315,17 +315,18 @@ For each sentence:
 - Use proper kanji from vocabulary
 - Include adjectives or adverbs when natural
 - Vary sentence patterns
+- IMPORTANT: In "words" array, include ALL words INCLUDING PARTICLES (は, を, に, etc.)
 
 Respond ONLY with this JSON structure:
 {"challenges": [
   {
     "ja": "Japanese with kanji",
     "en": "English matching tense",
-    "words": [{"word": "漢字", "kana": "かんじ", "meaning": "meaning"}]
+    "words": [{"word": "私", "kana": "わたし", "meaning": "I"}, {"word": "は", "kana": "は", "meaning": "topic marker"}, {"word": "寿司", "kana": "すし", "meaning": "sushi"}, {"word": "を", "kana": "を", "meaning": "object marker"}, {"word": "食べました", "kana": "たべました", "meaning": "ate"}]
   }
 ]}
 
-Create ALL 8 challenges.`
+CRITICAL: List ALL words in the sentence, including particles. Create ALL 8 challenges.`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],

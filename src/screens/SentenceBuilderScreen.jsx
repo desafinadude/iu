@@ -586,6 +586,11 @@ export default function SentenceBuilderScreen() {
             {selectedVerb && (
               <span className="sb-challenge-tag">{selectedVerb.dict}</span>
             )}
+            {currentChallenge && (
+              <span className={`sb-formality-badge ${currentChallenge.formLabel.includes('Polite') ? 'sb-formality-badge--polite' : 'sb-formality-badge--casual'}`}>
+                {currentChallenge.formLabel.includes('Polite') ? 'Polite' : 'Casual'}
+              </span>
+            )}
             <button
               className="sb-hint-btn"
               onClick={() => setShowHint(v => !v)}
