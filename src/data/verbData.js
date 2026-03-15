@@ -25,6 +25,9 @@ export const VERB_LIST = [
 
   {
     dict: '見る', kana: 'みる', type: 'ichidan', meaning: 'to see / watch',
+    valency: {
+      object: { particle: 'を', themes: ['animal', 'transport', 'nature', 'home'] },
+    },
     examples: [
       { jp: '映画を見ます。',         kana: 'えいがをみます。',         en: 'I watch a film.',               form: 'polite_present' },
       { jp: '昨日、テレビを見た。',   kana: 'きのう、テレビをみた。',   en: 'I watched TV yesterday.',       form: 'casual_past' },
@@ -47,6 +50,9 @@ export const VERB_LIST = [
 
   {
     dict: '聞く', kana: 'きく', type: 'godan', meaning: 'to listen / hear / ask',
+    valency: {
+      object: { particle: 'を', themes: ['home'] },
+    },
     examples: [
       { jp: 'ジャズを聞きます。',           kana: 'ジャズをききます。',           en: 'I listen to jazz.',                     form: 'polite_present' },
       { jp: '友達の話を聞いた。',           kana: 'ともだちのはなしをきいた。',   en: "I listened to what my friend said.",    form: 'casual_past' },
@@ -69,6 +75,9 @@ export const VERB_LIST = [
 
   {
     dict: '味わう', kana: 'あじわう', type: 'godan', meaning: 'to taste / savour',
+    valency: {
+      object: { particle: 'を', themes: ['food'] },
+    },
     examples: [
       { jp: '新しい料理を味わいます。',     kana: 'あたらしいりょうりをあじわいます。', en: 'I taste new food.',              form: 'polite_present' },
       { jp: 'ゆっくり味わった。',           kana: 'ゆっくりあじわった。',             en: 'I savoured it slowly.',          form: 'casual_past' },
@@ -91,6 +100,9 @@ export const VERB_LIST = [
 
   {
     dict: '感じる', kana: 'かんじる', type: 'ichidan', meaning: 'to feel / sense',
+    valency: {
+      object: { particle: 'を', themes: ['nature', 'time'] },
+    },
     examples: [
       { jp: '秋を感じます。',           kana: 'あきをかんじます。',       en: 'I feel autumn.',              form: 'polite_present' },
       { jp: '風を感じた。',             kana: 'かぜをかんじた。',         en: 'I felt the wind.',            form: 'casual_past' },
@@ -113,6 +125,9 @@ export const VERB_LIST = [
 
   {
     dict: '言う', kana: 'いう', type: 'godan', meaning: 'to say',
+    valency: {
+      target: { particle: 'に', themes: ['people'] },
+    },
     examples: [
       { jp: 'アンディに「おはよう」と言います。',   kana: 'アンディに「おはよう」といいます。', en: 'I say good morning to Andi.',   form: 'polite_present' },
       { jp: '先生に「ありがとう」と言った。',       kana: 'せんせいに「ありがとう」といった。', en: 'I said thank you to my teacher.', form: 'casual_past' },
@@ -135,6 +150,9 @@ export const VERB_LIST = [
 
   {
     dict: '行く', kana: 'いく', type: 'godan', meaning: 'to go',
+    valency: {
+      destination: { particle: 'に', themes: ['places'] },
+    },
     examples: [
       { jp: '公園に行きます。',           kana: 'こうえんにいきます。',     en: 'I go to the park.',                        form: 'polite_present' },
       { jp: '昨日、図書館に行った。',     kana: 'きのう、としょかんにいった。', en: 'I went to the library yesterday.',       form: 'casual_past' },
@@ -158,6 +176,9 @@ export const VERB_LIST = [
 
   {
     dict: '来る', kana: 'くる', type: 'irregular', meaning: 'to come',
+    valency: {
+      destination: { particle: 'に', themes: ['places'] },
+    },
     examples: [
       { jp: '友達が家に来ます。',       kana: 'ともだちがいえにきます。', en: 'A friend comes to the house.',   form: 'polite_present' },
       { jp: 'アンディが早く来た。',     kana: 'アンディがはやくきた。',   en: 'Andi came early.',               form: 'casual_past' },
@@ -180,6 +201,10 @@ export const VERB_LIST = [
 
   {
     dict: '食べる', kana: 'たべる', type: 'ichidan', meaning: 'to eat',
+    valency: {
+      object: { particle: 'を', themes: ['food'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '朝ごはんを食べます。',         kana: 'あさごはんをたべます。',     en: 'I eat breakfast.',               form: 'polite_present' },
       { jp: '昨日、寿司を食べた。',         kana: 'きのう、すしをたべた。',     en: 'I ate sushi yesterday.',         form: 'casual_past' },
@@ -202,6 +227,10 @@ export const VERB_LIST = [
 
   {
     dict: '飲む', kana: 'のむ', type: 'godan', meaning: 'to drink',
+    valency: {
+      object: { particle: 'を', themes: ['food'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: 'コーヒーを飲みます。',       kana: 'コーヒーをのみます。',       en: 'I drink coffee.',                form: 'polite_present' },
       { jp: '水を飲んだ。',               kana: 'みずをのんだ。',             en: 'I drank water.',                 form: 'casual_past' },
@@ -224,6 +253,9 @@ export const VERB_LIST = [
 
   {
     dict: 'する', kana: 'する', type: 'irregular', meaning: 'to do',
+    valency: {
+      object: { particle: 'を', themes: ['home'] },
+    },
     examples: [
       { jp: '毎朝、運動をします。',       kana: 'まいあさ、うんどうをします。', en: 'I exercise every morning.',     form: 'polite_present' },
       { jp: '宿題をした。',               kana: 'しゅくだいをした。',           en: 'I did my homework.',            form: 'casual_past' },
@@ -246,6 +278,10 @@ export const VERB_LIST = [
 
   {
     dict: '買う', kana: 'かう', type: 'godan', meaning: 'to buy',
+    valency: {
+      object: { particle: 'を', themes: ['food', 'clothing', 'home'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '歴史の本を買います。',       kana: 'れきしのほんをかいます。',   en: 'I buy a history book.',          form: 'polite_present' },
       { jp: 'スーパーで野菜を買った。',   kana: 'スーパーでやさいをかった。', en: 'I bought vegetables at the supermarket.', form: 'casual_past' },
@@ -268,6 +304,9 @@ export const VERB_LIST = [
 
   {
     dict: '話す', kana: 'はなす', type: 'godan', meaning: 'to speak / talk',
+    valency: {
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '日本語を話します。',         kana: 'にほんごをはなします。',     en: 'I speak Japanese.',              form: 'polite_present' },
       { jp: '友達と話した。',             kana: 'ともだちとはなした。',       en: 'I spoke with a friend.',         form: 'casual_past' },
@@ -290,6 +329,10 @@ export const VERB_LIST = [
 
   {
     dict: '読む', kana: 'よむ', type: 'godan', meaning: 'to read',
+    valency: {
+      object: { particle: 'を', themes: ['home'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '歴史の本を読みます。',       kana: 'れきしのほんをよみます。',   en: 'I read a history book.',         form: 'polite_present' },
       { jp: '昨夜、小説を読んだ。',       kana: 'さくや、しょうせつをよんだ。', en: 'I read a novel last night.',   form: 'casual_past' },
@@ -312,6 +355,10 @@ export const VERB_LIST = [
 
   {
     dict: '書く', kana: 'かく', type: 'godan', meaning: 'to write',
+    valency: {
+      object: { particle: 'を', themes: ['home'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '手紙を書きます。',           kana: 'てがみをかきます。',         en: 'I write a letter.',              form: 'polite_present' },
       { jp: '日記を書いた。',             kana: 'にっきをかいた。',           en: 'I wrote in my diary.',           form: 'casual_past' },
@@ -334,6 +381,7 @@ export const VERB_LIST = [
 
   {
     dict: '考える', kana: 'かんがえる', type: 'ichidan', meaning: 'to think',
+    valency: {},
     examples: [
       { jp: 'AIについて考えます。',       kana: 'AIについてかんがえます。',   en: 'I think about AI.',              form: 'polite_present' },
       { jp: '色々考えた。',               kana: 'いろいろかんがえた。',       en: 'I thought about various things.', form: 'casual_past' },
@@ -356,6 +404,9 @@ export const VERB_LIST = [
 
   {
     dict: '歩く', kana: 'あるく', type: 'godan', meaning: 'to walk',
+    valency: {
+      object: { particle: 'を', themes: ['places'] },
+    },
     examples: [
       { jp: '毎朝、公園を歩きます。',     kana: 'まいあさ、こうえんをあるきます。', en: 'I walk in the park every morning.', form: 'polite_present' },
       { jp: '海岸を歩いた。',             kana: 'かいがんをあるいた。',           en: 'I walked along the coast.',         form: 'casual_past' },
@@ -378,6 +429,9 @@ export const VERB_LIST = [
 
   {
     dict: '座る', kana: 'すわる', type: 'godan', meaning: 'to sit',
+    valency: {
+      location: { particle: 'に', themes: ['home'] },
+    },
     examples: [
       { jp: '木の下に座ります。',         kana: 'きのしたにすわります。',     en: 'I sit under a tree.',            form: 'polite_present' },
       { jp: '椅子に座った。',             kana: 'いすにすわった。',           en: 'I sat on the chair.',            form: 'casual_past' },
@@ -400,6 +454,9 @@ export const VERB_LIST = [
 
   {
     dict: '運転する', kana: 'うんてんする', type: 'irregular', meaning: 'to drive',
+    valency: {
+      object: { particle: 'を', themes: ['transport'] },
+    },
     examples: [
       { jp: '毎日、車を運転します。',     kana: 'まいにち、くるまをうんてんします。', en: 'I drive every day.',           form: 'polite_present' },
       { jp: '一人で運転した。',           kana: 'ひとりでうんてんした。',           en: 'I drove alone.',               form: 'casual_past' },
@@ -422,6 +479,7 @@ export const VERB_LIST = [
 
   {
     dict: '寝る', kana: 'ねる', type: 'ichidan', meaning: 'to sleep / go to bed',
+    valency: {},
     examples: [
       { jp: '十一時に寝ます。',           kana: 'じゅういちじにねます。',     en: 'I go to sleep at 11.',           form: 'polite_present' },
       { jp: '疲れてすぐ寝た。',           kana: 'つかれてすぐねた。',         en: 'I was tired and fell asleep quickly.', form: 'casual_past' },
@@ -446,6 +504,9 @@ export const VERB_LIST = [
 
   {
     dict: '帰る', kana: 'かえる', type: 'godan', meaning: 'to return / go home',
+    valency: {
+      destination: { particle: 'に', themes: ['places'] },
+    },
     examples: [
       { jp: '家に帰ります。',             kana: 'いえにかえります。',         en: 'I return home.',                 form: 'polite_present' },
       { jp: '早く帰った。',               kana: 'はやくかえった。',           en: 'I went home early.',             form: 'casual_past' },
@@ -468,6 +529,7 @@ export const VERB_LIST = [
 
   {
     dict: '起きる', kana: 'おきる', type: 'ichidan', meaning: 'to wake up / get up',
+    valency: {},
     examples: [
       { jp: '六時に起きます。',           kana: 'ろくじにおきます。',         en: 'I wake up at 6.',                form: 'polite_present' },
       { jp: '今日、七時に起きた。',       kana: 'きょう、しちじにおきた。',   en: 'Today I woke up at 7.',          form: 'casual_past' },
@@ -490,6 +552,10 @@ export const VERB_LIST = [
 
   {
     dict: '待つ', kana: 'まつ', type: 'godan', meaning: 'to wait',
+    valency: {
+      object: { particle: 'を', themes: ['people', 'transport'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '駅で待ちます。',             kana: 'えきでまちます。',           en: 'I wait at the station.',         form: 'polite_present' },
       { jp: 'バスを待った。',             kana: 'バスをまった。',             en: 'I waited for the bus.',          form: 'casual_past' },
@@ -512,6 +578,10 @@ export const VERB_LIST = [
 
   {
     dict: '会う', kana: 'あう', type: 'godan', meaning: 'to meet',
+    valency: {
+      target: { particle: 'に', themes: ['people'] },
+      location: { particle: 'で', themes: ['places'] },
+    },
     examples: [
       { jp: '友達に会います。',           kana: 'ともだちにあいます。',       en: 'I meet a friend.',               form: 'polite_present' },
       { jp: '駅で会った。',               kana: 'えきであった。',             en: 'We met at the station.',         form: 'casual_past' },
@@ -534,6 +604,7 @@ export const VERB_LIST = [
 
   {
     dict: '分かる', kana: 'わかる', type: 'godan', meaning: 'to understand',
+    valency: {},
     examples: [
       { jp: '日本語が分かります。',       kana: 'にほんごがわかります。',     en: 'I understand Japanese.',         form: 'polite_present' },
       { jp: 'やっと意味が分かった。',     kana: 'やっといみがわかった。',     en: 'I finally understood the meaning.', form: 'casual_past' },
@@ -556,6 +627,9 @@ export const VERB_LIST = [
 
   {
     dict: '使う', kana: 'つかう', type: 'godan', meaning: 'to use',
+    valency: {
+      object: { particle: 'を', themes: ['home', 'transport'] },
+    },
     examples: [
       { jp: 'パソコンを使います。',       kana: 'パソコンをつかいます。',     en: 'I use a computer.',              form: 'polite_present' },
       { jp: '新しいアプリを使った。',     kana: 'あたらしいアプリをつかった。', en: 'I used a new app.',             form: 'casual_past' },
@@ -578,6 +652,9 @@ export const VERB_LIST = [
 
   {
     dict: '作る', kana: 'つくる', type: 'godan', meaning: 'to make / create',
+    valency: {
+      object: { particle: 'を', themes: ['food', 'home'] },
+    },
     examples: [
       { jp: '料理を作ります。',           kana: 'りょうりをつくります。',     en: 'I make food.',                   form: 'polite_present' },
       { jp: '息子たちとケーキを作った。', kana: 'むすこたちとケーキをつくった。', en: 'I made a cake with my sons.',  form: 'casual_past' },
@@ -600,6 +677,9 @@ export const VERB_LIST = [
 
   {
     dict: '開ける', kana: 'あける', type: 'ichidan', meaning: 'to open',
+    valency: {
+      object: { particle: 'を', themes: ['home'] },
+    },
     examples: [
       { jp: 'ドアを開けます。',           kana: 'ドアをあけます。',           en: 'I open the door.',               form: 'polite_present' },
       { jp: '窓を開けた。',               kana: 'まどをあけた。',             en: 'I opened the window.',           form: 'casual_past' },

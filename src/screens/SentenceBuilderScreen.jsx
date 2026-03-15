@@ -17,7 +17,8 @@ import {
   generateVerbChallenges,
   checkAnswer,
   VERB_CHALLENGES_PER_GAME,
-} from '../utils/llmChallenge'
+} from '../utils/ruleChallenge'
+import { checkFreeSentence } from '../utils/llmChallenge'
 import './SentenceBuilderScreen.css'
 
 // ─── Verb icon map (same as VerbDrill) ─────────────────────────────────────
@@ -372,8 +373,6 @@ export default function SentenceBuilderScreen() {
   const [allDone,         setAllDone]         = useState(false)
 
   // Loading states
-  const [generatingChallenges, setGeneratingChallenges] = useState(false)
-  const [generatedCount,       setGeneratedCount]       = useState(0)
   const [checkingAnswer,       setCheckingAnswer]       = useState(false)
   const [llmError,             setLlmError]             = useState(null)
 
@@ -394,7 +393,7 @@ export default function SentenceBuilderScreen() {
   // ── Challenge timer ────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (gameOver || allDone || challengeResult?.valid || generatingChallenges || checkingAnswer) return
+    if (gameOver || allDone || challengeResult?.valid || checkingAnswer) return
     if (challenges.length === 0) return
     if (timeLeft > 0) {
       const t = setTimeout(() => setTimeLeft(p => p - 1), 1000)
@@ -405,7 +404,7 @@ export default function SentenceBuilderScreen() {
     if (newLives <= 0) { setLives(0); setGameOver(true); return }
     setLives(newLives)
     advanceChallenge()
-  }, [timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult, generatingChallenges, checkingAnswer])
+  }, [timeLeft, lives, challengeIdx, challenges, gameOver, allDone, challengeResult, checkingAnswer])
 
   function advanceChallenge() {
     const nextIdx = challengeIdx + 1
@@ -419,7 +418,7 @@ export default function SentenceBuilderScreen() {
 
   // ── Start challenge with selected verb ────────────────────────────────
 
-  async function startVerbChallenge(verb) {
+  function startVerbChallenge(verb) {
     setSelectedVerb(verb)
     setChallengeIdx(0)
     setTimeLeft(CHALLENGE_TIME)
@@ -430,18 +429,12 @@ export default function SentenceBuilderScreen() {
     setChallengeResult(null)
     setChallenges([])
     setLlmError(null)
-    setGeneratedCount(0)
-    setGeneratingChallenges(true)
 
     try {
-      const picked = await generateVerbChallenges(verb, (done) => {
-        setGeneratedCount(done)
-      })
+      const picked = generateVerbChallenges(verb)
       setChallenges(picked)
     } catch (err) {
       setLlmError(err.message)
-    } finally {
-      setGeneratingChallenges(false)
     }
   }
 
@@ -556,12 +549,12 @@ export default function SentenceBuilderScreen() {
 
   // ── Actions ────────────────────────────────────────────────────────────
 
-  async function handleCheck() {
+  function handleCheck() {
     setCheckingAnswer(true)
     try {
       const challenge = challenges[challengeIdx]
-      const userJapanese = sentence.map(c => c.word).join('')
-      const result = await checkAnswer(challenge.ja, userJapanese, challenge.wordPool)
+      const userJapanese = sentence.map(c => c.kana).join('')
+      const result = checkAnswer(challenge.ja, userJapanese, challenge.wordPool)
       setChallengeResult(result)
       if (result?.valid) {
         playCorrectSound()
@@ -596,7 +589,7 @@ export default function SentenceBuilderScreen() {
   const timerPct         = (timeLeft / CHALLENGE_TIME) * 100
   const timerUrgent      = timeLeft <= 30
   const currentChallenge = challenges[challengeIdx]
-  const challengeActive  = selectedVerb && !generatingChallenges && !gameOver && !allDone
+  const challengeActive  = selectedVerb && !gameOver && !allDone
 
   // ── Show verb picker if no verb selected ──────────────────────────────
   
@@ -679,16 +672,6 @@ export default function SentenceBuilderScreen() {
             />
           </div>
         </>
-      )}
-
-      {/* ── Generating challenges loader ─────────────────────────────── */}
-      {generatingChallenges && (
-        <div className="sb-loading-card">
-          <Loader size={50} className="sb-loading-card__spinner" aria-hidden="true" />
-          <p className="sb-loading-card__text">
-            Building challenges for {selectedVerb?.dict}…
-          </p>
-        </div>
       )}
 
       {/* ── Challenge prompt card (post-it) ──────────────────────────── */}
@@ -820,7 +803,7 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Word selector (curated word tray) ────────────────────────── */}
-      {!(gameOver || allDone || generatingChallenges) && (
+      {!(gameOver || allDone) && (
         <ChallengeWordTray
           wordPool={currentChallenge?.wordPool ?? []}
           onSelect={handleSelect}
@@ -829,7 +812,7 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Sentence area ────────────────────────────────────────────── */}
-      {!(gameOver || allDone || generatingChallenges) && (
+      {!(gameOver || allDone) && (
         <div className="sb-sentence-area">
           {hasChips && (
             <div className="sb-chips" ref={chipsRef}>
@@ -852,7 +835,7 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Romaji block ──────────────────────────────────────────────── */}
-      {hasChips && !(gameOver || allDone || generatingChallenges) && (
+      {hasChips && !(gameOver || allDone) && (
         <p className="sb-romaji-line">
           {sentence.map(c => kanaToRomaji(c.kana)).join(' ')}。
         </p>
@@ -875,7 +858,7 @@ export default function SentenceBuilderScreen() {
       )}
 
       {/* ── Actions ──────────────────────────────────────────────────── */}
-      {!(gameOver || allDone || generatingChallenges) && (
+      {!(gameOver || allDone) && (
         <div className="sb-actions">
           {challengeResult && !gameOver ? (
             <button className="sb-btn sb-btn--check" onClick={advanceChallenge}>

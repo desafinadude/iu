@@ -1,0 +1,291 @@
+import { VOCAB_LIST } from '../data/vocabData'
+import { VERB_LIST } from '../data/verbData'
+
+// ─── Core particles (re-exported from llmChallenge for compatibility) ─────
+
+const CORE_PARTICLES = [
+  { word: 'は',   kana: 'は',   meaning: 'topic particle',    type: 'particle' },
+  { word: 'が',   kana: 'が',   meaning: 'subject particle',  type: 'particle' },
+  { word: 'を',   kana: 'を',   meaning: 'object particle',   type: 'particle' },
+  { word: 'に',   kana: 'に',   meaning: 'direction / time',  type: 'particle' },
+  { word: 'で',   kana: 'で',   meaning: 'location / means',  type: 'particle' },
+  { word: 'へ',   kana: 'へ',   meaning: 'direction',         type: 'particle' },
+  { word: 'と',   kana: 'と',   meaning: 'and / with',        type: 'particle' },
+  { word: 'の',   kana: 'の',   meaning: 'possession',        type: 'particle' },
+  { word: 'も',   kana: 'も',   meaning: 'also / too',        type: 'particle' },
+  { word: 'か',   kana: 'か',   meaning: 'question marker',   type: 'particle' },
+  { word: 'です', kana: 'です', meaning: 'copula (polite)',   type: 'particle' },
+  { word: 'だ',   kana: 'だ',   meaning: 'copula (casual)',   type: 'particle' },
+]
+
+// All 8 verb forms to practise — polite/casual × present/past × pos/neg
+export const VERB_FORMS = [
+  { key: 'polite_present_pos', getForm: v => v.polite.present_pos, label: 'Polite · present +', tenseClass: 'pres-pos' },
+  { key: 'polite_present_neg', getForm: v => v.polite.present_neg, label: 'Polite · present −', tenseClass: 'pres-neg' },
+  { key: 'polite_past_pos',    getForm: v => v.polite.past_pos,    label: 'Polite · past +',    tenseClass: 'past-pos' },
+  { key: 'polite_past_neg',    getForm: v => v.polite.past_neg,    label: 'Polite · past −',    tenseClass: 'past-neg' },
+  { key: 'casual_present_pos', getForm: v => v.casual.present_pos, label: 'Casual · present +', tenseClass: 'pres-pos' },
+  { key: 'casual_present_neg', getForm: v => v.casual.present_neg, label: 'Casual · present −', tenseClass: 'pres-neg' },
+  { key: 'casual_past_pos',    getForm: v => v.casual.past_pos,    label: 'Casual · past +',    tenseClass: 'past-pos' },
+  { key: 'casual_past_neg',    getForm: v => v.casual.past_neg,    label: 'Casual · past −',    tenseClass: 'past-neg' },
+]
+
+export const VERB_CHALLENGES_PER_GAME = VERB_FORMS.length // 8
+
+// ─── Helper: pick random item from array ───────────────────────────────────
+
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+// ─── Helper: get vocab words by theme and type ─────────────────────────────
+
+function getVocabByTheme(themes, type = 'noun') {
+  return VOCAB_LIST.filter(w => w.type === type && themes.some(theme => w.theme === theme))
+}
+
+function getVocabByType(type) {
+  return VOCAB_LIST.filter(w => w.type === type)
+}
+
+// ─── Build a sentence from valency slots ───────────────────────────────────
+
+function buildSentence(verbObj, formKey) {
+  const formDef = VERB_FORMS.find(vf => vf.key === formKey)
+  const verbForm = formDef.getForm(verbObj)
+  const valency = verbObj.valency || {}
+  
+  const tokens = []
+  const isPast = formKey.includes('past')
+  const isNegative = formKey.includes('neg')
+  
+  // 1. Time expression (40% chance)
+  if (Math.random() < 0.4) {
+    const timeWords = getVocabByTheme(['time'])
+    if (timeWords.length > 0) {
+      const timeWord = pickRandom(timeWords)
+      tokens.push({ word: timeWord.word, kana: timeWord.kana, meaning: timeWord.meaning, type: 'noun' })
+      tokens.push({ word: 'に', kana: 'に', meaning: 'at (time)', type: 'particle' })
+    }
+  }
+  
+  // 2. Subject (pronoun + は)
+  const pronouns = getVocabByType('pronoun')
+  if (pronouns.length > 0) {
+    const subject = pickRandom(pronouns)
+    tokens.push({ word: subject.word, kana: subject.kana, meaning: subject.meaning, type: 'pronoun' })
+    tokens.push({ word: 'は', kana: 'は', meaning: 'topic marker', type: 'particle' })
+  }
+  
+  // 3. Location / Destination (if verb has valency for it)
+  if (valency.location) {
+    const locationWords = getVocabByTheme(valency.location.themes)
+    if (locationWords.length > 0) {
+      const location = pickRandom(locationWords)
+      tokens.push({ word: location.word, kana: location.kana, meaning: location.meaning, type: 'noun' })
+      tokens.push({ word: valency.location.particle, kana: valency.location.particle, meaning: 'at/in', type: 'particle' })
+    }
+  }
+  
+  if (valency.destination) {
+    const destWords = getVocabByTheme(valency.destination.themes)
+    if (destWords.length > 0) {
+      const dest = pickRandom(destWords)
+      tokens.push({ word: dest.word, kana: dest.kana, meaning: dest.meaning, type: 'noun' })
+      tokens.push({ word: valency.destination.particle, kana: valency.destination.particle, meaning: 'to', type: 'particle' })
+    }
+  }
+  
+  // 4. Target (for verbs like 会う, 言う with に particle for people)
+  if (valency.target) {
+    const targetWords = getVocabByTheme(valency.target.themes)
+    if (targetWords.length > 0) {
+      const target = pickRandom(targetWords)
+      tokens.push({ word: target.word, kana: target.kana, meaning: target.meaning, type: 'noun' })
+      tokens.push({ word: valency.target.particle, kana: valency.target.particle, meaning: 'to/with', type: 'particle' })
+    }
+  }
+  
+  // 5. Object (noun + を or other particle)
+  if (valency.object) {
+    const objectWords = getVocabByTheme(valency.object.themes)
+    if (objectWords.length > 0) {
+      const obj = pickRandom(objectWords)
+      tokens.push({ word: obj.word, kana: obj.kana, meaning: obj.meaning, type: 'noun' })
+      tokens.push({ word: valency.object.particle, kana: valency.object.particle, meaning: 'object marker', type: 'particle' })
+    }
+  }
+  
+  // 6. Verb (always last in Japanese SOV)
+  tokens.push({ word: verbForm.word, kana: verbForm.kana, meaning: verbForm.meaning, type: 'verb' })
+  
+  // Generate Japanese sentence (join kanas)
+  const ja = tokens.map(t => t.kana).join('')
+  
+  // Generate English translation
+  let en = ''
+  const subjectToken = tokens.find(t => t.type === 'pronoun')
+  if (subjectToken) {
+    en += subjectToken.meaning + ' '
+  }
+  
+  // Add tense marker for English
+  if (isNegative && isPast) {
+    en += "didn't "
+  } else if (isNegative) {
+    en += "don't "
+  }
+  
+  // Add verb meaning in appropriate tense
+  let verbMeaning = verbObj.meaning.replace('to ', '')
+  if (!isNegative) {
+    if (isPast) {
+      // Simple past tense heuristic
+      if (verbMeaning.endsWith('e')) {
+        verbMeaning += 'd'
+      } else if (verbMeaning.match(/[aeiou][^aeiou]$/)) {
+        verbMeaning += verbMeaning.slice(-1) + 'ed'
+      } else {
+        verbMeaning += 'ed'
+      }
+    } else {
+      // Present tense - add 's' for third person (I/we don't)
+      if (subjectToken && !['I', 'we'].includes(subjectToken.meaning)) {
+        verbMeaning += 's'
+      }
+    }
+  }
+  
+  // Add object/destination meaning
+  const objectToken = tokens.find(t => t.type === 'noun' && t !== subjectToken && tokens.indexOf(t) > tokens.findIndex(tt => tt.type === 'pronoun'))
+  if (objectToken) {
+    verbMeaning += ' ' + objectToken.meaning
+  }
+  
+  en += verbMeaning
+  
+  return { tokens, ja, en }
+}
+
+// ─── Build distractor word pool ────────────────────────────────────────────
+
+function buildWordPool(correctTokens, verbObj, formKey) {
+  const correctKanas = new Set(correctTokens.map(t => t.kana))
+  const pool = [...correctTokens]
+  
+  // Add verb distractors (other forms of same verb)
+  VERB_FORMS.filter(vf => vf.key !== formKey)
+    .forEach(vf => {
+      const form = vf.getForm(verbObj)
+      if (!correctKanas.has(form.kana)) {
+        pool.push({ word: form.word, kana: form.kana, meaning: form.meaning, type: 'verb' })
+        correctKanas.add(form.kana)
+      }
+    })
+  
+  // Add one verb from a different verb
+  const otherVerbs = VERB_LIST.filter(v => v.kana !== verbObj.kana)
+  if (otherVerbs.length > 0) {
+    const randomVerb = pickRandom(otherVerbs)
+    const randomForm = pickRandom(VERB_FORMS)
+    const form = randomForm.getForm(randomVerb)
+    if (!correctKanas.has(form.kana)) {
+      pool.push({ word: form.word, kana: form.kana, meaning: form.meaning, type: 'verb' })
+      correctKanas.add(form.kana)
+    }
+  }
+  
+  // Add noun distractors (4 random nouns not in answer)
+  const nounDistractors = VOCAB_LIST
+    .filter(w => w.type === 'noun' && !correctKanas.has(w.kana))
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4)
+  nounDistractors.forEach(w => {
+    pool.push({ word: w.word, kana: w.kana, meaning: w.meaning, type: 'noun' })
+    correctKanas.add(w.kana)
+  })
+  
+  // Add confusing particle distractors
+  const CONFUSE = { 'は': 'が', 'が': 'は', 'を': 'に', 'に': 'で', 'で': 'に', 'へ': 'に', 'と': 'も' }
+  correctTokens.forEach(token => {
+    const alt = CONFUSE[token.kana]
+    if (alt && !correctKanas.has(alt)) {
+      const p = CORE_PARTICLES.find(p => p.kana === alt)
+      if (p) {
+        pool.push({ ...p })
+        correctKanas.add(alt)
+      }
+    }
+  })
+  
+  // Shuffle
+  return pool.sort(() => Math.random() - 0.5)
+}
+
+// ─── Generate 8 verb challenges (synchronous, no API call) ────────────────
+
+export function generateVerbChallenges(verbObj) {
+  const challenges = VERB_FORMS.map(formDef => {
+    const { tokens, ja, en } = buildSentence(verbObj, formDef.key)
+    const wordPool = buildWordPool(tokens, verbObj, formDef.key)
+    const verbForm = formDef.getForm(verbObj)
+    
+    return {
+      ja,
+      en,
+      verbForm: formDef.key,
+      formLabel: formDef.label,
+      tenseClass: formDef.tenseClass,
+      verbWord: verbForm.word,
+      verbKana: verbForm.kana,
+      wordPool,
+    }
+  })
+  
+  // Shuffle challenges so they're not in predictable order
+  return challenges.sort(() => Math.random() - 0.5)
+}
+
+// ─── Check answer (synchronous rule-based validation) ──────────────────────
+
+export function checkAnswer(expectedKana, userKana, wordPool = []) {
+  // Simple approach: check if user's sentence contains the required verb form
+  // and has reasonable structure
+  
+  // The expected answer tokens are embedded in the wordPool
+  // We need to extract them and check if they appear in user's answer
+  
+  // For now, simple validation: check if the answer matches exactly or contains the verb
+  if (userKana === expectedKana) {
+    return { valid: true, feedback: 'Perfect!' }
+  }
+  
+  // Check if answer contains the verb form (most critical element)
+  const expectedTokens = expectedKana.split(/(?=[はがをにでへともかです])/)
+  const verbToken = wordPool.find(w => w.type === 'verb' && expectedKana.includes(w.kana))
+  
+  if (verbToken && !userKana.includes(verbToken.kana)) {
+    return { valid: false, feedback: `Missing the verb form: ${verbToken.word}` }
+  }
+  
+  // Check for required particles
+  const requiredParticles = ['を', 'に', 'で', 'は'].filter(p => expectedKana.includes(p))
+  for (const particle of requiredParticles) {
+    if (!userKana.includes(particle)) {
+      return { valid: false, feedback: `Missing particle: ${particle}` }
+    }
+  }
+  
+  // If it has the verb and particles, accept it as valid
+  if (verbToken && userKana.includes(verbToken.kana)) {
+    return { valid: true, feedback: 'Good!' }
+  }
+  
+  return { valid: false, feedback: 'Check your sentence structure.' }
+}
+
+// ─── Check free-mode sentence (keep using LLM) ────────────────────────────
+// This is exported from llmChallenge.js and should remain unchanged
+// We re-export it here for compatibility
+
+export { checkFreeSentence } from './llmChallenge'
