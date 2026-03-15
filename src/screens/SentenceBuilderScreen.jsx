@@ -650,6 +650,37 @@ export default function SentenceBuilderScreen() {
         </div>
       )}
 
+      {/* ── HUD: Hearts + Score + Timer (at the top like KanaQuiz) ────── */}
+      {challengeActive && (
+        <>
+          <div className="sb-hud">
+            <div className="sb-lives" aria-label={`${lives} lives remaining`}>
+              {[0, 1, 2].map(i => (
+                <span key={i} className={`sb-heart${i < lives ? '' : ' sb-heart--lost'}`} aria-hidden="true">♥</span>
+              ))}
+            </div>
+            <div className="sb-score-wrap">
+              <span className="sb-score" aria-label={`Challenge ${challengeIdx + 1} of ${challenges.length}`}>
+                {challengeIdx + 1}/{challenges.length}
+              </span>
+            </div>
+          </div>
+          <div
+            className="sb-timer-track"
+            role="progressbar"
+            aria-valuenow={timeLeft}
+            aria-valuemin={0}
+            aria-valuemax={CHALLENGE_TIME}
+            aria-label="Time remaining"
+          >
+            <div
+              className={`sb-timer-fill${timerUrgent ? ' sb-timer-fill--urgent' : ''}`}
+              style={{ width: `${timerPct}%` }}
+            />
+          </div>
+        </>
+      )}
+
       {/* ── Generating challenges loader ─────────────────────────────── */}
       {generatingChallenges && (
         <div className="sb-loading-card">
@@ -666,7 +697,6 @@ export default function SentenceBuilderScreen() {
           <span className="sb-tape" aria-hidden="true" />
           <div className="sb-halftone" aria-hidden="true" />
           <div className="sb-challenge-header">
-            <span className="sb-challenge-num">{challengeIdx + 1} / {challenges.length}</span>
             {selectedVerb && (
               <span className="sb-challenge-tag">{selectedVerb.dict}</span>
             )}
@@ -766,31 +796,6 @@ export default function SentenceBuilderScreen() {
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {/* ── Timer + lives ─────────────────────────────────────────────── */}
-      {challengeActive && (
-        <div className="sb-status-row">
-          <div className="sb-lives" aria-label={`${lives} lives remaining`}>
-            {[0, 1, 2].map(i => (
-              <span key={i} className={`sb-heart${i < lives ? '' : ' sb-heart--lost'}`} aria-hidden="true">♥</span>
-            ))}
-          </div>
-          <div
-            className="sb-timer-track"
-            role="progressbar"
-            aria-valuenow={timeLeft}
-            aria-valuemin={0}
-            aria-valuemax={CHALLENGE_TIME}
-            aria-label="Time remaining"
-          >
-            <div
-              className={`sb-timer-fill${timerUrgent ? ' sb-timer-fill--urgent' : ''}`}
-              style={{ width: `${timerPct}%` }}
-            />
-          </div>
-          <span className="sb-timer-num">{timeLeft}s</span>
         </div>
       )}
 

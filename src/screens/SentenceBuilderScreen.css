@@ -16,6 +16,65 @@
   padding-bottom: var(--space-md);
 }
 
+/* ─── HUD: Hearts + Score (same style as KanaQuiz) ───────────────────────── */
+.sb-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sb-lives {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.sb-heart {
+  font-size: 24px;
+  color: var(--color-accent);
+  line-height: 1;
+  transition: opacity 200ms;
+}
+
+.sb-heart--lost {
+  opacity: 0.18;
+}
+
+.sb-score-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sb-score {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ─── Timer (same style as KanaQuiz) ─────────────────────────────────────── */
+.sb-timer-track {
+  flex-shrink: 0;
+  height: 8px;
+  background: var(--color-muted);
+  border: 2px solid var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.sb-timer-fill {
+  height: 100%;
+  background: var(--color-fg);
+  border-radius: 99px;
+  transition: width 1s linear, background 200ms;
+}
+
+.sb-timer-fill--urgent {
+  background: var(--color-accent);
+}
+
 /* ─── Mode tabs ───────────────────────────────────────────────────────────── */
 .sb-mode-tabs {
   display: flex;
@@ -146,16 +205,6 @@
   gap: 8px;
   width: 100%;
   justify-content: center;
-}
-
-.sb-challenge-num {
-  font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-fg);
-  opacity: 0.45;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .sb-challenge-tag {
@@ -293,68 +342,11 @@
 
 .sb-verb-table__romaji {
   font-family: var(--font-body);
-  font-size: 9px;
+  font-size: 12px;
   color: var(--color-fg);
   opacity: 0.4;
   line-height: 1;
   font-style: italic;
-}
-
-/* ─── Status row (timer + lives) — same pattern as KanaQuiz ─────────────── */
-.sb-status-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  flex-shrink: 0;
-}
-
-/* Hearts — identical to .quiz-play__lives / .ws-hearts */
-.sb-lives {
-  display: flex;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.sb-heart {
-  font-size: 24px;
-  color: var(--color-accent);
-  line-height: 1;
-  transition: opacity 200ms;
-}
-
-.sb-heart--lost {
-  opacity: 0.18;
-}
-
-/* Timer track — identical to .quiz-play__timer-track / .ws-timer-bar */
-.sb-timer-track {
-  flex: 1;
-  height: 8px;
-  background: var(--color-muted);
-  border: 2px solid var(--color-border);
-  border-radius: 99px;
-  overflow: hidden;
-}
-
-.sb-timer-fill {
-  height: 100%;
-  background: var(--color-fg);
-  border-radius: 99px;
-  transition: width 1s linear, background 200ms;
-}
-
-.sb-timer-fill--urgent {
-  background: var(--color-accent);
-}
-
-.sb-timer-num {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-fg);
-  min-width: 30px;
-  text-align: right;
-  flex-shrink: 0;
 }
 
 /* ─── Overlay (game over / win) ──────────────────────────────────────────── */
