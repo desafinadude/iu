@@ -281,43 +281,45 @@ export async function generateVerbChallenges(verbObj, onProgress) {
 
   const system = `You are a Japanese teacher. You MUST respond with valid JSON only. No markdown, no extra text.`
   
-  const user = `Create 8 simple Japanese sentences, one for each conjugation of the verb "${verbObj.dict}" (${verbObj.kana} - ${verbObj.meaning}).
+  const user = `Create 8 Japanese sentences practicing the verb "${verbObj.dict}" (${verbObj.kana} - ${verbObj.meaning}).
 
-VERB FORMS (create one sentence for each):
-${verbForms.map((vf, i) => `${i + 1}. ${vf.word}（${vf.kana}）- ${vf.label}`).join('\n')}
+CRITICAL: Each sentence MUST use the EXACT verb form specified below - match the tense and politeness level!
 
-VOCABULARY (use 2-3 words from this list per sentence):
+VERB FORMS (you MUST use these exact forms):
+${verbForms.map((vf, i) => `${i + 1}. ${vf.word}（${vf.kana}）- ${vf.label} ← USE THIS EXACT FORM`).join('\n')}
+
+VOCABULARY (use 3-4 words per sentence, include adjectives/adverbs when possible):
 ${vocabListText}
 
 PARTICLES: ${particlesText}
 
-For each sentence:
-- Use proper kanji from the vocabulary
-- Keep it simple and natural
-- List all words/particles used
+REQUIREMENTS for each sentence:
+1. Use the EXACT verb form specified (check tense: present/past, politeness: polite/casual, polarity: positive/negative)
+2. Use 3-4 content words: subject, object, and try to include an adjective OR adverb
+3. Make sentences varied and natural (not all "I see X")
+4. Use proper kanji from vocabulary
+5. English should be natural and match the tense
 
-Respond with ONLY this JSON (no markdown):
+EXAMPLE for "食べます" (polite present positive):
 {
-  "challenges": [
-    {
-      "ja": "私は犬を見ます",
-      "en": "I see a dog",
-      "words": [
-        {"word": "私", "kana": "わたし", "meaning": "I"},
-        {"word": "は", "kana": "は", "meaning": "topic particle"},
-        {"word": "犬", "kana": "いぬ", "meaning": "dog"},
-        {"word": "を", "kana": "を", "meaning": "object particle"},
-        {"word": "見ます", "kana": "みます", "meaning": "to see"}
-      ]
-    }
+  "ja": "私は美味しい寿司を食べます",
+  "en": "I eat delicious sushi",
+  "words": [
+    {"word": "私", "kana": "わたし", "meaning": "I"},
+    {"word": "は", "kana": "は", "meaning": "topic particle"},
+    {"word": "美味しい", "kana": "おいしい", "meaning": "delicious"},
+    {"word": "寿司", "kana": "すし", "meaning": "sushi"},
+    {"word": "を", "kana": "を", "meaning": "object particle"},
+    {"word": "食べます", "kana": "たべます", "meaning": "eat (polite present)"}
   ]
 }
 
-Create ALL 8 challenges in the array.`
+Respond with ONLY this JSON structure (no markdown, create ALL 8 challenges):
+{"challenges": [...]}`
 
   const text = await hfChat(
     [{ role: 'system', content: system }, { role: 'user', content: user }],
-    { maxTokens: 2500, temperature: 0.7 },
+    { maxTokens: 3000, temperature: 0.7 },
   )
   
   onProgress?.(1) // Show some progress while parsing
