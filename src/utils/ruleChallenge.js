@@ -49,6 +49,11 @@ function getVocabByType(type) {
 }
 
 // ─── Build a sentence from valency slots ───────────────────────────────────
+// English patterns we support:
+//   [Time,] Subject Verb Object [at Location]
+//   [Time,] Subject Verb [at Location]
+//   [Time,] Subject Verb Destination
+//   [Time,] Subject Verb Target
 
 function buildSentence(verbObj, formKey) {
   const formDef = VERB_FORMS.find(vf => vf.key === formKey)
@@ -59,112 +64,140 @@ function buildSentence(verbObj, formKey) {
   const isPast = formKey.includes('past')
   const isNegative = formKey.includes('neg')
   
-  // 1. Time expression (40% chance) — no particle (time adverbs work bare)
+  // Track English sentence parts
+  let timeEn = null
+  let subjectEn = 'I'
+  let verbEn = ''
+  let objectEn = null
+  let nounEn = null  // for destination/location/target
+  let prepositionEn = null
+  
+  // 1. Time expression (40% chance) — no particle in Japanese
   if (Math.random() < 0.4) {
     const timeWords = getVocabByTheme(['time'])
     if (timeWords.length > 0) {
       const timeWord = pickRandom(timeWords)
       tokens.push({ word: timeWord.word, kana: timeWord.kana, meaning: timeWord.meaning, type: 'noun', _isTime: true })
+      timeEn = timeWord.meaning
     }
   }
   
   // 2. Subject (pronoun + は)
-  const pronouns = getVocabByType('pronoun')
+  // Only use personal pronouns (I, you, he, she, we), not location words (here, there)
+  const pronouns = getVocabByType('pronoun').filter(p => 
+    ['I', 'you', 'he', 'she', 'we'].includes(p.meaning.toLowerCase()) || 
+    p.meaning.includes('he') || p.meaning.includes('she')
+  )
   if (pronouns.length > 0) {
     const subject = pickRandom(pronouns)
     tokens.push({ word: subject.word, kana: subject.kana, meaning: subject.meaning, type: 'pronoun' })
     tokens.push({ word: 'は', kana: 'は', meaning: 'topic marker', type: 'particle' })
+    subjectEn = subject.meaning
   }
   
-  // 3. Location / Destination (if verb has valency for it)
-  if (valency.location) {
-    const locationWords = getVocabByTheme(valency.location.themes)
-    if (locationWords.length > 0) {
-      const location = pickRandom(locationWords)
-      tokens.push({ word: location.word, kana: location.kana, meaning: location.meaning, type: 'noun' })
-      tokens.push({ word: valency.location.particle, kana: valency.location.particle, meaning: 'at/in', type: 'particle' })
-    }
-  }
+  // 3. Pick ONE slot type (object, destination, location, or target)
+  const availableSlots = []
+  if (valency.object) availableSlots.push('object')
+  if (valency.destination) availableSlots.push('destination')
+  if (valency.location) availableSlots.push('location')
+  if (valency.target) availableSlots.push('target')
   
-  if (valency.destination) {
-    const destWords = getVocabByTheme(valency.destination.themes)
-    if (destWords.length > 0) {
-      const dest = pickRandom(destWords)
-      tokens.push({ word: dest.word, kana: dest.kana, meaning: dest.meaning, type: 'noun' })
-      tokens.push({ word: valency.destination.particle, kana: valency.destination.particle, meaning: 'to', type: 'particle' })
-    }
-  }
+  const chosenSlot = availableSlots.length > 0 ? pickRandom(availableSlots) : null
   
-  // 4. Target (for verbs like 会う, 言う with に particle for people)
-  if (valency.target) {
-    const targetWords = getVocabByTheme(valency.target.themes)
-    if (targetWords.length > 0) {
-      const target = pickRandom(targetWords)
-      tokens.push({ word: target.word, kana: target.kana, meaning: target.meaning, type: 'noun' })
-      tokens.push({ word: valency.target.particle, kana: valency.target.particle, meaning: 'to/with', type: 'particle' })
-    }
-  }
-  
-  // 5. Object (noun + を or other particle)
-  if (valency.object) {
+  if (chosenSlot === 'object') {
     const objectWords = getVocabByTheme(valency.object.themes)
     if (objectWords.length > 0) {
       const obj = pickRandom(objectWords)
       tokens.push({ word: obj.word, kana: obj.kana, meaning: obj.meaning, type: 'noun' })
       tokens.push({ word: valency.object.particle, kana: valency.object.particle, meaning: 'object marker', type: 'particle' })
+      objectEn = obj.meaning
+    }
+  }
+  
+  if (chosenSlot === 'destination') {
+    const destWords = getVocabByTheme(valency.destination.themes)
+    if (destWords.length > 0) {
+      const dest = pickRandom(destWords)
+      tokens.push({ word: dest.word, kana: dest.kana, meaning: dest.meaning, type: 'noun' })
+      tokens.push({ word: valency.destination.particle, kana: valency.destination.particle, meaning: 'to', type: 'particle' })
+      nounEn = 'the ' + dest.meaning
+      prepositionEn = 'to' // but verb already includes 'to'
+    }
+  }
+  
+  if (chosenSlot === 'location') {
+    const locationWords = getVocabByTheme(valency.location.themes)
+    if (locationWords.length > 0) {
+      const location = pickRandom(locationWords)
+      tokens.push({ word: location.word, kana: location.kana, meaning: location.meaning, type: 'noun' })
+      tokens.push({ word: valency.location.particle, kana: valency.location.particle, meaning: 'at/in', type: 'particle' })
+      nounEn = 'the ' + location.meaning
+      prepositionEn = 'at'
+    }
+  }
+  
+  if (chosenSlot === 'target') {
+    const targetWords = getVocabByTheme(valency.target.themes)
+    if (targetWords.length > 0) {
+      const target = pickRandom(targetWords)
+      tokens.push({ word: target.word, kana: target.kana, meaning: target.meaning, type: 'noun' })
+      tokens.push({ word: valency.target.particle, kana: valency.target.particle, meaning: 'to/with', type: 'particle' })
+      nounEn = 'the ' + target.meaning
+      prepositionEn = 'with' // for 会う (meet with)
     }
   }
   
   // 6. Verb (always last in Japanese SOV)
   tokens.push({ word: verbForm.word, kana: verbForm.kana, meaning: verbForm.meaning, type: 'verb' })
   
-  // Generate Japanese sentence (join kanas)
+  // ═══ Generate Japanese sentence ═══
   const ja = tokens.map(t => t.kana).join('')
   
-  // Generate English translation (use existing isPast/isNegative variables)
-
-  // Subject
-  const subjectToken = tokens.find(t => t.type === 'pronoun')
-  const subjectEn = subjectToken?.meaning ?? 'I'
-
-  // Verb stem
+  // ═══ Generate English sentence with proper grammar ═══
+  
+  // Build verb phrase based on tense and negation
   const stem = isPast ? verbObj.enStem.past : verbObj.enStem.base
-
-  // Build verb phrase
-  let verbPhrase
-  if (isNegative && isPast)   verbPhrase = `didn't ${verbObj.enStem.base}`
-  else if (isNegative)        verbPhrase = `don't ${verbObj.enStem.base}`
-  else                        verbPhrase = stem
-
-  // Object / destination / location / target noun — find the FIRST non-subject noun
-  // and pair it with the correct English preposition based on its slot type
-  let nounPhrase = ''
-  if (valency.object && tokens.some(t => t.kana === valency.object.particle)) {
-    const noun = tokens.find(t => t.type === 'noun')
-    if (noun) nounPhrase = noun.meaning
+  
+  if (isNegative && isPast) {
+    verbEn = `didn't ${verbObj.enStem.base}`
+  } else if (isNegative) {
+    verbEn = `don't ${verbObj.enStem.base}`
+  } else {
+    verbEn = stem
   }
-  if (valency.destination && tokens.some(t => t.kana === valency.destination.particle)) {
-    const noun = tokens.find(t => t.type === 'noun')
-    if (noun) nounPhrase = `the ${noun.meaning}`
-    // enStem already includes 'to' for go/come/return
+  
+  // English sentence patterns:
+  let en = ''
+  
+  // Time prefix (if present)
+  if (timeEn) {
+    en += timeEn + ', '
   }
-  if (valency.location && tokens.some(t => t.kana === valency.location.particle)) {
-    const noun = tokens.find(t => t.type === 'noun')
-    if (noun) nounPhrase = nounPhrase
-      ? `${nounPhrase} at the ${noun.meaning}`
-      : `at the ${noun.meaning}`
+  
+  // Subject
+  en += subjectEn + ' '
+  
+  // Verb + Object/Destination/Location/Target
+  if (chosenSlot === 'object' && objectEn) {
+    // Pattern: Subject Verb Object
+    en += verbEn + ' ' + objectEn
+  } else if (chosenSlot === 'destination' && nounEn) {
+    // Pattern: Subject Verb Destination (verb already has 'to')
+    en += verbEn + ' ' + nounEn
+  } else if (chosenSlot === 'location' && nounEn) {
+    // Pattern: Subject Verb at Location
+    en += verbEn + ' at ' + nounEn
+  } else if (chosenSlot === 'target' && nounEn) {
+    // Pattern: Subject Verb with Target (for 会う) OR Subject Verb Target (for 言う which has 'to' in stem)
+    if (verbObj.dict === '会う') {
+      en += verbEn + ' with ' + nounEn
+    } else {
+      en += verbEn + ' ' + nounEn // 言う already has "speak to" in stem
+    }
+  } else {
+    // No object - just verb (shouldn't happen but fallback)
+    en += verbEn
   }
-  if (valency.target && tokens.some(t => t.kana === valency.target.particle)) {
-    const noun = tokens.find(t => t.type === 'noun' && !t._isTime)
-    if (noun) nounPhrase = `the ${noun.meaning}`
-    // enStem already includes 'to' for speak/meet
-  }
-
-  // Time — put at front if present
-  const timeToken = tokens.find(t => t.type === 'noun' && t._isTime)
-  const timePrefix = timeToken ? `${timeToken.meaning}, ` : ''
-
-  const en = `${timePrefix}${subjectEn} ${verbPhrase}${nounPhrase ? ' ' + nounPhrase : ''}`
   
   return { tokens, ja, en }
 }
